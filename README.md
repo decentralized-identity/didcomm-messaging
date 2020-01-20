@@ -1,4 +1,4 @@
-[![DIDComm logo](didcomm-logo.png)](https://docs.google.com/drawings/d/1kz38TMM6X0EVyyJotmEONYZFwQj4iQtS32VWbq_cGCk/edit)
+[![DIDComm logo](didcomm-logo.png)](didcomm-logo.svg)
 # DIDComm Messaging
 
 DIDComm Messaging is a powerful way for people, institutions, and IoT things to interact via machine-readable messages, using features of [decentralized identifiers](https://www.w3.org/TR/did-core/) (DIDs) as the basis of security and privacy. It works over any transport: HTTP, BlueTooth, SMTP, raw sockets, and sneakernet, for example.
@@ -7,7 +7,7 @@ This repo is where we develops specs and reference code to explain DIDComm Messa
 
 ### Artifacts
 
-Browse the latest draft of the spec [here](https://docs.google.com/document/d/1_jf8nQnGUiZb6jIvphLD4URLdoTlBnbaElNkXfAfHtU/edit).
+Browse the latest draft of the spec [here](spec.md).
 
 
 ### Process
