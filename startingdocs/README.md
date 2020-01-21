@@ -20,5 +20,7 @@ This is NOT the final spec. These documents are here to be used as starting mate
 
 [0025 Transports](./0025-didcomm-transports/README.md)
 
+[0046 Mediators and Relays](./0046-mediators-and-relays/README.md)
+
 ## Other
 
