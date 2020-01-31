@@ -9,7 +9,7 @@
 * [Connections](connections.md)
 * [General Messaging Constructs](general_messaging_constructs.md)
 * [Protocols](protocols.md)
-* Reference Impl
+* [Reference Implementation](reference_implementation.md)
 * Future-Proofing
 * References
 
