@@ -4,8 +4,8 @@
 * [Requirements](requirements.md)
 * [Processing Model](processing_model.md)
 * [Routing](routing.md)
-* Transports
-* Advanced Message Passing
+* [Transports](transports.md)
+* [Advanced Message Passing](advanced_message_passing.md)
 * [Connections](connections.md)
 * [General Messaging Constructs](general_messaging_constructs.md)
 * [Protocols](protocols.md)
