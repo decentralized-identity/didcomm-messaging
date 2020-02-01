@@ -1,14 +1,14 @@
 [![DIDComm logo](didcomm-logo.png)](didcomm-logo.svg)
 
-* Purpose and Scope
+* [Purpose and Scope](scope.md)
 * [Requirements](requirements.md)
-* Processing Model
+* [Processing Model](processing_model.md)
 * [Routing](routing.md)
 * Transports
 * Advanced Message Passing
-* Connections
-* General Messaging Constructs
-* Protocols
+* [Connections](connections.md)
+* [General Messaging Constructs](general_messaging_constructs.md)
+* [Protocols](protocols.md)
 * [Reference Implementation](reference_implementation.md)
 * Future-Proofing
 * References
