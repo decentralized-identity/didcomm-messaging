@@ -10,7 +10,7 @@
 * [General Messaging Constructs](general_messaging_constructs.md)
 * [Protocols](protocols.md)
 * [Reference Implementation](reference_implementation.md)
-* Future-Proofing
+* [Future-Proofing](future_proofing.md)
 * [References](references.md)
 
 ### Other Materials
