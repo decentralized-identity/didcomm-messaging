@@ -12,7 +12,7 @@ All messaging technologies must address routing in some way. However, DIDComm ha
 
 * Because of security and privacy goals, DIDComm routing must impose careful limits on how and to what degree intermediate nodes are trusted.
 
-* Because DIDComm aims to be transport-independent, its routing model must be carefully decoupled from  strong assumptions about networking. In particular, DIDComm routing in general cannot assume that:
+* Because DIDComm aims to be transport-independent, its routing model must be carefully decoupled from  strong assumptions about networking. In particular, DIDComm routing cannot make broad-brush assumptions that:
     * A route will use only a single transport.
     * Transport mechanisms will provide any security benefits.
     * The identity and connectivity for every hop in a route will be known by any party at the time a message is sent.
@@ -42,7 +42,7 @@ This is not the simplest possible scenario; DIDComm could be direct from `A` to 
 
 ### The `forward` message
 
-The `forward` message created in step 2 in our overview is a DIDComm __application-level protocol__ message. Routing, as described here, is just one of many protocols that can be built atop DIDComm primitives. A and B are "speaking" this protocol when they communicate. The routing protocol can use the same features as any other application-level protocol; this includes [attachments](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0017-attachments/README.md), [message threading](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0008-message-id-and-threading/README.md), [message timing](https://github.com/hyperledger/aries-rfcs/blob/master/features/0032-message-timing/README.md), [message tracing](https://github.com/hyperledger/aries-rfcs/blob/master/features/0034-message-tracing/README.md), [ACKs](https://github.com/hyperledger/aries-rfcs/blob/master/features/0015-acks/README.md), [problem reports](https://github.com/hyperledger/aries-rfcs/blob/master/features/0035-report-problem/README.md), and so forth. However, before we describe the structure and semantics of the `forward` message in detail, it's important to understand some additional routing concepts.
+The `forward` message created in step 2 in our overview is a DIDComm __application-level protocol__ message. Routing, as described here, is just one of many protocols that can be built atop DIDComm primitives. A and C are "speaking" this protocol when they communicate. The routing protocol can use the same features as any other application-level protocol; this includes [attachments](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0017-attachments/README.md), [message threading](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0008-message-id-and-threading/README.md), [message timing](https://github.com/hyperledger/aries-rfcs/blob/master/features/0032-message-timing/README.md), [message tracing](https://github.com/hyperledger/aries-rfcs/blob/master/features/0034-message-tracing/README.md), [ACKs](https://github.com/hyperledger/aries-rfcs/blob/master/features/0015-acks/README.md), [problem reports](https://github.com/hyperledger/aries-rfcs/blob/master/features/0035-report-problem/README.md), and so forth. However, before we describe the structure and semantics of the `forward` message in detail, it's important to understand some additional routing concepts.
 
 ### Two Dimensions
 
