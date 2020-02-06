@@ -1,4 +1,4 @@
-[![DIDComm logo](didcomm-logo.png)](didcomm-logo.svg)
+[![DIDComm logo](collateral/didcomm-logo.png)](collateral/didcomm-logo.svg)
 
 * [Purpose and Scope](scope.md)
 * [Requirements](requirements.md)
