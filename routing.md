@@ -62,7 +62,9 @@ A __mediator__ is a participant in routing that must be accounted for by the sen
 1. A service that hosts many agents at a single endpoint to provide herd privacy (sometimes called an "agency") is a _mediator_.
 2. A cloud-based agent that forwards messages to mobile devices is a _mediator_.
 
-In contrast, a __relay__ is an entity that passes along encrypted messages without understanding or decrypting them. It can be an off-the-shelf component with little or no concept of special DIDComm routing requirements; it's focused on network routing only. Relays can be used to change the transport for a message (e.g., accept an HTTP POST, then turn around and emit an email; accept a Bluetooth transmission, then turn around and emit something in a message queue). Load balancers and mix networks like TOR are important types of relay.
+In contrast, a __relay__ is an entity that passes along encrypted messages without understanding or decrypting them. It's focused on network routing only. 
+
+Like mediators, relays can be used to change the transport for a message (e.g., accept an HTTP POST, then turn around and emit an email; accept a Bluetooth transmission, then turn around and emit something in a message queue). But unlike mediators, relays can do this without understanding DIDComm. Load balancers and mix networks like TOR are important types of relay.
 
 Let's define mediators and relays by exploring how they manifest in a series of communication scenarios between Alice and Bob.
  
