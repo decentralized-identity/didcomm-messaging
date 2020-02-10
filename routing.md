@@ -59,7 +59,7 @@ DIDComm routing uses two important constructs to model all varieties of network 
 
 A __mediator__ is a participant in routing that must be accounted for by the sender's cryptography. In other words, it is visible in the cryptographic routing dimension. It has its own keys and will deliver messages only after decrypting an outer envelope to reveal a `forward` request. It must understand DIDComm routing to do this. Many types of mediators may exist, but two important ones should be widely understood, as they commonly manifest in DID Docs:
 
-1. A service that hosts many agents at a single endpoint to provide herd privacy (sometimes called an "agency") is a _mediator_.
+1. A service that receives messages for many agents at a single endpoint to provide herd privacy (sometimes called an "agency") is a _mediator_.
 2. A cloud-based agent that forwards messages to mobile devices is a _mediator_.
 
 In contrast, a __relay__ is an entity that passes along encrypted messages without understanding or decrypting them. It's focused on network routing only. 
