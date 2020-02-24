@@ -13,7 +13,7 @@ All messaging technologies must address routing in some way. However, DIDComm ha
 * Because of security and privacy goals, DIDComm routing must impose careful limits on how and to what degree intermediate nodes are trusted.
 
 * Because DIDComm aims to be transport-independent, its routing model must be carefully decoupled from  strong assumptions about networking. In particular, DIDComm routing cannot make broad-brush assumptions that:
-    * A route will use only a single transport.
+    * A given route will use only a single transport.
     * Transport mechanisms will provide any security benefits.
     * The identity and connectivity for every hop in a route will be known by any party at the time a message is sent.
     * The route from sender to recipient will be similar in hop identity, hop count, or transport mix to a complementary route from recipient back to sender.
@@ -253,7 +253,11 @@ A fancier version with many optional attributes has the following potential stru
 }
 ```
 
-The value of the `to` field is a DID, not a key. This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn't need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see [RFC 0211: Route Coordination](https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md)), but that is outside the scope of concerns of this protocol. 
+[TODO: describe use of the `attn` field, and explain why it's an important construct that allows us to encrypt to all (cryptographic route) but deliver just to the agent most likely to be interested (network route).
+
+[TODO: further revise the following paragraph to clarify that either a key or a DID might be used. Each possibility makes certain tradeoffs, and may be appropriate in certain cases. Keys may be fragile in the face of rotation, and they require a lot of knowledge/maintenance cost for the external mediator. However, DID key references and DIDs may introduce some complications in how the recipient proves control of a DID (a requirement for security, but also a privacy eroder).]
+
+For most external mediators, the value of the `to` field is likely to be a DID, not a key. However... (see previous TODO note). This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn't need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see [RFC 0211: Route Coordination](https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md)), but that is outside the scope of concerns of this protocol. 
 
 The attachment(s) in the `payloads~attach` field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.
 
@@ -275,3 +279,7 @@ Why is such indirection useful?
 * It allows for dynamic routing late in the delivery chain.
  
 These last two characteristics are the foundation of mix networking feature for DIDComm. That feature is the subject of a different RFC; here we only note the existence of the optional feature. 
+
+
+### DID Docs and Routing
+[TODO: discuss how routing info is exposed in a DID doc, and how it is conveyed in "ephemeral mode" where no DID doc is available.]
