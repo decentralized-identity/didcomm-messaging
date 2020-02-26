@@ -7,7 +7,7 @@ Each transport has unique features and properties, so we need to define a standa
 ## Reference
 ### HTTP(S)
 The POST method is used to send the DIDComm message.
-The POST message MIME type is application/didcomm-enc-env, see RFC 0044: DIDComm File and MIME Types for more details.
+The POST message MIME type is application/didcomm-enc-env.
 A successful response code is 202 (Accepted), but 200 (OK) is also allowed.
 ### WebSocket
 The usage of this transport can be beneficial when only one side of the communication can initiate a request to the other side, for example, the former is behind a Firewall or behind NAT.
