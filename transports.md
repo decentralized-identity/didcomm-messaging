@@ -12,3 +12,8 @@ A successful response code is 202 (Accepted), but 200 (OK) is also allowed.
 ### WebSocket
 The usage of this transport can be beneficial when only one side of the communication can initiate a request to the other side, for example, the former is behind a Firewall or behind NAT.
 With STOMP over WebSocket, the content-type header is application/didcomm-enc-env as in the HTTP(S) message.
+TODO: Include details of the websocket message to define a standard usage.
+
+TODO:
+* Quic
+* Transport binding
