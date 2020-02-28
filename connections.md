@@ -30,7 +30,11 @@ TODO: Include more details about ephemeral mode.
 
 The exchange request message is used to communicate the DID document of the _invitee_ to the _inviter_ using the provisional service information present in the _invitation_ message.
 
+TODO: Clarify that provisioning is only needed if not using an already provisioned DID.
+
 The _invitee_ will provision a new DID according to the DID method spec. For a Peer DID, this involves creating a matching peer DID and key. The newly provisioned DID and DID Doc is presented in the exchange_request message as follows:
+
+TODO: Add clear details about signing the did_doc attachment.
 
 ##### Example
 
@@ -72,6 +76,8 @@ An invitation is presented in one of two forms:
 When a `request` responds to an explicit invitation, its `~thread.pthid` MUST be equal to the `@id` property of the invitation.
 
 When a `request` responds to an implicit invitation, its `~thread.pthid` MUST contain a [DID URL](https://w3c-ccg.github.io/did-spec/#dfn-did-url) that resolves to the specific `service` on a DID document that contains the invitation.
+
+TODO: Include examples using a ledger resolvable DID.
 
 **Example referencing an explicit invitation**
 
@@ -218,6 +224,8 @@ Possible reasons:
 
 - unknown processing error## 3. Exchange Acknowledgement
 
+TODO: Add an official ACK message.
+
 After the Response is received, the exchange is technically complete. This remains unconfirmed to the *inviter* however. The *invitee* SHOULD send a message to the *inviter*. As any message will confirm the exchange, any message will do.
 
 Frequently, the parties of the relationship will want to trade credentials to establish trust. In such a flow, those message will serve the function of acknowledging the exchange without an extra confirmation message.
@@ -241,4 +249,4 @@ When Peer DIDs are used in an exchange, it is likely that both Alice and Bob wil
 #### TODO:
 
 - Pairwise vs n-wise connections, how to transition.
-- Reuse of existing connections (detecting)
+- Reuse of existing connections, add `continue` message for use with connection reuse.
