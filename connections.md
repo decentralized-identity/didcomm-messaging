@@ -178,7 +178,7 @@ The exchange response message is used to complete the exchange. This message is 
     "data": {
       "base64": "<b64 encoded bytes of diddoc>"// DID Doc contents here.
     }
-    "sig": <sig info>
+    "sig": <jws sig info>
   }
 }
 ```
@@ -224,15 +224,38 @@ Possible reasons:
 
 - unknown processing error## 3. Exchange Acknowledgement
 
-TODO: Add an official ACK message.
+#### 3. Complete / Ack
 
-After the Response is received, the exchange is technically complete. This remains unconfirmed to the *inviter* however. The *invitee* SHOULD send a message to the *inviter*. As any message will confirm the exchange, any message will do.
+The final message of the exchange confirms to the _inviter_ that the exchange has been accepted and the connection is valid.
 
-Frequently, the parties of the relationship will want to trade credentials to establish trust. In such a flow, those message will serve the function of acknowledging the exchange without an extra confirmation message.
+##### Example
 
-If no message is needed immediately, a trust ping can be used to allow both parties confirm the exchange.
+```json
+{
+  "@type": "https://didcomm.org/didexchange/1.0/complete",
+  "@id": "12345678900987654321",
+  "~thread": {
+    "thid": "<The Thread ID is the Message ID (@id) of the first message in the thread>",
+    "pthid": "<The Thread ID of the out of band message that began this exchange.>"
+  },
+  
+}
+```
 
-After a message is sent, the *invitee* in the `complete` state. Receipt of a message puts the *inviter* into the `complete` state.
+##### Attributes
+
+* The `@type` attribute is a required string value that denotes that the received message is an exchange request.
+* The `~thread` block contains a `thid` reference to the `@id` of the request message. If the exchange was a result of an `outofband` message, the `pthid`  must be the thread id of the outofband message. This allows the _inviter_ to correlate this message with the context of the outofband message. 
+
+After the `complete` message is sent, the *invitee* in the `complete` state. Receipt of the `complete` message puts the *inviter* into the `complete` state.
+
+
+
+#### Connection Reuse
+
+When an `outofband` message is received by an agent that already has a connection with the _inviter_, the _invitee_ may choose to reuse that existing connection. In that case, the Request and Response messages are bypassed. A `complete` message is sent, including the pthid used to maintain context inside the message. That contexts may be used by the _inviter_ to begin additional protocols to accomplish their purposes.
+
+
 
 ##### Next Steps
 
@@ -240,7 +263,7 @@ The exchange between the _inviter_ and the _invitee_ is now established. This re
 
 ##### Peer DID Maintenance
 
-When Peer DIDs are used in an exchange, it is likely that both Alice and Bob will want to perform some relationship maintenance such as key rotations. Future HIPE updates will add these maintenance features.
+When Peer DIDs are used in an exchange, it is likely that both Alice and Bob will want to perform some relationship maintenance such as key rotations. Future updates will add these maintenance features.
 
 
 
@@ -249,4 +272,4 @@ When Peer DIDs are used in an exchange, it is likely that both Alice and Bob wil
 #### TODO:
 
 - Pairwise vs n-wise connections, how to transition.
-- Reuse of existing connections, add `continue` message for use with connection reuse.
+- Reuse of existing connections, add `continue` message for use with connection reuse. (ack message?)
