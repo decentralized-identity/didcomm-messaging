@@ -236,7 +236,7 @@ The exchange complete message is used to confirm the exchange to the _inviter_. 
   "@id": "12345678900987654321",
   "~thread": {
     "thid": "<The Thread ID is the Message ID (@id) of the first message in the thread>",
-    "pthid": "<The Parent Thread ID of the Out Of Band Invitation>"
+    "pthid": "<The Message ID (@id) of the Out Of Band Invitation message>"
   }
 }
 ```
