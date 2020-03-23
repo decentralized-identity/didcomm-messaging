@@ -12,8 +12,6 @@ Invitations are usually the first message passed between parties. They are passe
 
 The OutOfBand Protocol exists as an independent protocol to allow for the invitation recipient to respond with any of the supported protocols.
 
-
-
 A Public DID functions as a standing invitation. The information within the resolved DID Document serves the same function as the information passed in OutOfBand protocol messages.
 
 TODO: Include details of the protocol.
@@ -30,13 +28,13 @@ TODO: Include more details about ephemeral mode.
 
 The exchange request message is used to communicate the DID document of the _invitee_ to the _inviter_ using the provisional service information present in the _invitation_ message.
 
-TODO: Clarify that provisioning is only needed if not using an already provisioned DID.
+If needed, the _invitee_ will provision a new DID according to the DID method spec. The _invitee_ may also use a previously provisioned DID.
 
-The _invitee_ will provision a new DID according to the DID method spec. For a Peer DID, this involves creating a matching peer DID and key. The newly provisioned DID and DID Doc is presented in the exchange_request message as follows:
+The DID is presented in the exchange_request message as follows:
 
-TODO: Add clear details about signing the did_doc attachment.
+TODO: Add clear details about initial_state usage?
 
-##### Example
+Example
 
 ```json
 {
@@ -44,14 +42,7 @@ TODO: Add clear details about signing the did_doc attachment.
   "@type": "https://didcomm.org/didexchange/1.0/request",
   "~thread": { "pthid": "<id of invitation>" },
   "label": "Bob",
-  "did": "B.did@B:A",
-  "did_doc~attach": {
-    "mime-type": "",
-    "data": {
-      "base64": "<b64 encoded bytes of diddoc>"// DID Doc contents here.
-    }
-    "sig": <sig info>
-  }
+  "did": "<did invitee is sending to inviter>"
 }
 ```
 
@@ -64,7 +55,6 @@ TODO: Add clear details about signing the did_doc attachment.
 * The `label` attribute provides a suggested label for the DID being exchanged. This allows the user to tell multiple exchange requests apart. This is not a trusted attribute.
 * The `connection` attribute contains the `did` and `did_doc` attributes. This format maintains consistency with the Response message where this attribute is signed.
 * The `did` indicates the DID being exchanged.
-* The `did_doc~attach`  attachment is required when `did` contains a peer did. contains the DID Doc associated with the DID. If the DID method for the presented DID is not a peer method and the DID Doc is resolvable on a ledger, the `did_doc` attribute is optional. The attachment must include a signature
 
 ##### Correlating requests to invitations
 
@@ -87,14 +77,7 @@ TODO: Include examples using a ledger resolvable DID.
   "@type": "https://didcomm.org/didexchange/1.0/request",
   "~thread": { "pthid": "032fbd19-f6fd-48c5-9197-ba9a47040470" },
   "label": "Bob",
-  "did": "B.did@B:A",
-  "did_doc~attach": {
-    "mime-type": "",
-    "data": {
-      "base64": "<b64 encoded bytes of diddoc>"// DID Doc contents here.
-    }
-    "sig": <sig info>
-  }
+  "did": "<did invitee is sending to inviter>"
 }
 ```
 
@@ -106,14 +89,7 @@ TODO: Include examples using a ledger resolvable DID.
   "@type": "https://didcomm.org/didexchange/1.0/request",
   "~thread": { "pthid": "did:example:21tDAKCERh95uGgKbJNHYp#invitation" },
   "label": "Bob",
-  "did": "B.did@B:A",
-  "did_doc~attach": {
-    "mime-type": "",
-    "data": {
-      "base64": "<b64 encoded bytes of diddoc>"// DID Doc contents here.
-    }
-    "sig": <sig info>
-  }
+  "did": "<did invitee is sending to inviter>"
 }
 ```
 
@@ -172,14 +148,7 @@ The exchange response message is used to complete the exchange. This message is 
   "~thread": {
     "thid": "<The Thread ID is the Message ID (@id) of the first message in the thread>"
   },
-  "did": "B.did@B:A",
-  "did_doc~attach": {
-    "mime-type": "",
-    "data": {
-      "base64": "<b64 encoded bytes of diddoc>"// DID Doc contents here.
-    }
-    "sig": <sig info>
-  }
+  "did": "<did inviter is sending to invitee>"
 }
 ```
 
@@ -191,7 +160,6 @@ The signature data must be used to verify against the invitation's `recipientKey
 * The `~thread` block contains a `thid` reference to the `@id` of the request message.
 * The `connection` attribute contains the `did` and `did_doc` attributes to enable simpler signing.
 * The `did` attribute is a required string value and denotes DID in use by the _inviter_. Note that this may not be the same DID used in the invitation.
-* The `did_doc~attach` attribute contains the associated DID Doc. If the DID method for the presented DID is not a peer method and the DID Doc is resolvable on a ledger, the `did_doc` attribute is optional.
 
 In addition to a new DID, the associated DID Doc might contain a new endpoint. This new DID and endpoint are to be used going forward in the relationship.
 
