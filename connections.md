@@ -226,7 +226,7 @@ Possible reasons:
 
 ## 3. Exchange Complete
 
-The exchange complete message is used to confirm the exchange to the _inviter_.  This message is required in the flow, as it marks the exchange complete. The _inviter_ may then invoke any protocols desired based on the context expressed via the `pthid` in the DID Exchange protocol.
+The exchange complete message is used to confirm the exchange to the _inviter_. The _inviter_ may then invoke any protocols desired based on the context expressed via the `pthid` in the DID Exchange protocol.
 
 #### Example
 
