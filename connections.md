@@ -190,7 +190,61 @@ Possible reasons:
 
 **response_processing_error**
 
-- unknown processing error## 3. Exchange Acknowledgement
+- unknown processing error
+
+#### 3. Exchange Challenge
+
+The exchange challenge message is used as the response for request following an implicit invitation. This message is required to merge the two flows with the sequence of an explicit invitation. In particular, the explicit invitation consists of unique `@id` to prevent replay attack.
+
+##### Example
+
+```json
+{
+  "@type": "https://didcomm.org/didexchange/1.0/challenge",
+  "@id": "12345678901234567",
+  "~thread": {
+    "thid": "<The Thread ID is the Message ID (@id) of the first message in the thread>"
+  },
+  "did": "<did inviter is sending to invitee>"
+}
+```
+
+##### Attributes
+
+* The `@type` attribute is a required string value that denotes that the received message is a challenge request.
+* The `~thread` block contains a `thid` reference to the `@id` of the request message.
+* The `did` attribute is a required string value and denotes DID in use by the _inviter_. Note that this may not be the same DID used in the invitation.
+
+In addition to a new DID, the associated DID Doc might contain a new endpoint. This new DID and endpoint are to be used going forward in the relationship.
+
+##### Response Transmission
+
+The message should be packaged in the encrypted envelope format, using the keys from the request, and the new keys presented in the internal did doc.
+
+When the message is transmitted, we are now in the `challenged` state.
+
+##### Response Processing
+
+When the _invitee_ receives the `response` message, they will verify the `change_sig` provided. After validation, they will update their wallet with the new information and start over with a new `request` message constructed according to an explicit invitation.
+
+##### Response Errors
+
+See [Error Section](#errors) above for message format details.
+
+**response_rejected**
+
+Possible reasons:
+
+- unsupported DID method for provided DID
+- Expired Request
+- DID Doc Invalid
+- Unsupported key type
+- Unsupported endpoint protocol
+- Invalid Signature
+
+**response_processing_error**
+
+- unknown processing error
 
 ## 3. Exchange Complete
 
