@@ -1,6 +1,7 @@
 
 {
   "resource_path": "./docs",
+  
   "specs": [
     {
       "title": "DIF Comms Messaging Protocol",
@@ -11,21 +12,22 @@
         "account": "decentralized-identity",
         "repo": "didcomm-messaging"
       },
-      "spec_directory": "./docs/spec",
+      "output_path": "./docs/spec",
+      "spec_directory": "./",
       "markdown_paths": [
-        "markdown/title.md",
-        "markdown/scope.md",
-        "markdown/requirements.md",
-        "markdown/processing_model.md",
-        "markdown/routing.md",
-        "markdown/transports.md",
-        "markdown/advanced_message_passing.md",
-        "markdown/connections.md",
-        "markdown/general_messaging_constructs.md",
-        "markdown/protocols.md",
-        "markdown/reference_implementation.md",
-        "markdown/future_proofing.md",
-        "markdown/references.md"
+        "title.md",
+        "scope.md",
+        "requirements.md",
+        "processing_model.md",
+        "routing.md",
+        "transports.md",
+        "advanced_message_passing.md",
+        "connections.md",
+        "general_messaging_constructs.md",
+        "protocols.md",
+        "reference_implementation.md",
+        "future_proofing.md",
+        "references.md"
       ]
     }
   ]
