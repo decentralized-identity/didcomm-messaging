@@ -39,7 +39,7 @@ Example
 ```json
 {
   "@id": "5678876542345",
-  "@type": "https://didcomm.org/didexchange/1.0/request",
+  "@type": "https://didcomm.org/didexchange/2.0/request",
   "~thread": { "pthid": "<id of invitation>" },
   "label": "Bob",
   "did": "<did invitee is sending to inviter>"
@@ -74,7 +74,7 @@ TODO: Include examples using a ledger resolvable DID.
 ```json
 {
   "@id": "a46cdd0f-a2ca-4d12-afbf-2e78a6f1f3ef",
-  "@type": "https://didcomm.org/didexchange/1.0/request",
+  "@type": "https://didcomm.org/didexchange/2.0/request",
   "~thread": { "pthid": "032fbd19-f6fd-48c5-9197-ba9a47040470" },
   "label": "Bob",
   "did": "<did invitee is sending to inviter>"
@@ -86,7 +86,7 @@ TODO: Include examples using a ledger resolvable DID.
 ```json
 {
   "@id": "a46cdd0f-a2ca-4d12-afbf-2e78a6f1f3ef",
-  "@type": "https://didcomm.org/didexchange/1.0/request",
+  "@type": "https://didcomm.org/didexchange/2.0/request",
   "~thread": { "pthid": "did:example:21tDAKCERh95uGgKbJNHYp#invitation" },
   "label": "Bob",
   "did": "<did invitee is sending to inviter>"
@@ -143,7 +143,7 @@ The exchange response message is used to complete the exchange. This message is 
 
 ```json
 {
-  "@type": "https://didcomm.org/didexchange/1.0/response",
+  "@type": "https://didcomm.org/didexchange/2.0/response",
   "@id": "12345678900987654321",
   "~thread": {
     "thid": "<The Thread ID is the Message ID (@id) of the first message in the thread>"
@@ -200,7 +200,7 @@ The exchange complete message is used to confirm the exchange to the _inviter_. 
 
 ```json
 {
-  "@type": "https://didcomm.org/didexchange/1.0/complete",
+  "@type": "https://didcomm.org/didexchange/2.0/complete",
   "@id": "12345678900987654321",
   "~thread": {
     "thid": "<The Thread ID is the Message ID (@id) of the first message in the thread>",
@@ -225,7 +225,7 @@ When an out of band invitation is received containing a public DID for which the
 
 ```json
 {
-  "@type": "https://didcomm.org/didexchange/1.0/reuse",
+  "@type": "https://didcomm.org/didexchange/2.0/reuse",
   "@id": "12345678900987654321",
   "~thread": {
     "pthid": "<The Parent Thread ID of the Out Of Band Invitation>"
