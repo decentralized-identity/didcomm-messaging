@@ -1,10 +1,10 @@
-DIF Comms Messaging Protocol
+DIF Comm Messaging Protocol
 ==================
 
 **Specification Status:** Editor's Draft
 
 **Latest published version:**
-  [identity.foundation/didcomms-messaging/docs/spec](https://identity.foundation/didcomms-messaging/docs/spec)
+  [identity.foundation/didcomm-messaging/docs/spec](https://identity.foundation/didcomm-messaging/docs/spec)
 
 **Editors:**
 
@@ -13,8 +13,8 @@ DIF Comms Messaging Protocol
 
 
 **Participate:**
-~ [GitHub repo](https://github.com/decentralized-identity/didcomms-messaging)
-~ [File a bug](https://github.com/decentralized-identity/didcomms-messaging/issues)
-~ [Commit history](https://github.com/decentralized-identity/didcomms-messaging/commits/master)
+~ [GitHub repo](https://github.com/decentralized-identity/didcomm-messaging)
+~ [File a bug](https://github.com/decentralized-identity/didcomm-messaging/issues)
+~ [Commit history](https://github.com/decentralized-identity/didcomm-messaging/commits/master)
 
 ------------------------------------

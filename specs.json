@@ -9,7 +9,7 @@
       "source": {
         "host": "github",
         "account": "decentralized-identity",
-        "repo": "didcomms-messaging"
+        "repo": "didcomm-messaging"
       },
       "spec_directory": "./docs/spec",
       "markdown_paths": [
