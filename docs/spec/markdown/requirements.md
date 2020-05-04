@@ -1,4 +1,4 @@
-# Requirements
+## Requirements
 
 * **decentralized/self-sovereign** (encryption, signing, authn, and authz should all be based on control of DIDs rathern than on CAs, IDPs, etc)
 

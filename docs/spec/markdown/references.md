@@ -1,4 +1,4 @@
-# References
+## References
 
 * DID spec
 * OSI stack (for comparison purposes)

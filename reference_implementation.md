@@ -1,4 +1,0 @@
-# Reference Implementation
-
-- Features
-- Usage

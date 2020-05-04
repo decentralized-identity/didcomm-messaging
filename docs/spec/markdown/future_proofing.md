@@ -1,4 +1,4 @@
-# Future-Proofing
+## Future-Proofing
 
 - Versioning of the standard
 

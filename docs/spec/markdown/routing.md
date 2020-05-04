@@ -1,4 +1,4 @@
-# Routing
+## Routing
 
 __Routing__ is the process of managing the delivery of messages from sender to recipient, possibly adapting the packaging and transfer to intermediate nodes. A __route__ is a map or plan that specifies enough to achieve delivery in at least one direction; it may omit uninteresting details.
 
@@ -36,7 +36,7 @@ Let's focus on a simple case where `A` wants to send a message to `B`, and the r
 5. `C` hands the attachment from `M[2]` &mdash; which is the encrypted message `M[1]` &mdash; to `B`.
 6. `B` decrypts `M[1]`, reproducing the plaintext `M[0]`.
 
-![diagram of simple routing scenario](collateral/simple-routing-scenario.png)
+![diagram of simple routing scenario](/collateral/simple-routing-scenario.png)
 
 This is not the simplest possible scenario; DIDComm could be direct from `A` to `C`, which would eliminate steps 2-5. Some DIDComm+HTTP interactions are that simple. And it is not the most complex DIDComm routing scenario, either. Much more elaborate routes could be described by introducing additional hops with additional `forward` messages. However, the above sequence is a good rough model to carry through the discussion that follows.
 
@@ -72,7 +72,7 @@ Let's define mediators and relays by exploring how they manifest in a series of 
 
 Alice and Bob are both employees of a large corporation. They work in the same office, but have never met. The office has a rule that all messages between employees must be encrypted. They use paper messages and physical delivery as the transport. Alice writes a note, encrypts it so only Bob can read it, puts it in an envelope addressed to Bob, and drops the envelope on a desk that she has been told belongs to Bob. This desk is in fact Bob's, and he later picks up the message, decrypts it, and reads it.
  
-![routing scenario 1: direct](collateral/routing-scenario-1.png)
+![routing scenario 1: direct](/collateral/routing-scenario-1.png)
 
 In this scenario, there is no mediator, and no relay.
 
@@ -82,7 +82,7 @@ Imagine that Bob hires an executive assistant, Carl, to filter his mail. Bob won
  
 Alice has to change her behavior. She continues to package a message for Bob, but now she must account for Carl as well. She take the envelope for Bob, and places it inside a new envelope addressed to Carl. Inside the outer envelope, and next to the envelope destined for Bob, Alice writes Carl an encrypted note: "This inner envelope is for Bob. Please forward."
 
-![routing scenario 2: mediator](collateral/routing-scenario-2.png)
+![routing scenario 2: mediator](/collateral/routing-scenario-2.png)
 
 Here, Carl is acting as a __mediator__. He is mostly just passing messages along. But because he is processing a message himself, and because Carl is interposed between Alice and Bob, he affects the behavior of the sender. He is a known entity in the route.
 
@@ -92,7 +92,7 @@ You may recognize this as similar to our overview example with A, B, and C. A an
 
 All is the same as the base scenario (Carl has been fired, and is thus out of the picture), except that Bob is working from home when Alice's message lands on his desk. Bob has previously arranged with his friend Darla, who lives near him, to pick up any mail that's on his desk and drop it off at his house at the end of the work day. Darla sees Alice's note and takes it home to Bob.
 
-![routing scenario 3: relay](collateral/routing-scenario-3.png)
+![routing scenario 3: relay](/collateral/routing-scenario-3.png)
 
 In this scenario, Darla is acting as a __relay__. Note that Bob arranges for Darla to do this *without notifying Alice*, and that *Alice does not need to adjust her behavior in any way for the relay to work*.
 
@@ -100,7 +100,7 @@ In this scenario, Darla is acting as a __relay__. Note that Bob arranges for Dar
 
 Like scenario 3, Darla brings Bob his mail at home. However, Bob isn't at home when his mail arrives. He's had to rush out on an errand, but he's left instructions with his son, Emil, to open any work mail, take a photo of the letter, and text him the photo. Emil intends to do this, but the camera on his phone misfires, so he convinces his sister, Francis, to take the picture on her phone and email it to him. Then he texts the photo to Bob, as arranged.
 
-![routing scenario 4: many relays](collateral/routing-scenario-4.png)
+![routing scenario 4: many relays](/collateral/routing-scenario-4.png)
 
 Here, Emil and Francis are also acting as relays. Note that *nobody knows about the full route*. Alice thinks she's delivering directly to Bob. So does Darla. Bob knows about Darla and Emil, but not about Francis.
  
@@ -120,7 +120,7 @@ The scenarios used above are somewhat artificial. Our most familiar routing scen
 
 Alice's cloud wants to talk to Bob's cloud. Bob's cloud is listening at http://bob.com/api. Alice encrypts a message for Bob and posts it to that URL.
 
-![scenario 5: cloud to cloud](collateral/routing-scenario-5.png)
+![scenario 5: cloud to cloud](/collateral/routing-scenario-5.png)
 
 In this scenario, we are using a direct transport with neither a mediator nor a relay. This is how Alice and Bob operate in Scenario 1, and it's also equivalent to our Overview minus steps 2-5.
 
@@ -128,14 +128,14 @@ When DIDComm involves only two parties, and when HTTP is convenient for both of 
 
 Virtually the same diagram could be used for a Bluetooth or NFC or sneakernet conversation that happens offline:
 
-![scenario 5b: Bluetooth or offline](collateral/routing-scenario-5b.png)
+![scenario 5b: Bluetooth or offline](/collateral/routing-scenario-5b.png)
 
 
 #### Scenario 6: herd hosting
 
 Let's tweak Scenario 5 slightly by saying that Bob's agent is one of thousands that are hosted at the same URL. Maybe the URL is now http://agents-r-us.com/inbox. Now if Alice wants to talk to Bob's cloud agent, she has to cope with a mediator. She wraps the encrypted message for Bob's cloud agent inside a `forward` message that's addressed to and encrypted for the agent of agents-r-us that functions as a gatekeeper.
 
-![scenario 6: herd hosting](collateral/routing-scenario-6.png)
+![scenario 6: herd hosting](/collateral/routing-scenario-6.png)
 
 This scenario is one that highlights an __external mediator__--so-called because the mediator lives outside the sovereign domain of the final recipient.
 
@@ -143,7 +143,7 @@ This scenario is one that highlights an __external mediator__--so-called because
 
 Now let's subtract agents-r-us. We're back to Bob's cloud agent listening directly at http://bob.com/agent. However, let's say that Alice has a different goal--now she wants to talk to the edge agent running on Bob's mobile device. This agent doesn't have a permanent IP address, so Bob uses his own cloud agent as a mediator. He tells Alice that his mobile device agent can only be reached via his cloud agent.
 
-![routing scenario 7: intra-domain dispatch](collateral/routing-scenario-7.png)
+![routing scenario 7: intra-domain dispatch](/collateral/routing-scenario-7.png)
 
 Once again, this causes Alice to modify her behavior. Again, she wraps her encrypted message. The inner message is enclosed in an outer envelope, and the outer envelope is passed to the mediator.
 
@@ -153,7 +153,7 @@ This scenario highlights an __internal mediator__. Internal and external mediato
 
 Now let's combine. Bob's cloud agent is hosted at agents-r-us, AND Alice wants to reach Bob's mobile:
 
-![routing scenario 8: double mediation](collateral/routing-scenario-8.png)
+![routing scenario 8: double mediation](/collateral/routing-scenario-8.png)
 
 This is a common pattern with HTTP-based cloud agents plus mobile edge agents, which is the most common deployment pattern we expect for many users of self-sovereign identity. Note that the properties of the agency and the routing agent are not particularly special--they are just an external and an internal mediator, respectively.
 
@@ -177,7 +177,7 @@ The name of this protocol is "Routing Protocol", and its [version](https://githu
 
 There are 3 roles in the protocol: `sender`, `mediator`, and `recipient`. The sender emits messages of type `forward` to the `mediator`. The mediator unpacks (decrypts) the payload of an encrypted `forward` message and passes on the result (an opaque blob that probably contains a differently encrypted payload) to the `recipient`.
 
-![ordinary sequence](collateral/routing-roles.png)
+![ordinary sequence](/collateral/routing-roles.png)
 
 >Note: the protocol is one-way; the return route for communication might not exist at all, or if it did, it could invert the roles of sender and receiver and use the same mediator, or it could use one or more different mediators, or it could use no mediator at all. This is a separate concern partly specified by the service endpoints in the DID docs of the sender and receiver, and partly explored in [RFC 0092: Transports Return Route](https://github.com/hyperledger/aries-rfcs/blob/master/features/0092-transport-return-route/README.md). 
 
@@ -195,13 +195,13 @@ Since data flow is normally one-way, and since the scope of the protocol is a si
 
 However, this doesn't quite work on close inspection, because the mediator is at least potentially stateful with respect to any particular message; it needs to be if it wants to implement delayed delivery or retry logic. (Or, as noted earlier, the possibility of sending to multiple physical receivers. Mediators are not required to implement any of these features, but the state machine needs to account for their possibility.) Plus, the notification terminology obscures the sender and receiver roles. So we use the following formalization:
 
-[![state machines](collateral/routing-state-machines.png)](https://docs.google.com/spreadsheets/d/1zxm3cPZ1UDQPDpYJjGmg_qY8451WMk105HBSARJkvDI/edit#gid=0)
+[![state machines](/collateral/routing-state-machines.png)](https://docs.google.com/spreadsheets/d/1zxm3cPZ1UDQPDpYJjGmg_qY8451WMk105HBSARJkvDI/edit#gid=0)
 
 #### Messages
 
 The only message in this protocol is the `forward` message. A simple and common version of a `forward` message might look like this:
 
-```jsonc
+```json
 {
     "@type": "https://didcomm.org/routing/2.0/forward",
     "to"   : "did:foo:1234abcd",
@@ -213,7 +213,7 @@ The only message in this protocol is the `forward` message. A simple and common 
 
 A fancier version with many optional attributes has the following potential structure:
 
-```jsonc
+```json
 {
     "@id": "uuid value" // optional; only useful for tracing
     "@type": "https://didcomm.org/routing/2.0/forward",
@@ -267,7 +267,7 @@ The `mix` property is discussed next.
 
 Normally, the payload attached to the `forward` message received by the mediator is transmitted directly to the receiver with no further packaging. However, optionally, the mediator can attach the opaque payload to a new `forward` message, which then acts as a fresh outer envelope for the second half of the delivery. This [rewrapping](#rewrapping) means that the "onion" of packed messages stays the same size rather than getting smaller as a result of the forward operation:
 
-![re-wrapped sequence](collateral/routing-roles-2.png)
+![re-wrapped sequence](/collateral/routing-roles-2.png)
  
 Rewrapping mode is invisible to senders, but mediators need to know about it, since they change their behavior as a result. Receivers also need to know about it, because it causes them to receive a double-packaged message instead of a singly-packaged one. The outer envelope is a `forward` message where `to` is the receiver itself.
 
