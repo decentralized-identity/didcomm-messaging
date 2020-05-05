@@ -1,0 +1,707 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+            <title>DIF Comm Messaging Protocol</title>
+            <link href="../../docs/spec-up/css/custom-elements.css" rel="stylesheet">
+            <link href="../../docs/spec-up/css/prism.css" rel="stylesheet">
+            <link href="../../docs/spec-up/css/chart.css" rel="stylesheet">
+            <link href="../../docs/spec-up/css/font-awesome.css" rel="stylesheet">
+            <link href="../../docs/spec-up/css/index.css" rel="stylesheet">
+            <script src="../../docs/spec-up/js/custom-elements.js"></script>
+          </head>
+          <body features="source logo">
+            
+            <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="github" viewBox="0 0 20 20">
+    <path d="M10 0.247c-5.522 0-10 4.477-10 10 0 4.418 2.865 8.167 6.839 9.489 0.5 0.093 0.683-0.217 0.683-0.481 0-0.238-0.009-1.026-0.014-1.862-2.782 0.605-3.369-1.18-3.369-1.18-0.455-1.156-1.11-1.463-1.11-1.463-0.907-0.621 0.069-0.608 0.069-0.608 1.004 0.071 1.533 1.031 1.533 1.031 0.892 1.529 2.339 1.087 2.91 0.831 0.090-0.646 0.349-1.087 0.635-1.337-2.221-0.253-4.556-1.11-4.556-4.942 0-1.092 0.391-1.984 1.030-2.684-0.104-0.252-0.446-1.269 0.097-2.646 0 0 0.84-0.269 2.751 1.025 0.798-0.222 1.653-0.333 2.503-0.337 0.85 0.004 1.706 0.115 2.505 0.337 1.909-1.294 2.747-1.025 2.747-1.025 0.544 1.378 0.202 2.395 0.098 2.646 0.641 0.7 1.029 1.592 1.029 2.684 0 3.841-2.339 4.687-4.566 4.934 0.359 0.31 0.678 0.919 0.678 1.852 0 1.338-0.012 2.415-0.012 2.744 0 0.266 0.18 0.578 0.687 0.48 3.971-1.324 6.833-5.071 6.833-9.488 0-5.523-4.477-10-10-10z"></path>
+  </symbol>
+  <symbol id="nested_list" viewBox="0 0 37 32">
+    <path d="M0 2.286c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM9.143 0h27.429v4.571h-27.429zM9.143 11.429c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM18.286 9.143h18.286v4.571h-18.286zM9.143 29.714c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM18.286 27.429h18.286v4.571h-18.286zM18.286 20.571c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM27.429 18.286h9.143v4.571h-9.143z"></path>
+  </symbol>
+</svg>
+
+            <main>
+
+              <header id="header" class="panel-header">
+                <span id="toc_toggle" panel-toggle="toc">
+                  <svg icon><use xlink:href="#nested_list"></use></svg>
+                </span>
+                <a id="logo" href="https://identity.foundation">
+                  <img src="https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg" />
+                </a>
+                <span issue-count animate panel-toggle="repo_issues">
+                  <svg icon><use xlink:href="#github"></use></svg>
+                </span>
+              </header>
+
+              <article id="content">
+                <h1 id="dif-comm-messaging-protocol"><a class="toc-anchor" href="#dif-comm-messaging-protocol">§</a> DIF Comm Messaging Protocol</h1>
+<p><strong>Specification Status:</strong> Editor’s Draft</p>
+<p><strong>Latest published version:</strong>
+<a href="https://identity.foundation/didcomm-messaging/docs/spec">identity.foundation/didcomm-messaging/docs/spec</a></p>
+<p><strong>Editors:</strong></p>
+<p><strong>Contributors:</strong></p>
+<dl>
+<dt><strong>Participate:</strong></dt>
+<dd><a href="https://github.com/decentralized-identity/didcomm-messaging">GitHub repo</a></dd>
+<dd><a href="https://github.com/decentralized-identity/didcomm-messaging/issues">File a bug</a></dd>
+<dd><a href="https://github.com/decentralized-identity/didcomm-messaging/commits/master">Commit history</a></dd>
+</dl>
+<hr>
+<h2 id="purpose-and-scope"><a class="toc-anchor" href="#purpose-and-scope">§</a> Purpose and Scope</h2>
+<p><em>Initial: Need for a “trust layer for the internet”, and DIDComm’s pivotal role in enabling trustworthy communication based on DIDs. A decentralized version of PKI plus a decentralized version of DNS plus cutting-edge crypto.</em></p>
+<p>The purpose of DIDComm is to provide a secure communication layer built on top of the information contained in DID Documents. This secure communication can be used to exchange verifiable credentials and other information, providing key foundational elements for a trust layer on the internet.</p>
+<p>Identity owners (people, organizations, etc.) need software to help them manage keys and perform cryptographic operations. These software agents use DIDComm to communicate with each other. The specific interactions enabled by DIDComm–connecting and maintaining relationships, issuing credentials, providing proof, etc.–are called <strong>protocols</strong>. Key protocols are described in this spec. Protocols created within organizations or industry verticals are described elsewhere.</p>
+<h3 id="rough-overview"><a class="toc-anchor" href="#rough-overview">§</a> Rough Overview</h3>
+<p>A typical DIDComm interaction works like this:</p>
+<blockquote>
+<p>Imagine Alice wants to negotiate with Bob to sell something online, and that DIDComm, not direct human communication, is involved. This means Alice’s agent and Bob’s agent are going to exchange a series of messages.</p>
+<p>Alice may just press a button and be unaware of details, but underneath, her agent begins by preparing a plaintext JSON message about the proposed sale. (The particulars are irrelevant here, but would be described in the spec for a “sell something” protocol.) It then looks up Bob’s DID Doc to access two key pieces of information:</p>
+<ul>
+<li>An endpoint (web, email, etc) where messages can be delivered to Bob.</li>
+<li>The public key that Bob’s agent is using in the Alice:Bob relationship.</li>
+</ul>
+<p>Now Alice’s agent uses Bob’s public key to encrypt the plaintext so that only Bob’s agent can read it, adding authentication with its own private key. The agent arranges delivery to Bob. This “arranging” can involve various hops and intermediaries. It can be complex.</p>
+<p>Bob’s agent eventually receives and decrypts the message, authenticating its origin as Alice using her public key. It prepares its response and routes it back using a reciprocal process (plaintext -&gt; lookup endpoint and public key for Alice -&gt; encrypt with authentication -&gt; arrange delivery).</p>
+</blockquote>
+<p>That’s it.</p>
+<p>Well, mostly. The description is pretty good, if you squint, but it does not fit all DIDComm interactions:</p>
+<ul>
+<li>DIDComm doesn’t always involve turn-taking and request-response.</li>
+<li>DIDComm interactions can involve more than 2 parties, and the parties are not always individuals.</li>
+<li>DIDComm may include formats other than JSON.</li>
+</ul>
+<p>Before we provide more details, let’s explore what drives the design of DIDComm.</p>
+<h3 id="goals-and-ramifications"><a class="toc-anchor" href="#goals-and-ramifications">§</a> Goals and Ramifications</h3>
+<p>The DIDComm design attempts to be:</p>
+<ol>
+<li><strong>Secure</strong></li>
+<li><strong>Private</strong></li>
+<li><strong>Interoperable</strong></li>
+<li><strong>Transport-agnostic</strong></li>
+<li><strong>Extensible</strong></li>
+</ol>
+<p>As a list of buzz words, this may elicit nods rather than surprise. However, several items have deep ramifications.</p>
+<p>Taken together, <em>Secure</em> and <em>Private</em> require that the protocol be decentralized and maximally opaque to the surveillance economy.</p>
+<p><em>Interoperable</em> means that DIDComm should work across programming languages, blockchains, vendors, OS/platforms, networks, legal jurisdictions, geos, cryptographies, and hardware–as well as across time. That’s quite a list. It means that DIDComm intends something more than just compatibility within any specific project; it aims to be a future-proof <em>lingua franca</em> of all self-sovereign interactions.</p>
+<p><em>Transport-agnostic</em> means that it should be possible to use DIDComm over HTTP(S) 1.x and 2.0, WebSockets, IRC, Bluetooth, AMQP, NFC, Signal, email, push notifications to mobile devices, Ham radio, multicast, snail mail, carrier pigeon, and more.</p>
+<p>All software design involves tradeoffs. These goals, prioritized as shown, lead down an interesting path.</p>
+<h4 id="message-based-asynchronous-and-simplex"><a class="toc-anchor" href="#message-based-asynchronous-and-simplex">§</a> Message-Based, Asynchronous, and Simplex</h4>
+<p>The dominant paradigm in mobile and web development today is duplex request-response. You call an API with certain inputs, and you get back a response with certain outputs over the same channel, shortly thereafter. This is the world of <a href="https://swagger.io/docs/specification/about/">OpenAPI (Swagger)</a>, and it has many virtues.</p>
+<p>Unfortunately, many agents are not good analogs to web servers. They may be mobile devices that turn off at unpredictable intervals and that lack a stable connection to the network. They may need to work peer-to-peer, when the internet is not available. They may need to interact in time frames of hours or days, not with 30-second timeouts. They may not listen over the same channel that they use to talk.</p>
+<p>Because of this, the fundamental paradigm for DIDComm is message-based, asynchronous, and simplex. Agent X sends a message over channel A. Sometime later, it may receive a response from Agent Y over channel B. This is much closer to an email paradigm than a web paradigm.</p>
+<p>On top of this foundation, it is possible to build elegant, synchronous request-response interactions. All of us have interacted with a friend who’s emailing or texting us in near-realtime. However, interoperability begins with a least-common-denominator assumption that’s simpler.</p>
+<h4 id="message-level-security-reciprocal-authentication"><a class="toc-anchor" href="#message-level-security-reciprocal-authentication">§</a> Message-Level Security, Reciprocal Authentication</h4>
+<p>The security and privacy goals, and the asynchronous+simplex design decision, break familiar web assumptions in another way. Servers are commonly run by institutions, and we authenticate them with certificates. People and things are usually authenticated to servers by some sort of login process quite different from certificates, and this authentication is cached in a session object that expires. Furthermore, web security is provided at the transport level (TLS); it is not an independent attribute of the messages themselves.</p>
+<p>In a partially disconnected world where a communication channel is not assumed to support duplex request-response, and where the security can’t be ignored as a transport problem, traditional TLS, login, and expiring sessions are impractical. Furthermore, centralized servers and certificate authorities perpetuate a power and UX imbalance between servers and clients that doesn’t fit with the peer-oriented DIDComm.</p>
+<p>DIDComm uses public key cryptography, not certificates from some parties and passwords from others. Its security guarantees are independent of the transport over which it flows. It is sessionless (though sessions can <em>easily</em> be built atop it). When authentication is required, all parties do it the same way.</p>
+<h2 id="requirements"><a class="toc-anchor" href="#requirements">§</a> Requirements</h2>
+<ul>
+<li>
+<p><strong>decentralized/self-sovereign</strong> (encryption, signing, authn, and authz should all be based on control of DIDs rathern than on CAs, IDPs, etc)</p>
+</li>
+<li>
+<p><strong>transport independent</strong> (HTTPS, bluetooth, AMQP, SMTP, NFC, and so forth)</p>
+</li>
+<li>
+<p><strong>routable</strong> (like email, A can talk to B without a direct connection to B, by requesting that a message be forwarded–needed to mix and match transports; also, could pass through a mix network or other infrastructure that isn’t aware of it as anything other than blobs to be moved)</p>
+</li>
+<li>
+<p><strong>secure</strong> (tamper-proof, MITM impossible, composed of primitives widely considered best practice, vetted by experts, has formal security proofs, security guarantees of a given message are known)</p>
+</li>
+<li>
+<p><strong>private</strong> (third parties can’t learn who’s communicating about what, when–broader than “confidentiality” in CIA because metadata like timing and identities of parties is also protected; also, possible for a sender to be anonymous to recipient)</p>
+</li>
+<li>
+<p><strong>asynchronous</strong> (can’t require real-time participation by a party; like email in that parties can communicate when they want)</p>
+</li>
+<li>
+<p><strong>supports simplex and duplex</strong> (can’t assume response uses the same channel as request–but allows request~response where desirable)</p>
+</li>
+<li>
+<p><strong>supports repudiable and non-repudiable</strong> (parties can talk off or on the record, as appropriate)</p>
+</li>
+<li>
+<p><strong>platform-independent</strong> (usable on embedded, not just servers+desktops+mobile)</p>
+</li>
+<li>
+<p><strong>composable</strong> (pick the crypto suite and features you need, without incurring overwhelming dependencies for stuff you don’t)</p>
+</li>
+<li>
+<p><strong>pairwise, nwise, anywise</strong> (communicate between 2 parties, or between N parties, or to the whole world)</p>
+</li>
+<li>
+<p><strong>efficient</strong> (doesn’t waste bandwidth, storage space, cpu, etc)</p>
+</li>
+</ul>
+<h3 id="processing-model"><a class="toc-anchor" href="#processing-model">§</a> Processing Model</h3>
+<ul>
+<li>Message-oriented, with sender and receiver(s)</li>
+<li>Encryption Envelope</li>
+</ul>
+<h2 id="routing"><a class="toc-anchor" href="#routing">§</a> Routing</h2>
+<p><strong>Routing</strong> is the process of managing the delivery of messages from sender to recipient, possibly adapting the packaging and transfer to intermediate nodes. A <strong>route</strong> is a map or plan that specifies enough to achieve delivery in at least one direction; it may omit uninteresting details.</p>
+<p>A <strong>sender</strong> emits a message hoping that a <strong>recipient</strong> eventually receives it. As a message moves toward the recipient, we say it is moving <strong>destward</strong>; the opposite direction is <strong>sourceward</strong>. Note that sender and recipient flip if a request-like message is followed by a response-like message in the opposite direction; the context that defines a sender is a single message, not a paired interaction. (DIDComm supports request-response but does not require it.)</p>
+<p>We tend to conceive of senders and recipients as simple — “Alice” and “Bob” sound like unitary individuals. This can be a useful simplification. However, it’s important to remember that it may hide important detail; if Bob uses a laptop, a mobile device, and a cloud service to receive messages, and if each of them follows the cryptographic best practice of not sharing keys, then it is impossible to ignore this complexity in some parts of routing design. We call the set of things that Bob controls his <strong>sovereign domain</strong> (or <strong>domain</strong> for short). Note that this usage is notably different from the meaning of “domain” in DNS and many web contexts. We also use the loose cover term <strong>agent</strong> to refer to individual devices or pieces of software inside a given domain. The boundary of a domain is an important construct for trust analysis and for routing. We will explore this in greater detail below.</p>
+<h3 id="routing-requirements"><a class="toc-anchor" href="#routing-requirements">§</a> Routing Requirements</h3>
+<p>All messaging technologies must address routing in some way. However, DIDComm has unusual requirements:</p>
+<ul>
+<li>
+<p>Because of security and privacy goals, DIDComm routing must impose careful limits on how and to what degree intermediate nodes are trusted.</p>
+</li>
+<li>
+<p>Because DIDComm aims to be transport-independent, its routing model must be carefully decoupled from  strong assumptions about networking. In particular, DIDComm routing cannot make broad-brush assumptions that:</p>
+<ul>
+<li>A given route will use only a single transport.</li>
+<li>Transport mechanisms will provide any security benefits.</li>
+<li>The identity and connectivity for every hop in a route will be known by any party at the time a message is sent.</li>
+<li>The route from sender to recipient will be similar in hop identity, hop count, or transport mix to a complementary route from recipient back to sender.</li>
+<li>All the nodes in a route are ever online at the same time.</li>
+</ul>
+</li>
+<li>
+<p>Because of decentralization and multiple-peer-friendly goals, DIDComm routing cannot orient itself around servers or simple request—response patterns as mandatory components.</p>
+</li>
+<li>
+<p>Because of privacy goals, DIDComm must offer fine distinctions in how repudiation and authentication are handled.</p>
+</li>
+</ul>
+<p>These requirements are very demanding. They do NOT necessarily make DIDComm hard to implement. They do NOT prevent DIDComm from using common web infrastructure — indeed, DIDComm routes quite simply and elegantly over HTTP. However, they DO force the routing model to be described in a very generic, flexible way, and they DO mean that existing routing solutions are an imperfect fit. DIDComm learns as much as it can, and borrows as much as it can, from clever and battle-tested routing work done in other contexts, but it does have some unique twists.</p>
+<h3 id="overview"><a class="toc-anchor" href="#overview">§</a> Overview</h3>
+<p>Let’s focus on a simple case where <code>A</code> wants to send a message to <code>B</code>, and the route involves one intermediate hop at <code>C</code>. Suppressing a few details, DIDComm routing works like this:</p>
+<ol>
+<li><code>A</code> prepares a plaintext message of any type, <code>M[0]</code>, and encrypts it for the recipient, <code>B</code>. This produces <code>M[1]</code>.</li>
+<li>A prepares another plaintext message of type <code>forward</code>, and adds <code>M[1]</code> to it as an attachment. This new message, <code>M[2]</code>, asks <code>C</code> to to deliver the attached payload to <code>B</code>. <code>A</code> encrypts <code>M[2]</code> for <code>C</code>, producing <code>M[3]</code>.</li>
+<li><code>A</code> hands <code>M[3]</code> to <code>C</code>.</li>
+<li><code>C</code> decrypts <code>M[3]</code>, producing <code>M[2]</code>. Reading the plaintext, <code>C</code> sees that it’s been asked to deliver the encrypted attachment to <code>B</code>.</li>
+<li><code>C</code> hands the attachment from <code>M[2]</code> — which is the encrypted message <code>M[1]</code> — to <code>B</code>.</li>
+<li><code>B</code> decrypts <code>M[1]</code>, reproducing the plaintext <code>M[0]</code>.</li>
+</ol>
+<p><img src="/collateral/simple-routing-scenario.png" alt="diagram of simple routing scenario"></p>
+<p>This is not the simplest possible scenario; DIDComm could be direct from <code>A</code> to <code>C</code>, which would eliminate steps 2-5. Some DIDComm+HTTP interactions are that simple. And it is not the most complex DIDComm routing scenario, either. Much more elaborate routes could be described by introducing additional hops with additional <code>forward</code> messages. However, the above sequence is a good rough model to carry through the discussion that follows.</p>
+<h3 id="the-forward-message"><a class="toc-anchor" href="#the-forward-message">§</a> The <code>forward</code> message</h3>
+<p>The <code>forward</code> message created in step 2 in our overview is a DIDComm <strong>application-level protocol</strong> message. Routing, as described here, is just one of many protocols that can be built atop DIDComm primitives. A and C are “speaking” this protocol when they communicate. The routing protocol can use the same features as any other application-level protocol; this includes <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0017-attachments/README.md">attachments</a>, <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0008-message-id-and-threading/README.md">message threading</a>, <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0032-message-timing/README.md">message timing</a>, <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0034-message-tracing/README.md">message tracing</a>, <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0015-acks/README.md">ACKs</a>, <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0035-report-problem/README.md">problem reports</a>, and so forth. However, before we describe the structure and semantics of the <code>forward</code> message in detail, it’s important to understand some additional routing concepts.</p>
+<h3 id="two-dimensions"><a class="toc-anchor" href="#two-dimensions">§</a> Two Dimensions</h3>
+<p>Two dimensions of routing are relevant to DIDComm. Sometimes they are confused or conflated:</p>
+<ul>
+<li><strong>Network routing</strong> deals with how packets flow across a digital landscape. This is the “routing” familiar to most technical people, and the one that will inform most assumptions they bring to the routing topic when reading the DIDComm spec for the first time.</li>
+<li><strong>Cryptographic routing</strong> concerns itself with how packaging hides or reveals plaintext to participants in a delivery chain. In other words, it’s about the routing of secrets rather than the routing of packets.</li>
+</ul>
+<p>The overview immediately above collapsed these two dimensions, assuming that a node relaying data is also a node decrypting. This makes for simple explanations, but it’s not always a true or helpful assumption. The correspondence between these two routing dimensions can be non-trivial; a route may have ten network hops but only three cryptographic hops, and a single network hop may decrypt twice as it passes data between distinct software entities. However, simple principles explain the dynamics for each situation.</p>
+<h3 id="mediators-and-relays"><a class="toc-anchor" href="#mediators-and-relays">§</a> Mediators and Relays</h3>
+<p>DIDComm routing uses two important constructs to model all varieties of network and cryptographic routing: <em>mediators</em> and <em>relays</em>.</p>
+<p>A <strong>mediator</strong> is a participant in routing that must be accounted for by the sender’s cryptography. In other words, it is visible in the cryptographic routing dimension. It has its own keys and will deliver messages only after decrypting an outer envelope to reveal a <code>forward</code> request. It must understand DIDComm routing to do this. Many types of mediators may exist, but two important ones should be widely understood, as they commonly manifest in DID Docs:</p>
+<ol>
+<li>A service that receives messages for many agents at a single endpoint to provide herd privacy (sometimes called an “agency”) is a <em>mediator</em>.</li>
+<li>A cloud-based agent that forwards messages to mobile devices is a <em>mediator</em>.</li>
+</ol>
+<p>In contrast, a <strong>relay</strong> is an entity that passes along encrypted messages without understanding or decrypting them. It’s focused on network routing only.</p>
+<p>Like mediators, relays can be used to change the transport for a message (e.g., accept an HTTP POST, then turn around and emit an email; accept a Bluetooth transmission, then turn around and emit something in a message queue). But unlike mediators, relays can do this without understanding DIDComm. Load balancers and mix networks like TOR are important types of relay.</p>
+<p>Let’s define mediators and relays by exploring how they manifest in a series of communication scenarios between Alice and Bob.</p>
+<h4 id="scenario-1-direct"><a class="toc-anchor" href="#scenario-1-direct">§</a> Scenario 1: direct</h4>
+<p>Alice and Bob are both employees of a large corporation. They work in the same office, but have never met. The office has a rule that all messages between employees must be encrypted. They use paper messages and physical delivery as the transport. Alice writes a note, encrypts it so only Bob can read it, puts it in an envelope addressed to Bob, and drops the envelope on a desk that she has been told belongs to Bob. This desk is in fact Bob’s, and he later picks up the message, decrypts it, and reads it.</p>
+<p><img src="/collateral/routing-scenario-1.png" alt="routing scenario 1: direct"></p>
+<p>In this scenario, there is no mediator, and no relay.</p>
+<h4 id="scenario-2-a-gatekeeper"><a class="toc-anchor" href="#scenario-2-a-gatekeeper">§</a> Scenario 2: a gatekeeper</h4>
+<p>Imagine that Bob hires an executive assistant, Carl, to filter his mail. Bob won’t open any mail unless Carl looks at it and decides that it’s worthy of Bob’s attention.</p>
+<p>Alice has to change her behavior. She continues to package a message for Bob, but now she must account for Carl as well. She take the envelope for Bob, and places it inside a new envelope addressed to Carl. Inside the outer envelope, and next to the envelope destined for Bob, Alice writes Carl an encrypted note: “This inner envelope is for Bob. Please forward.”</p>
+<p><img src="/collateral/routing-scenario-2.png" alt="routing scenario 2: mediator"></p>
+<p>Here, Carl is acting as a <strong>mediator</strong>. He is mostly just passing messages along. But because he is processing a message himself, and because Carl is interposed between Alice and Bob, he affects the behavior of the sender. He is a known entity in the route.</p>
+<p>You may recognize this as similar to our overview example with A, B, and C. A and B correspond to Alice and Bob; C is Carl, the mediator.</p>
+<h4 id="scenario-3-transparent-indirection"><a class="toc-anchor" href="#scenario-3-transparent-indirection">§</a> Scenario 3: transparent indirection</h4>
+<p>All is the same as the base scenario (Carl has been fired, and is thus out of the picture), except that Bob is working from home when Alice’s message lands on his desk. Bob has previously arranged with his friend Darla, who lives near him, to pick up any mail that’s on his desk and drop it off at his house at the end of the work day. Darla sees Alice’s note and takes it home to Bob.</p>
+<p><img src="/collateral/routing-scenario-3.png" alt="routing scenario 3: relay"></p>
+<p>In this scenario, Darla is acting as a <strong>relay</strong>. Note that Bob arranges for Darla to do this <em>without notifying Alice</em>, and that <em>Alice does not need to adjust her behavior in any way for the relay to work</em>.</p>
+<h4 id="scenario-4-more-indirection"><a class="toc-anchor" href="#scenario-4-more-indirection">§</a> Scenario 4: more indirection</h4>
+<p>Like scenario 3, Darla brings Bob his mail at home. However, Bob isn’t at home when his mail arrives. He’s had to rush out on an errand, but he’s left instructions with his son, Emil, to open any work mail, take a photo of the letter, and text him the photo. Emil intends to do this, but the camera on his phone misfires, so he convinces his sister, Francis, to take the picture on her phone and email it to him. Then he texts the photo to Bob, as arranged.</p>
+<p><img src="/collateral/routing-scenario-4.png" alt="routing scenario 4: many relays"></p>
+<p>Here, Emil and Francis are also acting as relays. Note that <em>nobody knows about the full route</em>. Alice thinks she’s delivering directly to Bob. So does Darla. Bob knows about Darla and Emil, but not about Francis.</p>
+<p>Note, too, how the transport is changing from physical mail to email to text.</p>
+<p>To the party immediately upstream (closer to the sender), a relay is indistinguishable from the next party downstream (closer to the recipient). A party anywhere in the chain can insert one or more relays upstream from themselves, as long as those relays are not upstream of another named party (sender or mediator).</p>
+<h5 id="more-scenarios"><a class="toc-anchor" href="#more-scenarios">§</a> More Scenarios</h5>
+<p>Mediators and relays can be combined in any order and any amount in variations on our fictional scenario. Bob could employ Carl as a mediator, and Carl could work from home and arrange delivery via George, then have his daughter Hannah run messages back to Bob’s desk at work. Carl could hire his own mediator. Darla could arrange for Ivan to substitute for her when she goes on vacation. And so forth.</p>
+<h3 id="more-traditional-usage"><a class="toc-anchor" href="#more-traditional-usage">§</a> More Traditional Usage</h3>
+<p>The scenarios used above are somewhat artificial. Our most familiar routing scenarios involve edge agents running on mobile devices and accessible through bluetooth or push notification, and cloud agents that use electronic protocols as their transport. Let’s see how relays and mediators apply there.</p>
+<h4 id="scenario-5-direct"><a class="toc-anchor" href="#scenario-5-direct">§</a> Scenario 5: direct</h4>
+<p>Alice’s cloud wants to talk to Bob’s cloud. Bob’s cloud is listening at <a href="http://bob.com/api">http://bob.com/api</a>. Alice encrypts a message for Bob and posts it to that URL.</p>
+<p><img src="/collateral/routing-scenario-5.png" alt="scenario 5: cloud to cloud"></p>
+<p>In this scenario, we are using a direct transport with neither a mediator nor a relay. This is how Alice and Bob operate in Scenario 1, and it’s also equivalent to our Overview minus steps 2-5.</p>
+<p>When DIDComm involves only two parties, and when HTTP is convenient for both of them, this sort of direct delivery may be used. (Note that if you need n-wise, or if you need a reciprocal return route but Alice’s cloud exposes no public API, this delivery scenario can present problems. More on this later.)</p>
+<p>Virtually the same diagram could be used for a Bluetooth or NFC or sneakernet conversation that happens offline:</p>
+<p><img src="/collateral/routing-scenario-5b.png" alt="scenario 5b: Bluetooth or offline"></p>
+<h4 id="scenario-6-herd-hosting"><a class="toc-anchor" href="#scenario-6-herd-hosting">§</a> Scenario 6: herd hosting</h4>
+<p>Let’s tweak Scenario 5 slightly by saying that Bob’s agent is one of thousands that are hosted at the same URL. Maybe the URL is now <a href="http://agents-r-us.com/inbox">http://agents-r-us.com/inbox</a>. Now if Alice wants to talk to Bob’s cloud agent, she has to cope with a mediator. She wraps the encrypted message for Bob’s cloud agent inside a <code>forward</code> message that’s addressed to and encrypted for the agent of agents-r-us that functions as a gatekeeper.</p>
+<p><img src="/collateral/routing-scenario-6.png" alt="scenario 6: herd hosting"></p>
+<p>This scenario is one that highlights an <strong>external mediator</strong>–so-called because the mediator lives outside the sovereign domain of the final recipient.</p>
+<h4 id="scenario-7-intra-domain-dispatch"><a class="toc-anchor" href="#scenario-7-intra-domain-dispatch">§</a> Scenario 7: intra-domain dispatch</h4>
+<p>Now let’s subtract agents-r-us. We’re back to Bob’s cloud agent listening directly at <a href="http://bob.com/agent">http://bob.com/agent</a>. However, let’s say that Alice has a different goal–now she wants to talk to the edge agent running on Bob’s mobile device. This agent doesn’t have a permanent IP address, so Bob uses his own cloud agent as a mediator. He tells Alice that his mobile device agent can only be reached via his cloud agent.</p>
+<p><img src="/collateral/routing-scenario-7.png" alt="routing scenario 7: intra-domain dispatch"></p>
+<p>Once again, this causes Alice to modify her behavior. Again, she wraps her encrypted message. The inner message is enclosed in an outer envelope, and the outer envelope is passed to the mediator.</p>
+<p>This scenario highlights an <strong>internal mediator</strong>. Internal and external mediators introduce similar features and similar constraints; the relevant difference is that internal mediators live within the sovereign domain of the recipient, and may thus be worthy of greater trust.</p>
+<h4 id="scenario-8-double-mediation"><a class="toc-anchor" href="#scenario-8-double-mediation">§</a> Scenario 8: double mediation</h4>
+<p>Now let’s combine. Bob’s cloud agent is hosted at agents-r-us, AND Alice wants to reach Bob’s mobile:</p>
+<p><img src="/collateral/routing-scenario-8.png" alt="routing scenario 8: double mediation"></p>
+<p>This is a common pattern with HTTP-based cloud agents plus mobile edge agents, which is the most common deployment pattern we expect for many users of self-sovereign identity. Note that the properties of the agency and the routing agent are not particularly special–they are just an external and an internal mediator, respectively.</p>
+<h3 id="remember-routes-are-one-way-not-duplex"><a class="toc-anchor" href="#remember-routes-are-one-way-not-duplex">§</a> Remember Routes are One-Way (not Duplex)</h3>
+<p>In all of this discussion, note that we are analyzing <em>only</em> a flow from Alice to Bob. How Bob gets a message back to Alice is a completely separate question. Just because Carl, Darla, Emil, Francis, and Agents-R-Us may be involved in how messages flow from Alice to Bob, does not mean they are involved in flow the opposite direction.</p>
+<p>Note how this breaks the simple assumptions of pure request-response technologies like HTTP, that assume the channel in (request) is also the channel out (response). <a href="https://en.wikipedia.org/wiki/Duplex_%28telecommunications%29">Duplex</a> request-response can be modeled with DIDComm, but doing so requires support that may not always be available, plus cooperative behavior governed by the <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0008-message-id-and-threading/README.md"><code>~thread</code></a> decorator.</p>
+<h3 id="routing-protocol"><a class="toc-anchor" href="#routing-protocol">§</a> Routing Protocol</h3>
+<p>Now that we understand mediators and relays, how and why they might be combined in various ways, and how their presence influences delivery semantics, we can describe the actual application-level routing protocol that any DIDComm sender speaks with a destward mediator.</p>
+<h4 id="name-and-version"><a class="toc-anchor" href="#name-and-version">§</a> Name and Version</h4>
+<p>The name of this protocol is “Routing Protocol”, and its <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/semver.md">version</a> is “2.0”. It is uniquely identified by the <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/uris.md#piuri">PIURI</a>:</p>
+<pre><code>https://didcomm.org/routing/2.0
+</code></pre>
+<h4 id="roles"><a class="toc-anchor" href="#roles">§</a> Roles</h4>
+<p>There are 3 roles in the protocol: <code>sender</code>, <code>mediator</code>, and <code>recipient</code>. The sender emits messages of type <code>forward</code> to the <code>mediator</code>. The mediator unpacks (decrypts) the payload of an encrypted <code>forward</code> message and passes on the result (an opaque blob that probably contains a differently encrypted payload) to the <code>recipient</code>.</p>
+<p><img src="/collateral/routing-roles.png" alt="ordinary sequence"></p>
+<blockquote>
+<p>Note: the protocol is one-way; the return route for communication might not exist at all, or if it did, it could invert the roles of sender and receiver and use the same mediator, or it could use one or more different mediators, or it could use no mediator at all. This is a separate concern partly specified by the service endpoints in the DID docs of the sender and receiver, and partly explored in <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0092-transport-return-route/README.md">RFC 0092: Transports Return Route</a>.</p>
+</blockquote>
+<blockquote>
+<p>Note: When the mediator is the routing agent of a single identity subject like Alice, the logical receiver is Alice herself, but the physical receiver may manifest as multiple edge devices (a phone, a laptop, a tablet). From the perspective of this protocol, multiplexing the send from mediator to receiver is out of scope for interoperability–compatible and fully supported, but not required or specified in any way.</p>
+</blockquote>
+<p>In this protocol, the sender and the receiver never interact directly; they only interact via the mediator.</p>
+<p>The sender can decorate the <code>forward</code> message in standard DIDComm ways: using <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0032-message-timing/README.md#tutorial"><code>~timing.expires_time</code>, <code>~timing.delay_milli</code> and <code>~timing.wait_until_time</code></a> to introduce timeouts and delays, and so forth. However, the mediator is NOT required to support or implement any of these mixin semantics; only the core forwarding behavior is indispensable. If a mediator sees a decorator that requests behavior it doesn’t support, it MAY return a <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0035-report-problem/README.md"><code>problem-report</code></a> to the sender identifying the unsupported feature, but it is not required to do so, any more than other recipients of DIDComm messages would be required to complain about unsupported decorators in messages they receive.</p>
+<blockquote>
+<p>One particular decorator is worth special mention here: <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0015-acks/README.md#requesting-an-ack-please_ack"><code>~please_ack</code></a>. This decorator is intended to be processed by ultimate recipients, not mediators. It imposes a burden of backward-facing communication that mediators should not have. Furthermore, it may be used to probe a delivery chain in a way that risks privacy for the receiver. Therefore, senders SHOULD NOT use this, and mediators SHOULD NOT honor it if present. If a sender wishes to troubleshoot, the <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0034-message-tracing/README.md">message tracing</a> mechanism is recommended.</p>
+</blockquote>
+<h4 id="states"><a class="toc-anchor" href="#states">§</a> States</h4>
+<p>Since data flow is normally one-way, and since the scope of the protocol is a single message delivery, a simplistic way to understand it might be as two instances of the stateless <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/notification.png">notification pattern</a>, unfolding in sequence.</p>
+<p>However, this doesn’t quite work on close inspection, because the mediator is at least potentially stateful with respect to any particular message; it needs to be if it wants to implement delayed delivery or retry logic. (Or, as noted earlier, the possibility of sending to multiple physical receivers. Mediators are not required to implement any of these features, but the state machine needs to account for their possibility.) Plus, the notification terminology obscures the sender and receiver roles. So we use the following formalization:</p>
+<p><a href="https://docs.google.com/spreadsheets/d/1zxm3cPZ1UDQPDpYJjGmg_qY8451WMk105HBSARJkvDI/edit#gid=0"><img src="/collateral/routing-state-machines.png" alt="state machines"></a></p>
+<h4 id="messages"><a class="toc-anchor" href="#messages">§</a> Messages</h4>
+<p>The only message in this protocol is the <code>forward</code> message. A simple and common version of a <code>forward</code> message might look like this:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/routing/2.0/forward"</span><span class="token punctuation">,</span>
+    <span class="token property">"to"</span>   <span class="token operator">:</span> <span class="token string">"did:foo:1234abcd"</span><span class="token punctuation">,</span>
+    <span class="token property">"payloads~attach"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token comment">// One payload</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>A fancier version with many optional attributes has the following potential structure:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"uuid value"</span> <span class="token comment">// optional; only useful for tracing</span>
+    <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/routing/2.0/forward"</span><span class="token punctuation">,</span>
+    <span class="token property">"to"</span>   <span class="token operator">:</span> <span class="token string">"did:foo:1234abcd"</span><span class="token punctuation">,</span>
+    <span class="token property">"payloads~attach"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token comment">// An array of attached payloads, generally assumed</span>
+        <span class="token comment">// to be DIDComm encrypted envelopes, but theoretically</span>
+        <span class="token comment">// could be other message types as well.</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token comment">// This decorator and everything in it are optional. </span>
+    <span class="token property">"~timing"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token comment">// Usually, delay_milli and wait_until_time don't make</span>
+        <span class="token comment">// sense together; use one or the other but not both. If</span>
+        <span class="token comment">// both do occur, forward shouldn't happen until the later</span>
+        <span class="token comment">// of the two conditions is satisfied.</span>
+        <span class="token property">"delay_milli"</span><span class="token operator">:</span> <span class="token number">12345</span><span class="token punctuation">,</span>
+        <span class="token property">"wait_until_time"</span><span class="token operator">:</span> <span class="token string">"2020-03-25T00:00:00Z"</span><span class="token punctuation">,</span>
+        <span class="token comment">// Abandon attempt to forward after this timestamp.</span>
+        <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token string">"2020-03-27T18:25:00Z"</span> 
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token comment">// Optional: requests use of mix network instead of direct</span>
+    <span class="token comment">// forward, to enhance privacy.</span>
+    <span class="token property">"mix"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token comment">// Likelihood (from 0 to 1) that a random node in a</span>
+        <span class="token comment">// mix network should be the next hop instead of</span>
+        <span class="token comment">// sending the message directly to its final receiver.</span>
+        <span class="token property">"hop_chance"</span><span class="token operator">:</span> <span class="token number">0.8</span><span class="token punctuation">,</span>
+        <span class="token comment">// If next receiver is a mix node, multiply hop_chance</span>
+        <span class="token comment">// by this value so hop_chance attenuates for the next</span>
+        <span class="token comment">// receiver. This prevents infinite mixing. Max value =</span>
+        <span class="token comment">// 0.99.</span>
+        <span class="token property">"hop_decay"</span><span class="token operator">:</span> <span class="token number">0.2</span><span class="token punctuation">,</span>
+        <span class="token comment">// Likelihood (from 0 to 1) that the message size will</span>
+        <span class="token comment">// be distorted to the next receiver. </span>
+        <span class="token property">"noise_chance"</span><span class="token operator">:</span> <span class="token number">0.5</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>[TODO: describe use of the <code>attn</code> field, and explain why it’s an important construct that allows us to encrypt to all (cryptographic route) but deliver just to the agent most likely to be interested (network route).</p>
+<p>[TODO: further revise the following paragraph to clarify that either a key or a DID might be used. Each possibility makes certain tradeoffs, and may be appropriate in certain cases. Keys may be fragile in the face of rotation, and they require a lot of knowledge/maintenance cost for the external mediator. However, DID key references and DIDs may introduce some complications in how the recipient proves control of a DID (a requirement for security, but also a privacy eroder).]</p>
+<p>For most external mediators, the value of the <code>to</code> field is likely to be a DID, not a key. However… (see previous TODO note). This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn’t need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md">RFC 0211: Route Coordination</a>), but that is outside the scope of concerns of this protocol.</p>
+<p>The attachment(s) in the <code>payloads~attach</code> field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.</p>
+<p>The <code>mix</code> property is discussed next.</p>
+<h4 id="rewrapping"><a class="toc-anchor" href="#rewrapping">§</a> Rewrapping</h4>
+<p>Normally, the payload attached to the <code>forward</code> message received by the mediator is transmitted directly to the receiver with no further packaging. However, optionally, the mediator can attach the opaque payload to a new <code>forward</code> message, which then acts as a fresh outer envelope for the second half of the delivery. This <a href="#rewrapping">rewrapping</a> means that the “onion” of packed messages stays the same size rather than getting smaller as a result of the forward operation:</p>
+<p><img src="/collateral/routing-roles-2.png" alt="re-wrapped sequence"></p>
+<p>Rewrapping mode is invisible to senders, but mediators need to know about it, since they change their behavior as a result. Receivers also need to know about it, because it causes them to receive a double-packaged message instead of a singly-packaged one. The outer envelope is a <code>forward</code> message where <code>to</code> is the receiver itself.</p>
+<p>Why is such indirection useful?</p>
+<ul>
+<li>It lets the mediator decorate messages with its own timing and tracing mixins, which may aid troubleshooting. (This would otherwise be impossible, since the inner payload is an opaque blob that almost certainly tamper-evident and encrypted.)</li>
+<li>It lets the mediator remain uncommitted to whether the next receiver is another mediator or not. This may provide flexibility in some routing scenarios.</li>
+<li>It lets the mediator change the size of the message by adding or subtracting noise from the content.</li>
+<li>It allows for dynamic routing late in the delivery chain.</li>
+</ul>
+<p>These last two characteristics are the foundation of mix networking feature for DIDComm. That feature is the subject of a different RFC; here we only note the existence of the optional feature.</p>
+<h3 id="did-docs-and-routing"><a class="toc-anchor" href="#did-docs-and-routing">§</a> DID Docs and Routing</h3>
+<p>[TODO: discuss how routing info is exposed in a DID doc, and how it is conveyed in “ephemeral mode” where no DID doc is available.]</p>
+<h2 id="transports"><a class="toc-anchor" href="#transports">§</a> Transports</h2>
+<h3 id="summary"><a class="toc-anchor" href="#summary">§</a> Summary</h3>
+<p>This spec details how different transports can be used to transmit DIDComm messages.</p>
+<h3 id="motivation"><a class="toc-anchor" href="#motivation">§</a> Motivation</h3>
+<p>The DIDComm message is constructed as JWM, using JWE for confidentiality and authentication, so it is transport agnostic.
+Each transport has unique features and properties, so we need to define a standard usage that will be aligned with the asynchronous+simplex design decision.</p>
+<h3 id="reference"><a class="toc-anchor" href="#reference">§</a> Reference</h3>
+<h4 id="https"><a class="toc-anchor" href="#https">§</a> HTTP(S)</h4>
+<p>The POST method is used to send the DIDComm message.
+The POST message MIME type is application/didcomm-enc-env.
+A successful response code is 202 (Accepted), but 200 (OK) is also allowed.</p>
+<h4 id="websocket"><a class="toc-anchor" href="#websocket">§</a> WebSocket</h4>
+<p>The usage of this transport can be beneficial when only one side of the communication can initiate a request to the other side, for example, the former is behind a Firewall or behind NAT.
+With STOMP over WebSocket, the content-type header is application/didcomm-enc-env as in the HTTP(S) message.
+TODO: Include details of the websocket message to define a standard usage.</p>
+<p>TODO:</p>
+<ul>
+<li>Quic</li>
+<li>Transport binding</li>
+</ul>
+<h2 id="advanced-message-passing"><a class="toc-anchor" href="#advanced-message-passing">§</a> Advanced Message Passing</h2>
+<ul>
+<li>Ephemeral - URL / QR</li>
+<li>Deep linking</li>
+<li>NFC</li>
+<li>Wifi-Direct</li>
+<li>Bluetooth</li>
+<li>Sneakernet / file oriented / mimetypes</li>
+</ul>
+<h3 id="connections"><a class="toc-anchor" href="#connections">§</a> Connections</h3>
+<p>A Connection is the practical application of a relationship in DID Communication. Having a connection means that each party in the relationship has a DID for the other parties, and parties can communicate securely using the keys and endpoints within each DID Document.</p>
+<p>In order to establish a new connection, we use the OutOfBand Protocol and the DID Exchange Protocol.</p>
+<h4 id="outofband-protocol"><a class="toc-anchor" href="#outofband-protocol">§</a> OutOfBand Protocol</h4>
+<p>Invitations are usually the first message passed between parties. They are passed out of band, such as in a QR code or a link that can either open in an app or in a browser containing getting started instructions.</p>
+<p>The OutOfBand Protocol exists as an independent protocol to allow for the invitation recipient to respond with any of the supported protocols.</p>
+<p>A Public DID functions as a standing invitation. The information within the resolved DID Document serves the same function as the information passed in OutOfBand protocol messages.</p>
+<p>TODO: Include details of the protocol.</p>
+<h5 id="ephemeral-mode"><a class="toc-anchor" href="#ephemeral-mode">§</a> Ephemeral Mode</h5>
+<p>Some interactions do not need an established connection to complete their purpose. These interactions occur in <em>ephemeral mode</em> and use OutOfBand protocol messages for the bulk of the interaction.</p>
+<p>TODO: Include more details about ephemeral mode.</p>
+<h4 id="did-exchange-protocol"><a class="toc-anchor" href="#did-exchange-protocol">§</a> DID Exchange Protocol</h4>
+<h5 id="1-exchange-request"><a class="toc-anchor" href="#1-exchange-request">§</a> 1. Exchange Request</h5>
+<p>The exchange request message is used to communicate the DID document of the <em>invitee</em> to the <em>inviter</em> using the provisional service information present in the <em>invitation</em> message.</p>
+<p>If needed, the <em>invitee</em> will provision a new DID according to the DID method spec. The <em>invitee</em> may also use a previously provisioned DID.</p>
+<p>The DID is presented in the exchange_request message as follows:</p>
+<p>TODO: Add clear details about initial_state usage?</p>
+<p>Example</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"5678876542345"</span><span class="token punctuation">,</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/request"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"&lt;id of invitation>"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"label"</span><span class="token operator">:</span> <span class="token string">"Bob"</span><span class="token punctuation">,</span>
+  <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"&lt;did invitee is sending to inviter>"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h6 id="attributes"><a class="toc-anchor" href="#attributes">§</a> Attributes</h6>
+<ul>
+<li>The <code>@type</code> attribute is a required string value that denotes that the received message is an exchange request.</li>
+<li>The <a href="../../concepts/0008-message-id-and-threading/README.md#thread-object"><code>~thread</code></a> decorator MUST be included:
+<ul>
+<li>It MUST include the ID of the parent thread (<code>pthid</code>) such that the <code>request</code> can be correlated to the corresponding <code>invitation</code>. More on correlation <a href="#correlating-requests-to-invitations">below</a>.</li>
+<li>It MAY include the <code>thid</code> property. In doing so, implementations MUST set its value to that of <code>@id</code> on the same request message. In other words, the values of <code>@id</code> and <code>~thread.thid</code> MUST be equal.</li>
+</ul>
+</li>
+<li>The <code>label</code> attribute provides a suggested label for the DID being exchanged. This allows the user to tell multiple exchange requests apart. This is not a trusted attribute.</li>
+<li>The <code>connection</code> attribute contains the <code>did</code> and <code>did_doc</code> attributes. This format maintains consistency with the Response message where this attribute is signed.</li>
+<li>The <code>did</code> indicates the DID being exchanged.</li>
+</ul>
+<h6 id="correlating-requests-to-invitations"><a class="toc-anchor" href="#correlating-requests-to-invitations">§</a> Correlating requests to invitations</h6>
+<p>An invitation is presented in one of two forms:</p>
+<ul>
+<li>An explicit OutOfBand invitation with its own <code>@id</code>.</li>
+<li>An <a href="#implicit-invitation">implicit</a> invitation contained in a DID document’s <a href="https://w3c-ccg.github.io/did-spec/#service-endpoints"><code>service</code></a> attribute.</li>
+</ul>
+<p>When a <code>request</code> responds to an explicit invitation, its <code>~thread.pthid</code> MUST be equal to the <code>@id</code> property of the invitation.</p>
+<p>When a <code>request</code> responds to an implicit invitation, its <code>~thread.pthid</code> MUST contain a <a href="https://w3c-ccg.github.io/did-spec/#dfn-did-url">DID URL</a> that resolves to the specific <code>service</code> on a DID document that contains the invitation.</p>
+<p>TODO: Include examples using a ledger resolvable DID.</p>
+<p><strong>Example referencing an explicit invitation</strong></p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"a46cdd0f-a2ca-4d12-afbf-2e78a6f1f3ef"</span><span class="token punctuation">,</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/request"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"032fbd19-f6fd-48c5-9197-ba9a47040470"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"label"</span><span class="token operator">:</span> <span class="token string">"Bob"</span><span class="token punctuation">,</span>
+  <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"&lt;did invitee is sending to inviter>"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><strong>Example referencing an implicit invitation</strong></p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"a46cdd0f-a2ca-4d12-afbf-2e78a6f1f3ef"</span><span class="token punctuation">,</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/request"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"did:example:21tDAKCERh95uGgKbJNHYp#invitation"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"label"</span><span class="token operator">:</span> <span class="token string">"Bob"</span><span class="token punctuation">,</span>
+  <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"&lt;did invitee is sending to inviter>"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h6 id="request-transmission"><a class="toc-anchor" href="#request-transmission">§</a> Request Transmission</h6>
+<p>The Request message is encoded according to the standards of the Encryption Envelope, using the <code>recipientKeys</code> present in the invitation.</p>
+<p>If the <code>routingKeys</code> attribute was present and non-empty in the invitation, each key must be used to wrap the message in a forward request, then encoded in an Encryption Envelope. This processing is in order of the keys in the list, with the last key in the list being the one for which the <code>serviceEndpoint</code> possesses the private key.</p>
+<p>The message is then transmitted to the <code>serviceEndpoint</code>.</p>
+<p>We are now in the <code>requested</code> state.</p>
+<h6 id="request-processing"><a class="toc-anchor" href="#request-processing">§</a> Request processing</h6>
+<p>After receiving the exchange request, the <em>inviter</em> evaluates the provided DID and DID Doc according to the DID Method Spec.</p>
+<p>The <em>inviter</em> should check the information presented with the keys used in the wire-level message transmission to ensure they match.</p>
+<p>The <em>inviter</em> MAY look up the corresponding invitation identified in the request’s <code>~thread.pthid</code> to determine whether it should accept this exchange request.</p>
+<p>If the <em>inviter</em> wishes to continue the exchange, they will persist the received information in their wallet. They will then either update the provisional service information to rotate the key, or provision a new DID entirely. The choice here will depend on the nature of the DID used in the invitation.</p>
+<p>The <em>inviter</em> will then craft an exchange response using the newly updated or provisioned information.</p>
+<h6 id="request-errors"><a class="toc-anchor" href="#request-errors">§</a> Request Errors</h6>
+<p>See <a href="#errors">Error Section</a> above for message format details.</p>
+<p><strong>request_rejected</strong></p>
+<p>Possible reasons:</p>
+<ul>
+<li>Unsupported DID method for provided DID</li>
+<li>Expired Invitation</li>
+<li>DID Doc Invalid</li>
+<li>Unsupported key type</li>
+<li>Unsupported endpoint protocol</li>
+<li>Missing reference to invitation</li>
+</ul>
+<p><strong>request_processing_error</strong></p>
+<ul>
+<li>unknown processing error</li>
+</ul>
+<h5 id="2-exchange-response"><a class="toc-anchor" href="#2-exchange-response">§</a> 2. Exchange Response</h5>
+<p>The exchange response message is used to complete the exchange. This message is required in the flow, as it updates the provisional information presented in the invitation.</p>
+<h6 id="example"><a class="toc-anchor" href="#example">§</a> Example</h6>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/response"</span><span class="token punctuation">,</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"12345678900987654321"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"thid"</span><span class="token operator">:</span> <span class="token string">"&lt;The Thread ID is the Message ID (@id) of the first message in the thread>"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"&lt;did inviter is sending to invitee>"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The signature data must be used to verify against the invitation’s <code>recipientKeys</code> for continuity.</p>
+<h6 id="attributes-2"><a class="toc-anchor" href="#attributes-2">§</a> Attributes</h6>
+<ul>
+<li>The <code>@type</code> attribute is a required string value that denotes that the received message is an exchange request.</li>
+<li>The <code>~thread</code> block contains a <code>thid</code> reference to the <code>@id</code> of the request message.</li>
+<li>The <code>connection</code> attribute contains the <code>did</code> and <code>did_doc</code> attributes to enable simpler signing.</li>
+<li>The <code>did</code> attribute is a required string value and denotes DID in use by the <em>inviter</em>. Note that this may not be the same DID used in the invitation.</li>
+</ul>
+<p>In addition to a new DID, the associated DID Doc might contain a new endpoint. This new DID and endpoint are to be used going forward in the relationship.</p>
+<h6 id="response-transmission"><a class="toc-anchor" href="#response-transmission">§</a> Response Transmission</h6>
+<p>The message should be packaged in the encrypted envelope format, using the keys from the request, and the new keys presented in the internal did doc.</p>
+<p>When the message is transmitted, we are now in the <code>responded</code> state.</p>
+<h6 id="response-processing"><a class="toc-anchor" href="#response-processing">§</a> Response Processing</h6>
+<p>When the <em>invitee</em> receives the <code>response</code> message, they will verify the <code>change_sig</code> provided. After validation, they will update their wallet with the new information. If the endpoint was changed, they may wish to execute a Trust Ping to verify that new endpoint.</p>
+<h6 id="response-errors"><a class="toc-anchor" href="#response-errors">§</a> Response Errors</h6>
+<p>See <a href="#errors">Error Section</a> above for message format details.</p>
+<p><strong>response_rejected</strong></p>
+<p>Possible reasons:</p>
+<ul>
+<li>unsupported DID method for provided DID</li>
+<li>Expired Request</li>
+<li>DID Doc Invalid</li>
+<li>Unsupported key type</li>
+<li>Unsupported endpoint protocol</li>
+<li>Invalid Signature</li>
+</ul>
+<p><strong>response_processing_error</strong></p>
+<ul>
+<li>unknown processing error### 3. Exchange Acknowledgement</li>
+</ul>
+<h3 id="3-exchange-complete"><a class="toc-anchor" href="#3-exchange-complete">§</a> 3. Exchange Complete</h3>
+<p>The exchange complete message is used to confirm the exchange to the <em>inviter</em>. The <em>inviter</em> may then invoke any protocols desired based on the context expressed via the <code>pthid</code> in the DID Exchange protocol.</p>
+<h5 id="example-2"><a class="toc-anchor" href="#example-2">§</a> Example</h5>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/complete"</span><span class="token punctuation">,</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"12345678900987654321"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"thid"</span><span class="token operator">:</span> <span class="token string">"&lt;The Thread ID is the Message ID (@id) of the first message in the thread>"</span><span class="token punctuation">,</span>
+    <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"&lt;The Message ID (@id) of the Out Of Band Invitation message>"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code>pthid</code> is required in this message, even if present in the <code>request</code> method.</p>
+<p>After a message is sent, the <em>invitee</em> in the <code>complete</code> state. Receipt of a message puts the <em>inviter</em> into the <code>complete</code> state.</p>
+<h5 id="next-steps"><a class="toc-anchor" href="#next-steps">§</a> Next Steps</h5>
+<p>The exchange between the <em>inviter</em> and the <em>invitee</em> is now established. This relationship has no trust associated with it. The next step should be the exchange of proofs to build trust sufficient for the purpose of the relationship.</p>
+<h3 id="exchange-reuse"><a class="toc-anchor" href="#exchange-reuse">§</a> Exchange Reuse</h3>
+<p>When an out of band invitation is received containing a public DID for which the <em>invitee</em> already has a connection, the <em>invitee</em> may use the <code>reuse</code> message in the protocol sent over the existing connection. The <code>pthid</code> passed in the <code>reuse</code> message allows the <em>inviter</em> to correlate the invitation with the identified existing connection and then invoke any protocols desired based on that context.</p>
+<h5 id="example-3"><a class="toc-anchor" href="#example-3">§</a> Example</h5>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/reuse"</span><span class="token punctuation">,</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"12345678900987654321"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"&lt;The Parent Thread ID of the Out Of Band Invitation>"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code>pthid</code> is required in this message. It provides the context link for the <em>inviter</em> to prompt additional protocol interactions.</p>
+<p>Sending or receiving this message does not change the state of the existing connection.</p>
+<h6 id="next-steps-2"><a class="toc-anchor" href="#next-steps-2">§</a> Next Steps</h6>
+<p>The exchange between the <em>inviter</em> and the <em>invitee</em> is now established. This relationship has no trust associated with it. The next step should be the exchange of proofs to build trust sufficient for the purpose of the relationship.</p>
+<h6 id="peer-did-maintenance"><a class="toc-anchor" href="#peer-did-maintenance">§</a> Peer DID Maintenance</h6>
+<p>When Peer DIDs are used in an exchange, it is likely that both Alice and Bob will want to perform some relationship maintenance such as key rotations. Future updates will add these maintenance features.</p>
+<h5 id="todo"><a class="toc-anchor" href="#todo">§</a> TODO:</h5>
+<ul>
+<li>Pairwise vs n-wise connections, how to transition.</li>
+<li>Reuse of existing connections, add <code>continue</code> message for use with connection reuse. (ack message?)</li>
+</ul>
+<h2 id="general-messaging-constructs"><a class="toc-anchor" href="#general-messaging-constructs">§</a> General Messaging Constructs</h2>
+<ul>
+<li>Decorators (headers)</li>
+<li>Threading</li>
+<li>Message types / families</li>
+<li>Reliable Delivery</li>
+<li>Attachments</li>
+<li>Attachment/Payload Signatures</li>
+<li>Timing</li>
+<li>ACKs</li>
+<li>Errors</li>
+<li>Tracing / troubleshooting</li>
+</ul>
+<h3 id="protocols"><a class="toc-anchor" href="#protocols">§</a> Protocols</h3>
+<p><em>(These are mostly out of scope, but we need to describe at least one protocol to show how the layer above DIDComm builds on DIDComm constructs. This section should be short.)</em></p>
+<h2 id="reference-implementation"><a class="toc-anchor" href="#reference-implementation">§</a> Reference Implementation</h2>
+<ul>
+<li>Features</li>
+<li>Usage</li>
+</ul>
+<h2 id="future-proofing"><a class="toc-anchor" href="#future-proofing">§</a> Future-Proofing</h2>
+<ul>
+<li>
+<p>Versioning of the standard</p>
+</li>
+<li>
+<p>Extensibility</p>
+</li>
+<li>
+<p>Adapting for post-quantum crypto</p>
+</li>
+</ul>
+<h2 id="references"><a class="toc-anchor" href="#references">§</a> References</h2>
+<ul>
+<li>DID spec</li>
+<li>OSI stack (for comparison purposes)</li>
+<li>Kim Cameron’s 7 Laws</li>
+</ul>
+
+              </article>    
+
+            </main>
+
+            <slide-panels id="slidepanels">
+              <slide-panel id="repo_issues" options="right">
+                <header class="panel-header">
+                  <span>
+                    <svg icon><use xlink:href="#github"></use></svg>
+                    <span issue-count></span>
+                  </span>
+                  <span class="repo-issue-toggle" panel-toggle="repo_issues">✕</span>
+                </header>
+                <ul id="repo_issue_list"></ul>
+              </slide-panel>
+
+              <slide-panel id="toc">
+                <header class="panel-header">
+                  <span>Table of Contents</span>
+                  <span panel-toggle="toc">✕</span>
+                </header>
+                <div id="toc_list">
+                  <ul class="toc">
+<li><a href="#purpose-and-scope">Purpose and Scope</a>
+<ul>
+<li><a href="#rough-overview">Rough Overview</a></li>
+<li><a href="#goals-and-ramifications">Goals and Ramifications</a>
+<ul>
+<li><a href="#message-based-asynchronous-and-simplex">Message-Based, Asynchronous, and Simplex</a></li>
+<li><a href="#message-level-security-reciprocal-authentication">Message-Level Security, Reciprocal Authentication</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#requirements">Requirements</a>
+<ul>
+<li><a href="#processing-model">Processing Model</a></li>
+</ul>
+</li>
+<li><a href="#routing">Routing</a>
+<ul>
+<li><a href="#routing-requirements">Routing Requirements</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#the-forward-message">The <code>forward</code> message</a></li>
+<li><a href="#two-dimensions">Two Dimensions</a></li>
+<li><a href="#mediators-and-relays">Mediators and Relays</a>
+<ul>
+<li><a href="#scenario-1-direct">Scenario 1: direct</a></li>
+<li><a href="#scenario-2-a-gatekeeper">Scenario 2: a gatekeeper</a></li>
+<li><a href="#scenario-3-transparent-indirection">Scenario 3: transparent indirection</a></li>
+<li><a href="#scenario-4-more-indirection">Scenario 4: more indirection</a></li>
+</ul>
+</li>
+<li><a href="#more-traditional-usage">More Traditional Usage</a>
+<ul>
+<li><a href="#scenario-5-direct">Scenario 5: direct</a></li>
+<li><a href="#scenario-6-herd-hosting">Scenario 6: herd hosting</a></li>
+<li><a href="#scenario-7-intra-domain-dispatch">Scenario 7: intra-domain dispatch</a></li>
+<li><a href="#scenario-8-double-mediation">Scenario 8: double mediation</a></li>
+</ul>
+</li>
+<li><a href="#remember-routes-are-one-way-not-duplex">Remember Routes are One-Way (not Duplex)</a></li>
+<li><a href="#routing-protocol">Routing Protocol</a>
+<ul>
+<li><a href="#name-and-version">Name and Version</a></li>
+<li><a href="#roles">Roles</a></li>
+<li><a href="#states">States</a></li>
+<li><a href="#messages">Messages</a></li>
+<li><a href="#rewrapping">Rewrapping</a></li>
+</ul>
+</li>
+<li><a href="#did-docs-and-routing">DID Docs and Routing</a></li>
+</ul>
+</li>
+<li><a href="#transports">Transports</a>
+<ul>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#motivation">Motivation</a></li>
+<li><a href="#reference">Reference</a>
+<ul>
+<li><a href="#https">HTTP(S)</a></li>
+<li><a href="#websocket">WebSocket</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#advanced-message-passing">Advanced Message Passing</a>
+<ul>
+<li><a href="#connections">Connections</a>
+<ul>
+<li><a href="#outofband-protocol">OutOfBand Protocol</a></li>
+<li><a href="#did-exchange-protocol">DID Exchange Protocol</a></li>
+</ul>
+</li>
+<li><a href="#3-exchange-complete">3. Exchange Complete</a></li>
+<li><a href="#exchange-reuse">Exchange Reuse</a></li>
+</ul>
+</li>
+<li><a href="#general-messaging-constructs">General Messaging Constructs</a>
+<ul>
+<li><a href="#protocols">Protocols</a></li>
+</ul>
+</li>
+<li><a href="#reference-implementation">Reference Implementation</a></li>
+<li><a href="#future-proofing">Future-Proofing</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+
+                </div>
+              </slide-panel>
+              
+            </slide-panels>
+
+          </body>
+          <script>window.specConfig = {"title":"DIF Comm Messaging Protocol","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","routing.md","transports.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","destinationResourcePrefix":"../../docs/","rootResourcePrefix":"./docs/"}</script>
+          <script src="../../docs/spec-up/js/markdown-it.js"></script>
+          <script src="../../docs/spec-up/js/prism.js" data-manual></script>
+          <script src="../../docs/spec-up/js/mermaid.js"></script>
+          <script src="../../docs/spec-up/js/chart.js"></script>
+          <script src="../../docs/spec-up/js/index.js"></script>
+        </html>
+      

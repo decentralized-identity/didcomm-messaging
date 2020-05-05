@@ -1,4 +1,4 @@
-# Advanced Message Passing
+## Advanced Message Passing
 
 * Ephemeral - URL / QR 
 * Deep linking

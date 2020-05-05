@@ -1,0 +1,14 @@
+{
+  "name": "@decentralized-identity/didcomm-messaging",
+  "version": "0.6.1",
+  "description": "DID Comms Messaging Protocol",
+  "repository": "https://github.com/decentralized-identity/didcomm-messaging",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "spec-up": "0.9.71"
+  },
+  "scripts": {
+    "spec": "node ./scripts/spec-edit.js",
+    "spec:render": "node ./scripts/spec-render.js"
+  }
+}

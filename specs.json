@@ -1,0 +1,34 @@
+
+{
+  "resource_path": "./docs",
+  
+  "specs": [
+    {
+      "title": "DIF Comm Messaging Protocol",
+      "logo": "https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg",
+      "logo_link": "https://identity.foundation",
+      "source": {
+        "host": "github",
+        "account": "decentralized-identity",
+        "repo": "didcomm-messaging"
+      },
+      "output_path": "./docs/spec",
+      "spec_directory": "./",
+      "markdown_paths": [
+        "title.md",
+        "scope.md",
+        "requirements.md",
+        "processing_model.md",
+        "routing.md",
+        "transports.md",
+        "advanced_message_passing.md",
+        "connections.md",
+        "general_messaging_constructs.md",
+        "protocols.md",
+        "reference_implementation.md",
+        "future_proofing.md",
+        "references.md"
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-## Connections
+### Connections
 
 A Connection is the practical application of a relationship in DID Communication. Having a connection means that each party in the relationship has a DID for the other parties, and parties can communicate securely using the keys and endpoints within each DID Document.
 
@@ -6,7 +6,7 @@ In order to establish a new connection, we use the OutOfBand Protocol and the DI
 
 
 
-### OutOfBand Protocol
+#### OutOfBand Protocol
 
 Invitations are usually the first message passed between parties. They are passed out of band, such as in a QR code or a link that can either open in an app or in a browser containing getting started instructions.
 
@@ -16,15 +16,15 @@ A Public DID functions as a standing invitation. The information within the reso
 
 TODO: Include details of the protocol.
 
-#### Ephemeral Mode
+##### Ephemeral Mode
 
 Some interactions do not need an established connection to complete their purpose. These interactions occur in _ephemeral mode_ and use OutOfBand protocol messages for the bulk of the interaction.
 
 TODO: Include more details about ephemeral mode.
 
-### DID Exchange Protocol
+#### DID Exchange Protocol
 
-#### 1. Exchange Request
+##### 1. Exchange Request
 
 The exchange request message is used to communicate the DID document of the _invitee_ to the _inviter_ using the provisional service information present in the _invitation_ message.
 
@@ -46,7 +46,7 @@ Example
 }
 ```
 
-##### Attributes
+###### Attributes
 
 * The `@type` attribute is a required string value that denotes that the received message is an exchange request.
 * The [`~thread`](../../concepts/0008-message-id-and-threading/README.md#thread-object) decorator MUST be included:
@@ -56,7 +56,7 @@ Example
 * The `connection` attribute contains the `did` and `did_doc` attributes. This format maintains consistency with the Response message where this attribute is signed.
 * The `did` indicates the DID being exchanged.
 
-##### Correlating requests to invitations
+###### Correlating requests to invitations
 
 An invitation is presented in one of two forms:
 
@@ -94,7 +94,7 @@ TODO: Include examples using a ledger resolvable DID.
 ```
 
 
-##### Request Transmission
+###### Request Transmission
 
 The Request message is encoded according to the standards of the Encryption Envelope, using the `recipientKeys` present in the invitation.
 
@@ -104,7 +104,7 @@ The message is then transmitted to the `serviceEndpoint`.
 
 We are now in the `requested` state.
 
-##### Request processing
+###### Request processing
 
 After receiving the exchange request, the _inviter_ evaluates the provided DID and DID Doc according to the DID Method Spec.
 
@@ -116,7 +116,7 @@ If the _inviter_ wishes to continue the exchange, they will persist the received
 
 The _inviter_ will then craft an exchange response using the newly updated or provisioned information.
 
-##### Request Errors
+###### Request Errors
 
 See [Error Section](#errors) above for message format details.
 
@@ -135,11 +135,11 @@ Possible reasons:
 
 - unknown processing error
 
-#### 2. Exchange Response
+##### 2. Exchange Response
 
 The exchange response message is used to complete the exchange. This message is required in the flow, as it updates the provisional information presented in the invitation.
 
-##### Example
+###### Example
 
 ```json
 {
@@ -154,7 +154,7 @@ The exchange response message is used to complete the exchange. This message is 
 
 The signature data must be used to verify against the invitation's `recipientKeys` for continuity.
 
-##### Attributes
+###### Attributes
 
 * The `@type` attribute is a required string value that denotes that the received message is an exchange request.
 * The `~thread` block contains a `thid` reference to the `@id` of the request message.
@@ -163,17 +163,17 @@ The signature data must be used to verify against the invitation's `recipientKey
 
 In addition to a new DID, the associated DID Doc might contain a new endpoint. This new DID and endpoint are to be used going forward in the relationship.
 
-##### Response Transmission
+###### Response Transmission
 
 The message should be packaged in the encrypted envelope format, using the keys from the request, and the new keys presented in the internal did doc.
 
 When the message is transmitted, we are now in the `responded` state.
 
-##### Response Processing
+###### Response Processing
 
 When the _invitee_ receives the `response` message, they will verify the `change_sig` provided. After validation, they will update their wallet with the new information. If the endpoint was changed, they may wish to execute a Trust Ping to verify that new endpoint.
 
-##### Response Errors
+###### Response Errors
 
 See [Error Section](#errors) above for message format details.
 
@@ -190,13 +190,13 @@ Possible reasons:
 
 **response_processing_error**
 
-- unknown processing error## 3. Exchange Acknowledgement
+- unknown processing error### 3. Exchange Acknowledgement
 
-## 3. Exchange Complete
+### 3. Exchange Complete
 
 The exchange complete message is used to confirm the exchange to the _inviter_. The _inviter_ may then invoke any protocols desired based on the context expressed via the `pthid` in the DID Exchange protocol.
 
-#### Example
+##### Example
 
 ```json
 {
@@ -213,15 +213,15 @@ The `pthid` is required in this message, even if present in the `request` method
 
 After a message is sent, the *invitee* in the `complete` state. Receipt of a message puts the *inviter* into the `complete` state.
 
-#### Next Steps
+##### Next Steps
 
 The exchange between the _inviter_ and the _invitee_ is now established. This relationship has no trust associated with it. The next step should be the exchange of proofs to build trust sufficient for the purpose of the relationship.
 
-## Exchange Reuse
+### Exchange Reuse
 
 When an out of band invitation is received containing a public DID for which the _invitee_ already has a connection, the _invitee_ may use the `reuse` message in the protocol sent over the existing connection. The `pthid` passed in the `reuse` message allows the _inviter_ to correlate the invitation with the identified existing connection and then invoke any protocols desired based on that context.
 
-#### Example
+##### Example
 
 ```json
 {
@@ -237,11 +237,11 @@ The `pthid` is required in this message. It provides the context link for the _i
 
 Sending or receiving this message does not change the state of the existing connection.
 
-##### Next Steps
+###### Next Steps
 
 The exchange between the _inviter_ and the _invitee_ is now established. This relationship has no trust associated with it. The next step should be the exchange of proofs to build trust sufficient for the purpose of the relationship.
 
-##### Peer DID Maintenance
+###### Peer DID Maintenance
 
 When Peer DIDs are used in an exchange, it is likely that both Alice and Bob will want to perform some relationship maintenance such as key rotations. Future updates will add these maintenance features.
 
@@ -249,7 +249,7 @@ When Peer DIDs are used in an exchange, it is likely that both Alice and Bob wil
 
 
 
-#### TODO:
+##### TODO:
 
 - Pairwise vs n-wise connections, how to transition.
 - Reuse of existing connections, add `continue` message for use with connection reuse. (ack message?)
