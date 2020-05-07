@@ -1,7 +1,6 @@
 
 {
-  "resource_path": "./docs",
-  
+  "resource_path": "./docs/spec",
   "specs": [
     {
       "title": "DIF Comm Messaging Protocol",
