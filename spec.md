@@ -3,6 +3,7 @@
 * [Purpose and Scope](scope.md)
 * [Requirements](requirements.md)
 * [Processing Model](processing_model.md)
+* [Message Structure](message_structure.md)
 * [Routing](routing.md)
 * [Transports](transports.md)
 * [Advanced Message Passing](advanced_message_passing.md)
