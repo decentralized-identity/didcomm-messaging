@@ -144,6 +144,30 @@
 <li>Message-oriented, with sender and receiver(s)</li>
 <li>Encryption Envelope</li>
 </ul>
+<h2 id="message-structure"><a class="toc-anchor" href="#message-structure">§</a> Message Structure</h2>
+<p>DIDComm Messages are based on JWM (JSON Web Messages). A message has a basic structure that specifies the message type, id, and other attributes common to all messages. A message also includes attributes specific to the message type. Prior to being sent to a recipient, the JWM is encrypted into a JWE according to the JWM spec.</p>
+<p>The following example shows common elements of a DIDComm Message. Further details and advanced usage are covered elsewhere in this spec.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
+    <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"&lt;protocolURI>/&lt;protocolversion>/&lt;messagetype>"</span><span class="token punctuation">,</span>
+    <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
+    <span class="token property">"to"</span><span class="token operator">:</span> <span class="token string">"did:example:bob"</span><span class="token punctuation">,</span>
+    <span class="token property">"created_time"</span><span class="token operator">:</span> <span class="token string">"1516269022"</span><span class="token punctuation">,</span>
+    <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token string">"1516269022"</span><span class="token punctuation">,</span>
+    <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    	<span class="token property">"messagespecificattribute"</span><span class="token operator">:</span> <span class="token string">"and it's value"</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The attributes of a DIDComm Message are as follows:</p>
+<ul>
+<li><strong>id</strong> - REQUIRED. Message ID. The <code>id</code> attribute value MUST be unique to the sender.</li>
+<li><strong>type</strong> - REQUIRED. Message Type. The <code>type</code> attribute value MUST be a valid <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/uris.md#mturi">MTURI</a>, that when resolved gives human readable information about the message. The attributes value also informs the content of the message, for example the presence of other attributes and how they should be processed.</li>
+<li><strong>to</strong> - OPTIONAL. Recipient(s) identifier. The <code>to</code> attribute MUST be an array of strings where each element is a valid <a href="https://w3c.github.io/did-core/#generic-did-syntax">DID</a> which identifies the recipients of the message.</li>
+<li><strong>from</strong> - OPTIONAL. Sender identifier. The <code>from</code> attribute MUST be a string that is a valid <a href="https://w3c.github.io/did-core/#generic-did-syntax">DID</a> which identifies the sender of the message. For DID methods that use query parameters to carry additional information, they might also be present in the from string.</li>
+<li><strong>created_time</strong> - OPTIONAL. Message Created Time. The <code>created_time</code> attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.</li>
+<li><strong>expires_time</strong> - OPTIONAL. Message Expired Time. The <code>expires_time</code> attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is no longer valid, and is to be used by the recipient to discard expired messages on receipt.</li>
+</ul>
 <h2 id="routing"><a class="toc-anchor" href="#routing">§</a> Routing</h2>
 <p><strong>Routing</strong> is the process of managing the delivery of messages from sender to recipient, possibly adapting the packaging and transfer to intermediate nodes. A <strong>route</strong> is a map or plan that specifies enough to achieve delivery in at least one direction; it may omit uninteresting details.</p>
 <p>A <strong>sender</strong> emits a message hoping that a <strong>recipient</strong> eventually receives it. As a message moves toward the recipient, we say it is moving <strong>destward</strong>; the opposite direction is <strong>sourceward</strong>. Note that sender and recipient flip if a request-like message is followed by a response-like message in the opposite direction; the context that defines a sender is a single message, not a paired interaction. (DIDComm supports request-response but does not require it.)</p>
@@ -559,6 +583,80 @@ TODO: Include details of the websocket message to define a standard usage.</p>
 </ul>
 <h3 id="protocols"><a class="toc-anchor" href="#protocols">§</a> Protocols</h3>
 <p><em>(These are mostly out of scope, but we need to describe at least one protocol to show how the layer above DIDComm builds on DIDComm constructs. This section should be short.)</em></p>
+<h4 id="protocol-identifier-uri"><a class="toc-anchor" href="#protocol-identifier-uri">§</a> Protocol Identifier URI</h4>
+<p>A Protocol Type URI identifies protocol versions unambiguously.  Additionally, Protocol Type URIs may be used by a developer to locate documentation about a protocol.</p>
+<p>The URI must be composed as follows:</p>
+<pre><code>[doc-uri][delim][protocol-name]/[semver]
+</code></pre>
+<p>With ABNF:</p>
+<pre class="language-ABNF"><code class="language-ABNF">protocol-identifier-uri = doc-uri delim protocol-name &quot;/&quot; semver
+delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &quot;:&quot; / &quot;;&quot; / &quot;=&quot;
+</code></pre>
+<p>Its loose matcher regex is:</p>
+<pre><code>(.*?)([a-z0-9._-]+)/(\d[^/]*)/?$
+</code></pre>
+<p>Example Protocol Type URIs:</p>
+<pre><code>http://example.com/protocols?which=lets_do_lunch/1.0
+http://example.com/protocols/lets_do_lunch/1.0
+https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1
+</code></pre>
+<p>The goals of this URI are, in descending priority:</p>
+<ul>
+<li>
+<p>Code can use the URI to route messages to protocol
+handlers using <a href="semver.md">semver rules</a>.</p>
+</li>
+<li>
+<p>The definition of a protocol should be tied to the URI such
+that it is semantically stable. This means that once version 1.0
+of a protocol is defined, its definition <a href="semver.md">should not change in
+ways that would break implementations</a>.</p>
+</li>
+<li>
+<p>Developers can discover information about novel protocols, using
+the URI to browse or search the web.</p>
+</li>
+</ul>
+<p>The <code>doc-uri</code> portion is any URI that exposes documentation about
+protocols. A developer should be able to browse to that URI and use human intelligence
+to look up the named and versioned protocol.</p>
+<h4 id="message-type-uri"><a class="toc-anchor" href="#message-type-uri">§</a> Message Type URI</h4>
+<p>A <strong>Message Type URI</strong> identifies message types unambiguously.
+Standardizing its format is important because it is parsed by agents that
+will map messages to handlers–basically, code will look at this string and
+say, “Do I have something that can handle this message type inside protocol
+<em>X</em> version <em>Y</em>?” When that analysis happens, it must do more than compare
+the string for exact equality; it may need to check for semver compatibility,
+and it has to compare the protocol name and message type name ignoring case
+and punctuation.</p>
+<p>The URI MUST be composed as follows:</p>
+<pre><code>[protocol-identifier-uri] / [message-type-name]
+</code></pre>
+<p>With ABNF:</p>
+<pre class="language-ABNF"><code class="language-ABNF">message-type-uri  = protocol-identifier-uri &quot;/&quot; message-type-name
+protocol-identifier-uri = doc-uri delim protocol-name &quot;/&quot; semver
+delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &quot;:&quot; / &quot;;&quot; / &quot;=&quot;
+protocol-name     = identifier
+protocol-version  = semver
+message-type-name = identifier
+identifier        = alpha *(*(alphanum / &quot;_&quot; / &quot;-&quot; / &quot;.&quot;) alphanum)
+</code></pre>
+<p>It can be loosely matched and parsed with the following regex:</p>
+<pre><code>    (.*?)([a-z0-9._-]+)/(\d[^/]*)/([a-z0-9._-]+)$
+</code></pre>
+<p>A match will have captures groups of (1) = <code>doc-uri</code>, (2) = <code>protocol-name</code>,
+(3) = <code>protocol-version</code>, and (4) = <code>message-type-name</code>.</p>
+<p>The goals of this URI are, in descending priority:</p>
+<ul>
+<li>Use of the <code>protocol-identifier-uri</code> portion as described above.</li>
+<li>Optionally and preferably, the full URI may produce a page of documentation about the specific message type, with no human mediation involved.</li>
+</ul>
+<p>Example Message Type URIs:</p>
+<pre><code>http://example.com/protocols?which=lets_do_lunch/1.0/proposal
+http://example.com/protocols/lets_do_lunch/1.0/proposal
+did:example:1234567890;spec/trust_ping/1.0/ping
+https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1/create-invitation
+</code></pre>
 <h2 id="reference-implementation"><a class="toc-anchor" href="#reference-implementation">§</a> Reference Implementation</h2>
 <ul>
 <li>Features</li>
@@ -622,6 +720,7 @@ TODO: Include details of the websocket message to define a standard usage.</p>
 <li><a href="#processing-model">Processing Model</a></li>
 </ul>
 </li>
+<li><a href="#message-structure">Message Structure</a></li>
 <li><a href="#routing">Routing</a>
 <ul>
 <li><a href="#routing-requirements">Routing Requirements</a></li>
@@ -683,7 +782,12 @@ TODO: Include details of the websocket message to define a standard usage.</p>
 </li>
 <li><a href="#general-messaging-constructs">General Messaging Constructs</a>
 <ul>
-<li><a href="#protocols">Protocols</a></li>
+<li><a href="#protocols">Protocols</a>
+<ul>
+<li><a href="#protocol-identifier-uri">Protocol Identifier URI</a></li>
+<li><a href="#message-type-uri">Message Type URI</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#reference-implementation">Reference Implementation</a></li>
@@ -697,7 +801,7 @@ TODO: Include details of the websocket message to define a standard usage.</p>
             </slide-panels>
 
           </body>
-          <script>window.specConfig = {"title":"DIF Comm Messaging Protocol","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","routing.md","transports.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","destinationResourcePrefix":"../../docs/spec/","rootResourcePrefix":"./docs/spec/"}</script>
+          <script>window.specConfig = {"title":"DIF Comm Messaging Protocol","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","routing.md","transports.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","destinationResourcePrefix":"../../docs/spec/","rootResourcePrefix":"./docs/spec/"}</script>
           <script src="../../docs/spec/spec-up/js/markdown-it.js"></script>
           <script src="../../docs/spec/spec-up/js/prism.js" data-manual></script>
           <script src="../../docs/spec/spec-up/js/mermaid.js"></script>
