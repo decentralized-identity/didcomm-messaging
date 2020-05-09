@@ -15,6 +15,6 @@ DIF Comm Messaging Protocol
 ~ [File a bug](https://github.com/decentralized-identity/didcomm-messaging/issues)
 ~ [Commit history](https://github.com/decentralized-identity/didcomm-messaging/commits/master)
 
-Testing: 2
+Testing: 3
 
 ------------------------------------
