@@ -29,3 +29,12 @@ The attributes of a DIDComm Message are as follows:
 - **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.
 - **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is no longer valid, and is to be used by the recipient to discard expired messages on receipt.
 
+When the sender is rotating their _from_ DID, additional fields are required to link the new did (present in **from**) and the prior DID:
+
+- **from_prior**: The previously used DID.
+- **from_provenance**: The signature of the new **from** DID with an authorized key of the DID in **from_prior**. 
+
+TODO: Define the format of the from_provenance attribute. JWT? 
+
+This method  is only needed when moving from one DID to another. Updating a DID should be performed according to the DID method update procedure. 
+
