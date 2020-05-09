@@ -67,11 +67,11 @@ In contrast, a __relay__ is an entity that passes along encrypted messages witho
 Like mediators, relays can be used to change the transport for a message (e.g., accept an HTTP POST, then turn around and emit an email; accept a Bluetooth transmission, then turn around and emit something in a message queue). But unlike mediators, relays can do this without understanding DIDComm. Load balancers and mix networks like TOR are important types of relay.
 
 Let's define mediators and relays by exploring how they manifest in a series of communication scenarios between Alice and Bob.
- 
+
 #### Scenario 1: direct
 
 Alice and Bob are both employees of a large corporation. They work in the same office, but have never met. The office has a rule that all messages between employees must be encrypted. They use paper messages and physical delivery as the transport. Alice writes a note, encrypts it so only Bob can read it, puts it in an envelope addressed to Bob, and drops the envelope on a desk that she has been told belongs to Bob. This desk is in fact Bob's, and he later picks up the message, decrypts it, and reads it.
- 
+
 ![routing scenario 1: direct](/collateral/routing-scenario-1.png)
 
 In this scenario, there is no mediator, and no relay.
@@ -79,7 +79,7 @@ In this scenario, there is no mediator, and no relay.
 #### Scenario 2: a gatekeeper
 
 Imagine that Bob hires an executive assistant, Carl, to filter his mail. Bob won't open any mail unless Carl looks at it and decides that it's worthy of Bob's attention.
- 
+
 Alice has to change her behavior. She continues to package a message for Bob, but now she must account for Carl as well. She take the envelope for Bob, and places it inside a new envelope addressed to Carl. Inside the outer envelope, and next to the envelope destined for Bob, Alice writes Carl an encrypted note: "This inner envelope is for Bob. Please forward."
 
 ![routing scenario 2: mediator](/collateral/routing-scenario-2.png)
@@ -103,9 +103,9 @@ Like scenario 3, Darla brings Bob his mail at home. However, Bob isn't at home w
 ![routing scenario 4: many relays](/collateral/routing-scenario-4.png)
 
 Here, Emil and Francis are also acting as relays. Note that *nobody knows about the full route*. Alice thinks she's delivering directly to Bob. So does Darla. Bob knows about Darla and Emil, but not about Francis.
- 
+
 Note, too, how the transport is changing from physical mail to email to text.
- 
+
 To the party immediately upstream (closer to the sender), a relay is indistinguishable from the next party downstream (closer to the recipient). A party anywhere in the chain can insert one or more relays upstream from themselves, as long as those relays are not upstream of another named party (sender or mediator).
 
 ##### More Scenarios
@@ -184,7 +184,7 @@ There are 3 roles in the protocol: `sender`, `mediator`, and `recipient`. The se
 >Note: When the mediator is the routing agent of a single identity subject like Alice, the logical receiver is Alice herself, but the physical receiver may manifest as multiple edge devices (a phone, a laptop, a tablet). From the perspective of this protocol, multiplexing the send from mediator to receiver is out of scope for interoperability--compatible and fully supported, but not required or specified in any way.
 
 In this protocol, the sender and the receiver never interact directly; they only interact via the mediator.
-  
+
 The sender can decorate the `forward` message in standard DIDComm ways: using [`~timing.expires_time`, `~timing.delay_milli` and `~timing.wait_until_time`](https://github.com/hyperledger/aries-rfcs/blob/master/features/0032-message-timing/README.md#tutorial) to introduce timeouts and delays, and so forth. However, the mediator is NOT required to support or implement any of these mixin semantics; only the core forwarding behavior is indispensable. If a mediator sees a decorator that requests behavior it doesn't support, it MAY return a [`problem-report`](https://github.com/hyperledger/aries-rfcs/blob/master/features/0035-report-problem/README.md) to the sender identifying the unsupported feature, but it is not required to do so, any more than other recipients of DIDComm messages would be required to complain about unsupported decorators in messages they receive.
 
 >One particular decorator is worth special mention here: [`~please_ack`](https://github.com/hyperledger/aries-rfcs/blob/master/features/0015-acks/README.md#requesting-an-ack-please_ack). This decorator is intended to be processed by ultimate recipients, not mediators. It imposes a burden of backward-facing communication that mediators should not have. Furthermore, it may be used to probe a delivery chain in a way that risks privacy for the receiver. Therefore, senders SHOULD NOT use this, and mediators SHOULD NOT honor it if present. If a sender wishes to troubleshoot, the [message tracing](https://github.com/hyperledger/aries-rfcs/blob/master/features/0034-message-tracing/README.md) mechanism is recommended.
@@ -268,7 +268,7 @@ The `mix` property is discussed next.
 Normally, the payload attached to the `forward` message received by the mediator is transmitted directly to the receiver with no further packaging. However, optionally, the mediator can attach the opaque payload to a new `forward` message, which then acts as a fresh outer envelope for the second half of the delivery. This [rewrapping](#rewrapping) means that the "onion" of packed messages stays the same size rather than getting smaller as a result of the forward operation:
 
 ![re-wrapped sequence](/collateral/routing-roles-2.png)
- 
+
 Rewrapping mode is invisible to senders, but mediators need to know about it, since they change their behavior as a result. Receivers also need to know about it, because it causes them to receive a double-packaged message instead of a singly-packaged one. The outer envelope is a `forward` message where `to` is the receiver itself.
 
 Why is such indirection useful?
@@ -277,9 +277,35 @@ Why is such indirection useful?
 * It lets the mediator remain uncommitted to whether the next receiver is another mediator or not. This may provide flexibility in some routing scenarios.
 * It lets the mediator change the size of the message by adding or subtracting noise from the content. 
 * It allows for dynamic routing late in the delivery chain.
- 
+
 These last two characteristics are the foundation of mix networking feature for DIDComm. That feature is the subject of a different RFC; here we only note the existence of the optional feature. 
 
 
-### DID Docs and Routing
+### DID Document Service Endpoint
+DIDComm DID Document endpoints have the following format:
+
+```json
+{
+    "id": "did:example:123456789abcdefghi#didcomm-1",
+    "type": "DIDComm",
+    "publicKey": "did:example:123456789abcdefghi#key-1",
+    "serviceEndpoint": "http://example.com/path",
+    "routingKeys": ["did:example:somemediator#somekey"]
+}
+```
+
+**id**: must be unique, as required in [DID Core](https://www.w3.org/TR/did-core/#service-endpoints). No special meaning should be inferred from the `id` chosen.
+
+**type**: MUST be `DIDComm`. 
+
+**publicKey**: MUST specify the key to be used when encrypting a message to be sent to this endpoint.
+
+**serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec.
+
+**routingKeys**: An optional list of keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec.
+
+#### Multiple Endpoints
+
+A DID Document may contain multiple service entries of type `DIDComm`. Unless otherwise specified, messages should be sent to endpoints in the order they are specified.
+
 [TODO: discuss how routing info is exposed in a DID doc, and how it is conveyed in "ephemeral mode" where no DID doc is available.]
