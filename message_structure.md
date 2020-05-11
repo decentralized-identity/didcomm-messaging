@@ -9,7 +9,7 @@ The following example shows common elements of a DIDComm Message. Further detail
     "@id": "1234567890",
     "@type": "<message-type-uri>",
     "from": "did:example:alice",
-    "to": "did:example:bob",
+    "to": ["did:example:bob"],
     "created_time": "1516269022",
     "expires_time": "1516269022",
     "body": {
