@@ -288,7 +288,7 @@ DIDComm DID Document endpoints have the following format:
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDComm",
-    "publicKey": "did:example:123456789abcdefghi#key-1",
+    "publicKeys": ["did:example:123456789abcdefghi#key-1"],
     "serviceEndpoint": "http://example.com/path",
     "routingKeys": ["did:example:somemediator#somekey"]
 }
@@ -298,7 +298,7 @@ DIDComm DID Document endpoints have the following format:
 
 **type**: MUST be `DIDComm`. 
 
-**publicKey**: MUST specify the key to be used when encrypting a message to be sent to this endpoint.
+**publicKey**s: MUST be an array of strings, to specify the keys to be used when encrypting a message to be sent to this endpoint.
 
 **serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec.
 
