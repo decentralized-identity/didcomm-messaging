@@ -280,15 +280,18 @@ Why is such indirection useful?
 
 These last two characteristics are the foundation of mix networking feature for DIDComm. That feature is the subject of a different RFC; here we only note the existence of the optional feature. 
 
+### DID Document Keys
+
+TODO: include details about how DIDComm keys are represented/identified in the DID Document.
 
 ### DID Document Service Endpoint
+
 DIDComm DID Document endpoints have the following format:
 
 ```json
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDComm",
-    "publicKeys": ["did:example:123456789abcdefghi#key-1"],
     "serviceEndpoint": "http://example.com/path",
     "routingKeys": ["did:example:somemediator#somekey"]
 }
@@ -298,11 +301,9 @@ DIDComm DID Document endpoints have the following format:
 
 **type**: MUST be `DIDComm`. 
 
-**publicKey**s: MUST be an array of strings, to specify the keys to be used when encrypting a message to be sent to this endpoint.
-
 **serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec.
 
-**routingKeys**: An optional list of keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec.
+**routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec. 
 
 #### Multiple Endpoints
 
