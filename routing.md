@@ -282,7 +282,9 @@ These last two characteristics are the foundation of mix networking feature for 
 
 ### DID Document Keys
 
-TODO: include details about how DIDComm keys are represented/identified in the DID Document.
+All keys declared in the DID Document's `keyAgreement` section should be used to encrypt messages. The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
+
+TODO: include details about how DIDComm keys are represented/identified in the DID Document. The DID Core Spec appears light on details and examples of `keyAgreement` keys. Clarifying language should be included here or there.
 
 ### DID Document Service Endpoint
 
