@@ -10,8 +10,8 @@ The following example shows common elements of a DIDComm Message. Further detail
     "type": "<message-type-uri>",
     "from": "did:example:alice",
     "to": ["did:example:bob"],
-    "created_time": "1516269022",
-    "expires_time": "1516269022",
+    "created_time": 1516269022,
+    "expires_time": 1516385931,
     "body": {
     	"messagespecificattribute": "and it's value"
 	}
