@@ -11,17 +11,19 @@ When a sender would like to encrypt a message for a recipient or multiple recipi
 
 For the keys involved in key agreement, the following elliptic curves MUST be supported.
 
-|Curve |Description                                                                                                                        |
-|------|-----------------------------------------------------------------------------------------------------------------------------------|
-|X25519|The underlying curve is actually `Curve25519`, however when used in the context of diffie helman the identifier of `X25519` is used|
-|P-256 |NIST defined P-256 elliptic curve                                                                                                  |
+| Curve  | Description                                                  |
+| ------ | ------------------------------------------------------------ |
+| X25519 | The underlying curve is actually `Curve25519`, however when used in the context of Diffie-Hellman the identifier of `X25519` is used |
+| P-256  | NIST defined P-256 elliptic curve                            |
 
 For content encryption of the message, the following algorithms MUST be supported.
 
-|Algorithm(JWA) |Description                                          |
-|---------------|-----------------------------------------------------|
-|C20P           |ChaCha20Poly1305                                     |
-|AES-GCM        |Advanced Encryption Standard with galois/counter mode|
+| Algorithm(JWA) | Description                                           |
+| -------------- | ----------------------------------------------------- |
+| XC20P          | XChaCha20Poly1305                                     |
+| AES-GCM        | Advanced Encryption Standard with galois/counter mode |
+
+TODO: Include language about safe nonce considerations.
 
 ### Anonymous Encryption
 
@@ -29,17 +31,19 @@ When a sender would like to encrypt a message for a recipient or multiple recipi
 
 For the keys involved in key agreement, the following elliptic curves MUST be supported.
 
-|Curve |Description                                                                                                                        |
-|------|-----------------------------------------------------------------------------------------------------------------------------------|
-|X25519|The underlying curve is actually `Curve25519`, however when used in the context of diffie helman the identifier of `X25519` is used|
-|P-256 |NIST defined P-256 elliptic curve                                                                                                  |
+| Curve  | Description                                                  |
+| ------ | ------------------------------------------------------------ |
+| X25519 | The underlying curve is actually `Curve25519`, however when used in the context of Diffie-Hellman the identifier of `X25519` is used |
+| P-256  | NIST defined P-256 elliptic curve                            |
 
 For content encryption of the message, the following algorithms MUST be supported.
 
-|Algorithm(JWA) |Description                                          |
-|---------------|-----------------------------------------------------|
-|C20P           |ChaCha20Poly1305                                     |
-|AES-GCM        |Advanced Encryption Standard with galois/counter mode|
+| Algorithm(JWA) | Description                                           |
+| -------------- | ----------------------------------------------------- |
+| XC20P          | XChaCha20Poly1305                                     |
+| AES-GCM        | Advanced Encryption Standard with galois/counter mode |
+
+TODO: Include language about safe nonce considerations.
 
 ### Examples
 
