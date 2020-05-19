@@ -18,6 +18,7 @@
         "scope.md",
         "requirements.md",
         "processing_model.md",
+		"message_structure.md",
 		"encryption.md",
         "routing.md",
         "transports.md",
