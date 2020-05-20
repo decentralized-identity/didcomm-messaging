@@ -280,11 +280,27 @@ Why is such indirection useful?
 
 These last two characteristics are the foundation of mix networking feature for DIDComm. That feature is the subject of a different RFC; here we only note the existence of the optional feature. 
 
+### Sender Forward Process
+
+1. Sender Constructs Message
+2. Sender Encrypts Message to recipient(s)
+3. Wrap Encrypted Message in Forward Message for each Routing Key.
+4. Transmit to `serviceEndpoint` in the manner specified in the [transports] section.
+
+### Mediator Process
+
+_Prior to using a Mediator, it is the recipient's responsibility to coordinate with the mediator. Part of this coordination informs them of the `to` address(es) expected, the endpoint, and any Routing Keys to be used when forwarding messages. That coordination is out of the scope of this spec._
+
+1. Receives Forward Message
+2. Retrieves Service Endpoint and Routing Keys as pre-configured by recipient (`to` attribute).
+3. Wrap attached `payload` message once per Routing Key
+4. Transmit to Service Endpoint in the manner specified in the [transports] section.
+
 ### DID Document Keys
 
 All keys declared in the DID Document's `keyAgreement` section should be used to encrypt messages. The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
 
-Keys used in a signed JWM are declared in the DID Document's `authenication` section.
+Keys used in a signed JWM are declared in the DID Document's `authentication` section.
 
 TODO: include details about how DIDComm keys are represented/identified in the DID Document. The DID Core Spec appears light on details and examples of `keyAgreement` keys. Clarifying language should be included here or there.
 
@@ -305,12 +321,51 @@ DIDComm DID Document endpoints have the following format:
 
 **type**: MUST be `DIDComm`. 
 
-**serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec.
+**serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints.
 
 **routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec. 
 
 #### Multiple Endpoints
 
 A DID Document may contain multiple service entries of type `DIDComm`. Unless otherwise specified, messages should be sent to endpoints in the order they are specified.
+
+#### Alternative Endpoints
+
+In addition to the URIs for [transports], some alternative forms are available.
+
+##### DID
+
+Using a DID for the `serviceEndpoint` is useful when using a mediator. The DID should be resolved, and services with type of "DIDComm" will contain valid `serviceEndpoints`. The keyAgreement keys of that DID Document should be appended at the end of the routingKeys section from the message recipient's DID Document as per the process in [Sender Forward Process]. The key advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients` DID Documents.
+
+A DID used as a mediator in this way MUST NOT use alternative endpoints. Only URIs described in [transports] are acceptable.
+
+Example 1: Mediator
+
+```json
+{
+    "id": "did:example:123456789abcdefghi#didcomm-1",
+    "type": "DIDComm",
+    "serviceEndpoint": "did:example:somemediator"
+}
+```
+The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDComm`.
+
+Example 2: Mediator + Routing Keys
+```json
+{
+    "id": "did:example:123456789abcdefghi#didcomm-1",
+    "type": "DIDComm",
+    "serviceEndpoint": "did:example:somemediator",
+    "routingKeys": ["did:example:anothermediator#somekey"]
+}
+```
+
+The message is encrypted to the recipient, then wrapped in a forward message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDComm`.
+
+##### Queue
+
+TODO: Does the queue fit here as an alternate URI?
+
+
 
 [TODO: discuss how routing info is exposed in a DID doc, and how it is conveyed in "ephemeral mode" where no DID doc is available.]
