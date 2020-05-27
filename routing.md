@@ -282,8 +282,8 @@ These last two characteristics are the foundation of mix networking feature for 
 
 ### Sender Forward Process
 
-1. Sender Constructs Message
-2. Sender Encrypts Message to recipient(s)
+1. Sender Constructs Message.
+2. Sender Encrypts Message to recipient(s).
 3. Wrap Encrypted Message in Forward Message for each Routing Key.
 4. Transmit to `serviceEndpoint` in the manner specified in the [transports] section.
 
@@ -291,14 +291,14 @@ These last two characteristics are the foundation of mix networking feature for 
 
 _Prior to using a Mediator, it is the recipient's responsibility to coordinate with the mediator. Part of this coordination informs them of the `to` address(es) expected, the endpoint, and any Routing Keys to be used when forwarding messages. That coordination is out of the scope of this spec._
 
-1. Receives Forward Message
-2. Retrieves Service Endpoint and Routing Keys as pre-configured by recipient (`to` attribute).
-3. Wrap attached `payload` message once per Routing Key
+1. Receives Forward Message.
+2. Retrieves Service Endpoint and (optionally) Routing Keys as pre-configured by recipient (`to` attribute).
+3. If Routing Keys pre-configured (step 2), wrap attached `payload` message once per Routing Key.
 4. Transmit to Service Endpoint in the manner specified in the [transports] section.
 
 ### DID Document Keys
 
-All keys declared in the DID Document's `keyAgreement` section should be used to encrypt messages. The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
+All keys declared in the DID Document's `keyAgreement` section should be used as recipients when encrypting a message. The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
 
 Keys used in a signed JWM are declared in the DID Document's `authentication` section.
 
@@ -321,13 +321,13 @@ DIDComm DID Document endpoints have the following format:
 
 **type**: MUST be `DIDComm`. 
 
-**serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. Endpoints from the [transports] section SHOULD be used only for the reception of DIDComm messages.
+**serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
 **routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec. 
 
 #### Multiple Endpoints
 
-A DID Document may contain multiple service entries of type `DIDComm`. Unless otherwise specified, messages should be sent to endpoints in the order they are specified.
+A DID Document may contain multiple service entries of type `DIDComm`. Entries are SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.
 
 #### Alternative Endpoints
 
