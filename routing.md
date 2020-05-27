@@ -321,7 +321,7 @@ DIDComm DID Document endpoints have the following format:
 
 **type**: MUST be `DIDComm`. 
 
-**serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints.
+**serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. Endpoints from the [transports] section SHOULD be used only for the reception of DIDComm messages.
 
 **routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec. 
 
@@ -337,7 +337,7 @@ In addition to the URIs for [transports], some alternative forms are available.
 
 Using a DID for the `serviceEndpoint` is useful when using a mediator. The DID should be resolved, and services with type of "DIDComm" will contain valid `serviceEndpoints`. The keyAgreement keys of that DID Document should be appended at the end of the routingKeys section from the message recipient's DID Document as per the process in [Sender Forward Process]. The key advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients` DID Documents.
 
-A DID used as a mediator in this way MUST NOT use alternative endpoints. Only URIs described in [transports] are acceptable.
+A DID used as a mediator in this way SHOULD NOT use alternative endpoints. Only URIs described in [transports] are should be used to avoid recursive lookups.
 
 Example 1: Mediator
 
