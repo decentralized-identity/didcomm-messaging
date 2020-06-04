@@ -18,10 +18,10 @@ For the keys involved in key agreement, the following elliptic curves MUST be su
 
 For content encryption of the message, the following algorithms MUST be supported.
 
-| Algorithm(JWA) | Description                                           |
-| -------------- | ----------------------------------------------------- |
-| XC20P          | XChaCha20Poly1305                                     |
-| AES-GCM        | Advanced Encryption Standard with galois/counter mode |
+| Algorithm(JWA) | Description                |
+| -------------- | -------------------------- |
+| XC20P          | XChaCha20Poly1305          |
+| A256GCM        | AES-GCM with a 256 bit key |
 
 TODO: Include language about safe nonce considerations.
 
@@ -38,10 +38,10 @@ For the keys involved in key agreement, the following elliptic curves MUST be su
 
 For content encryption of the message, the following algorithms MUST be supported.
 
-| Algorithm(JWA) | Description                                           |
-| -------------- | ----------------------------------------------------- |
-| XC20P          | XChaCha20Poly1305                                     |
-| AES-GCM        | Advanced Encryption Standard with galois/counter mode |
+| Algorithm(JWA) | Description                |
+| -------------- | -------------------------- |
+| XC20P          | XChaCha20Poly1305          |
+| A256GCM        | AES-GCM with a 256 bit key |
 
 TODO: Include language about safe nonce considerations.
 
