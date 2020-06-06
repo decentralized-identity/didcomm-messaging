@@ -1,6 +1,8 @@
 ## Message Structure
 
-DIDComm Messages are based on JWM (JSON Web Messages). A message has a basic structure that specifies the message type, id, and other attributes common to all messages. A message also includes attributes specific to the message type. Prior to being sent to a recipient, the JWM is encrypted into a JWE according to the JWM spec.
+DIDComm Messages are based on JWM (JSON Web Messages). A message has a basic structure that specifies the message type, id, and other attributes common to all messages. These common attributes appear at the top level of a DIDComm message, and are called headers. A message also includes attributes specific to the message type. Type specific message attributes are contained within the `body` attribute of a message.
+
+Prior to being sent to a recipient, the JWM is encrypted into a JWE according to the JWM spec.
 
 The following example shows common elements of a DIDComm Message. Further details and advanced usage are covered elsewhere in this spec.
 
@@ -37,5 +39,42 @@ Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), DIDComm expl
 
 The body of a message -- everything inside the `body` object -- is different. Here, there is substantial variety and complexity. Structures may be sophisticated graphs, represented with nested objects and arrays. JSON-LD is not required at this level, either. However, it is available, and may be appropriate for certain use cases where extensibility is an important feature. JSON-LD usage, if it occurs, SHOULD be a declared feature of a protocol as a whole, not an ad hoc extension to arbitrary individual messages, and MUST be signalled by the inclusion of a `@context` inside `body`. Unless a protocol declares a JSON-LD dependency, the same rules apply to JSON-LD-isms as apply to any other unrecognized structure in a DIDComm message: additional fields can be added to any part of message structure, should be ignored if not understood, and MUST NOT be the basis of failure by recipients.
 
-   
+### DID Rotation
+
+DIDComm is based on DIDs and their associated DID Documents. Changes to keys and endpoints are the concern of each DID method and are utilized but not managed by DIDComm. DID Rotation serves a very specific and narrow need to switch from one DID method to another. This is very common at the beginning of a new DIDComm relationship when a public DID or a temporary DID passed unencrypted is rotated out for a DID chosen for the relationship. As rotation between one DID and another is outside the scope of any DID method, the details of DID Rotation are handled within DIDComm itself.
+
+When a DID is rotated, the new DID is put into immediate use encrypting the message, and two additional attributes are included as message headers:
+
+- **from_prior**: The previously used DID.
+- **from_provenance**: The signature of the new **from** DID with an authorized key of the DID in **from_prior**.
+
+When a message is received from an unknown DID, the recipient should check for existence of the `from_prior` header containing a known DID. The `from_provenance` attribute is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information should be used for further communication.  
+
+The two `from_*` attributes should be included in messages sent until the party rotating receives a message sent to the new DID. If multiple messages are received to containing the rotation headers after being processed by the recipient, they may be ignored.
+
+#### Provenance
+
+TODO: Include details of `from_provenance` signature construction.
+
+#### Example Message Rotating DID
+
+```json
+{
+    "id": "1234567890",
+    "type": "<message-type-uri>",
+    "from": "did:example:alice2",
+    "from_prior": "did:example:alice",
+    "from_provenance": "<signature of did:example:alice2 from did:example:alice>",
+    "to": ["did:example:bob"],
+    "created_time": 1516269022,
+    "expires_time": 1516385931,
+    "body": {
+    	"messagespecificattribute": "and it's value"
+	}
+}
+```
+
+#### Rotation Limitations
+
+TODO: Include language describing the relationship management aspects of DIDComm that are out of scope for this spec and belong in a protocol.
 
