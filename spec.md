@@ -4,6 +4,7 @@
 * [Requirements](requirements.md)
 * [Processing Model](processing_model.md)
 * [Message Structure](message_structure.md)
+* [Encryption](encryption.md)
 * [Routing](routing.md)
 * [Transports](transports.md)
 * [Advanced Message Passing](advanced_message_passing.md)
