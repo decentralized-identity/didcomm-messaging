@@ -12,7 +12,7 @@
         "repo": "didcomm-messaging"
       },
       "output_path": "./docs/spec",
-      "spec_directory": "./",
+      "spec_directory": "./www/spec",
       "markdown_paths": [
         "title.md",
         "scope.md",
