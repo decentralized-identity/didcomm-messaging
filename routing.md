@@ -292,9 +292,10 @@ These last two characteristics are the foundation of mix networking feature for 
 _Prior to using a Mediator, it is the recipient's responsibility to coordinate with the mediator. Part of this coordination informs them of the `to` address(es) expected, the endpoint, and any Routing Keys to be used when forwarding messages. That coordination is out of the scope of this spec._
 
 1. Receives Forward Message.
-2. Retrieves Service Endpoint and (optionally) Routing Keys as pre-configured by recipient (`to` attribute).
-3. If Routing Keys pre-configured (step 2), wrap attached `payload` message once per Routing Key.
-4. Transmit to Service Endpoint in the manner specified in the [transports] section.
+2. Retrieves Service Endpoint pre-configured by recipient (`to` attribute).
+4. Transmit `payload` message to Service Endpoint in the manner specified in the [transports] section.
+
+The recipient (`to` attribute of Forward Message) may have pre-configured additional routing keys with the mediator. If this is the case, the mediator should wrap the attached `payload` message into an additional Forward message once per routing key. This step is performed between (2) and (3).
 
 ### DID Document Keys
 
