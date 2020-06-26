@@ -43,18 +43,39 @@ The body of a message -- everything inside the `body` object -- is different. He
 
 DIDComm is based on DIDs and their associated DID Documents. Changes to keys and endpoints are the concern of each DID method and are utilized but not managed by DIDComm. DID Rotation serves a very specific and narrow need to switch from one DID method to another. This is very common at the beginning of a new DIDComm relationship when a public DID or a temporary DID passed unencrypted is rotated out for a DID chosen for the relationship. As rotation between one DID and another is outside the scope of any DID method, the details of DID Rotation are handled within DIDComm itself.
 
-When a DID is rotated, the new DID is put into immediate use encrypting the message, and two additional attributes are included as message headers:
+When a DID is rotated, the new DID is put into immediate use encrypting the message, and one additional attribute is included as a message header:
 
-- **from_prior**: The previously used DID.
-- **from_provenance**: The signature of the new **from** DID with an authorized key of the DID in **from_prior**.
+- **from_prior**: A JWT, with with `sub`: new DID and `iss`: prior DID, with a signature from a key authorized by prior DID.
 
-When a message is received from an unknown DID, the recipient should check for existence of the `from_prior` header containing a known DID. The `from_provenance` attribute is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information should be used for further communication.  
+When a message is received from an unknown DID, the recipient should check for existence of the `from_prior` header. The JWT in the`from_prior` attribute is used to extract the prior DID (`iss`) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information should be used for further communication.  
 
-The two `from_*` attributes should be included in messages sent until the party rotating receives a message sent to the new DID. If multiple messages are received to containing the rotation headers after being processed by the recipient, they may be ignored.
+The `from_prior` attribute should be included in messages sent until the party rotating receives a message sent to the new DID. If multiple messages are received to containing the rotation headers after being processed by the recipient, they may be ignored.
 
-#### Provenance
+#### JWT Details
 
-TODO: Include details of `from_provenance` signature construction.
+The JWT is constructed as follows, with appropriate values changed.
+
+Header:
+
+```json
+{
+  "typ": "JWT",
+  "alg": "EdDSA",
+  "crv": "ED25519"
+}
+```
+
+Payload:
+
+```json
+{
+  "sub": "<new DID>",
+  "iss": "<prior DID>",
+  "iat": 1516239022 //datetime of the rotation, not message
+}
+```
+
+
 
 #### Example Message Rotating DID
 
@@ -63,8 +84,7 @@ TODO: Include details of `from_provenance` signature construction.
     "id": "1234567890",
     "type": "<message-type-uri>",
     "from": "did:example:alice2",
-    "from_prior": "did:example:alice",
-    "from_provenance": "<signature of did:example:alice2 from did:example:alice>",
+    "from_prior": "<JWT with sub:did:example:alice2 and iss:did:example:alice>",
     "to": ["did:example:bob"],
     "created_time": 1516269022,
     "expires_time": 1516385931,
