@@ -337,7 +337,7 @@ In addition to the URIs for [transports], some alternative forms are available.
 
 Using a DID for the `serviceEndpoint` is useful when using a mediator. The DID should be resolved, and services with type of "DIDComm" will contain valid `serviceEndpoints`. The keyAgreement keys of that DID Document should be appended at the end of the routingKeys section from the message recipient's DID Document as per the process in [Sender Forward Process]. The key advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients` DID Documents.
 
-A DID used as a mediator in this way SHOULD NOT use alternative endpoints. Only URIs described in [transports] are should be used to avoid recursive lookups.
+A DID representing a mediator SHOULD NOT use alternative endpoints in it's own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [transports] will prevent such recursion.
 
 Example 1: Mediator
 
