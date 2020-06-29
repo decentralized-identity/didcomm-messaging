@@ -1,12 +1,12 @@
 ### Protocols
 
-*(These are mostly out of scope, but we need to describe at least one protocol to show how the layer above DIDComm builds on DIDComm constructs. This section should be short.)*
+DIDComm serves as a foundational layer for the development of protocols. This spec does not include protocols themselves, but describes the basic requirements and foundational elements.
 
-
+Each Protocol is uniquely identified by a Protocol Identifier URI, and contains one or more messages identified by a Message Type URI. In addition to serving as a unique identifier, the URIs may be used by a developer to locate documentation.
 
 #### Protocol Identifier URI
 
-A Protocol Type URI identifies protocol versions unambiguously.  Additionally, Protocol Type URIs may be used by a developer to locate documentation about a protocol. 
+A Protocol Identifier URI identifies protocol versions unambiguously.  Additionally, Protocol Identifier URIs may be used by a developer to locate documentation about a protocol. 
 
 The URI must be composed as follows:
 ```
