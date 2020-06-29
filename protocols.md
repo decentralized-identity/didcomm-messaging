@@ -6,7 +6,7 @@ Each Protocol is uniquely identified by a Protocol Identifier URI, and contains 
 
 #### Protocol Identifier URI
 
-A Protocol Identifier URI identifies protocol versions unambiguously.  Additionally, Protocol Type URIs may be used by a developer to locate documentation about a protocol. 
+A Protocol Identifier URI identifies protocol versions unambiguously.  Additionally, Protocol Identifier URIs may be used by a developer to locate documentation about a protocol. 
 
 The URI must be composed as follows:
 ```
