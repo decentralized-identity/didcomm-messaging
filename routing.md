@@ -295,7 +295,7 @@ _Prior to using a Mediator, it is the recipient's responsibility to coordinate w
 2. Retrieves Service Endpoint pre-configured by recipient (`to` attribute).
 4. Transmit `payload` message to Service Endpoint in the manner specified in the [transports] section.
 
-The recipient (`to` attribute of Forward Message) may have pre-configured additional routing keys with the mediator. If this is the case, the mediator should wrap the attached `payload` message into an additional Forward message once per routing key. This step is performed between (2) and (3).
+The recipient (`to` attribute of Forward Message) may have pre-configured additional routing keys with the mediator that were not present in the DID Document and therefore unknown to the original sender. If this is the case, the mediator should wrap the attached `payload` message into an additional Forward message once per routing key. This step is performed between (2) and (3).
 
 ### DID Document Keys
 
