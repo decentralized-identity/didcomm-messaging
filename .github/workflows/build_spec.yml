@@ -6,7 +6,7 @@ name: Build Spec
 # events but only for the master branch
 on:
   push:
-    branches: 
+    branches:
       - master
 
 jobs:
@@ -28,4 +28,4 @@ jobs:
       with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: . # The folder the action should deploy.
+          FOLDER: ./docs/spec # The folder the action should deploy.
