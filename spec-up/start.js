@@ -16,14 +16,16 @@ let init = async () => {
   try {
     let projectPath = await pkg(__dirname);
     let json = await fs.readJson(projectPath + '/specs.json');
-    json.specs.forEach(config => {
-      config.spec_directory = normalizePath(config.spec_directory);
+    json.specs.forEach(async config => {
+      config.spec_directory = normalizePath(config.spec_directory);    
       config.destination = normalizePath(config.output_path || config.spec_directory);
-      config.destinationResourcePrefix = getRelativePrefix(config.destination);
+      await fs.ensureDir(config.destination).catch(err => {
+        console.error(err)
+      });
       config.rootResourcePrefix = './';
+      config.destinationResourcePrefix = getRelativePrefix(normalizePath(config.destination).replace(normalizePath(json.public_root || '') || null, '/'));
       if (json.resource_path) {
-        let path = config.rootResourcePrefix = normalizePath(json.resource_path);
-        config.destinationResourcePrefix += path.replace(/^\/|^[./]+/, '');
+        config.rootResourcePrefix = normalizePath(json.resource_path);
       }
       if (!process.argv.includes('nowatch')) {
         gulp.watch(
