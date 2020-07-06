@@ -172,22 +172,36 @@
 <p>The body of a message – everything inside the <code>body</code> object – is different. Here, there is substantial variety and complexity. Structures may be sophisticated graphs, represented with nested objects and arrays. JSON-LD is not required at this level, either. However, it is available, and may be appropriate for certain use cases where extensibility is an important feature. JSON-LD usage, if it occurs, SHOULD be a declared feature of a protocol as a whole, not an ad hoc extension to arbitrary individual messages, and MUST be signalled by the inclusion of a <code>@context</code> inside <code>body</code>. Unless a protocol declares a JSON-LD dependency, the same rules apply to JSON-LD-isms as apply to any other unrecognized structure in a DIDComm message: additional fields can be added to any part of message structure, should be ignored if not understood, and MUST NOT be the basis of failure by recipients.</p>
 <h3 id="did-rotation"><a class="toc-anchor" href="#did-rotation">§</a> DID Rotation</h3>
 <p>DIDComm is based on DIDs and their associated DID Documents. Changes to keys and endpoints are the concern of each DID method and are utilized but not managed by DIDComm. DID Rotation serves a very specific and narrow need to switch from one DID method to another. This is very common at the beginning of a new DIDComm relationship when a public DID or a temporary DID passed unencrypted is rotated out for a DID chosen for the relationship. As rotation between one DID and another is outside the scope of any DID method, the details of DID Rotation are handled within DIDComm itself.</p>
-<p>When a DID is rotated, the new DID is put into immediate use encrypting the message, and two additional attributes are included as message headers:</p>
+<p>When a DID is rotated, the new DID is put into immediate use encrypting the message, and one additional attribute is included as a message header:</p>
 <ul>
-<li><strong>from_prior</strong>: The previously used DID.</li>
-<li><strong>from_provenance</strong>: The signature of the new <strong>from</strong> DID with an authorized key of the DID in <strong>from_prior</strong>.</li>
+<li><strong>from_prior</strong>: A JWT, with with <code>sub</code>: new DID and <code>iss</code>: prior DID, with a signature from a key authorized by prior DID.</li>
 </ul>
-<p>When a message is received from an unknown DID, the recipient should check for existence of the <code>from_prior</code> header containing a known DID. The <code>from_provenance</code> attribute is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information should be used for further communication.</p>
-<p>The two <code>from_*</code> attributes should be included in messages sent until the party rotating receives a message sent to the new DID. If multiple messages are received to containing the rotation headers after being processed by the recipient, they may be ignored.</p>
-<h4 id="provenance"><a class="toc-anchor" href="#provenance">§</a> Provenance</h4>
-<p>TODO: Include details of <code>from_provenance</code> signature construction.</p>
+<p>When a message is received from an unknown DID, the recipient should check for existence of the <code>from_prior</code> header. The JWT in the<code>from_prior</code> attribute is used to extract the prior DID (<code>iss</code>) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information should be used for further communication.</p>
+<p>The validity of the DID rotation is verified by checking the JWT signature against the key indicated in the <code>kid</code> header parameter. The indicated key MUST be authorized in the DID Document of the prior DID (<code>iss</code>).</p>
+<p>The <code>from_prior</code> attribute should be included in messages sent until the party rotating receives a message sent to the new DID. If multiple messages are received to containing the rotation headers after being processed by the recipient, they may be ignored.</p>
+<h4 id="jwt-details"><a class="toc-anchor" href="#jwt-details">§</a> JWT Details</h4>
+<p>The JWT is constructed as follows, with appropriate values changed.</p>
+<p><strong>Header</strong>:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"JWT"</span><span class="token punctuation">,</span>
+  <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"EdDSA"</span><span class="token punctuation">,</span>
+  <span class="token property">"crv"</span><span class="token operator">:</span> <span class="token string">"ED25519"</span><span class="token punctuation">,</span>
+  <span class="token property">"kid"</span><span class="token operator">:</span> <span class="token string">"&lt;key id authorized in prior DID>"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><strong>Payload</strong>:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"sub"</span><span class="token operator">:</span> <span class="token string">"&lt;new DID URI>"</span><span class="token punctuation">,</span>
+  <span class="token property">"iss"</span><span class="token operator">:</span> <span class="token string">"&lt;prior DID URI>"</span><span class="token punctuation">,</span>
+  <span class="token property">"iat"</span><span class="token operator">:</span> <span class="token number">1516239022</span> <span class="token comment">//datetime of the rotation, not message</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h4 id="example-message-rotating-did"><a class="toc-anchor" href="#example-message-rotating-did">§</a> Example Message Rotating DID</h4>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"&lt;message-type-uri>"</span><span class="token punctuation">,</span>
     <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice2"</span><span class="token punctuation">,</span>
-    <span class="token property">"from_prior"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
-    <span class="token property">"from_provenance"</span><span class="token operator">:</span> <span class="token string">"&lt;signature of did:example:alice2 from did:example:alice>"</span><span class="token punctuation">,</span>
+    <span class="token property">"from_prior"</span><span class="token operator">:</span> <span class="token string">"&lt;JWT with sub:did:example:alice2 and iss:did:example:alice>"</span><span class="token punctuation">,</span>
     <span class="token property">"to"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:bob"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     <span class="token property">"created_time"</span><span class="token operator">:</span> <span class="token number">1516269022</span><span class="token punctuation">,</span>
     <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token number">1516385931</span><span class="token punctuation">,</span>
@@ -197,7 +211,10 @@
 <span class="token punctuation">}</span>
 </code></pre>
 <h4 id="rotation-limitations"><a class="toc-anchor" href="#rotation-limitations">§</a> Rotation Limitations</h4>
-<p>TODO: Include language describing the relationship management aspects of DIDComm that are out of scope for this spec and belong in a protocol.</p>
+<ul>
+<li>This rotation method does not cover cases where a multi-sig is required. Rotations with such requirements should use a more expressive protocol.</li>
+<li>This rotation method only supports the case where a new DID is used, replacing an old DID which is no longer used. Adjustments to DIDs used between different parties that does not fit this narrow use should use a more expressive protocol.</li>
+</ul>
 <h2 id="message-encryption"><a class="toc-anchor" href="#message-encryption">§</a> Message Encryption</h2>
 <p>DIDComm supports two types of message encryption: Authenticated Sender Encryption and Anonymous Sender Encryption. Both forms are encrypted to the recipient, but only Authenticated Sender Encryption provides assurances of who the sender is.</p>
 <p>The encrypted form of a JWM is a JWE. The JOSE family defines <a href="https://tools.ietf.org/html/rfc7518">JSON Web Algorithms</a> (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs, rather it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed here.</p>
@@ -961,7 +978,7 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
 <ul>
 <li><a href="#did-rotation">DID Rotation</a>
 <ul>
-<li><a href="#provenance">Provenance</a></li>
+<li><a href="#jwt-details">JWT Details</a></li>
 <li><a href="#example-message-rotating-did">Example Message Rotating DID</a></li>
 <li><a href="#rotation-limitations">Rotation Limitations</a></li>
 </ul>
