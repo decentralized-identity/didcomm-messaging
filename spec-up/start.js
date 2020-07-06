@@ -2,7 +2,6 @@
 const gulp = require('gulp');
 const fs = require('fs-extra');
 const pkg = require('pkg-dir');
-const globby = require('globby');
 
 function getRelativePrefix(location){
   return (location.match(/\/[a-zA-Z0-9-\._]+/g) || []).map(() => '../').join('') || './';
@@ -12,9 +11,37 @@ function normalizePath(path){
   return path.trim().replace(/\/$/g, '') + '/';
 }
 
+var assets = {
+  head: {
+    css: [
+      'spec-up/css/custom-elements.css',
+      'spec-up/css/prism.css',
+      'spec-up/css/chart.css',
+      'spec-up/css/font-awesome.css',
+      'spec-up/css/index.css'
+    ],
+    js: [
+      'spec-up/js/utils.js',
+      'spec-up/js/custom-elements.js'
+    ]
+  },
+  body: {
+    js: [
+      'spec-up/js/markdown-it.js',
+      'spec-up/js/prism.js',
+      'spec-up/js/mermaid.js',
+      'spec-up/js/chart.js',
+      'spec-up/js/index.js'
+    ]
+  }
+};
+
+process.on('disconnect', () => process.exit(0));
+
 let init = async () => {
   try {
     let projectPath = await pkg(__dirname);
+    let options = JSON.parse(process.argv[2]);
     let json = await fs.readJson(projectPath + '/specs.json');
     json.specs.forEach(async config => {
       config.spec_directory = normalizePath(config.spec_directory);    
@@ -23,17 +50,38 @@ let init = async () => {
         console.error(err)
       });
       config.rootResourcePrefix = './';
-      config.destinationResourcePrefix = getRelativePrefix(normalizePath(config.destination).replace(normalizePath(json.public_root || '') || null, '/'));
+      let assetPrefix = config.destinationResourcePrefix = getRelativePrefix(normalizePath(config.destination).replace(normalizePath(json.public_root || '') || null, '/'));
+      if (options.dev) {
+        var assetTags = {
+          head: assets.head.css.map(path => {
+            return `<link href="${assetPrefix + path}" rel="stylesheet"/>`;
+          }).join('') + assets.head.js.map(path => {
+            return `<script src="${assetPrefix + path}"></script>`;
+          }).join(''),
+          body: assets.body.js.map(path => {
+            return `<script src="${assetPrefix + path}" data-manual></script>`;
+          }).join('')
+        }
+      }
+      else {
+        var assetTags = {
+          head:`<link href="${assetPrefix}spec-up/compiled/head.css" rel="stylesheet"/>
+                <script src="${assetPrefix}spec-up/compiled/head.js"></script>`,
+          body: `<script src="${assetPrefix}spec-up/compiled/body.js" data-manual></script>`
+        }
+      }
       if (json.resource_path) {
         config.rootResourcePrefix = normalizePath(json.resource_path);
       }
-      if (!process.argv.includes('nowatch')) {
+      if (!options.nowatch) {
         gulp.watch(
           [config.spec_directory + '**/*', '!' + config.destination + 'index.html'],
-          render.bind(null, config)
+          render.bind(null, config, assetTags)
         )
       }
-      render.call(null, config);
+      render.call(null, config, assetTags).then(() => {
+        if (options.nowatch) process.exit(0)
+      }).catch(() => process.exit(1));
     });
   }
   catch (e) {
@@ -115,7 +163,7 @@ function readMDFile(path, reject) {
   return fs.readFile(path, 'utf8').catch(e => reject(e));
 }
 
-async function render(config) {
+async function render(config, assets) {
   console.log('Rendering: ' + config.title);
   return new Promise(async (resolve, reject) => {
     Promise.all((config.markdown_paths || ['spec.md']).map(path => {
@@ -134,12 +182,7 @@ async function render(config) {
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
             <title>${config.title}</title>
-            <link href="${assetPrefix}spec-up/css/custom-elements.css" rel="stylesheet">
-            <link href="${assetPrefix}spec-up/css/prism.css" rel="stylesheet">
-            <link href="${assetPrefix}spec-up/css/chart.css" rel="stylesheet">
-            <link href="${assetPrefix}spec-up/css/font-awesome.css" rel="stylesheet">
-            <link href="${assetPrefix}spec-up/css/index.css" rel="stylesheet">
-            <script src="${assetPrefix}spec-up/js/custom-elements.js"></script>
+            ${assets.head}
           </head>
           <body features="${Object.keys(features).join(' ')}">
             
@@ -191,11 +234,7 @@ async function render(config) {
 
           </body>
           <script>window.specConfig = ${JSON.stringify(config)}</script>
-          <script src="${assetPrefix}spec-up/js/markdown-it.js"></script>
-          <script src="${assetPrefix}spec-up/js/prism.js" data-manual></script>
-          <script src="${assetPrefix}spec-up/js/mermaid.js"></script>
-          <script src="${assetPrefix}spec-up/js/chart.js"></script>
-          <script src="${assetPrefix}spec-up/js/index.js"></script>
+          ${assets.body}
         </html>
       `, function(err, data){
         if (err) reject(err);
