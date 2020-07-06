@@ -49,33 +49,34 @@ When a DID is rotated, the new DID is put into immediate use encrypting the mess
 
 When a message is received from an unknown DID, the recipient should check for existence of the `from_prior` header. The JWT in the`from_prior` attribute is used to extract the prior DID (`iss`) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information should be used for further communication.  
 
+The validity of the DID rotation is verified by checking the JWT signature against the key indicated in the `kid` header parameter. The indicated key MUST be authorized in the DID Document of the prior DID (`iss`). 
+
 The `from_prior` attribute should be included in messages sent until the party rotating receives a message sent to the new DID. If multiple messages are received to containing the rotation headers after being processed by the recipient, they may be ignored.
 
 #### JWT Details
 
 The JWT is constructed as follows, with appropriate values changed.
 
-Header:
+**Header**:
 
 ```json
 {
   "typ": "JWT",
   "alg": "EdDSA",
-  "crv": "ED25519"
+  "crv": "ED25519",
+  "kid": "<key id authorized in prior DID>"
 }
 ```
 
-Payload:
+**Payload**:
 
 ```json
 {
-  "sub": "<new DID>",
-  "iss": "<prior DID>",
+  "sub": "<new DID URI>",
+  "iss": "<prior DID URI>",
   "iat": 1516239022 //datetime of the rotation, not message
 }
 ```
-
-
 
 #### Example Message Rotating DID
 
@@ -96,5 +97,5 @@ Payload:
 
 #### Rotation Limitations
 
-TODO: Include language describing the relationship management aspects of DIDComm that are out of scope for this spec and belong in a protocol.
-
+- This rotation method does not cover cases where a multi-sig is required. Rotations with such requirements should use a more expressive protocol.
+- This rotation method only supports the case where a new DID is used, replacing an old DID which is no longer used. Adjustments to DIDs used between different parties that does not fit this narrow use should use a more expressive protocol.
