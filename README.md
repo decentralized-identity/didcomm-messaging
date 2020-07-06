@@ -7,7 +7,9 @@ This repo is where we develops specs and reference code to explain DIDComm Messa
 
 ### Artifacts
 
-Browse the latest draft of the spec [here](spec.md).
+Browse the latest rendered draft of the spec [here](https://identity.foundation/didcomm-messaging/docs/spec/).
+
+View the spec markdown outline [here](spec.md).
 
 
 ### Process
@@ -32,5 +34,5 @@ Our working group meets each Monday at 12 pm PST / 9 pm CET at https://zoom.us/j
 DIDComm Messaging is the first in a potential family of related specs; others could include DIDComm Streaming, DIDComm Multicast, and so forth. **DIDComm** is the common adjective for all of them, meaning that all will share DID mechanisms as the basis of security.
 
 
- 
+
 
