@@ -12,6 +12,14 @@ TODO:
 
 When passing a DIDComm Message between two parties, it is often useful to present a message in the form of a URL or encoded into the form of a QR code for scanning with a smartphone or other camera. The format for a QR code is simply the encoded URL form of a message.
 
+##### Privacy Considerations
+
+Any information passed via a URL or QR code is unencrypted, and may be observed by another party. This lack of privacy must be minded in two different ways.
+
+First, no private information may be passed in the message. Private information should be passed between parties in encrypted messages only. Any protocol message that contains private information should not be passed via URL or QR code.
+
+Second, any identifiers passed in a message sent via URL or QR code must no longer be considered private. Any DID used or other identifier no longer considered private MUST be rotated over a secure connection if privacy is required.
+
 ##### Standard Message Encoding
 
 Using a standard message encoding allows for easier interoperability between multiple projects and software platforms. Using a URL for that standard encoding provides a built in fallback flow for users who are unable to automatically process the message. Those new users will load the URL in a browser as a default behavior, and may be presented with instructions on how to install software capable of processing the message. Already onboarded users will be able to process the message without loading in a browser via mobile app URL capture, or via capability detection after being loaded in a browser.
@@ -74,8 +82,8 @@ DIDComm message URLs can be transferred via any method that can send text, inclu
 Example Email Message:
 
 ```email
-To: alice@alum.faber.edu
-From: studentrecords@faber.edu
+To: alice@example.com
+From: studentrecords@example.com
 Subject: Your request to connect and receive your graduate verifiable credential
 
 Dear Alice,
