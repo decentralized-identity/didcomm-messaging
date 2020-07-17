@@ -3,6 +3,7 @@
 TODO:
 
 * Deep linking
+* CHAPI
 * NFC
 * Wifi-Direct
 * Bluetooth
@@ -19,6 +20,10 @@ Any information passed via a URL or QR code is unencrypted, and may be observed 
 First, no private information may be passed in the message. Private information should be passed between parties in encrypted messages only. Any protocol message that contains private information should not be passed via URL or QR code.
 
 Second, any identifiers passed in a message sent via URL or QR code must no longer be considered private. Any DID used or other identifier no longer considered private MUST be rotated over a secure connection if privacy is required.
+
+##### Message Correlation
+
+The `id` of the message passed in a URL or a QR code is used to as the `thread_id` on a response sent by the recipient of this message. The response recipient can use the `thread_id` to correlate it with the original message.
 
 ##### Standard Message Encoding
 
@@ -118,3 +123,14 @@ It seems inevitable that the length of some DIDComm messages will be too long to
 A usable QR code will always be able to be generated from the shortened form of the URL.
 
 Note: Due to the privacy implications, a standard URL shortening service SHOULD NOT be used.
+
+#### Embedded Messages
+
+DIDComm messages may be passed within other messages are protocols when the outer message is passed in a secure way. When messages are passed in this way, they may be passed either as an encrypted message or in plain text. When in plain text format, messages should be represented in json format.
+
+##### Privacy Considerations
+
+When messages are passed in plain text, the privacy and security of the message is subject to the properties of the protocol and transport moving the messages. Extreme care must be taken to protect the message.
+
+
+
