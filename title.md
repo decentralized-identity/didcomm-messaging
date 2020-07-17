@@ -1,4 +1,4 @@
-DIF Comm Messaging Protocol
+DID Comm Messaging Protocol
 ==================
 
 **Specification Status:** Editor's Draft
