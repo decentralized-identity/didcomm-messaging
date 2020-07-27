@@ -13,7 +13,7 @@ The following section defines a JWM profile for DIDComm messages. This profile d
 - **id** - REQUIRED. Message ID. The `id` attribute value MUST be assigned in a manner that ensures that there is a negligible probability that the same value will be accidentally assigned to another DIDComm message.
 - **type** - REQUIRED. Message Type. The `type` attribute value MUST be a valid [MTURI](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/uris.md#mturi), that when resolved gives human readable information about the message. The attributes value also informs the content of the message, for example the presence of other attributes and how they should be processed.
 - **to** - OPTIONAL. Recipient(s) identifier. The `to` attribute MUST be an array of strings where each element is a valid [DID](https://w3c.github.io/did-core/#generic-did-syntax) which identifies the recipients of the message.
-- **from** - OPTIONAL. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/#generic-did-syntax) which identifies the sender of the message.
+- **from** - OPTIONAL. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/#generic-did-syntax) which identifies the sender of the message. The `from` field MUST be included if authentication of the DIDComm message is needed. See the [message authentication](#Message-Authentication) section for additional details.
 - **reply_url** - OPTIONAL. Reply url. The `reply_url` attribute value MUST be a string that is a valid [URL](https://tools.ietf.org/html/rfc3986) which identifies where the sender wishes the recipient(s) to send a reply.
 - **reply_to** - OPTIONAL. Reply to. The `reply_to` attribute value MUST be an array of strings where each element is a valid [DID URL](https://w3c.github.io/did-core/#generic-did-syntax) which identifies the recipients of the reply to the message.
 - **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message.
@@ -95,3 +95,22 @@ For digital signatures the following algorithms MUST be supported.
 ## Signed and Encrypted
 
 When a sender would like for their message to feature both a non-repudiable digital signature and be encrypted to a recipient or multiple recipients. They can combine the encryption and signing operations defined earlier in this section by creating a [nested JWM](https://tools.ietf.org/html/draft-looker-jwm-01#section-1.2).
+
+## Message Authentication
+
+Message authentication is a necessary property used to establish the identity of the parties sending and receiving messages. This is done through a variety of cryptographic methods, most commonly being the use of authenticated encryption with the secret key derived from the senders static public key and the recipients static public key. These checks are handled via the selection of different JWE and JWS algorithms and by making sure that the keys used are contained with the DID Documents of the associated identities.
+
+So, in order to validate the authenticity of the message, the recipient MUST validate that the keys used by the sender in the JWE and/or JWS are valid and within the did document of the expected decentralized identifier.
+
+To verify the authenticity of the message, the recipient MUST resolve a valid DID Document associated with the DID in the `from` field of the JWM message.
+
+In the case where [Sender Authenticated Encryption](#Sender-Authenticated-Encryption) is used, the recipient MUST then validate that the keys and key ids (kid) used in the JWE matches the keys and identifiers associated (via the did document) with the decentralized identifier. Additionally, when checking the keys in the did document, the recipient MUST also verify that the key is authorized by checking that the key identifier is located within the verification relationship property named `keyAgreement` in the DID Document.
+
+In the case of a [signed](#Signing) message, the recipient MUST then validate that the keys and key ids (kid) used in the JWS matches the keys and identifiers associated (via the did document) with the decentralized identifier. Additionally, when checking the keys in the did document, the recipient MUST also verify that the key is authorized by checking that the key identifier is located within the verification relationship property named `authentication` in the DID Document.
+
+In the case of a [nested](Signed-and-Encrypted) message the associated keys and key ids used in the JWS and JWE MUST be valid for the message to be considered authenticated. The recipient MUST validate that the key used for signing is authorized in the `authentication` section of the DID Document and the key used for authenticated encryption (JWE ECDH-1PU) is authorized in the `keyAgreement` section of the DID Document.
+
+While checking the authorization of the keys used, if the keys are not contained within the did document then the message SHOULD NOT be considered authenticated, even if the cryptographic operations succeeds.
+
+**Note** In general this check should always return an error when the keys cannot be authorized in the appropriate sections of the DID Document. The one scenario where this may present a problem is in the case where the recipient is trying to check the message when the sender has already updated their DID Document to remove and invalidate the keys used in the message. In this case, there's two approaches that should be considered. Either the recipient should return an error saying they weren't able to validate the message with the id of the message included in the error report and await the sender to resend the message. Or the recipient should resolve the did document of the message at the time the message was sent. Even though both of these approaches are valid, the first approach should take preference over the second approach because the recipient cannot be certain why the sender invalidated the keys.
+ 
