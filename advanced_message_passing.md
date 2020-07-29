@@ -25,6 +25,43 @@ Second, any identifiers passed in a message sent via URL or QR code must no long
 
 The `id` of the message passed in a URL or a QR code is used to as the `thread_id` on a response sent by the recipient of this message. The response recipient can use the `thread_id` to correlate it with the original message.
 
+##### Messages
+
+Each message passed this way must be contained within an `out-of-band` message, as described below.
+
+The out-of-band protocol a single message that is sent by the *sender*.
+
+#### Invitation: `https://didcomm.org/out-of-band/%VER/invitation`
+
+```jsonc
+{
+  "@type": "https://didcomm.org/out-of-band/%VER/invitation",
+  "@id": "<id used for context as pthid>",
+  "goal_code": "issue-vc",
+  "goal": "To issue a Faber College Graduate credential",
+  "request~attach": [
+    {
+        "@id": "request-0",
+        "mime-type": "application/json",
+        "data": {
+            "json": "<json of protocol message>"
+        }
+    }
+  ]
+}
+```
+
+The items in the message are:
+
+- `@type` - the DIDComm message type
+- `@id` - the unique ID of the message. The ID should be used as the **parent** thread ID (`pthid`) for the response message, rather than the more common thread ID (`thid`) of the response message. This enables multiple uses of a single out-of-band message.
+- `goal_code` - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.
+- `goal` - [optional] a self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.
+- `request~attach` - an attachment decorator containing an array of request messages in order of preference that the receiver can using in responding to the message. Each message in the array is a rough equivalent of the others, an all are in pursuit of the stated `goal` and `goal_code`. Only one of the messages should be chosen and acted upon.
+  - While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.
+
+When encoding a message in a URL or QR code, the _sender_ does not know which protocols are supported by the _recipient_ of the message. Encoding multiple alternative messages is a form of optimistic protocol negotiation that allows multiple supported protocols without coordination
+
 ##### Standard Message Encoding
 
 Using a standard message encoding allows for easier interoperability between multiple projects and software platforms. Using a URL for that standard encoding provides a built in fallback flow for users who are unable to automatically process the message. Those new users will load the URL in a browser as a default behavior, and may be presented with instructions on how to install software capable of processing the message. Already onboarded users will be able to process the message without loading in a browser via mobile app URL capture, or via capability detection after being loaded in a browser.
@@ -55,11 +92,21 @@ Invitation:
 
 ```json
 {
-  "type": "https://didcomm.org/myprotocol/0.1/mymessagetype",
+  "type": "https://didcomm.org/out-of-band/0.1/invitation",
   "id": "69212a3a-d068-4f9d-a2dd-4741bca89af3",
   "from": "did:example:alice",
   "body": {
-      "my_attribute": "myvalue"
+      "goal_code": "",
+      "goal": "",
+      "request~attach": [
+          {
+              "@id": "request-0",
+              "mime-type": "application/json",
+              "data": {
+                  "json": "<json of protocol message>"
+              }
+          }
+      ]
   }
 }
 ```
@@ -67,19 +114,19 @@ Invitation:
 Whitespace removed:
 
 ```json
-{"type":"https://didcomm.org/myprotocol/0.1/mymessagetype","id":"69212a3a-d068-4f9d-a2dd-4741bca89af3","from":"did:example:alice","body":{"my_attribute": "myvalue"}}
+{"type":"https://didcomm.org/out-of-band/0.1/invitation","id":"69212a3a-d068-4f9d-a2dd-4741bca89af3","from":"did:example:alice","body":{"goal_code":"","goal": "","request~attach":[{"@id":"request-0","mime-type":"application/json","data":{"json":"<json of protocol message>"}}]}}
 ```
 
 Base 64 URL Encoded:
 
 ```text
-eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9teXByb3RvY29sLzAuMS9teW1lc3NhZ2V0eXBlIiwiaWQiOiI2OTIxMmEzYS1kMDY4LTRmOWQtYTJkZC00NzQxYmNhODlhZjMiLCJmcm9tIjoiZGlkOmV4YW1wbGU6YWxpY2UiLCJib2R5Ijp7Im15X2F0dHJpYnV0ZSI6ICJteXZhbHVlIn19
+eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
 ```
 
 Example URL:
 
 ```text
-http://example.com/path?_dc=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9teXByb3RvY29sLzAuMS9teW1lc3NhZ2V0eXBlIiwiaWQiOiI2OTIxMmEzYS1kMDY4LTRmOWQtYTJkZC00NzQxYmNhODlhZjMiLCJmcm9tIjoiZGlkOmV4YW1wbGU6YWxpY2UiLCJib2R5Ijp7Im15X2F0dHJpYnV0ZSI6ICJteXZhbHVlIn19
+http://example.com/path?_dc=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
 ```
 
 DIDComm message URLs can be transferred via any method that can send text, including an email, SMS, posting on a website, or QR Code.
@@ -93,9 +140,9 @@ Subject: Your request to connect and receive your graduate verifiable credential
 
 Dear Alice,
 
-To receive your Faber College graduation certificate, click here to [connect](http://example.com/path?_dc=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9teXByb3RvY29sLzAuMS9teW1lc3NhZ2V0eXBlIiwiaWQiOiI2OTIxMmEzYS1kMDY4LTRmOWQtYTJkZC00NzQxYmNhODlhZjMiLCJmcm9tIjoiZGlkOmV4YW1wbGU6YWxpY2UiLCJib2R5Ijp7Im15X2F0dHJpYnV0ZSI6ICJteXZhbHVlIn19) with us, or paste the following into your browser:
+To receive your Faber College graduation certificate, click here to [connect](http://example.com/path?_dc=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0= with us, or paste the following into your browser:
 
-http://example.com/path?_dc=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9teXByb3RvY29sLzAuMS9teW1lc3NhZ2V0eXBlIiwiaWQiOiI2OTIxMmEzYS1kMDY4LTRmOWQtYTJkZC00NzQxYmNhODlhZjMiLCJmcm9tIjoiZGlkOmV4YW1wbGU6YWxpY2UiLCJib2R5Ijp7Im15X2F0dHJpYnV0ZSI6ICJteXZhbHVlIn19
+http://example.com/path?_dc=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
 
 If you don't have an identity agent for holding credentials, you will be given instructions on how you can get one.
 
