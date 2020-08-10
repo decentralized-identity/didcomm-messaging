@@ -147,7 +147,7 @@ Knowledge is Good
 
 Example URL encoded as a QR Code:
 
-![Example QR Code](C:/Users/sam/Documents/Sovrin/repos/didcomm-messaging/ExampleQRCode.png)
+![Example QR Code](out_of_band_exampleqr.png)
 
 ##### Short URL Message Retrieval
 
