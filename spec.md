@@ -7,6 +7,7 @@
 * [Encryption](encryption.md)
 * [Routing](routing.md)
 * [Transports](transports.md)
+* [Out Of Band Messages](out_of_band.md)
 * [Advanced Message Passing](advanced_message_passing.md)
 * [Connections](connections.md)
 * [General Messaging Constructs](general_messaging_constructs.md)
