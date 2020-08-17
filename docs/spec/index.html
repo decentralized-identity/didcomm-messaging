@@ -533,15 +533,148 @@ TODO: Include details of the websocket message to define a standard usage.</p>
 <li>Quic</li>
 <li>Transport binding</li>
 </ul>
-<h2 id="advanced-message-passing"><a class="toc-anchor" href="#advanced-message-passing">§</a> Advanced Message Passing</h2>
+<h2 id="out-of-band-messages"><a class="toc-anchor" href="#out-of-band-messages">§</a> Out Of Band Messages</h2>
+<h4 id="url-qr-codes"><a class="toc-anchor" href="#url-qr-codes">§</a> URL &amp; QR Codes</h4>
+<p>When passing a DIDComm Message between two parties, it is often useful to present a message in the form of a URL or encoded into the form of a QR code for scanning with a smartphone or other camera. The format for a QR code is simply the encoded URL form of a message.</p>
+<h5 id="privacy-considerations"><a class="toc-anchor" href="#privacy-considerations">§</a> Privacy Considerations</h5>
+<p>Any information passed via a URL or QR code is unencrypted, and may be observed by another party. This lack of privacy must be minded in two different ways.</p>
+<p>First, no private information may be passed in the message. Private information should be passed between parties in encrypted messages only. Any protocol message that contains private information should not be passed via URL or QR code.</p>
+<p>Second, any identifiers passed in a message sent via URL or QR code must no longer be considered private. Any DID used or other identifier no longer considered private MUST be rotated over a secure connection if privacy is required.</p>
+<h5 id="message-correlation"><a class="toc-anchor" href="#message-correlation">§</a> Message Correlation</h5>
+<p>The <code>id</code> of the message passed in a URL or a QR code is used to as the <code>thread_id</code> on a response sent by the recipient of this message. The response recipient can use the <code>thread_id</code> to correlate it with the original message.</p>
+<h5 id="messages-2"><a class="toc-anchor" href="#messages-2">§</a> Messages</h5>
+<p>Each message passed this way must be contained within an <code>out-of-band</code> message, as described below.</p>
+<p>The out-of-band protocol a single message that is sent by the <em>sender</em>.</p>
+<h4 id="invitation-httpsdidcommorgout-of-bandverinvitation"><a class="toc-anchor" href="#invitation-httpsdidcommorgout-of-bandverinvitation">§</a> Invitation: <code>https://didcomm.org/out-of-band/%VER/invitation</code></h4>
+<pre class="language-jsonc"><code class="language-jsonc">{
+  &quot;@type&quot;: &quot;https://didcomm.org/out-of-band/%VER/invitation&quot;,
+  &quot;@id&quot;: &quot;&lt;id used for context as pthid&gt;&quot;,
+  &quot;goal_code&quot;: &quot;issue-vc&quot;,
+  &quot;goal&quot;: &quot;To issue a Faber College Graduate credential&quot;,
+  &quot;request~attach&quot;: [
+    {
+        &quot;@id&quot;: &quot;request-0&quot;,
+        &quot;mime-type&quot;: &quot;application/json&quot;,
+        &quot;data&quot;: {
+            &quot;json&quot;: &quot;&lt;json of protocol message&gt;&quot;
+        }
+    }
+  ]
+}
+</code></pre>
+<p>The items in the message are:</p>
 <ul>
-<li>Ephemeral - URL / QR</li>
+<li><code>@type</code> - the DIDComm message type</li>
+<li><code>@id</code> - the unique ID of the message. The ID should be used as the <strong>parent</strong> thread ID (<code>pthid</code>) for the response message, rather than the more common thread ID (<code>thid</code>) of the response message. This enables multiple uses of a single out-of-band message.</li>
+<li><code>goal_code</code> - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.</li>
+<li><code>goal</code> - [optional] a self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.</li>
+<li><code>request~attach</code> - an attachment decorator containing an array of request messages in order of preference that the receiver can using in responding to the message. Each message in the array is a rough equivalent of the others, an all are in pursuit of the stated <code>goal</code> and <code>goal_code</code>. Only one of the messages should be chosen and acted upon.
+<ul>
+<li>While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.</li>
+</ul>
+</li>
+</ul>
+<p>When encoding a message in a URL or QR code, the <em>sender</em> does not know which protocols are supported by the <em>recipient</em> of the message. Encoding multiple alternative messages is a form of optimistic protocol negotiation that allows multiple supported protocols without coordination</p>
+<h5 id="standard-message-encoding"><a class="toc-anchor" href="#standard-message-encoding">§</a> Standard Message Encoding</h5>
+<p>Using a standard message encoding allows for easier interoperability between multiple projects and software platforms. Using a URL for that standard encoding provides a built in fallback flow for users who are unable to automatically process the message. Those new users will load the URL in a browser as a default behavior, and may be presented with instructions on how to install software capable of processing the message. Already onboarded users will be able to process the message without loading in a browser via mobile app URL capture, or via capability detection after being loaded in a browser.</p>
+<p>The standard message format is a URL with a Base64URLEncoded plaintext JWM json object as a query parameter.</p>
+<p>The URL format is as follows, with some elements described below:</p>
+<pre class="language-text"><code class="language-text">https://&lt;domain&gt;/&lt;path&gt;?_oob=&lt;encodedplaintextjwm&gt;
+</code></pre>
+<p><code>&lt;domain&gt;</code> and <code>&lt;path&gt;</code> should be kept as short as possible, and the full URL should return human readable instructions when loaded in a browser. This is intended to aid new users. The <code>_oob</code> query parameter is required and is reserved to contain the DIDComm message string. Additional path elements or query parameters are allowed, and can be leveraged to provide coupons or other promise of payment for new users.</p>
+<blockquote>
+<p><code>_oob</code> is a shortened form of Out of Band, and was chosen to not conflict with query parameter names in use at a particular domain. When the query parameter is detected, it may be assumed to be an Out Of Band message with a reasonably high confidence.</p>
+</blockquote>
+<blockquote>
+<p>To do: We need to rationalize this approach <code>https://</code> approach with the use of a special protocol (e.g. <code>didcomm://</code>) that will enable handling of the URL on mobile devices to automatically invoke an installed app on both Android and iOS. A user must be able to process the out-of-band message on the device of the agent (e.g. when the mobile device can’t scan the QR code because it is on a web page on device).</p>
+</blockquote>
+<p>The <code>&lt;encodedplaintextjwm&gt;</code> is a JWM plaintext message that has been base64-url encoded.</p>
+<pre class="language-javascript"><code class="language-javascript">encodedplaintextjwm <span class="token operator">=</span> <span class="token function">b64urlencode</span><span class="token punctuation">(</span><span class="token operator">&lt;</span>plaintextjwm<span class="token operator">></span><span class="token punctuation">)</span>
+</code></pre>
+<p>During encoding, whitespace from the json string should be eliminated to keep the resulting out-of-band message string as short as possible.</p>
+<h5 id="example-out-of-band-message-encoding"><a class="toc-anchor" href="#example-out-of-band-message-encoding">§</a> Example Out-of-Band Message Encoding</h5>
+<p>Invitation:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/out-of-band/0.1/invitation"</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span>
+  <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
+  <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"goal_code"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+      <span class="token property">"goal"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+      <span class="token property">"request~attach"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+              <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"request-0"</span><span class="token punctuation">,</span>
+              <span class="token property">"mime-type"</span><span class="token operator">:</span> <span class="token string">"application/json"</span><span class="token punctuation">,</span>
+              <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+                  <span class="token property">"json"</span><span class="token operator">:</span> <span class="token string">"&lt;json of protocol message>"</span>
+              <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+      <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Whitespace removed:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/out-of-band/0.1/invitation"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span><span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span><span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"goal_code"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"goal"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"request~attach"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"@id"</span><span class="token operator">:</span><span class="token string">"request-0"</span><span class="token punctuation">,</span><span class="token property">"mime-type"</span><span class="token operator">:</span><span class="token string">"application/json"</span><span class="token punctuation">,</span><span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"json"</span><span class="token operator">:</span><span class="token string">"&lt;json of protocol message>"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+</code></pre>
+<p>Base 64 URL Encoded:</p>
+<pre class="language-text"><code class="language-text">eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
+</code></pre>
+<p>Example URL:</p>
+<pre class="language-text"><code class="language-text">http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
+</code></pre>
+<p>DIDComm message URLs can be transferred via any method that can send text, including an email, SMS, posting on a website, or QR Code.</p>
+<p>Example Email Message:</p>
+<pre class="language-email"><code class="language-email">To: alice@example.com
+From: studentrecords@example.com
+Subject: Your request to connect and receive your graduate verifiable credential
+
+Dear Alice,
+
+To receive your Faber College graduation certificate, click here to [connect](http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0= with us, or paste the following into your browser:
+
+http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
+
+If you don't have an identity agent for holding credentials, you will be given instructions on how you can get one.
+
+Thanks,
+
+Faber College
+Knowledge is Good
+</code></pre>
+<p>Example URL encoded as a QR Code:</p>
+<p><img src="out_of_band_exampleqr.png" alt="Example QR Code"></p>
+<h5 id="short-url-message-retrieval"><a class="toc-anchor" href="#short-url-message-retrieval">§</a> Short URL Message Retrieval</h5>
+<p>It seems inevitable that the length of some DIDComm messages will be too long to produce a useable QR code. Techniques to avoid unusable QR codes have been presented above, including using attachment links for requests, minimizing the routing of the response and eliminating unnecessary whitespace in the JSON. However, at some point a <em>sender</em> may need generate a very long URL. In that case, a short URL message retrieval redirection should be implemented by the sender as follows:</p>
+<ul>
+<li>The sender should generate and track a GUID for the out-of-band message URL.</li>
+<li>The shortened version should be:
+<ul>
+<li><code>https://example.com/path?_oobid=5f0e3ffb-3f92-4648-9868-0d6f8889e6f3</code></li>
+<li>Note the replacement of the query parameter <code>_oob</code> with <code>_oobid</code> when using shortened URL.</li>
+</ul>
+</li>
+<li>On receipt of this form of message, the agent must do an HTTP GET to retrieve the associated encoded  message.
+<ul>
+<li>A sender may want to wait to generate the full invitation until the redirection event of the shortened URL to the full length form dynamic, so a single QR code can be used for distinct messages.</li>
+</ul>
+</li>
+</ul>
+<p>A usable QR code will always be able to be generated from the shortened form of the URL.</p>
+<p>Note: Due to the privacy implications, a standard URL shortening service SHOULD NOT be used.</p>
+<h2 id="advanced-message-passing"><a class="toc-anchor" href="#advanced-message-passing">§</a> Advanced Message Passing</h2>
+<p>TODO:</p>
+<ul>
 <li>Deep linking</li>
+<li>CHAPI</li>
 <li>NFC</li>
 <li>Wifi-Direct</li>
 <li>Bluetooth</li>
 <li>Sneakernet / file oriented / mimetypes</li>
 </ul>
+<h4 id="embedded-messages"><a class="toc-anchor" href="#embedded-messages">§</a> Embedded Messages</h4>
+<p>DIDComm messages may be passed within other messages are protocols when the outer message is passed in a secure way. When messages are passed in this way, they may be passed either as an encrypted message or in plain text. When in plain text format, messages should be represented in json format.</p>
+<h5 id="privacy-considerations-2"><a class="toc-anchor" href="#privacy-considerations-2">§</a> Privacy Considerations</h5>
+<p>When messages are passed in plain text, the privacy and security of the message is subject to the properties of the protocol and transport moving the messages. Extreme care must be taken to protect the message.</p>
 <h3 id="connections"><a class="toc-anchor" href="#connections">§</a> Connections</h3>
 <p>A Connection is the practical application of a relationship in DID Communication. Having a connection means that each party in the relationship has a DID for the other parties, and parties can communicate securely using the keys and endpoints within each DID Document.</p>
 <p>In order to establish a new connection, we use the OutOfBand Protocol and the DID Exchange Protocol.</p>
@@ -921,8 +1054,17 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
 </li>
 </ul>
 </li>
-<li><a href="#advanced-message-passing">Advanced Message Passing</a>
+<li><a href="#out-of-band-messages">Out Of Band Messages</a>
+*
 <ul>
+<li><a href="#url-qr-codes">URL &amp; QR Codes</a></li>
+<li><a href="#invitation-httpsdidcommorgout-of-bandverinvitation">Invitation: <code>https://didcomm.org/out-of-band/%VER/invitation</code></a></li>
+</ul>
+</li>
+<li><a href="#advanced-message-passing">Advanced Message Passing</a>
+*
+<ul>
+<li><a href="#embedded-messages">Embedded Messages</a></li>
 <li><a href="#connections">Connections</a>
 <ul>
 <li><a href="#outofband-protocol">OutOfBand Protocol</a></li>
@@ -954,7 +1096,7 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
             </slide-panels>
 
           </body>
-          <script>window.specConfig = {"title":"DIF Comm Messaging Protocol","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","routing.md","transports.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/spec/","destinationResourcePrefix":"../../"}</script>
+          <script>window.specConfig = {"title":"DIF Comm Messaging Protocol","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","routing.md","transports.md","out_of_band.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/spec/","destinationResourcePrefix":"../../"}</script>
           <script src="../../spec-up/compiled/body.js" data-manual></script>
         </html>
       
