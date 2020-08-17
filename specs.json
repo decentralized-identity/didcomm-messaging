@@ -22,6 +22,7 @@
 		"encryption.md",
         "routing.md",
         "transports.md",
+        "out_of_band.md",
         "advanced_message_passing.md",
         "connections.md",
         "general_messaging_constructs.md",
