@@ -15,7 +15,7 @@ HTTP(S) transports are an effective way to send a message to another online agen
 - The MIME Type for the POST request is `application/didcomm-enc-env`. (TODO: Declare Mime Types elsewhere, link from here.)
 - The HTTP POST should return a 202 Accepted status code. A successful message receipt MUST return a code in the 2xx HTTP Status Code range.
 - POST requests are transmit only. Messages are only sent from the code that submitted the POST request.
-- HTTP Redirects SHOULD be followed. All redirects are considered temporary until updated within the appropriate DID Document.
+- HTTP Redirects SHOULD be followed. Only Temporary Redirects (307) are acceptable. Permanent endpoint relocation should be managed with a DID Document update.
 - Using HTTPS with TLS 1.2 or greater with a forward secret cipher will provide Perfect Forward Secrecy (PFS) on the transmission leg.
 
 #### WebSocket
