@@ -11,6 +11,7 @@ Browse the latest rendered draft of the spec [here](https://identity.foundation/
 
 View the spec markdown outline [here](spec.md).
 
+View the rendered draft of the Implementer's Guide [here](https://identity.foundation/didcomm-messaging/docs/guide/).
 
 ### Process
 
