@@ -6,24 +6,20 @@ The purpose of DIDComm is to provide a secure communication layer built on top o
 
 Identity owners (people, organizations, etc.) need software to help them manage keys and perform cryptographic operations. These software agents use DIDComm to communicate with each other. The specific interactions enabled by DIDComm--connecting and maintaining relationships, issuing credentials, providing proof, etc.--are called **protocols**. Key protocols are described in this spec. Protocols created within organizations or industry verticals are described elsewhere.
 
-### Rough Overview
+### Overview
 
-A typical DIDComm interaction works like this:
+To understand how DIDComm works, consider a situation where Alice wants to negotiate with Bob to sell something online. Because DIDComm, not direct human communication, is the methodology in this example, Alice's software agent and Bob's software agent are going to exchange a series of messages.
 
-> Imagine Alice wants to negotiate with Bob to sell something online, and that DIDComm, not direct human communication, is involved. This means Alice's agent and Bob's agent are going to exchange a series of messages.
->
-> Alice may just press a button and be unaware of details, but underneath, her agent begins by preparing a plaintext JSON message about the proposed sale. (The particulars are irrelevant here, but would be described in the spec for a "sell something" protocol.) It then looks up Bob's DID Doc to access two key pieces of information:
->
-> - An endpoint (web, email, etc) where messages can be delivered to Bob.
-> - The public key that Bob's agent is using in the Alice:Bob relationship.
->
-> Now Alice's agent uses Bob's public key to encrypt the plaintext so that only Bob's agent can read it, adding authentication with its own private key. The agent arranges delivery to Bob. This "arranging" can involve various hops and intermediaries. It can be complex.
->
-> Bob's agent eventually receives and decrypts the message, authenticating its origin as Alice using her public key. It prepares its response and routes it back using a reciprocal process (plaintext -> lookup endpoint and public key for Alice -> encrypt with authentication -> arrange delivery).
+Alice may just press a button and be unaware of details, but underneath, her agent begins by preparing a plaintext JSON message about the proposed sale. (The particulars are irrelevant here, but would be described in the spec for a higher-level "sell something" protocol that takes DIDComm as its foundation.) Alice's agent then looks up Bob's DID Doc to access two key pieces of information:
 
-That's it.
+- An endpoint (web, email, etc) where messages can be delivered to Bob.
+- The public key that Bob's agent is using in the Alice:Bob relationship.
 
-Well, mostly. The description is pretty good, if you squint, but it does not fit all DIDComm interactions:
+Now Alice's agent uses Bob's public key to encrypt the plaintext so that only Bob's agent can read it, adding authentication with its own private key. The agent arranges delivery to Bob. This "arranging" can involve various hops and intermediaries. It can be complex. (See [Routing in the Implementers Guide](/guide#routing).)
+
+Bob's agent eventually receives and decrypts the message, authenticating its origin as Alice using her public key. It prepares its response and routes it back using a reciprocal process (plaintext &#x2192; lookup endpoint and public key for Alice &#x2192; encrypt with authentication &#x2192; arrange delivery).
+
+That's the essence, in the most common scenarios. However, it does not fit all DIDComm interactions:
 
 - DIDComm doesn't always involve turn-taking and request-response.
 - DIDComm interactions can involve more than 2 parties, and the parties are not always individuals.
@@ -47,7 +43,7 @@ Taken together, *Secure* and *Private* require that the protocol be decentralize
 
 *Interoperable* means that DIDComm should work across programming languages, blockchains, vendors, OS/platforms, networks, legal jurisdictions, geos, cryptographies, and hardware--as well as across time. That's quite a list. It means that DIDComm intends something more than just compatibility within any specific project; it aims to be a future-proof *lingua franca* of all self-sovereign interactions.
 
-*Transport-agnostic* means that it should be possible to use DIDComm over HTTP(S) 1.x and 2.0, WebSockets, IRC, Bluetooth, AMQP, NFC, Signal, email, push notifications to mobile devices, Ham radio, multicast, snail mail, carrier pigeon, and more.
+*Transport-agnostic* means that it should be possible to use DIDComm over HTTP(S) 1.x and 2.0, WebSockets, IRC, Bluetooth, AMQP, NFC, Signal, email, chat, sneakernet, push notifications to mobile devices, Ham radio, multicast, snail mail, carrier pigeon, and more.
 
 All software design involves tradeoffs. These goals, prioritized as shown, lead down an interesting path.
 
