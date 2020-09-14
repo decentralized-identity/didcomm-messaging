@@ -43,8 +43,8 @@ A `discover-features/query` message looks like this:
 
 ```json
 {
-  "@type": "https://didcomm.org/discover-features/1.0/query",
-  "@id": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
+    "type": "https://didcomm.org/discover-features/1.0/query",
+    "id": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
     "body": {
         "query": "https://didcomm.org/tictactoe/1.*"
     }
@@ -72,16 +72,16 @@ A `discover-features/disclose` message looks like this:
 
 ```json
 {
-  "@type": "https://didcomm.org/discover-features/1.0/disclose",
-  "thread_id": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
-  "body":{
-      "protocols": [
-        {
-          "ptid": "https://didcomm.org/tictactoe/1.0",
-          "roles": ["player"]
-        }
-      ]
-  }  
+    "type": "https://didcomm.org/discover-features/1.0/disclose",
+    "thread_id": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
+    "body":{
+        "protocols": [
+            {
+                "ptid": "https://didcomm.org/tictactoe/1.0",
+                "roles": ["player"]
+            }
+        ]
+    }
 }
 ```
 
