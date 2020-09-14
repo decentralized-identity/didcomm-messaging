@@ -22,6 +22,12 @@ Each message contains both the sender key (used in the encryption layer), and th
 
 One side effect of the DID Exchange Protocol in V1 was that you confirmed the validity of the DID with a round trip to the other party. Many protocols will provide this assurance via the flow of the protocol prior to the point where round-trip testing is required. When this round-trip is desired prior to the beginning of a protocol, a round trip with another protocol (such as Trust Ping or Feature Discovery) can provide the same assurance.
 
+#### Process From Headers prior to Protocol Processing
+
+Relationship changes in V1 were handled inside the DID Exchange Protocol. In V2, relationship changes including discovery and rotation are handled in message headers.
+
+In V2, messages must evaluate the `from` and `from_prior` headers of every message prior to beginning the protocol message processing. 
+
 #### No technical difference between Ephemeral Mode and Full Mode
 
 Ephemeral mode in V1 was a method of passing messages without first performing an exchange of DIDs. Given that we no longer have a need to perform an exchange of DIDs prior to passing messages of another protocol, we no longer need to designate a mode for ephemeral interactions.
