@@ -18,7 +18,7 @@ The list of changes above leads to practical changes in how DIDComm is used.
 
 #### DID Exchange not needed
 
-Each message contains both the sender key (used in the encryption layer), and the sender's DID. The exchange of DIDs that occurs via the DID Exchange Protocol used in V1 occurs in each message that is transferred. Rotating DIDs is accomplished via the `prior_did` header. These features make the DID Exchange Protocol redundant.
+Each message contains both the sender key (used in the encryption layer), and the sender's DID. The exchange of DIDs that occurs via the DID Exchange Protocol used in V1 occurs in each message that is transferred. The important step of rotating DIDs is accomplished via the `prior_did` header that travels alongside any protocol message. These features make the DID Exchange Protocol redundant.
 
 One side effect of the DID Exchange Protocol in V1 was that you confirmed the validity of the DID with a round trip to the other party. Many protocols will provide this assurance via the flow of the protocol prior to the point where round-trip testing is required. When this round-trip is desired prior to the beginning of a protocol, a round trip with another protocol (such as Trust Ping or Feature Discovery) can provide the same assurance.
 
@@ -28,7 +28,7 @@ Ephemeral mode in V1 was a method of passing messages without first performing a
 
 #### Use Peer DIDs (or other suitable DID method) in place of AnonCrypt
 
-Anoncrypt was a method present in V1 that allowed a message to be encrypted to a recipient without involving the recipient keys. The ease of using Peer DIDs allows the sender to remain anonymous using the existing authenticated encryption method. The encryption properties are the same between the methods. Eliminating this option makes the spec simpler without loosing any features.
+Anoncrypt was a method present in V1 that allowed a message to be encrypted to a recipient using ephemeral sender keys, allowing the sender to remain anonymous. The ease of using Peer DIDs allows the sender to remain anonymous using the existing authenticated encryption method. The encryption properties are the same between the methods. Eliminating this option makes the spec simpler without loosing any features.
 
 #### Message Level Decorators now represented as Headers
 
