@@ -1,0 +1,1125 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+            <title>DIDComm Messaging Specification</title>
+            <link href="../../spec-up/compiled/head.css" rel="stylesheet"/>
+                <script src="../../spec-up/compiled/head.js"></script>
+          </head>
+          <body features="source logo">
+            
+            <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="github" viewBox="0 0 20 20">
+    <path d="M10 0.247c-5.522 0-10 4.477-10 10 0 4.418 2.865 8.167 6.839 9.489 0.5 0.093 0.683-0.217 0.683-0.481 0-0.238-0.009-1.026-0.014-1.862-2.782 0.605-3.369-1.18-3.369-1.18-0.455-1.156-1.11-1.463-1.11-1.463-0.907-0.621 0.069-0.608 0.069-0.608 1.004 0.071 1.533 1.031 1.533 1.031 0.892 1.529 2.339 1.087 2.91 0.831 0.090-0.646 0.349-1.087 0.635-1.337-2.221-0.253-4.556-1.11-4.556-4.942 0-1.092 0.391-1.984 1.030-2.684-0.104-0.252-0.446-1.269 0.097-2.646 0 0 0.84-0.269 2.751 1.025 0.798-0.222 1.653-0.333 2.503-0.337 0.85 0.004 1.706 0.115 2.505 0.337 1.909-1.294 2.747-1.025 2.747-1.025 0.544 1.378 0.202 2.395 0.098 2.646 0.641 0.7 1.029 1.592 1.029 2.684 0 3.841-2.339 4.687-4.566 4.934 0.359 0.31 0.678 0.919 0.678 1.852 0 1.338-0.012 2.415-0.012 2.744 0 0.266 0.18 0.578 0.687 0.48 3.971-1.324 6.833-5.071 6.833-9.488 0-5.523-4.477-10-10-10z"></path>
+  </symbol>
+  <symbol id="nested_list" viewBox="0 0 37 32">
+    <path d="M0 2.286c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM9.143 0h27.429v4.571h-27.429zM9.143 11.429c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM18.286 9.143h18.286v4.571h-18.286zM9.143 29.714c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM18.286 27.429h18.286v4.571h-18.286zM18.286 20.571c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM27.429 18.286h9.143v4.571h-9.143z"></path>
+  </symbol>
+</svg>
+
+            <main>
+
+              <header id="header" class="panel-header">
+                <span id="toc_toggle" panel-toggle="toc">
+                  <svg icon><use xlink:href="#nested_list"></use></svg>
+                </span>
+                <a id="logo" href="https://identity.foundation">
+                  <img src="https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg" />
+                </a>
+                <span issue-count animate panel-toggle="repo_issues">
+                  <svg icon><use xlink:href="#github"></use></svg>
+                </span>
+              </header>
+
+              <article id="content">
+                <h1 id="didcomm-messaging"><a class="toc-anchor" href="#didcomm-messaging">§</a> DIDComm Messaging</h1>
+<p><strong>Specification Status:</strong> Editor’s Draft</p>
+<p><strong>Latest published version:</strong>
+<a href="https://identity.foundation/didcomm-messaging/docs/spec">identity.foundation/didcomm-messaging/docs/spec</a></p>
+<p><strong>Editors:</strong></p>
+<p><strong>Contributors:</strong> Daniel Hardman</p>
+<dl>
+<dt><strong>Participate:</strong></dt>
+<dd><a href="https://github.com/decentralized-identity/didcomm-messaging">GitHub repo</a></dd>
+<dd><a href="https://github.com/decentralized-identity/didcomm-messaging/issues">File a bug</a></dd>
+<dd><a href="https://github.com/decentralized-identity/didcomm-messaging/commits/master">Commit history</a></dd>
+</dl>
+<p>Testing: 4</p>
+<hr>
+<h2 id="purpose-and-scope"><a class="toc-anchor" href="#purpose-and-scope">§</a> Purpose and Scope</h2>
+<p>The purpose of DIDComm is to provide a secure, private communication methodology built atop the decentralized design of <a href="https://www.w3.org/TR/did-core/">DIDs</a>.</p>
+<p>Other robust mechanisms for secure communication already exist. However, most rely on key registries, identity providers, certificate authorities, browser or app vendors, or similarly centralized assumptions. They also tend to be tied to a single transport, making it difficult to use the same solution for human and machine conversations, online and offline, simplex and duplex, across a broad set of modalities. The net result is that they perpetuate an asymmetry between institutions and ordinary people. The former maintain certificates and always-connected servers, and publish APIs under terms and conditions they dictate; the latter suffer with usernames and passwords, poor interoperability, and a Hobson’s choice between privacy and convenience.</p>
+<p>DIDComm can fix this. Using DIDComm, individuals on semi-connected mobile devices become full peers of highly available web servers operated by IT experts. Registration is self-service, intermediaries require little trust, and no terms and conditions apply.</p>
+<p>DIDComm enables higher-order protocols that inherit its security, privacy, decentralization, and transport independence. Examples include exchanging verifiable credentials, creating and maintaining relationships, buying and selling, scheduling events, negotiating contracts, voting, presenting tickets for travel, applying to employers or schools or banks, arranging healthcare, and playing games. Like web services atop HTTP, the possibilities are endless; unlike web services atop HTTP, many parties can participate without being clients of a central server, and they can use a mixture of connectivity models and technologies.</p>
+<h3 id="rough-overview"><a class="toc-anchor" href="#rough-overview">§</a> Rough Overview</h3>
+<p>A typical DIDComm interaction works like this:</p>
+<blockquote>
+<p>Imagine Alice wants to negotiate with Bob to sell something online, and that DIDComm, not direct human communication, is involved. This means Alice’s agent and Bob’s agent are going to exchange a series of messages.</p>
+<p>Alice may just press a button and be unaware of details, but underneath, her agent begins by preparing a plaintext JSON message about the proposed sale. (The particulars are irrelevant here, but would be described in the spec for a “sell something” protocol.) It then looks up Bob’s DID Doc to access two key pieces of information:</p>
+<ul>
+<li>An endpoint (web, email, etc) where messages can be delivered to Bob.</li>
+<li>The public key that Bob’s agent is using in the Alice:Bob relationship.</li>
+</ul>
+<p>Now Alice’s agent uses Bob’s public key to encrypt the plaintext so that only Bob’s agent can read it, adding authentication with its own private key. The agent arranges delivery to Bob. This “arranging” can involve various hops and intermediaries. It can be complex.</p>
+<p>Bob’s agent eventually receives and decrypts the message, authenticating its origin as Alice using her public key. It prepares its response and routes it back using a reciprocal process (plaintext -&gt; lookup endpoint and public key for Alice -&gt; encrypt with authentication -&gt; arrange delivery).</p>
+</blockquote>
+<p>That’s it.</p>
+<p>Well, mostly. The description is pretty good, if you squint, but it does not fit all DIDComm interactions:</p>
+<ul>
+<li>DIDComm doesn’t always involve turn-taking and request-response.</li>
+<li>DIDComm interactions can involve more than 2 parties, and the parties are not always individuals.</li>
+<li>DIDComm may include formats other than JSON.</li>
+</ul>
+<p>Before we provide more details, let’s explore what drives the design of DIDComm.</p>
+<h3 id="goals-and-ramifications"><a class="toc-anchor" href="#goals-and-ramifications">§</a> Goals and Ramifications</h3>
+<p>The DIDComm design attempts to be:</p>
+<ol>
+<li><strong>Secure</strong></li>
+<li><strong>Private</strong></li>
+<li><strong>Interoperable</strong></li>
+<li><strong>Transport-agnostic</strong></li>
+<li><strong>Extensible</strong></li>
+</ol>
+<p>As a list of buzz words, this may elicit nods rather than surprise. However, several items have deep ramifications.</p>
+<p>Taken together, <em>Secure</em> and <em>Private</em> require that the protocol be decentralized and maximally opaque to the surveillance economy.</p>
+<p><em>Interoperable</em> means that DIDComm should work across programming languages, blockchains, vendors, OS/platforms, networks, legal jurisdictions, geos, cryptographies, and hardware–as well as across time. That’s quite a list. It means that DIDComm intends something more than just compatibility within any specific project; it aims to be a future-proof <em>lingua franca</em> of all self-sovereign interactions.</p>
+<p><em>Transport-agnostic</em> means that it should be possible to use DIDComm over HTTP(S) 1.x and 2.0, WebSockets, IRC, Bluetooth, AMQP, NFC, Signal, email, push notifications to mobile devices, Ham radio, multicast, snail mail, carrier pigeon, and more.</p>
+<p>All software design involves tradeoffs. These goals, prioritized as shown, lead down an interesting path.</p>
+<h4 id="message-based-asynchronous-and-simplex"><a class="toc-anchor" href="#message-based-asynchronous-and-simplex">§</a> Message-Based, Asynchronous, and Simplex</h4>
+<p>The dominant paradigm in mobile and web development today is duplex request-response. You call an API with certain inputs, and you get back a response with certain outputs over the same channel, shortly thereafter. This is the world of <a href="https://swagger.io/docs/specification/about/">OpenAPI (Swagger)</a>, and it has many virtues.</p>
+<p>Unfortunately, many agents are not good analogs to web servers. They may be mobile devices that turn off at unpredictable intervals and that lack a stable connection to the network. They may need to work peer-to-peer, when the internet is not available. They may need to interact in time frames of hours or days, not with 30-second timeouts. They may not listen over the same channel that they use to talk.</p>
+<p>Because of this, the fundamental paradigm for DIDComm is message-based, asynchronous, and simplex. Agent X sends a message over channel A. Sometime later, it may receive a response from Agent Y over channel B. This is much closer to an email paradigm than a web paradigm.</p>
+<p>On top of this foundation, it is possible to build elegant, synchronous request-response interactions. All of us have interacted with a friend who’s emailing or texting us in near-realtime. However, interoperability begins with a least-common-denominator assumption that’s simpler.</p>
+<h4 id="message-level-security-reciprocal-authentication"><a class="toc-anchor" href="#message-level-security-reciprocal-authentication">§</a> Message-Level Security, Reciprocal Authentication</h4>
+<p>The security and privacy goals, and the asynchronous+simplex design decision, break familiar web assumptions in another way. Servers are commonly run by institutions, and we authenticate them with certificates. People and things are usually authenticated to servers by some sort of login process quite different from certificates, and this authentication is cached in a session object that expires. Furthermore, web security is provided at the transport level (TLS); it is not an independent attribute of the messages themselves.</p>
+<p>In a partially disconnected world where a communication channel is not assumed to support duplex request-response, and where the security can’t be ignored as a transport problem, traditional TLS, login, and expiring sessions are impractical. Furthermore, centralized servers and certificate authorities perpetuate a power and UX imbalance between servers and clients that doesn’t fit with the peer-oriented DIDComm.</p>
+<p>DIDComm uses public key cryptography, not certificates from some parties and passwords from others. Its security guarantees are independent of the transport over which it flows. It is sessionless (though sessions can <em>easily</em> be built atop it). When authentication is required, all parties do it the same way.</p>
+<h2 id="requirements"><a class="toc-anchor" href="#requirements">§</a> Requirements</h2>
+<ul>
+<li>
+<p><strong>decentralized/self-sovereign</strong> (encryption, signing, authn, and authz should all be based on control of DIDs rathern than on CAs, IDPs, etc)</p>
+</li>
+<li>
+<p><strong>transport independent</strong> (HTTPS, bluetooth, AMQP, SMTP, NFC, and so forth)</p>
+</li>
+<li>
+<p><strong>routable</strong> (like email, A can talk to B without a direct connection to B, by requesting that a message be forwarded–needed to mix and match transports; also, could pass through a mix network or other infrastructure that isn’t aware of it as anything other than blobs to be moved)</p>
+</li>
+<li>
+<p><strong>secure</strong> (tamper-proof, MITM impossible, composed of primitives widely considered best practice, vetted by experts, has formal security proofs, security guarantees of a given message are known)</p>
+</li>
+<li>
+<p><strong>private</strong> (third parties can’t learn who’s communicating about what, when–broader than “confidentiality” in CIA because metadata like timing and identities of parties is also protected; also, possible for a sender to be anonymous to recipient)</p>
+</li>
+<li>
+<p><strong>asynchronous</strong> (can’t require real-time participation by a party; like email in that parties can communicate when they want)</p>
+</li>
+<li>
+<p><strong>supports simplex and duplex</strong> (can’t assume response uses the same channel as request–but allows request~response where desirable)</p>
+</li>
+<li>
+<p><strong>supports repudiable and non-repudiable</strong> (parties can talk off or on the record, as appropriate)</p>
+</li>
+<li>
+<p><strong>platform-independent</strong> (usable on embedded, not just servers+desktops+mobile)</p>
+</li>
+<li>
+<p><strong>composable</strong> (pick the crypto suite and features you need, without incurring overwhelming dependencies for stuff you don’t)</p>
+</li>
+<li>
+<p><strong>pairwise, nwise, anywise</strong> (communicate between 2 parties, or between N parties, or to the whole world)</p>
+</li>
+<li>
+<p><strong>efficient</strong> (doesn’t waste bandwidth, storage space, cpu, etc)</p>
+</li>
+</ul>
+<h3 id="processing-model"><a class="toc-anchor" href="#processing-model">§</a> Processing Model</h3>
+<ul>
+<li>Message-oriented, with sender and receiver(s)</li>
+<li>Encryption Envelope</li>
+</ul>
+<h2 id="message-structure"><a class="toc-anchor" href="#message-structure">§</a> Message Structure</h2>
+<p>DIDComm Messages are based on JWM (JSON Web Messages). A message has a basic structure that specifies the message type, id, and other attributes common to all messages. These common attributes appear at the top level of a DIDComm message, and are called headers. A message also includes attributes specific to the message type. Type specific message attributes are contained within the <code>body</code> attribute of a message.</p>
+<p>Prior to being sent to a recipient, the JWM is encrypted into a JWE according to the JWM spec.</p>
+<p>The following example shows common elements of a DIDComm Message. Further details and advanced usage are covered elsewhere in this spec.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"&lt;message-type-uri>"</span><span class="token punctuation">,</span>
+    <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
+    <span class="token property">"to"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:bob"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"created_time"</span><span class="token operator">:</span> <span class="token number">1516269022</span><span class="token punctuation">,</span>
+    <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token number">1516385931</span><span class="token punctuation">,</span>
+    <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    	<span class="token property">"messagespecificattribute"</span><span class="token operator">:</span> <span class="token string">"and it's value"</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The attributes of a DIDComm Message at the level of its outer packaging (effectively, the “headers” of the message) are as follows:</p>
+<ul>
+<li><strong>id</strong> - REQUIRED. Message ID. The <code>id</code> attribute value MUST be unique to the sender.</li>
+<li><strong>type</strong> - REQUIRED. Message Type. The <code>type</code> attribute value MUST be a valid <a href="protocols.md#message-type-uri">Message Type URI</a> , that when resolved gives human readable information about the message. The attributes value also informs the content of the message, for example the presence of other attributes and how they should be processed.</li>
+<li><strong>to</strong> - OPTIONAL. Recipient(s) identifier. The <code>to</code> attribute MUST be an array of strings where each element is a valid <a href="https://w3c.github.io/did-core/#generic-did-syntax">DID</a> which identifies the recipients of the message.</li>
+<li><strong>from</strong> - OPTIONAL. Sender identifier. The <code>from</code> attribute MUST be a string that is a valid <a href="https://w3c.github.io/did-core/#generic-did-syntax">DID</a> which identifies the sender of the message. For DID methods that use query parameters to carry additional information, they might also be present in the from string. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. See the <a href="#Message-Authentication">message authentication</a> section for additional details.</li>
+<li><strong>created_time</strong> - OPTIONAL. Message Created Time. The <code>created_time</code> attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.</li>
+<li><strong>expires_time</strong> - OPTIONAL. Message Expired Time. The <code>expires_time</code> attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is no longer valid, and is to be used by the recipient to discard expired messages on receipt.</li>
+</ul>
+<p>The problem domain of DIDComm intersects with other aspects of decentralized identity, where JSON-LD plays a role in some standards. Thus it may be natural to wonder about DIDComm’s relationship to JSON-LD and to the rich semantics and extensibility features it offers. The short answer is that DIDComm is not dependent on JSON-LD, but it is compatible with it. We expect these two technologies to remain mostly orthogonal.</p>
+<p>In the outer packaging of message metadata, DIDComm follows the extensibility pattern established by the JW* family of standards. (It also emulates the design of message headers in SMTP, request headers in HTTP, and labels on physical pieces of mail.) A modest inventory of predefined “header” fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn’t understand such fields should ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.</p>
+<p>Aligning with <a href="https://tools.ietf.org/html/rfc6648.html">RFC 6648</a>, DIDComm explicitly rejects the <code>X-*</code> headers convention that creates divergent pseudo-standards; if a new header needs broad support, it must be standardized properly. Alternatively, a JSON-LD <code>@context</code> header can be added, providing namespacing for fields other than those predefined in the spec. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.</p>
+<p>The body of a message – everything inside the <code>body</code> object – is different. Here, there is substantial variety and complexity. Structures may be sophisticated graphs, represented with nested objects and arrays. JSON-LD is not required at this level, either. However, it is available, and may be appropriate for certain use cases where extensibility is an important feature. JSON-LD usage, if it occurs, SHOULD be a declared feature of a protocol as a whole, not an ad hoc extension to arbitrary individual messages, and MUST be signalled by the inclusion of a <code>@context</code> inside <code>body</code>. Unless a protocol declares a JSON-LD dependency, the same rules apply to JSON-LD-isms as apply to any other unrecognized structure in a DIDComm message: additional fields can be added to any part of message structure, should be ignored if not understood, and MUST NOT be the basis of failure by recipients.</p>
+<h3 id="did-rotation"><a class="toc-anchor" href="#did-rotation">§</a> DID Rotation</h3>
+<p>DIDComm is based on DIDs and their associated DID Documents. Changes to keys and endpoints are the concern of each DID method and are utilized but not managed by DIDComm. DID Rotation serves a very specific and narrow need to switch from one DID method to another. This is very common at the beginning of a new DIDComm relationship when a public DID or a temporary DID passed unencrypted is rotated out for a DID chosen for the relationship. As rotation between one DID and another is outside the scope of any DID method, the details of DID Rotation are handled within DIDComm itself.</p>
+<p>When a DID is rotated, the new DID is put into immediate use encrypting the message, and one additional attribute is included as a message header:</p>
+<ul>
+<li><strong>from_prior</strong>: A JWT, with with <code>sub</code>: new DID and <code>iss</code>: prior DID, with a signature from a key authorized by prior DID.</li>
+</ul>
+<p>When a message is received from an unknown DID, the recipient should check for existence of the <code>from_prior</code> header. The JWT in the<code>from_prior</code> attribute is used to extract the prior DID (<code>iss</code>) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information should be used for further communication.</p>
+<p>The validity of the DID rotation is verified by checking the JWT signature against the key indicated in the <code>kid</code> header parameter. The indicated key MUST be authorized in the DID Document of the prior DID (<code>iss</code>).</p>
+<p>The <code>from_prior</code> attribute should be included in messages sent until the party rotating receives a message sent to the new DID. If multiple messages are received to containing the rotation headers after being processed by the recipient, they may be ignored.</p>
+<h4 id="jwt-details"><a class="toc-anchor" href="#jwt-details">§</a> JWT Details</h4>
+<p>The JWT is constructed as follows, with appropriate values changed.</p>
+<p><strong>Header</strong>:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"JWT"</span><span class="token punctuation">,</span>
+  <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"EdDSA"</span><span class="token punctuation">,</span>
+  <span class="token property">"crv"</span><span class="token operator">:</span> <span class="token string">"ED25519"</span><span class="token punctuation">,</span>
+  <span class="token property">"kid"</span><span class="token operator">:</span> <span class="token string">"&lt;key id authorized in prior DID>"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><strong>Payload</strong>:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"sub"</span><span class="token operator">:</span> <span class="token string">"&lt;new DID URI>"</span><span class="token punctuation">,</span>
+  <span class="token property">"iss"</span><span class="token operator">:</span> <span class="token string">"&lt;prior DID URI>"</span><span class="token punctuation">,</span>
+  <span class="token property">"iat"</span><span class="token operator">:</span> <span class="token number">1516239022</span> <span class="token comment">//datetime of the rotation, not message</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="example-message-rotating-did"><a class="toc-anchor" href="#example-message-rotating-did">§</a> Example Message Rotating DID</h4>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"&lt;message-type-uri>"</span><span class="token punctuation">,</span>
+    <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice2"</span><span class="token punctuation">,</span>
+    <span class="token property">"from_prior"</span><span class="token operator">:</span> <span class="token string">"&lt;JWT with sub:did:example:alice2 and iss:did:example:alice>"</span><span class="token punctuation">,</span>
+    <span class="token property">"to"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:bob"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"created_time"</span><span class="token operator">:</span> <span class="token number">1516269022</span><span class="token punctuation">,</span>
+    <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token number">1516385931</span><span class="token punctuation">,</span>
+    <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    	<span class="token property">"messagespecificattribute"</span><span class="token operator">:</span> <span class="token string">"and it's value"</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="rotation-limitations"><a class="toc-anchor" href="#rotation-limitations">§</a> Rotation Limitations</h4>
+<ul>
+<li>This rotation method does not cover cases where a multi-sig is required. Rotations with such requirements should use a more expressive protocol.</li>
+<li>This rotation method only supports the case where a new DID is used, replacing an old DID which is no longer used. Adjustments to DIDs used between different parties that does not fit this narrow use should use a more expressive protocol.</li>
+</ul>
+<h2 id="message-encryption"><a class="toc-anchor" href="#message-encryption">§</a> Message Encryption</h2>
+<p>DIDComm supports two types of message encryption: Authenticated Sender Encryption and Anonymous Sender Encryption. Both forms are encrypted to the recipient, but only Authenticated Sender Encryption provides assurances of who the sender is.</p>
+<p>The encrypted form of a JWM is a JWE. The JOSE family defines <a href="https://tools.ietf.org/html/rfc7518">JSON Web Algorithms</a> (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs, rather it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed here.</p>
+<h3 id="sender-authenticated-encryption"><a class="toc-anchor" href="#sender-authenticated-encryption">§</a> Sender Authenticated Encryption</h3>
+<p>When a sender would like to encrypt a message for a recipient or multiple recipients and also be authenticated such that the recipients can determine they were the party that encrypted the message, the JWA of <code>ECDH-1PU</code> defined by <a href="https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-03">draft</a> SHOULD be used within the structure of a JWE.</p>
+<p>For the keys involved in key agreement, the following elliptic curves MUST be supported.</p>
+<table>
+<thead>
+<tr>
+<th>Curve</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X25519</td>
+<td>The underlying curve is actually <code>Curve25519</code>, however when used in the context of Diffie-Hellman the identifier of <code>X25519</code> is used</td>
+</tr>
+<tr>
+<td>P-256</td>
+<td>NIST defined P-256 elliptic curve</td>
+</tr>
+</tbody>
+</table>
+<p>For content encryption of the message, the following algorithms MUST be supported.</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm(JWA)</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XC20P</td>
+<td>XChaCha20Poly1305</td>
+</tr>
+<tr>
+<td>A256GCM</td>
+<td>AES-GCM with a 256 bit key</td>
+</tr>
+</tbody>
+</table>
+<p>TODO: Include language about safe nonce considerations.</p>
+<h3 id="anonymous-encryption"><a class="toc-anchor" href="#anonymous-encryption">§</a> Anonymous Encryption</h3>
+<p>When a sender would like to encrypt a message for a recipient or multiple recipients but not be authenticated by the recipients as the party who encrypted the message, the JWA of <code>ECDH-ES</code> defined by <a href="https://tools.ietf.org/html/rfc7518#section-4.6">RFC 7518</a> SHOULD be used within the structure of a JWE.</p>
+<p>For the keys involved in key agreement, the following elliptic curves MUST be supported.</p>
+<table>
+<thead>
+<tr>
+<th>Curve</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X25519</td>
+<td>The underlying curve is actually <code>Curve25519</code>, however when used in the context of Diffie-Hellman the identifier of <code>X25519</code> is used</td>
+</tr>
+<tr>
+<td>P-256</td>
+<td>NIST defined P-256 elliptic curve</td>
+</tr>
+</tbody>
+</table>
+<p>For content encryption of the message, the following algorithms MUST be supported.</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm(JWA)</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XC20P</td>
+<td>XChaCha20Poly1305</td>
+</tr>
+<tr>
+<td>A256GCM</td>
+<td>AES-GCM with a 256 bit key</td>
+</tr>
+</tbody>
+</table>
+<p>TODO: Include language about safe nonce considerations.</p>
+<h3 id="key-wrapping-algorithms"><a class="toc-anchor" href="#key-wrapping-algorithms">§</a> Key Wrapping Algorithms</h3>
+<table>
+<thead>
+<tr>
+<th>KW Algorithm</th>
+<th>Curve (epk crv)</th>
+<th>key type (epk kty)</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ECDH-ES+A256KW</td>
+<td>P-256</td>
+<td>EC</td>
+<td>ECDH-ES key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in <a href="https://tools.ietf.org/html/rfc7518#section-4.6.2">7518</a></td>
+</tr>
+<tr>
+<td>ECDH-ES+A256KW</td>
+<td>P-384</td>
+<td>EC</td>
+<td>ECDH-ES key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in <a href="https://tools.ietf.org/html/rfc7518#section-4.6.2">7518</a></td>
+</tr>
+<tr>
+<td>ECDH-ES+A256KW</td>
+<td>P-521</td>
+<td>EC</td>
+<td>ECDH-ES key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in <a href="https://tools.ietf.org/html/rfc7518#section-4.6.2">7518</a></td>
+</tr>
+<tr>
+<td>ECDH-ES+A256KW</td>
+<td>X25519</td>
+<td>OKP</td>
+<td>ECDH-ES with X25519 (<a href="https://tools.ietf.org/html/rfc7748#section-5">RFC7748 section 5</a>) to create a 256 bits key. The underlying curve is actually <code>Curve25519</code>, however when used in the context of Diffie-Hellman the identifier of <code>X25519</code> is used</td>
+</tr>
+<tr>
+<td>ECDH-1PU+A256KW</td>
+<td>P-256</td>
+<td>EC</td>
+<td>ECDH-1PU key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in <a href="https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-03#section-2.2">ecdh-1pu</a></td>
+</tr>
+<tr>
+<td>ECDH-1PU+A256KW</td>
+<td>P-384</td>
+<td>EC</td>
+<td>ECDH-1PU key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in <a href="https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-03#section-2.2">ecdh-1pu</a></td>
+</tr>
+<tr>
+<td>ECDH-1PU+A256KW</td>
+<td>P-521</td>
+<td>EC</td>
+<td>ECDH-1PU key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in <a href="https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-03#section-2.2">ecdh-1pu</a></td>
+</tr>
+<tr>
+<td>ECDH-1PU+A256KW</td>
+<td>X25519</td>
+<td>OKP</td>
+<td>ECDH-1PU X25519 (<a href="https://tools.ietf.org/html/rfc7748#section-5">RFC7748 section 5</a>) to create a 256 bits key as defined in <a href="https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-03#section-2.2">ecdh-1pu</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="examples"><a class="toc-anchor" href="#examples">§</a> Examples</h3>
+<p>While the details of encrypting a JWM into a JWE are included in the <a href="https://tools.ietf.org/html/draft-looker-jwm-01">JWM spec</a>, a few examples are included here for clarity.</p>
+<p>TODO: Add examples here</p>
+<h2 id="routing"><a class="toc-anchor" href="#routing">§</a> Routing</h2>
+<h3 id="routing-protocol"><a class="toc-anchor" href="#routing-protocol">§</a> Routing Protocol</h3>
+<h4 id="name-and-version"><a class="toc-anchor" href="#name-and-version">§</a> Name and Version</h4>
+<p>The name of this protocol is “Routing Protocol”, and its <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/semver.md">version</a> is “2.0”. It is uniquely identified by the <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/uris.md#piuri">PIURI</a>:</p>
+<pre><code>https://didcomm.org/routing/2.0
+</code></pre>
+<h4 id="roles"><a class="toc-anchor" href="#roles">§</a> Roles</h4>
+<p>There are 3 roles in the protocol: <code>sender</code>, <code>mediator</code>, and <code>recipient</code>. The sender emits messages of type <code>forward</code> to the <code>mediator</code>. The mediator unpacks (decrypts) the payload of an encrypted <code>forward</code> message and passes on the result (an opaque blob that probably contains a differently encrypted payload) to the <code>recipient</code>.</p>
+<p><img src="/collateral/routing-roles.png" alt="ordinary sequence"></p>
+<blockquote>
+<p>Note: the protocol is one-way; the return route for communication might not exist at all, or if it did, it could invert the roles of sender and receiver and use the same mediator, or it could use one or more different mediators, or it could use no mediator at all. This is a separate concern partly specified by the service endpoints in the DID docs of the sender and receiver, and partly explored in <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0092-transport-return-route/README.md">RFC 0092: Transports Return Route</a>.</p>
+</blockquote>
+<blockquote>
+<p>Note: When the mediator is the routing agent of a single identity subject like Alice, the logical receiver is Alice herself, but the physical receiver may manifest as multiple edge devices (a phone, a laptop, a tablet). From the perspective of this protocol, multiplexing the send from mediator to receiver is out of scope for interoperability–compatible and fully supported, but not required or specified in any way.</p>
+</blockquote>
+<p>In this protocol, the sender and the receiver never interact directly; they only interact via the mediator.</p>
+<p>The sender can decorate the <code>forward</code> message in standard DIDComm ways: using <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0032-message-timing/README.md#tutorial"><code>~timing.expires_time</code>, <code>~timing.delay_milli</code> and <code>~timing.wait_until_time</code></a> to introduce timeouts and delays, and so forth. However, the mediator is NOT required to support or implement any of these mixin semantics; only the core forwarding behavior is indispensable. If a mediator sees a decorator that requests behavior it doesn’t support, it MAY return a <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0035-report-problem/README.md"><code>problem-report</code></a> to the sender identifying the unsupported feature, but it is not required to do so, any more than other recipients of DIDComm messages would be required to complain about unsupported decorators in messages they receive.</p>
+<blockquote>
+<p>One particular decorator is worth special mention here: <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0015-acks/README.md#requesting-an-ack-please_ack"><code>~please_ack</code></a>. This decorator is intended to be processed by ultimate recipients, not mediators. It imposes a burden of backward-facing communication that mediators should not have. Furthermore, it may be used to probe a delivery chain in a way that risks privacy for the receiver. Therefore, senders SHOULD NOT use this, and mediators SHOULD NOT honor it if present. If a sender wishes to troubleshoot, the <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0034-message-tracing/README.md">message tracing</a> mechanism is recommended.</p>
+</blockquote>
+<h4 id="states"><a class="toc-anchor" href="#states">§</a> States</h4>
+<p>Since data flow is normally one-way, and since the scope of the protocol is a single message delivery, a simplistic way to understand it might be as two instances of the stateless <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/notification.png">notification pattern</a>, unfolding in sequence.</p>
+<p>However, this doesn’t quite work on close inspection, because the mediator is at least potentially stateful with respect to any particular message; it needs to be if it wants to implement delayed delivery or retry logic. (Or, as noted earlier, the possibility of sending to multiple physical receivers. Mediators are not required to implement any of these features, but the state machine needs to account for their possibility.) Plus, the notification terminology obscures the sender and receiver roles. So we use the following formalization:</p>
+<p><a href="https://docs.google.com/spreadsheets/d/1zxm3cPZ1UDQPDpYJjGmg_qY8451WMk105HBSARJkvDI/edit#gid=0"><img src="/collateral/routing-state-machines.png" alt="state machines"></a></p>
+<h4 id="messages"><a class="toc-anchor" href="#messages">§</a> Messages</h4>
+<p>The only message in this protocol is the <code>forward</code> message. A simple and common version of a <code>forward</code> message might look like this:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/routing/2.0/forward"</span><span class="token punctuation">,</span>
+    <span class="token property">"to"</span>   <span class="token operator">:</span> <span class="token string">"did:foo:1234abcd"</span><span class="token punctuation">,</span>
+    <span class="token property">"payloads~attach"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token comment">// One payload</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>A fancier version with many optional attributes has the following potential structure:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"uuid value"</span> <span class="token comment">// optional; only useful for tracing</span>
+    <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/routing/2.0/forward"</span><span class="token punctuation">,</span>
+    <span class="token property">"to"</span>   <span class="token operator">:</span> <span class="token string">"did:foo:1234abcd"</span><span class="token punctuation">,</span>
+    <span class="token property">"payloads~attach"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token comment">// An array of attached payloads, generally assumed</span>
+        <span class="token comment">// to be DIDComm encrypted envelopes, but theoretically</span>
+        <span class="token comment">// could be other message types as well.</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token comment">// This decorator and everything in it are optional. </span>
+    <span class="token property">"~timing"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token comment">// Usually, delay_milli and wait_until_time don't make</span>
+        <span class="token comment">// sense together; use one or the other but not both. If</span>
+        <span class="token comment">// both do occur, forward shouldn't happen until the later</span>
+        <span class="token comment">// of the two conditions is satisfied.</span>
+        <span class="token property">"delay_milli"</span><span class="token operator">:</span> <span class="token number">12345</span><span class="token punctuation">,</span>
+        <span class="token property">"wait_until_time"</span><span class="token operator">:</span> <span class="token string">"2020-03-25T00:00:00Z"</span><span class="token punctuation">,</span>
+        <span class="token comment">// Abandon attempt to forward after this timestamp.</span>
+        <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token string">"2020-03-27T18:25:00Z"</span> 
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token comment">// Optional: requests use of mix network instead of direct</span>
+    <span class="token comment">// forward, to enhance privacy.</span>
+    <span class="token property">"mix"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token comment">// Likelihood (from 0 to 1) that a random node in a</span>
+        <span class="token comment">// mix network should be the next hop instead of</span>
+        <span class="token comment">// sending the message directly to its final receiver.</span>
+        <span class="token property">"hop_chance"</span><span class="token operator">:</span> <span class="token number">0.8</span><span class="token punctuation">,</span>
+        <span class="token comment">// If next receiver is a mix node, multiply hop_chance</span>
+        <span class="token comment">// by this value so hop_chance attenuates for the next</span>
+        <span class="token comment">// receiver. This prevents infinite mixing. Max value =</span>
+        <span class="token comment">// 0.99.</span>
+        <span class="token property">"hop_decay"</span><span class="token operator">:</span> <span class="token number">0.2</span><span class="token punctuation">,</span>
+        <span class="token comment">// Likelihood (from 0 to 1) that the message size will</span>
+        <span class="token comment">// be distorted to the next receiver. </span>
+        <span class="token property">"noise_chance"</span><span class="token operator">:</span> <span class="token number">0.5</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>[TODO: describe use of the <code>attn</code> field, and explain why it’s an important construct that allows us to encrypt to all (cryptographic route) but deliver just to the agent most likely to be interested (network route).</p>
+<p>[TODO: further revise the following paragraph to clarify that either a key or a DID might be used. Each possibility makes certain tradeoffs, and may be appropriate in certain cases. Keys may be fragile in the face of rotation, and they require a lot of knowledge/maintenance cost for the external mediator. However, DID key references and DIDs may introduce some complications in how the recipient proves control of a DID (a requirement for security, but also a privacy eroder).]</p>
+<p>For most external mediators, the value of the <code>to</code> field is likely to be a DID, not a key. However… (see previous TODO note). This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn’t need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md">RFC 0211: Route Coordination</a>), but that is outside the scope of concerns of this protocol.</p>
+<p>The attachment(s) in the <code>payloads~attach</code> field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.</p>
+<p>The <code>mix</code> property is discussed next.</p>
+<h4 id="rewrapping"><a class="toc-anchor" href="#rewrapping">§</a> Rewrapping</h4>
+<p>Normally, the payload attached to the <code>forward</code> message received by the mediator is transmitted directly to the receiver with no further packaging. However, optionally, the mediator can attach the opaque payload to a new <code>forward</code> message, which then acts as a fresh outer envelope for the second half of the delivery. This <a href="#rewrapping">rewrapping</a> means that the “onion” of packed messages stays the same size rather than getting smaller as a result of the forward operation:</p>
+<p><img src="/collateral/routing-roles-2.png" alt="re-wrapped sequence"></p>
+<p>Rewrapping mode is invisible to senders, but mediators need to know about it, since they change their behavior as a result. Receivers also need to know about it, because it causes them to receive a double-packaged message instead of a singly-packaged one. The outer envelope is a <code>forward</code> message where <code>to</code> is the receiver itself.</p>
+<p>Why is such indirection useful?</p>
+<ul>
+<li>It lets the mediator decorate messages with its own timing and tracing mixins, which may aid troubleshooting. (This would otherwise be impossible, since the inner payload is an opaque blob that almost certainly tamper-evident and encrypted.)</li>
+<li>It lets the mediator remain uncommitted to whether the next receiver is another mediator or not. This may provide flexibility in some routing scenarios.</li>
+<li>It lets the mediator change the size of the message by adding or subtracting noise from the content.</li>
+<li>It allows for dynamic routing late in the delivery chain.</li>
+</ul>
+<p>These last two characteristics are the foundation of mix networking feature for DIDComm. That feature is the subject of a different RFC; here we only note the existence of the optional feature.</p>
+<h3 id="sender-forward-process"><a class="toc-anchor" href="#sender-forward-process">§</a> Sender Forward Process</h3>
+<ol>
+<li>Sender Constructs Message.</li>
+<li>Sender Encrypts Message to recipient(s).</li>
+<li>Wrap Encrypted Message in Forward Message for each Routing Key.</li>
+<li>Transmit to <code>serviceEndpoint</code> in the manner specified in the [transports] section.</li>
+</ol>
+<h3 id="mediator-process"><a class="toc-anchor" href="#mediator-process">§</a> Mediator Process</h3>
+<p><em>Prior to using a Mediator, it is the recipient’s responsibility to coordinate with the mediator. Part of this coordination informs them of the <code>to</code> address(es) expected, the endpoint, and any Routing Keys to be used when forwarding messages. That coordination is out of the scope of this spec.</em></p>
+<ol>
+<li>Receives Forward Message.</li>
+<li>Retrieves Service Endpoint pre-configured by recipient (<code>to</code> attribute).</li>
+<li>Transmit <code>payload</code> message to Service Endpoint in the manner specified in the [transports] section.</li>
+</ol>
+<p>The recipient (<code>to</code> attribute of Forward Message) may have pre-configured additional routing keys with the mediator that were not present in the DID Document and therefore unknown to the original sender. If this is the case, the mediator should wrap the attached <code>payload</code> message into an additional Forward message once per routing key. This step is performed between (2) and (3).</p>
+<h3 id="did-document-keys"><a class="toc-anchor" href="#did-document-keys">§</a> DID Document Keys</h3>
+<p>All keys declared in the DID Document’s <code>keyAgreement</code> section should be used as recipients when encrypting a message. The details of key representation are described in the <a href="https://www.w3.org/TR/did-core/#public-keys">Public Keys section of the DID Core Spec</a>.</p>
+<p>Keys used in a signed JWM are declared in the DID Document’s <code>authentication</code> section.</p>
+<p>TODO: include details about how DIDComm keys are represented/identified in the DID Document. The DID Core Spec appears light on details and examples of <code>keyAgreement</code> keys. Clarifying language should be included here or there.</p>
+<h3 id="did-document-service-endpoint"><a class="toc-anchor" href="#did-document-service-endpoint">§</a> DID Document Service Endpoint</h3>
+<p>DIDComm DID Document endpoints have the following format:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDComm"</span><span class="token punctuation">,</span>
+    <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token string">"http://example.com/path"</span><span class="token punctuation">,</span>
+    <span class="token property">"routingKeys"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:somemediator#somekey"</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><strong>id</strong>: must be unique, as required in <a href="https://www.w3.org/TR/did-core/#service-endpoints">DID Core</a>. No special meaning should be inferred from the <code>id</code> chosen.</p>
+<p><strong>type</strong>: MUST be <code>DIDComm</code>.</p>
+<p><strong>serviceEndpoint</strong>: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.</p>
+<p><strong>routingKeys</strong>: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec.</p>
+<h4 id="multiple-endpoints"><a class="toc-anchor" href="#multiple-endpoints">§</a> Multiple Endpoints</h4>
+<p>A DID Document may contain multiple service entries of type <code>DIDComm</code>. Entries are SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.</p>
+<h4 id="alternative-endpoints"><a class="toc-anchor" href="#alternative-endpoints">§</a> Alternative Endpoints</h4>
+<p>In addition to the URIs for [transports], some alternative forms are available.</p>
+<h5 id="did"><a class="toc-anchor" href="#did">§</a> DID</h5>
+<p>Using a DID for the <code>serviceEndpoint</code> is useful when using a mediator. The DID should be resolved, and services with type of “DIDComm” will contain valid <code>serviceEndpoints</code>. The keyAgreement keys of that DID Document should be appended at the end of the routingKeys section from the message recipient’s DID Document as per the process in [Sender Forward Process]. The key advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients` DID Documents.</p>
+<p>A DID representing a mediator SHOULD NOT use alternative endpoints in it’s own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [transports] will prevent such recursion.</p>
+<p>Example 1: Mediator</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDComm"</span><span class="token punctuation">,</span>
+    <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token string">"did:example:somemediator"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the <code>did:example:somemediator</code> DID Document, and transmitted to the URIs present in the <code>did:example:somemediator</code> DID Document with type <code>DIDComm</code>.</p>
+<p>Example 2: Mediator + Routing Keys</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDComm"</span><span class="token punctuation">,</span>
+    <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token string">"did:example:somemediator"</span><span class="token punctuation">,</span>
+    <span class="token property">"routingKeys"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:anothermediator#somekey"</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The message is encrypted to the recipient, then wrapped in a forward message encrypted to <code>did:example:anothermediator#somekey</code>. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the <code>did:example:somemediator</code> DID Document, and transmitted to the URIs present in the <code>did:example:somemediator</code> DID Document with type <code>DIDComm</code>.</p>
+<h5 id="queue"><a class="toc-anchor" href="#queue">§</a> Queue</h5>
+<p>TODO: Does the queue fit here as an alternate URI?</p>
+<p>[TODO: discuss how routing info is exposed in a DID doc, and how it is conveyed in “ephemeral mode” where no DID doc is available.]</p>
+<h2 id="transports"><a class="toc-anchor" href="#transports">§</a> Transports</h2>
+<h3 id="summary"><a class="toc-anchor" href="#summary">§</a> Summary</h3>
+<p>DIDComm Messaging is designed to be transport independent, including message encryption and agent message format. The encryption envelope provides both encryption and authentication, providing trust as a feature of each message. Each transport does have unique features, and we need to standardize how the transport features are (or are not) applied.</p>
+<h3 id="delivery"><a class="toc-anchor" href="#delivery">§</a> Delivery</h3>
+<p>DIDComm Transports serve only as message <em>delivery</em>. No information about the effects or results from a message is transmitted over the same connection.</p>
+<h3 id="reference"><a class="toc-anchor" href="#reference">§</a> Reference</h3>
+<h4 id="https"><a class="toc-anchor" href="#https">§</a> HTTP(S)</h4>
+<p>HTTP(S) transports are an effective way to send a message to another online agent.</p>
+<ul>
+<li>Messages are transported via HTTP POST.</li>
+<li>The MIME Type for the POST request is <code>application/didcomm-enc-env</code>. (TODO: Declare Mime Types elsewhere, link from here.)</li>
+<li>A successful message receipt MUST return a code in the 2xx HTTP Status Code range. It is recommended that a HTTP POST should return a 202 Accepted status code.</li>
+<li>POST requests are transmit only. Messages are only sent from the code that submitted the POST request.</li>
+<li>HTTP Redirects SHOULD be followed. Only Temporary Redirects (307) are acceptable. Permanent endpoint relocation should be managed with a DID Document update.</li>
+<li>Using HTTPS with TLS 1.2 or greater with a forward secret cipher will provide Perfect Forward Secrecy (PFS) on the transmission leg.</li>
+</ul>
+<h4 id="websocket"><a class="toc-anchor" href="#websocket">§</a> WebSocket</h4>
+<p>Websockets are an efficient way to transmit multiple messages without the overhead of individual requests. This is useful in a high bandwidth situation</p>
+<ul>
+<li>Each message is transmitted individually in an Encryption Envelope.</li>
+<li>Each message is sent as single text based message over the websocket.</li>
+<li>The trust of each message comes from the Encryption Envelope, not the socket connection itself.</li>
+<li>Websockets are considered transmit only. Messages flow only from the agent that opened the socket.</li>
+<li>Using Secure Websockets (wss://) with TLS 1.2 or greater with a forward secret cipher will provide Perfect Forward Secrecy (PFS) on the transmission leg.</li>
+</ul>
+<p>With STOMP over WebSocket, the content-type header is application/didcomm-enc-env as in the HTTP(S) message.</p>
+<p>TODO:</p>
+<ul>
+<li>Quic</li>
+<li>Transport binding</li>
+</ul>
+<h2 id="out-of-band-messages"><a class="toc-anchor" href="#out-of-band-messages">§</a> Out Of Band Messages</h2>
+<h4 id="url-qr-codes"><a class="toc-anchor" href="#url-qr-codes">§</a> URL &amp; QR Codes</h4>
+<p>When passing a DIDComm Message between two parties, it is often useful to present a message in the form of a URL or encoded into the form of a QR code for scanning with a smartphone or other camera. The format for a QR code is simply the encoded URL form of a message.</p>
+<h5 id="privacy-considerations"><a class="toc-anchor" href="#privacy-considerations">§</a> Privacy Considerations</h5>
+<p>Any information passed via a URL or QR code is unencrypted, and may be observed by another party. This lack of privacy must be minded in two different ways.</p>
+<p>First, no private information may be passed in the message. Private information should be passed between parties in encrypted messages only. Any protocol message that contains private information should not be passed via URL or QR code.</p>
+<p>Second, any identifiers passed in a message sent via URL or QR code must no longer be considered private. Any DID used or other identifier no longer considered private MUST be rotated over a secure connection if privacy is required.</p>
+<h5 id="message-correlation"><a class="toc-anchor" href="#message-correlation">§</a> Message Correlation</h5>
+<p>The <code>id</code> of the message passed in a URL or a QR code is used to as the <code>thread_id</code> on a response sent by the recipient of this message. The response recipient can use the <code>thread_id</code> to correlate it with the original message.</p>
+<h5 id="messages-2"><a class="toc-anchor" href="#messages-2">§</a> Messages</h5>
+<p>Each message passed this way must be contained within an <code>out-of-band</code> message, as described below.</p>
+<p>The out-of-band protocol a single message that is sent by the <em>sender</em>.</p>
+<h4 id="invitation-httpsdidcommorgout-of-bandverinvitation"><a class="toc-anchor" href="#invitation-httpsdidcommorgout-of-bandverinvitation">§</a> Invitation: <code>https://didcomm.org/out-of-band/%VER/invitation</code></h4>
+<pre class="language-jsonc"><code class="language-jsonc">{
+  &quot;@type&quot;: &quot;https://didcomm.org/out-of-band/%VER/invitation&quot;,
+  &quot;@id&quot;: &quot;&lt;id used for context as pthid&gt;&quot;,
+  &quot;goal_code&quot;: &quot;issue-vc&quot;,
+  &quot;goal&quot;: &quot;To issue a Faber College Graduate credential&quot;,
+  &quot;request~attach&quot;: [
+    {
+        &quot;@id&quot;: &quot;request-0&quot;,
+        &quot;mime-type&quot;: &quot;application/json&quot;,
+        &quot;data&quot;: {
+            &quot;json&quot;: &quot;&lt;json of protocol message&gt;&quot;
+        }
+    }
+  ]
+}
+</code></pre>
+<p>The items in the message are:</p>
+<ul>
+<li><code>@type</code> - the DIDComm message type</li>
+<li><code>@id</code> - the unique ID of the message. The ID should be used as the <strong>parent</strong> thread ID (<code>pthid</code>) for the response message, rather than the more common thread ID (<code>thid</code>) of the response message. This enables multiple uses of a single out-of-band message.</li>
+<li><code>goal_code</code> - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.</li>
+<li><code>goal</code> - [optional] a self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.</li>
+<li><code>request~attach</code> - an attachment decorator containing an array of request messages in order of preference that the receiver can using in responding to the message. Each message in the array is a rough equivalent of the others, an all are in pursuit of the stated <code>goal</code> and <code>goal_code</code>. Only one of the messages should be chosen and acted upon.
+<ul>
+<li>While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.</li>
+</ul>
+</li>
+</ul>
+<p>When encoding a message in a URL or QR code, the <em>sender</em> does not know which protocols are supported by the <em>recipient</em> of the message. Encoding multiple alternative messages is a form of optimistic protocol negotiation that allows multiple supported protocols without coordination</p>
+<h5 id="standard-message-encoding"><a class="toc-anchor" href="#standard-message-encoding">§</a> Standard Message Encoding</h5>
+<p>Using a standard message encoding allows for easier interoperability between multiple projects and software platforms. Using a URL for that standard encoding provides a built in fallback flow for users who are unable to automatically process the message. Those new users will load the URL in a browser as a default behavior, and may be presented with instructions on how to install software capable of processing the message. Already onboarded users will be able to process the message without loading in a browser via mobile app URL capture, or via capability detection after being loaded in a browser.</p>
+<p>The standard message format is a URL with a Base64URLEncoded plaintext JWM json object as a query parameter.</p>
+<p>The URL format is as follows, with some elements described below:</p>
+<pre class="language-text"><code class="language-text">https://&lt;domain&gt;/&lt;path&gt;?_oob=&lt;encodedplaintextjwm&gt;
+</code></pre>
+<p><code>&lt;domain&gt;</code> and <code>&lt;path&gt;</code> should be kept as short as possible, and the full URL should return human readable instructions when loaded in a browser. This is intended to aid new users. The <code>_oob</code> query parameter is required and is reserved to contain the DIDComm message string. Additional path elements or query parameters are allowed, and can be leveraged to provide coupons or other promise of payment for new users.</p>
+<blockquote>
+<p><code>_oob</code> is a shortened form of Out of Band, and was chosen to not conflict with query parameter names in use at a particular domain. When the query parameter is detected, it may be assumed to be an Out Of Band message with a reasonably high confidence.</p>
+</blockquote>
+<blockquote>
+<p>To do: We need to rationalize this approach <code>https://</code> approach with the use of a special protocol (e.g. <code>didcomm://</code>) that will enable handling of the URL on mobile devices to automatically invoke an installed app on both Android and iOS. A user must be able to process the out-of-band message on the device of the agent (e.g. when the mobile device can’t scan the QR code because it is on a web page on device).</p>
+</blockquote>
+<p>The <code>&lt;encodedplaintextjwm&gt;</code> is a JWM plaintext message that has been base64-url encoded.</p>
+<pre class="language-javascript"><code class="language-javascript">encodedplaintextjwm <span class="token operator">=</span> <span class="token function">b64urlencode</span><span class="token punctuation">(</span><span class="token operator">&lt;</span>plaintextjwm<span class="token operator">></span><span class="token punctuation">)</span>
+</code></pre>
+<p>During encoding, whitespace from the json string should be eliminated to keep the resulting out-of-band message string as short as possible.</p>
+<h5 id="example-out-of-band-message-encoding"><a class="toc-anchor" href="#example-out-of-band-message-encoding">§</a> Example Out-of-Band Message Encoding</h5>
+<p>Invitation:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/out-of-band/0.1/invitation"</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span>
+  <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
+  <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"goal_code"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+      <span class="token property">"goal"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+      <span class="token property">"request~attach"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+              <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"request-0"</span><span class="token punctuation">,</span>
+              <span class="token property">"mime-type"</span><span class="token operator">:</span> <span class="token string">"application/json"</span><span class="token punctuation">,</span>
+              <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+                  <span class="token property">"json"</span><span class="token operator">:</span> <span class="token string">"&lt;json of protocol message>"</span>
+              <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span>
+      <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Whitespace removed:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/out-of-band/0.1/invitation"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span><span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span><span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"goal_code"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"goal"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"request~attach"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"@id"</span><span class="token operator">:</span><span class="token string">"request-0"</span><span class="token punctuation">,</span><span class="token property">"mime-type"</span><span class="token operator">:</span><span class="token string">"application/json"</span><span class="token punctuation">,</span><span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"json"</span><span class="token operator">:</span><span class="token string">"&lt;json of protocol message>"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+</code></pre>
+<p>Base 64 URL Encoded:</p>
+<pre class="language-text"><code class="language-text">eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
+</code></pre>
+<p>Example URL:</p>
+<pre class="language-text"><code class="language-text">http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
+</code></pre>
+<p>DIDComm message URLs can be transferred via any method that can send text, including an email, SMS, posting on a website, or QR Code.</p>
+<p>Example Email Message:</p>
+<pre class="language-email"><code class="language-email">To: alice@example.com
+From: studentrecords@example.com
+Subject: Your request to connect and receive your graduate verifiable credential
+
+Dear Alice,
+
+To receive your Faber College graduation certificate, click here to [connect](http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0= with us, or paste the following into your browser:
+
+http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
+
+If you don't have an identity agent for holding credentials, you will be given instructions on how you can get one.
+
+Thanks,
+
+Faber College
+Knowledge is Good
+</code></pre>
+<p>Example URL encoded as a QR Code:</p>
+<p><img src="out_of_band_exampleqr.png" alt="Example QR Code"></p>
+<h5 id="short-url-message-retrieval"><a class="toc-anchor" href="#short-url-message-retrieval">§</a> Short URL Message Retrieval</h5>
+<p>It seems inevitable that the length of some DIDComm messages will be too long to produce a useable QR code. Techniques to avoid unusable QR codes have been presented above, including using attachment links for requests, minimizing the routing of the response and eliminating unnecessary whitespace in the JSON. However, at some point a <em>sender</em> may need generate a very long URL. In that case, a short URL message retrieval redirection should be implemented by the sender as follows:</p>
+<ul>
+<li>The sender should generate and track a GUID for the out-of-band message URL.</li>
+<li>The shortened version should be:
+<ul>
+<li><code>https://example.com/path?_oobid=5f0e3ffb-3f92-4648-9868-0d6f8889e6f3</code></li>
+<li>Note the replacement of the query parameter <code>_oob</code> with <code>_oobid</code> when using shortened URL.</li>
+</ul>
+</li>
+<li>On receipt of this form of message, the agent must do an HTTP GET to retrieve the associated encoded  message.
+<ul>
+<li>A sender may want to wait to generate the full invitation until the redirection event of the shortened URL to the full length form dynamic, so a single QR code can be used for distinct messages.</li>
+</ul>
+</li>
+</ul>
+<p>A usable QR code will always be able to be generated from the shortened form of the URL.</p>
+<p>Note: Due to the privacy implications, a standard URL shortening service SHOULD NOT be used.</p>
+<h2 id="advanced-message-passing"><a class="toc-anchor" href="#advanced-message-passing">§</a> Advanced Message Passing</h2>
+<p>TODO:</p>
+<ul>
+<li>Deep linking</li>
+<li>CHAPI</li>
+<li>NFC</li>
+<li>Wifi-Direct</li>
+<li>Bluetooth</li>
+<li>Sneakernet / file oriented / mimetypes</li>
+</ul>
+<h4 id="embedded-messages"><a class="toc-anchor" href="#embedded-messages">§</a> Embedded Messages</h4>
+<p>DIDComm messages may be passed within other messages are protocols when the outer message is passed in a secure way. When messages are passed in this way, they may be passed either as an encrypted message or in plain text. When in plain text format, messages should be represented in json format.</p>
+<h5 id="privacy-considerations-2"><a class="toc-anchor" href="#privacy-considerations-2">§</a> Privacy Considerations</h5>
+<p>When messages are passed in plain text, the privacy and security of the message is subject to the properties of the protocol and transport moving the messages. Extreme care must be taken to protect the message.</p>
+<h3 id="connections"><a class="toc-anchor" href="#connections">§</a> Connections</h3>
+<p>A Connection is the practical application of a relationship in DID Communication. Having a connection means that each party in the relationship has a DID for the other parties, and parties can communicate securely using the keys and endpoints within each DID Document.</p>
+<p>In order to establish a new connection, we use the OutOfBand Protocol and the DID Exchange Protocol.</p>
+<h4 id="outofband-protocol"><a class="toc-anchor" href="#outofband-protocol">§</a> OutOfBand Protocol</h4>
+<p>Invitations are usually the first message passed between parties. They are passed out of band, such as in a QR code or a link that can either open in an app or in a browser containing getting started instructions.</p>
+<p>The OutOfBand Protocol exists as an independent protocol to allow for the invitation recipient to respond with any of the supported protocols.</p>
+<p>A Public DID functions as a standing invitation. The information within the resolved DID Document serves the same function as the information passed in OutOfBand protocol messages.</p>
+<p>TODO: Include details of the protocol.</p>
+<h5 id="ephemeral-mode"><a class="toc-anchor" href="#ephemeral-mode">§</a> Ephemeral Mode</h5>
+<p>Some interactions do not need an established connection to complete their purpose. These interactions occur in <em>ephemeral mode</em> and use OutOfBand protocol messages for the bulk of the interaction.</p>
+<p>TODO: Include more details about ephemeral mode.</p>
+<h4 id="did-exchange-protocol"><a class="toc-anchor" href="#did-exchange-protocol">§</a> DID Exchange Protocol</h4>
+<h5 id="1-exchange-request"><a class="toc-anchor" href="#1-exchange-request">§</a> 1. Exchange Request</h5>
+<p>The exchange request message is used to communicate the DID document of the <em>invitee</em> to the <em>inviter</em> using the provisional service information present in the <em>invitation</em> message.</p>
+<p>If needed, the <em>invitee</em> will provision a new DID according to the DID method spec. The <em>invitee</em> may also use a previously provisioned DID.</p>
+<p>The DID is presented in the exchange_request message as follows:</p>
+<p>TODO: Add clear details about initial_state usage?</p>
+<p>Example</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"5678876542345"</span><span class="token punctuation">,</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/request"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"&lt;id of invitation>"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"label"</span><span class="token operator">:</span> <span class="token string">"Bob"</span><span class="token punctuation">,</span>
+  <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"&lt;did invitee is sending to inviter>"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h6 id="attributes"><a class="toc-anchor" href="#attributes">§</a> Attributes</h6>
+<ul>
+<li>The <code>@type</code> attribute is a required string value that denotes that the received message is an exchange request.</li>
+<li>The <a href="../../concepts/0008-message-id-and-threading/README.md#thread-object"><code>~thread</code></a> decorator MUST be included:
+<ul>
+<li>It MUST include the ID of the parent thread (<code>pthid</code>) such that the <code>request</code> can be correlated to the corresponding <code>invitation</code>. More on correlation <a href="#correlating-requests-to-invitations">below</a>.</li>
+<li>It MAY include the <code>thid</code> property. In doing so, implementations MUST set its value to that of <code>@id</code> on the same request message. In other words, the values of <code>@id</code> and <code>~thread.thid</code> MUST be equal.</li>
+</ul>
+</li>
+<li>The <code>label</code> attribute provides a suggested label for the DID being exchanged. This allows the user to tell multiple exchange requests apart. This is not a trusted attribute.</li>
+<li>The <code>connection</code> attribute contains the <code>did</code> and <code>did_doc</code> attributes. This format maintains consistency with the Response message where this attribute is signed.</li>
+<li>The <code>did</code> indicates the DID being exchanged.</li>
+</ul>
+<h6 id="correlating-requests-to-invitations"><a class="toc-anchor" href="#correlating-requests-to-invitations">§</a> Correlating requests to invitations</h6>
+<p>An invitation is presented in one of two forms:</p>
+<ul>
+<li>An explicit OutOfBand invitation with its own <code>@id</code>.</li>
+<li>An <a href="#implicit-invitation">implicit</a> invitation contained in a DID document’s <a href="https://w3c-ccg.github.io/did-spec/#service-endpoints"><code>service</code></a> attribute.</li>
+</ul>
+<p>When a <code>request</code> responds to an explicit invitation, its <code>~thread.pthid</code> MUST be equal to the <code>@id</code> property of the invitation.</p>
+<p>When a <code>request</code> responds to an implicit invitation, its <code>~thread.pthid</code> MUST contain a <a href="https://w3c-ccg.github.io/did-spec/#dfn-did-url">DID URL</a> that resolves to the specific <code>service</code> on a DID document that contains the invitation.</p>
+<p>TODO: Include examples using a ledger resolvable DID.</p>
+<p><strong>Example referencing an explicit invitation</strong></p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"a46cdd0f-a2ca-4d12-afbf-2e78a6f1f3ef"</span><span class="token punctuation">,</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/request"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"032fbd19-f6fd-48c5-9197-ba9a47040470"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"label"</span><span class="token operator">:</span> <span class="token string">"Bob"</span><span class="token punctuation">,</span>
+  <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"&lt;did invitee is sending to inviter>"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><strong>Example referencing an implicit invitation</strong></p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"a46cdd0f-a2ca-4d12-afbf-2e78a6f1f3ef"</span><span class="token punctuation">,</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/request"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"did:example:21tDAKCERh95uGgKbJNHYp#invitation"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"label"</span><span class="token operator">:</span> <span class="token string">"Bob"</span><span class="token punctuation">,</span>
+  <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"&lt;did invitee is sending to inviter>"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h6 id="request-transmission"><a class="toc-anchor" href="#request-transmission">§</a> Request Transmission</h6>
+<p>The Request message is encoded according to the standards of the Encryption Envelope, using the <code>recipientKeys</code> present in the invitation.</p>
+<p>If the <code>routingKeys</code> attribute was present and non-empty in the invitation, each key must be used to wrap the message in a forward request, then encoded in an Encryption Envelope. This processing is in order of the keys in the list, with the last key in the list being the one for which the <code>serviceEndpoint</code> possesses the private key.</p>
+<p>The message is then transmitted to the <code>serviceEndpoint</code>.</p>
+<p>We are now in the <code>requested</code> state.</p>
+<h6 id="request-processing"><a class="toc-anchor" href="#request-processing">§</a> Request processing</h6>
+<p>After receiving the exchange request, the <em>inviter</em> evaluates the provided DID and DID Doc according to the DID Method Spec.</p>
+<p>The <em>inviter</em> should check the information presented with the keys used in the wire-level message transmission to ensure they match.</p>
+<p>The <em>inviter</em> MAY look up the corresponding invitation identified in the request’s <code>~thread.pthid</code> to determine whether it should accept this exchange request.</p>
+<p>If the <em>inviter</em> wishes to continue the exchange, they will persist the received information in their wallet. They will then either update the provisional service information to rotate the key, or provision a new DID entirely. The choice here will depend on the nature of the DID used in the invitation.</p>
+<p>The <em>inviter</em> will then craft an exchange response using the newly updated or provisioned information.</p>
+<h6 id="request-errors"><a class="toc-anchor" href="#request-errors">§</a> Request Errors</h6>
+<p>See <a href="#errors">Error Section</a> above for message format details.</p>
+<p><strong>request_rejected</strong></p>
+<p>Possible reasons:</p>
+<ul>
+<li>Unsupported DID method for provided DID</li>
+<li>Expired Invitation</li>
+<li>DID Doc Invalid</li>
+<li>Unsupported key type</li>
+<li>Unsupported endpoint protocol</li>
+<li>Missing reference to invitation</li>
+</ul>
+<p><strong>request_processing_error</strong></p>
+<ul>
+<li>unknown processing error</li>
+</ul>
+<h5 id="2-exchange-response"><a class="toc-anchor" href="#2-exchange-response">§</a> 2. Exchange Response</h5>
+<p>The exchange response message is used to complete the exchange. This message is required in the flow, as it updates the provisional information presented in the invitation.</p>
+<h6 id="example"><a class="toc-anchor" href="#example">§</a> Example</h6>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/response"</span><span class="token punctuation">,</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"12345678900987654321"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"thid"</span><span class="token operator">:</span> <span class="token string">"&lt;The Thread ID is the Message ID (@id) of the first message in the thread>"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"&lt;did inviter is sending to invitee>"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The signature data must be used to verify against the invitation’s <code>recipientKeys</code> for continuity.</p>
+<h6 id="attributes-2"><a class="toc-anchor" href="#attributes-2">§</a> Attributes</h6>
+<ul>
+<li>The <code>@type</code> attribute is a required string value that denotes that the received message is an exchange request.</li>
+<li>The <code>~thread</code> block contains a <code>thid</code> reference to the <code>@id</code> of the request message.</li>
+<li>The <code>connection</code> attribute contains the <code>did</code> and <code>did_doc</code> attributes to enable simpler signing.</li>
+<li>The <code>did</code> attribute is a required string value and denotes DID in use by the <em>inviter</em>. Note that this may not be the same DID used in the invitation.</li>
+</ul>
+<p>In addition to a new DID, the associated DID Doc might contain a new endpoint. This new DID and endpoint are to be used going forward in the relationship.</p>
+<h6 id="response-transmission"><a class="toc-anchor" href="#response-transmission">§</a> Response Transmission</h6>
+<p>The message should be packaged in the encrypted envelope format, using the keys from the request, and the new keys presented in the internal did doc.</p>
+<p>When the message is transmitted, we are now in the <code>responded</code> state.</p>
+<h6 id="response-processing"><a class="toc-anchor" href="#response-processing">§</a> Response Processing</h6>
+<p>When the <em>invitee</em> receives the <code>response</code> message, they will verify the <code>change_sig</code> provided. After validation, they will update their wallet with the new information. If the endpoint was changed, they may wish to execute a Trust Ping to verify that new endpoint.</p>
+<h6 id="response-errors"><a class="toc-anchor" href="#response-errors">§</a> Response Errors</h6>
+<p>See <a href="#errors">Error Section</a> above for message format details.</p>
+<p><strong>response_rejected</strong></p>
+<p>Possible reasons:</p>
+<ul>
+<li>unsupported DID method for provided DID</li>
+<li>Expired Request</li>
+<li>DID Doc Invalid</li>
+<li>Unsupported key type</li>
+<li>Unsupported endpoint protocol</li>
+<li>Invalid Signature</li>
+</ul>
+<p><strong>response_processing_error</strong></p>
+<ul>
+<li>unknown processing error### 3. Exchange Acknowledgement</li>
+</ul>
+<h3 id="3-exchange-complete"><a class="toc-anchor" href="#3-exchange-complete">§</a> 3. Exchange Complete</h3>
+<p>The exchange complete message is used to confirm the exchange to the <em>inviter</em>. The <em>inviter</em> may then invoke any protocols desired based on the context expressed via the <code>pthid</code> in the DID Exchange protocol.</p>
+<h5 id="example-2"><a class="toc-anchor" href="#example-2">§</a> Example</h5>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/complete"</span><span class="token punctuation">,</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"12345678900987654321"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"thid"</span><span class="token operator">:</span> <span class="token string">"&lt;The Thread ID is the Message ID (@id) of the first message in the thread>"</span><span class="token punctuation">,</span>
+    <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"&lt;The Message ID (@id) of the Out Of Band Invitation message>"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code>pthid</code> is required in this message, even if present in the <code>request</code> method.</p>
+<p>After a message is sent, the <em>invitee</em> in the <code>complete</code> state. Receipt of a message puts the <em>inviter</em> into the <code>complete</code> state.</p>
+<h5 id="next-steps"><a class="toc-anchor" href="#next-steps">§</a> Next Steps</h5>
+<p>The exchange between the <em>inviter</em> and the <em>invitee</em> is now established. This relationship has no trust associated with it. The next step should be the exchange of proofs to build trust sufficient for the purpose of the relationship.</p>
+<h3 id="exchange-reuse"><a class="toc-anchor" href="#exchange-reuse">§</a> Exchange Reuse</h3>
+<p>When an out of band invitation is received containing a public DID for which the <em>invitee</em> already has a connection, the <em>invitee</em> may use the <code>reuse</code> message in the protocol sent over the existing connection. The <code>pthid</code> passed in the <code>reuse</code> message allows the <em>inviter</em> to correlate the invitation with the identified existing connection and then invoke any protocols desired based on that context.</p>
+<h5 id="example-3"><a class="toc-anchor" href="#example-3">§</a> Example</h5>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/didexchange/2.0/reuse"</span><span class="token punctuation">,</span>
+  <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"12345678900987654321"</span><span class="token punctuation">,</span>
+  <span class="token property">"~thread"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"&lt;The Parent Thread ID of the Out Of Band Invitation>"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code>pthid</code> is required in this message. It provides the context link for the <em>inviter</em> to prompt additional protocol interactions.</p>
+<p>Sending or receiving this message does not change the state of the existing connection.</p>
+<h6 id="next-steps-2"><a class="toc-anchor" href="#next-steps-2">§</a> Next Steps</h6>
+<p>The exchange between the <em>inviter</em> and the <em>invitee</em> is now established. This relationship has no trust associated with it. The next step should be the exchange of proofs to build trust sufficient for the purpose of the relationship.</p>
+<h6 id="peer-did-maintenance"><a class="toc-anchor" href="#peer-did-maintenance">§</a> Peer DID Maintenance</h6>
+<p>When Peer DIDs are used in an exchange, it is likely that both Alice and Bob will want to perform some relationship maintenance such as key rotations. Future updates will add these maintenance features.</p>
+<h5 id="todo"><a class="toc-anchor" href="#todo">§</a> TODO:</h5>
+<ul>
+<li>Pairwise vs n-wise connections, how to transition.</li>
+<li>Reuse of existing connections, add <code>continue</code> message for use with connection reuse. (ack message?)</li>
+</ul>
+<h2 id="general-messaging-constructs"><a class="toc-anchor" href="#general-messaging-constructs">§</a> General Messaging Constructs</h2>
+<ul>
+<li>Decorators (headers)</li>
+<li>Threading</li>
+<li>Message types / families</li>
+<li>Reliable Delivery</li>
+<li>Attachments</li>
+<li>Attachment/Payload Signatures</li>
+<li>Timing</li>
+<li>ACKs</li>
+<li>Errors</li>
+<li>Tracing / troubleshooting</li>
+</ul>
+<h3 id="protocols"><a class="toc-anchor" href="#protocols">§</a> Protocols</h3>
+<p>DIDComm serves as a foundational layer for the development of protocols. This spec does not include protocols themselves, but describes the basic requirements and foundational elements.</p>
+<p>Each Protocol is uniquely identified by a Protocol Identifier URI, and contains one or more messages identified by a Message Type URI. In addition to serving as a unique identifier, the URIs may be used by a developer to locate documentation.</p>
+<h4 id="protocol-identifier-uri"><a class="toc-anchor" href="#protocol-identifier-uri">§</a> Protocol Identifier URI</h4>
+<p>A Protocol Identifier URI identifies protocol versions unambiguously.  Additionally, Protocol Identifier URIs may be used by a developer to locate documentation about a protocol.</p>
+<p>The URI must be composed as follows:</p>
+<pre><code>[doc-uri][delim][protocol-name]/[semver]
+</code></pre>
+<p>With ABNF:</p>
+<pre class="language-ABNF"><code class="language-ABNF">protocol-identifier-uri = doc-uri delim protocol-name &quot;/&quot; semver
+delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &quot;:&quot; / &quot;;&quot; / &quot;=&quot;
+</code></pre>
+<p>Its loose matcher regex is:</p>
+<pre><code>(.*?)([a-z0-9._-]+)/(\d[^/]*)/?$
+</code></pre>
+<p>Example Protocol Type URIs:</p>
+<pre><code>http://example.com/protocols?which=lets_do_lunch/1.0
+http://example.com/protocols/lets_do_lunch/1.0
+https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1
+</code></pre>
+<p>The goals of this URI are, in descending priority:</p>
+<ul>
+<li>
+<p>Code can use the URI to route messages to protocol
+handlers using <a href="semver.md">semver rules</a>.</p>
+</li>
+<li>
+<p>The definition of a protocol should be tied to the URI such
+that it is semantically stable. This means that once version 1.0
+of a protocol is defined, its definition <a href="semver.md">should not change in
+ways that would break implementations</a>.</p>
+</li>
+<li>
+<p>Developers can discover information about novel protocols, using
+the URI to browse or search the web.</p>
+</li>
+</ul>
+<p>The <code>doc-uri</code> portion is any URI that exposes documentation about
+protocols. A developer should be able to browse to that URI and use human intelligence
+to look up the named and versioned protocol.</p>
+<h4 id="message-type-uri"><a class="toc-anchor" href="#message-type-uri">§</a> Message Type URI</h4>
+<p>A <strong>Message Type URI</strong> identifies message types unambiguously.
+Standardizing its format is important because it is parsed by agents that
+will map messages to handlers–basically, code will look at this string and
+say, “Do I have something that can handle this message type inside protocol
+<em>X</em> version <em>Y</em>?” When that analysis happens, it must do more than compare
+the string for exact equality; it may need to check for semver compatibility,
+and it has to compare the protocol name and message type name ignoring case
+and punctuation.</p>
+<p>The URI MUST be composed as follows:</p>
+<pre><code>[protocol-identifier-uri] / [message-type-name]
+</code></pre>
+<p>With ABNF:</p>
+<pre class="language-ABNF"><code class="language-ABNF">message-type-uri  = protocol-identifier-uri &quot;/&quot; message-type-name
+protocol-identifier-uri = doc-uri delim protocol-name &quot;/&quot; semver
+delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &quot;:&quot; / &quot;;&quot; / &quot;=&quot;
+protocol-name     = identifier
+protocol-version  = semver
+message-type-name = identifier
+identifier        = alpha *(*(alphanum / &quot;_&quot; / &quot;-&quot; / &quot;.&quot;) alphanum)
+</code></pre>
+<p>It can be loosely matched and parsed with the following regex:</p>
+<pre><code>    (.*?)([a-z0-9._-]+)/(\d[^/]*)/([a-z0-9._-]+)$
+</code></pre>
+<p>A match will have captures groups of (1) = <code>doc-uri</code>, (2) = <code>protocol-name</code>,
+(3) = <code>protocol-version</code>, and (4) = <code>message-type-name</code>.</p>
+<p>The goals of this URI are, in descending priority:</p>
+<ul>
+<li>Use of the <code>protocol-identifier-uri</code> portion as described above.</li>
+<li>Optionally and preferably, the full URI may produce a page of documentation about the specific message type, with no human mediation involved.</li>
+</ul>
+<p>Example Message Type URIs:</p>
+<pre><code>http://example.com/protocols?which=lets_do_lunch/1.0/proposal
+http://example.com/protocols/lets_do_lunch/1.0/proposal
+did:example:1234567890;spec/trust_ping/1.0/ping
+https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1/create-invitation
+</code></pre>
+<h2 id="reference-implementation"><a class="toc-anchor" href="#reference-implementation">§</a> Reference Implementation</h2>
+<ul>
+<li>Features</li>
+<li>Usage</li>
+</ul>
+<h2 id="future-proofing"><a class="toc-anchor" href="#future-proofing">§</a> Future-Proofing</h2>
+<ul>
+<li>
+<p>Versioning of the standard</p>
+</li>
+<li>
+<p>Extensibility</p>
+</li>
+<li>
+<p>Adapting for post-quantum crypto</p>
+</li>
+</ul>
+<h3 id="extensions"><a class="toc-anchor" href="#extensions">§</a> Extensions</h3>
+<p>The general mechanism for DIDComm extensibility is the development of
+DIDComm protocols. In the case where extensibility requires a modification
+to the base DIDComm spec itself, a DIDComm Extension is to be used.</p>
+<p>Each DIDComm Extension is described in a specification. Software that
+implements a DIDComm Extension in addition to the DIDComm spec will
+indicate so via link to the extension spec.</p>
+<h2 id="references"><a class="toc-anchor" href="#references">§</a> References</h2>
+<ul>
+<li>DID spec</li>
+<li>OSI stack (for comparison purposes)</li>
+<li>Kim Cameron’s 7 Laws</li>
+</ul>
+
+              </article>    
+
+            </main>
+
+            <slide-panels id="slidepanels">
+              <slide-panel id="repo_issues" options="right">
+                <header class="panel-header">
+                  <span>
+                    <svg icon><use xlink:href="#github"></use></svg>
+                    <span issue-count></span>
+                  </span>
+                  <span class="repo-issue-toggle" panel-toggle="repo_issues">✕</span>
+                </header>
+                <ul id="repo_issue_list"></ul>
+              </slide-panel>
+
+              <slide-panel id="toc">
+                <header class="panel-header">
+                  <span>Table of Contents</span>
+                  <span panel-toggle="toc">✕</span>
+                </header>
+                <div id="toc_list">
+                  <ul class="toc">
+<li><a href="#purpose-and-scope">Purpose and Scope</a>
+<ul>
+<li><a href="#rough-overview">Rough Overview</a></li>
+<li><a href="#goals-and-ramifications">Goals and Ramifications</a>
+<ul>
+<li><a href="#message-based-asynchronous-and-simplex">Message-Based, Asynchronous, and Simplex</a></li>
+<li><a href="#message-level-security-reciprocal-authentication">Message-Level Security, Reciprocal Authentication</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#requirements">Requirements</a>
+<ul>
+<li><a href="#processing-model">Processing Model</a></li>
+</ul>
+</li>
+<li><a href="#message-structure">Message Structure</a>
+<ul>
+<li><a href="#did-rotation">DID Rotation</a>
+<ul>
+<li><a href="#jwt-details">JWT Details</a></li>
+<li><a href="#example-message-rotating-did">Example Message Rotating DID</a></li>
+<li><a href="#rotation-limitations">Rotation Limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#message-encryption">Message Encryption</a>
+<ul>
+<li><a href="#sender-authenticated-encryption">Sender Authenticated Encryption</a></li>
+<li><a href="#anonymous-encryption">Anonymous Encryption</a></li>
+<li><a href="#key-wrapping-algorithms">Key Wrapping Algorithms</a></li>
+<li><a href="#examples">Examples</a></li>
+</ul>
+</li>
+<li><a href="#routing">Routing</a>
+<ul>
+<li><a href="#routing-protocol">Routing Protocol</a>
+<ul>
+<li><a href="#name-and-version">Name and Version</a></li>
+<li><a href="#roles">Roles</a></li>
+<li><a href="#states">States</a></li>
+<li><a href="#messages">Messages</a></li>
+<li><a href="#rewrapping">Rewrapping</a></li>
+</ul>
+</li>
+<li><a href="#sender-forward-process">Sender Forward Process</a></li>
+<li><a href="#mediator-process">Mediator Process</a></li>
+<li><a href="#did-document-keys">DID Document Keys</a></li>
+<li><a href="#did-document-service-endpoint">DID Document Service Endpoint</a>
+<ul>
+<li><a href="#multiple-endpoints">Multiple Endpoints</a></li>
+<li><a href="#alternative-endpoints">Alternative Endpoints</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#transports">Transports</a>
+<ul>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#delivery">Delivery</a></li>
+<li><a href="#reference">Reference</a>
+<ul>
+<li><a href="#https">HTTP(S)</a></li>
+<li><a href="#websocket">WebSocket</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#out-of-band-messages">Out Of Band Messages</a>
+*
+<ul>
+<li><a href="#url-qr-codes">URL &amp; QR Codes</a></li>
+<li><a href="#invitation-httpsdidcommorgout-of-bandverinvitation">Invitation: <code>https://didcomm.org/out-of-band/%VER/invitation</code></a></li>
+</ul>
+</li>
+<li><a href="#advanced-message-passing">Advanced Message Passing</a>
+*
+<ul>
+<li><a href="#embedded-messages">Embedded Messages</a></li>
+<li><a href="#connections">Connections</a>
+<ul>
+<li><a href="#outofband-protocol">OutOfBand Protocol</a></li>
+<li><a href="#did-exchange-protocol">DID Exchange Protocol</a></li>
+</ul>
+</li>
+<li><a href="#3-exchange-complete">3. Exchange Complete</a></li>
+<li><a href="#exchange-reuse">Exchange Reuse</a></li>
+</ul>
+</li>
+<li><a href="#general-messaging-constructs">General Messaging Constructs</a>
+<ul>
+<li><a href="#protocols">Protocols</a>
+<ul>
+<li><a href="#protocol-identifier-uri">Protocol Identifier URI</a></li>
+<li><a href="#message-type-uri">Message Type URI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#reference-implementation">Reference Implementation</a></li>
+<li><a href="#future-proofing">Future-Proofing</a>
+<ul>
+<li><a href="#extensions">Extensions</a></li>
+</ul>
+</li>
+<li><a href="#references">References</a></li>
+</ul>
+
+                </div>
+              </slide-panel>
+              
+            </slide-panels>
+
+          </body>
+          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","routing.md","transports.md","out_of_band.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/spec/","destinationResourcePrefix":"../../"}</script>
+          <script src="../../spec-up/compiled/body.js" data-manual></script>
+        </html>
+      
