@@ -1,4 +1,4 @@
-DIDComm Messaging Protocol
+DIDComm Messaging
 ==================
 
 **Specification Status:** Editor's Draft
@@ -8,7 +8,7 @@ DIDComm Messaging Protocol
 
 **Editors:**
 
-**Contributors:**
+**Contributors:** Daniel Hardman
 
 **Participate:**
 ~ [GitHub repo](https://github.com/decentralized-identity/didcomm-messaging)

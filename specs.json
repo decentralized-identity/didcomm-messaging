@@ -3,7 +3,7 @@
   "resource_path": "./docs/spec",
   "specs": [
     {
-      "title": "DIDComm Messaging Protocol",
+      "title": "DIDComm Messaging Specification",
       "logo": "https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg",
       "logo_link": "https://identity.foundation",
       "source": {
@@ -32,7 +32,7 @@
         "references.md"
       ]
     },{
-      "title": "DIDComm Messaging Protocol - Implementers Guide",
+      "title": "DIDComm Messaging - Implementers Guide",
       "logo": "https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg",
       "logo_link": "https://identity.foundation",
       "source": {
