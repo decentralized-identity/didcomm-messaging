@@ -7,11 +7,11 @@ This repo is where we develops specs and reference code to explain DIDComm Messa
 
 ### Artifacts
 
-Browse the latest rendered draft of the spec [here](https://identity.foundation/didcomm-messaging/docs/spec/).
+Browse the latest rendered draft of the spec [here](https://identity.foundation/didcomm-messaging/spec/).
 
 View the spec markdown outline [here](spec.md).
 
-View the rendered draft of the Implementer's Guide [here](https://identity.foundation/didcomm-messaging/docs/guide/).
+View the rendered draft of the Implementer's Guide [here](https://identity.foundation/didcomm-messaging/guide/).
 
 ### Process
 
