@@ -1,6 +1,7 @@
 
 {
-  "resource_path": "./docs/spec",
+  "public_root": "./www",
+  "resource_path": "./www",
   "specs": [
     {
       "title": "DIDComm Messaging Specification",
@@ -11,7 +12,7 @@
         "account": "decentralized-identity",
         "repo": "didcomm-messaging"
       },
-      "output_path": "./docs/spec",
+      "output_path": "./www/docs/spec",
       "spec_directory": "./",
       "markdown_paths": [
         "title.md",
@@ -40,7 +41,7 @@
         "account": "decentralized-identity",
         "repo": "didcomm-messaging"
       },
-      "output_path": "./docs/guide",
+      "output_path": "./www/docs/guide",
       "spec_directory": "./guide",
       "markdown_paths": [
         "intro.md",
