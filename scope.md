@@ -1,10 +1,10 @@
 ## Purpose and Scope
 
-The purpose of DIDComm is to provide a secure, private communication methodology built atop the decentralized design of [DIDs](https://www.w3.org/TR/did-core/).
+The purpose of DIDComm is to provide a secure, private communication methodology built atop the decentralized design of Decentralized Identieis, also known as [DIDs](https://www.w3.org/TR/did-core/).
 
 Other robust mechanisms for secure communication already exist. However, most rely on key registries, identity providers, certificate authorities, browser or app vendors, or similarly centralized assumptions. They also tend to be tied to a single transport, making it difficult to use the same solution for human and machine conversations, online and offline, simplex and duplex, across a broad set of modalities. The net result is that they perpetuate an asymmetry between institutions and ordinary people. The former maintain certificates and always-connected servers, and publish APIs under terms and conditions they dictate; the latter suffer with usernames and passwords, poor interoperability, and a Hobson's choice between privacy and convenience.
 
-DIDComm can fix this. Using DIDComm, individuals on semi-connected mobile devices become full peers of highly available web servers operated by IT experts. Registration is self-service, intermediaries require little trust, and no terms and conditions apply.
+DIDComm can fix this. Using DIDComm, individuals on semi-connected mobile devices become full peers of highly available web servers operated by IT experts. Registration is self-service, intermediaries require little trust, and no terms and conditions need apply.
 
 DIDComm enables higher-order protocols that inherit its security, privacy, decentralization, and transport independence. Examples include exchanging verifiable credentials, creating and maintaining relationships, buying and selling, scheduling events, negotiating contracts, voting, presenting tickets for travel, applying to employers or schools or banks, arranging healthcare, and playing games. Like web services atop HTTP, the possibilities are endless; unlike web services atop HTTP, many parties can participate without being clients of a central server, and they can use a mixture of connectivity models and technologies.
 
@@ -29,7 +29,7 @@ Well, mostly. The description is pretty good, if you squint, but it does not fit
 
 - DIDComm doesn't always involve turn-taking and request-response.
 - DIDComm interactions can involve more than 2 parties, and the parties are not always individuals.
-- DIDComm may include formats other than JSON.
+- DIDComm may include formats other than JSON. {FTD: why make this expansion.  Seems to me if you focused the effort on building atop JWM you create a "waist" that will simplify discussions and speed adoption.   And yes, JWM could map to any number of underlying transport protocols (e.g. SMTP, HTTPS, etc)
 
 Before we provide more details, let's explore what drives the design of DIDComm.
 
@@ -45,7 +45,7 @@ The DIDComm design attempts to be:
 
 As a list of buzz words, this may elicit nods rather than surprise. However, several items have deep ramifications.
 
-Taken together, *Secure* and *Private* require that the protocol be decentralized and maximally opaque to the surveillance economy.
+Taken together, *Secure* and *Private* require that the protocol be decentralized and maximally opaque to the surveillance economy. {I dont agree with this claim.  Yes, security and privacy can be achieved with a decentralized approach.  Security CAN be achieved in a centralized architecture, and (arguabily) so can privacy (depending on how you choose to define the term).  However, by definition this is a communications layer atop a DID architecture so by definition it's decentralized.}
 
 *Interoperable* means that DIDComm should work across programming languages, blockchains, vendors, OS/platforms, networks, legal jurisdictions, geos, cryptographies, and hardware--as well as across time. That's quite a list. It means that DIDComm intends something more than just compatibility within any specific project; it aims to be a future-proof *lingua franca* of all self-sovereign interactions.
 
