@@ -1,6 +1,6 @@
 ## Requirements
 
-* **decentralized/self-sovereign** (encryption, signing, authn, and authz should all be based on control of DIDs rathern than on CAs, IDPs, etc)
+* **decentralized/self-sovereign** (encryption, signing, authn, and authz should all be based on control of DIDs rather than on CAs, IDPs, etc)
 
 * **transport independent** (HTTPS, bluetooth, AMQP, SMTP, NFC, and so forth)
 
@@ -8,7 +8,7 @@
 
 * **secure** (tamper-proof, MITM impossible, composed of primitives widely considered best practice, vetted by experts, has formal security proofs, security guarantees of a given message are known)
 
-* **private** (third parties can’t learn who’s communicating about what, when--broader than “confidentiality” in CIA because metadata like timing and identities of parties is also protected; also, possible for a sender to be anonymous to recipient) 
+* **private** (third parties can’t learn who’s communicating about what, when--broader than “confidentiality” in CIA {huh what does this mean?} because metadata like timing and identities of parties is also protected; also, possible for a sender to be anonymous to recipient) 
 
 * **asynchronous** (can’t require real-time participation by a party; like email in that parties can communicate when they want)
 
@@ -18,7 +18,7 @@
 
 * **platform-independent** (usable on embedded, not just servers+desktops+mobile)
 
-* **composable** (pick the crypto suite and features you need, without incurring overwhelming dependencies for stuff you don’t)
+* **composable** (pick the crypto suite and features you need, without incurring overwhelming dependencies for stuff you don’t) {this would seemingly require some form of negotiation, similar to what happens in TLS.   What if the sender decided to cipher the message with SecretSquirrelLevel10 algo and the recipient cant handle that algo for any number of reasons (export controls, etc)?}
 
 * **pairwise, nwise, anywise** (communicate between 2 parties, or between N parties, or to the whole world)
 
