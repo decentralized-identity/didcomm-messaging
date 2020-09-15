@@ -82,6 +82,10 @@ main article h2 {
   counter-reset: h3 h4;
 }
 
+main article h3 {
+  counter-reset: h4;
+}
+
 main article h2:after {
   counter-increment: h2;
   content: counter(h2) ".";

@@ -164,6 +164,7 @@ function readMDFile(path, reject) {
 }
 
 async function render(config, assets) {
+  noticeTitles = {};
   console.log('Rendering: ' + config.title);
   return new Promise(async (resolve, reject) => {
     Promise.all((config.markdown_paths || ['spec.md']).map(path => {
