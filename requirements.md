@@ -1,6 +1,6 @@
 ## Requirements
 
-* **decentralized/self-sovereign** (encryption, signing, authn, and authz should all be based on control of DIDs rathern than on CAs, IDPs, etc)
+* **decentralized/self-sovereign** (encryption, signing, authn, and authz should all be based on control of DIDs rather than on CAs, IDPs, etc)
 
 * **transport independent** (HTTPS, bluetooth, AMQP, SMTP, NFC, and so forth)
 
