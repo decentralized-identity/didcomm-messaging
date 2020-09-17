@@ -8,7 +8,7 @@
 
 * **secure** (tamper-proof, MITM impossible, composed of primitives widely considered best practice, vetted by experts, has formal security proofs, security guarantees of a given message are known)
 
-* **private** (third parties can’t learn who’s communicating about what, when--broader than “confidentiality” in CIA because metadata like timing and identities of parties is also protected; also, possible for a sender to be anonymous to recipient) 
+* **private** (third parties can’t learn who’s communicating about what, when--broader than “confidentiality” in Confidentiality, Integrity, Authenticity (CIA) because metadata like timing and identities of parties is also protected; also, possible for a sender to be anonymous to recipient) 
 
 * **asynchronous** (can’t require real-time participation by a party; like email in that parties can communicate when they want)
 
