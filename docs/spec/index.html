@@ -362,6 +362,9 @@
 </tr>
 </tbody>
 </table>
+<h3 id="perfect-forward-secrecy"><a class="toc-anchor" href="#perfect-forward-secrecy">§</a> Perfect Forward Secrecy</h3>
+<p>Due to the triple Key Derivation algorithm used in ECDH-1PU and the ephemeral keys used per message in ECDH-ES, all messages sent via DIDComm have perfect forward secrecy without any additional security added by the transport layer. In ECDH-ES, PFS is obtained because the ephemeral key combined with the static recipient key produce a new derived symmetrical key for each message (which is then used to encrypt the content encryption key).</p>
+<p>In the case of ECDH-1PU this is achieved by encrypting the content encryption key with the output of the hash of the Ze (ECDH of Ephemeral key and recipient static key) and Zs (ECDH of static sender key and recipient static key). With Ze bringing the changed derived secret in each message and Zs bringing the repudiable authenticity of each message, the resulting Z (hash of Ze and Zs) carries the properties of perfect forward secrecy and repudiable authenticity for each message as well.</p>
 <h3 id="examples"><a class="toc-anchor" href="#examples">§</a> Examples</h3>
 <p>While the details of encrypting a JWM into a JWE are included in the <a href="https://tools.ietf.org/html/draft-looker-jwm-01">JWM spec</a>, a few examples are included here for clarity.</p>
 <p>TODO: Add examples here</p>
@@ -1036,6 +1039,7 @@ indicate so via link to the extension spec.</p>
 <li><a href="#sender-authenticated-encryption">Sender Authenticated Encryption</a></li>
 <li><a href="#anonymous-encryption">Anonymous Encryption</a></li>
 <li><a href="#key-wrapping-algorithms">Key Wrapping Algorithms</a></li>
+<li><a href="#perfect-forward-secrecy">Perfect Forward Secrecy</a></li>
 <li><a href="#examples">Examples</a></li>
 </ul>
 </li>
