@@ -58,12 +58,6 @@ TODO: Include language about safe nonce considerations.
 | ECDH-1PU+A256KW | P-521           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-03#section-2.2)                                                         |
 | ECDH-1PU+A256KW | X25519          | OKP                | ECDH-1PU X25519 ([RFC7748 section 5](https://tools.ietf.org/html/rfc7748#section-5)) to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-03#section-2.2)                                           |
 
-### Perfect Forward Secrecy
-
-Due to the triple Key Derivation algorithm used in ECDH-1PU and the ephemeral keys used per message in ECDH-ES, all messages sent via DIDComm have perfect forward secrecy without any additional security added by the transport layer. In ECDH-ES, PFS is obtained because the ephemeral key combined with the static recipient key produce a new derived symmetrical key for each message (which is then used to encrypt the content encryption key). 
-
-In the case of ECDH-1PU this is achieved by encrypting the content encryption key with the output of the hash of the Ze (ECDH of Ephemeral key and recipient static key) and Zs (ECDH of static sender key and recipient static key). With Ze bringing the changed derived secret in each message and Zs bringing the repudiable authenticity of each message, the resulting Z (hash of Ze and Zs) carries the properties of perfect forward secrecy and repudiable authenticity for each message as well. 
-
 ### Examples
 
 While the details of encrypting a JWM into a JWE are included in the [JWM spec](https://tools.ietf.org/html/draft-looker-jwm-01), a few examples are included here for clarity.
