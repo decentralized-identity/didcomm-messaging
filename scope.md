@@ -1,6 +1,6 @@
 ## Purpose and Scope
 
-The purpose of DIDComm is to provide a secure, private communication methodology built atop the decentralized design of Decentralized Identieis, also known as [DIDs](https://www.w3.org/TR/did-core/).
+The purpose of DIDComm is to provide a secure, private communication methodology built atop the decentralized design of Decentralized Identities, also known as [DIDs](https://www.w3.org/TR/did-core/).
 
 Other robust mechanisms for secure communication already exist. However, most rely on key registries, identity providers, certificate authorities, browser or app vendors, or similarly centralized assumptions. They also tend to be tied to a single transport, making it difficult to use the same solution for human and machine conversations, online and offline, simplex and duplex, across a broad set of modalities. The net result is that they perpetuate an asymmetry between institutions and ordinary people. The former maintain certificates and always-connected servers, and publish APIs under terms and conditions they dictate; the latter suffer with usernames and passwords, poor interoperability, and a Hobson's choice between privacy and convenience.
 
