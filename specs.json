@@ -28,6 +28,7 @@
         "connections.md",
         "general_messaging_constructs.md",
         "protocols.md",
+		"trustping.md",
         "reference_implementation.md",
         "future_proofing.md",
         "references.md"

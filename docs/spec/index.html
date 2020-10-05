@@ -780,6 +780,59 @@ http://example.com/protocols/lets_do_lunch/1.0/proposal
 did:example:1234567890;spec/trust_ping/1.0/ping
 https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1/create-invitation
 </code></pre>
+<h1 id="trust-ping-protocol-10"><a class="toc-anchor" href="#trust-ping-protocol-10">§</a> Trust Ping Protocol 1.0</h1>
+<p>A standard way for agents to test connectivity,
+responsiveness, and security of a DIDComm channel.</p>
+<h2 id="motivation"><a class="toc-anchor" href="#motivation">§</a> Motivation</h2>
+<p>Agents are distributed. They are not guaranteed to be
+connected or running all the time. They support a
+variety of transports, speak a variety of protocols,
+and run software from many different vendors.</p>
+<p>This can make it very difficult to prove that two
+agents have a functional pairwise channel. Troubleshooting
+connectivity, responsiveness, and security is vital.</p>
+<h2 id="reference-2"><a class="toc-anchor" href="#reference-2">§</a> Reference</h2>
+<p>This protocol is analogous to the familiar <code>ping</code>
+command in networking–but because it operates
+over DIDComm, it is transport
+agnostic and asynchronous, and it can produce insights
+into privacy and security that a regular ping
+cannot.</p>
+<h3 id="roles-2"><a class="toc-anchor" href="#roles-2">§</a> Roles</h3>
+<p>There are two parties in a trust ping: the <code>sender</code>
+and the <code>receiver</code>. The sender initiates the trust
+ping. The receiver responds. If the receiver wants
+to do a ping of their own, they can, but this is a
+new interaction in which they become the sender.</p>
+<h3 id="protocol-type-uri"><a class="toc-anchor" href="#protocol-type-uri">§</a> Protocol Type URI</h3>
+<p><code>https://didcomm.org/trust_ping/1.0</code></p>
+<h3 id="messages-3"><a class="toc-anchor" href="#messages-3">§</a> Messages</h3>
+<h4 id="ping"><a class="toc-anchor" href="#ping">§</a> ping</h4>
+<p>The trust ping interaction begins when <code>sender</code>
+creates a <code>ping</code> message like this:</p>
+<pre class="language-JSON"><code class="language-JSON">{
+  &quot;type&quot;: &quot;https://didcomm.org/trust_ping/1.0/ping&quot;,
+  &quot;id&quot;: &quot;518be002-de8e-456e-b3d5-8fe472477a86&quot;,
+  &quot;body&quot;: {
+      &quot;response_requested&quot;: true
+  }
+}
+</code></pre>
+<p><strong>response_requested</strong>: default value is <code>true</code>. If false, the <code>sender</code> is not requesting a <code>ping_response</code> from the <code>receiver</code>. If <code>true</code>, the <code>sender</code> is requesting a response.</p>
+<h4 id="ping_response"><a class="toc-anchor" href="#ping_response">§</a> ping_response</h4>
+<p>When the message arrives at the receiver, assuming that <code>response_requested</code>
+is not <code>false</code>, the receiver should reply as quickly as possible with a
+<code>ping_response</code> message that looks like this:</p>
+<pre class="language-JSON"><code class="language-JSON">{
+  &quot;type&quot;: &quot;https://didcomm.org/trust_ping/1.0/ping_response&quot;,
+  &quot;id&quot;: &quot;e002518b-456e-b3d5-de8e-7a86fe472847&quot;,
+  &quot;thread_id&quot;: &quot;518be002-de8e-456e-b3d5-8fe472477a86&quot;
+}
+</code></pre>
+<h3 id="trust"><a class="toc-anchor" href="#trust">§</a> Trust</h3>
+<p>This is the “<strong>trust</strong> ping protocol”, not just the “ping protocol.”
+The “trust” in its name comes from several features that the interaction
+gains by virtue of the properties of the DIDComm messages. A ping and response verify to both parties that the necessary encryption is in place and working properly for the messages to be understood.</p>
 <h2 id="reference-implementation"><a class="toc-anchor" href="#reference-implementation">§</a> Reference Implementation</h2>
 <ul>
 <li>Features</li>
@@ -927,6 +980,20 @@ indicate so via link to the extension spec.</p>
 </li>
 </ul>
 </li>
+<li><a href="#motivation">Motivation</a></li>
+<li><a href="#reference-2">Reference</a>
+<ul>
+<li><a href="#roles-2">Roles</a></li>
+<li><a href="#protocol-type-uri">Protocol Type URI</a></li>
+<li><a href="#messages-3">Messages</a>
+<ul>
+<li><a href="#ping">ping</a></li>
+<li><a href="#ping_response">ping_response</a></li>
+</ul>
+</li>
+<li><a href="#trust">Trust</a></li>
+</ul>
+</li>
 <li><a href="#reference-implementation">Reference Implementation</a></li>
 <li><a href="#future-proofing">Future-Proofing</a>
 <ul>
@@ -942,7 +1009,7 @@ indicate so via link to the extension spec.</p>
             </slide-panels>
 
           </body>
-          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","routing.md","transports.md","out_of_band.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
+          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","routing.md","transports.md","out_of_band.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","trustping.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
           <script src="../spec-up/compiled/body.js" data-manual></script>
         </html>
       
