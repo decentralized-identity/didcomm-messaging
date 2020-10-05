@@ -5,7 +5,7 @@
   "repository": "https://github.com/decentralized-identity/didcomm-messaging",
   "license": "Apache-2.0",
   "dependencies": {
-    "spec-up": "0.9.78"
+    "spec-up": "0.9.82"
   },
   "scripts": {
     "spec": "node ./scripts/spec-edit.js",

@@ -1,10 +1,12 @@
 ## Purpose and Scope
 
-*Initial: Need for a “trust layer for the internet”, and DIDComm’s pivotal role in enabling trustworthy communication based on DIDs. A decentralized version of PKI plus a decentralized version of DNS plus cutting-edge crypto.*
+The purpose of DIDComm is to provide a secure, private communication methodology built atop the decentralized design of [DIDs](https://www.w3.org/TR/did-core/).
 
-The purpose of DIDComm is to provide a secure communication layer built on top of the information contained in DID Documents. This secure communication can be used to exchange verifiable credentials and other information, providing key foundational elements for a trust layer on the internet.
+Other robust mechanisms for secure communication already exist. However, most rely on key registries, identity providers, certificate authorities, browser or app vendors, or similarly centralized assumptions. They also tend to be tied to a single transport, making it difficult to use the same solution for human and machine conversations, online and offline, simplex and duplex, across a broad set of modalities. The net result is that they perpetuate an asymmetry between institutions and ordinary people. The former maintain certificates and always-connected servers, and publish APIs under terms and conditions they dictate; the latter suffer with usernames and passwords, poor interoperability, and a Hobson's choice between privacy and convenience.
 
-Identity owners (people, organizations, etc.) need software to help them manage keys and perform cryptographic operations. These software agents use DIDComm to communicate with each other. The specific interactions enabled by DIDComm--connecting and maintaining relationships, issuing credentials, providing proof, etc.--are called **protocols**. Key protocols are described in this spec. Protocols created within organizations or industry verticals are described elsewhere.
+DIDComm can fix this. Using DIDComm, individuals on semi-connected mobile devices become full peers of highly available web servers operated by IT experts. Registration is self-service, intermediaries require little trust, and no terms and conditions apply.
+
+DIDComm enables higher-order protocols that inherit its security, privacy, decentralization, and transport independence. Examples include exchanging verifiable credentials, creating and maintaining relationships, buying and selling, scheduling events, negotiating contracts, voting, presenting tickets for travel, applying to employers or schools or banks, arranging healthcare, and playing games. Like web services atop HTTP, the possibilities are endless; unlike web services atop HTTP, many parties can participate without being clients of a central server, and they can use a mixture of connectivity models and technologies.
 
 ### Rough Overview
 
