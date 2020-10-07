@@ -55,40 +55,36 @@
 <p>Other robust mechanisms for secure communication already exist. However, most rely on key registries, identity providers, certificate authorities, browser or app vendors, or similarly centralized assumptions. They also tend to be tied to a single transport, making it difficult to use the same solution for human and machine conversations, online and offline, simplex and duplex, across a broad set of modalities. The net result is that they perpetuate an asymmetry between institutions and ordinary people. The former maintain certificates and always-connected servers, and publish APIs under terms and conditions they dictate; the latter suffer with usernames and passwords, poor interoperability, and a Hobson’s choice between privacy and convenience.</p>
 <p>DIDComm can fix this. Using DIDComm, individuals on semi-connected mobile devices become full peers of highly available web servers operated by IT experts. Registration is self-service, intermediaries require little trust, and no terms and conditions apply.</p>
 <p>DIDComm enables higher-order protocols that inherit its security, privacy, decentralization, and transport independence. Examples include exchanging verifiable credentials, creating and maintaining relationships, buying and selling, scheduling events, negotiating contracts, voting, presenting tickets for travel, applying to employers or schools or banks, arranging healthcare, and playing games. Like web services atop HTTP, the possibilities are endless; unlike web services atop HTTP, many parties can participate without being clients of a central server, and they can use a mixture of connectivity models and technologies.</p>
-<h3 id="rough-overview"><a class="toc-anchor" href="#rough-overview">§</a> Rough Overview</h3>
-<p>A typical DIDComm interaction works like this:</p>
-<blockquote>
-<p>Imagine Alice wants to negotiate with Bob to sell something online, and that DIDComm, not direct human communication, is involved. This means Alice’s agent and Bob’s agent are going to exchange a series of messages.</p>
-<p>Alice may just press a button and be unaware of details, but underneath, her agent begins by preparing a plaintext JSON message about the proposed sale. (The particulars are irrelevant here, but would be described in the spec for a “sell something” protocol.) It then looks up Bob’s DID Doc to access two key pieces of information:</p>
+<h3 id="overview"><a class="toc-anchor" href="#overview">§</a> Overview</h3>
+<p>To understand how DIDComm works, consider a situation where Alice wants to negotiate with Bob to sell something online. Because DIDComm, not direct human communication, is the methodology in this example, Alice’s software agent and Bob’s software agent are going to exchange a series of messages.</p>
+<p>Alice may just press a button and be unaware of details, but underneath, her agent begins by preparing a plaintext JSON message about the proposed sale. (The particulars are irrelevant here, but would be described in the spec for a higher-level “sell something” protocol that takes DIDComm as its foundation.) Alice’s agent then looks up Bob’s DID Doc to access two key pieces of information:</p>
 <ul>
 <li>An endpoint (web, email, etc) where messages can be delivered to Bob.</li>
 <li>The public key that Bob’s agent is using in the Alice:Bob relationship.</li>
 </ul>
-<p>Now Alice’s agent uses Bob’s public key to encrypt the plaintext so that only Bob’s agent can read it, adding authentication with its own private key. The agent arranges delivery to Bob. This “arranging” can involve various hops and intermediaries. It can be complex.</p>
-<p>Bob’s agent eventually receives and decrypts the message, authenticating its origin as Alice using her public key. It prepares its response and routes it back using a reciprocal process (plaintext -&gt; lookup endpoint and public key for Alice -&gt; encrypt with authentication -&gt; arrange delivery).</p>
-</blockquote>
-<p>That’s it.</p>
-<p>Well, mostly. The description is pretty good, if you squint, but it does not fit all DIDComm interactions:</p>
+<p>Now Alice’s agent uses Bob’s public key to encrypt the plaintext so that only Bob’s agent can read it, adding authentication with its own private key. The agent arranges delivery to Bob. This “arranging” can involve various hops and intermediaries. It can be complex. (See <a href="/guide#routing">Routing in the Implementers Guide</a>.)</p>
+<p>Bob’s agent eventually receives and decrypts the message, authenticating its origin as Alice using her public key. It prepares its response and routes it back using a reciprocal process (plaintext → lookup endpoint and public key for Alice → encrypt with authentication → arrange delivery).</p>
+<p>That’s the essence, in the most common scenarios. However, it does not fit all DIDComm interactions:</p>
 <ul>
 <li>DIDComm doesn’t always involve turn-taking and request-response.</li>
 <li>DIDComm interactions can involve more than 2 parties, and the parties are not always individuals.</li>
 <li>DIDComm may include formats other than JSON.</li>
 </ul>
 <p>Before we provide more details, let’s explore what drives the design of DIDComm.</p>
-<h3 id="goals-and-ramifications"><a class="toc-anchor" href="#goals-and-ramifications">§</a> Goals and Ramifications</h3>
+<h3 id="specific-requirements"><a class="toc-anchor" href="#specific-requirements">§</a> Specific Requirements</h3>
 <p>The DIDComm design attempts to be:</p>
 <ol>
-<li><strong>Secure</strong></li>
-<li><strong>Private</strong></li>
-<li><strong>Interoperable</strong></li>
-<li><strong>Transport-agnostic</strong></li>
-<li><strong>Extensible</strong></li>
+<li><strong>Secure</strong> (tamper-proof; uses best-of-breed crypto; allows parties to talk both on and off the record…)</li>
+<li><strong>Private</strong> (third parties can’t learn who’s communicating about what, when; lets sender be anonymous to recipient)</li>
+<li><strong>Decentralized</strong> (derives trust for encryption, signing, authn, and authz from control of DIDs rather than oracles like CAs, IDPs, etc; usable at the edge)</li>
+<li><strong>Transport-agnostic</strong> (usable over HTTPS 1.x and 2.0, WebSockets, BlueTooth, chat, push notifications, AMQP, SMTP, NFC, sneakernet, snail mail; supports both simplex and duplex; works offline; doesn’t assume client-server or synchronous or real-time; allows paired or n-wise or public broadcast usage)</li>
+<li><strong>Routable</strong> (like email, A can talk to B without a direct connection to B; allows mixed and dynamic transports; passes through mix networks and other generic infrastructure that sees only payload BLOBs)</li>
+<li><strong>Interoperable</strong> (works across programming languages, blockchains, vendors, OS/platforms, networks, legal jurisdictions, geos, cryptographies, and hardware–as well as across time; avoids vendor lock-in)</li>
+<li><strong>Extensible</strong> (lets devs start simple without heavy learning or dependencies; customize easily; facilitates higher-level protocols that inherit DIDComm’s guarantees)</li>
+<li><strong>Efficient</strong> (doesn’t waste bandwidth, battery, storage space, or CPU)</li>
 </ol>
-<p>As a list of buzz words, this may elicit nods rather than surprise. However, several items have deep ramifications.</p>
-<p>Taken together, <em>Secure</em> and <em>Private</em> require that the protocol be decentralized and maximally opaque to the surveillance economy.</p>
-<p><em>Interoperable</em> means that DIDComm should work across programming languages, blockchains, vendors, OS/platforms, networks, legal jurisdictions, geos, cryptographies, and hardware–as well as across time. That’s quite a list. It means that DIDComm intends something more than just compatibility within any specific project; it aims to be a future-proof <em>lingua franca</em> of all self-sovereign interactions.</p>
-<p><em>Transport-agnostic</em> means that it should be possible to use DIDComm over HTTP(S) 1.x and 2.0, WebSockets, IRC, Bluetooth, AMQP, NFC, Signal, email, push notifications to mobile devices, Ham radio, multicast, snail mail, carrier pigeon, and more.</p>
-<p>All software design involves tradeoffs. These goals, prioritized as shown, lead down an interesting path.</p>
+<h3 id="ramifications"><a class="toc-anchor" href="#ramifications">§</a> Ramifications</h3>
+<p>As a list of buzz words, this may elicit nods rather than surprise. However, design tradeoffs are inevitable, and several of these items have noteworthy ramifications.</p>
 <h4 id="message-based-asynchronous-and-simplex"><a class="toc-anchor" href="#message-based-asynchronous-and-simplex">§</a> Message-Based, Asynchronous, and Simplex</h4>
 <p>The dominant paradigm in mobile and web development today is duplex request-response. You call an API with certain inputs, and you get back a response with certain outputs over the same channel, shortly thereafter. This is the world of <a href="https://swagger.io/docs/specification/about/">OpenAPI (Swagger)</a>, and it has many virtues.</p>
 <p>Unfortunately, many agents are not good analogs to web servers. They may be mobile devices that turn off at unpredictable intervals and that lack a stable connection to the network. They may need to work peer-to-peer, when the internet is not available. They may need to interact in time frames of hours or days, not with 30-second timeouts. They may not listen over the same channel that they use to talk.</p>
@@ -98,45 +94,6 @@
 <p>The security and privacy goals, and the asynchronous+simplex design decision, break familiar web assumptions in another way. Servers are commonly run by institutions, and we authenticate them with certificates. People and things are usually authenticated to servers by some sort of login process quite different from certificates, and this authentication is cached in a session object that expires. Furthermore, web security is provided at the transport level (TLS); it is not an independent attribute of the messages themselves.</p>
 <p>In a partially disconnected world where a communication channel is not assumed to support duplex request-response, and where the security can’t be ignored as a transport problem, traditional TLS, login, and expiring sessions are impractical. Furthermore, centralized servers and certificate authorities perpetuate a power and UX imbalance between servers and clients that doesn’t fit with the peer-oriented DIDComm.</p>
 <p>DIDComm uses public key cryptography, not certificates from some parties and passwords from others. Its security guarantees are independent of the transport over which it flows. It is sessionless (though sessions can <em>easily</em> be built atop it). When authentication is required, all parties do it the same way.</p>
-<h2 id="requirements"><a class="toc-anchor" href="#requirements">§</a> Requirements</h2>
-<ul>
-<li>
-<p><strong>decentralized/self-sovereign</strong> (encryption, signing, authn, and authz should all be based on control of DIDs rather than on CAs, IDPs, etc)</p>
-</li>
-<li>
-<p><strong>transport independent</strong> (HTTPS, bluetooth, AMQP, SMTP, NFC, and so forth)</p>
-</li>
-<li>
-<p><strong>routable</strong> (like email, A can talk to B without a direct connection to B, by requesting that a message be forwarded–needed to mix and match transports; also, could pass through a mix network or other infrastructure that isn’t aware of it as anything other than blobs to be moved)</p>
-</li>
-<li>
-<p><strong>secure</strong> (tamper-proof, MITM impossible, composed of primitives widely considered best practice, vetted by experts, has formal security proofs, security guarantees of a given message are known)</p>
-</li>
-<li>
-<p><strong>private</strong> (third parties can’t learn who’s communicating about what, when–broader than “confidentiality” in Confidentiality, Integrity, Authenticity (CIA) because metadata like timing and identities of parties is also protected; also, possible for a sender to be anonymous to recipient)</p>
-</li>
-<li>
-<p><strong>asynchronous</strong> (can’t require real-time participation by a party; like email in that parties can communicate when they want)</p>
-</li>
-<li>
-<p><strong>supports simplex and duplex</strong> (can’t assume response uses the same channel as request–but allows request~response where desirable)</p>
-</li>
-<li>
-<p><strong>supports repudiable and non-repudiable</strong> (parties can talk off or on the record, as appropriate)</p>
-</li>
-<li>
-<p><strong>platform-independent</strong> (usable on embedded, not just servers+desktops+mobile)</p>
-</li>
-<li>
-<p><strong>composable</strong> (pick the crypto suite and features you need, without incurring overwhelming dependencies for stuff you don’t)</p>
-</li>
-<li>
-<p><strong>pairwise, nwise, anywise</strong> (communicate between 2 parties, or between N parties, or to the whole world)</p>
-</li>
-<li>
-<p><strong>efficient</strong> (doesn’t waste bandwidth, storage space, cpu, etc)</p>
-</li>
-</ul>
 <h3 id="processing-model"><a class="toc-anchor" href="#processing-model">§</a> Processing Model</h3>
 <ul>
 <li>Message-oriented, with sender and receiver(s)</li>
@@ -1008,17 +965,14 @@ indicate so via link to the extension spec.</p>
                   <ul class="toc">
 <li><a href="#purpose-and-scope">Purpose and Scope</a>
 <ul>
-<li><a href="#rough-overview">Rough Overview</a></li>
-<li><a href="#goals-and-ramifications">Goals and Ramifications</a>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#specific-requirements">Specific Requirements</a></li>
+<li><a href="#ramifications">Ramifications</a>
 <ul>
 <li><a href="#message-based-asynchronous-and-simplex">Message-Based, Asynchronous, and Simplex</a></li>
 <li><a href="#message-level-security-reciprocal-authentication">Message-Level Security, Reciprocal Authentication</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#requirements">Requirements</a>
-<ul>
 <li><a href="#processing-model">Processing Model</a></li>
 </ul>
 </li>
