@@ -1,9 +1,10 @@
 
 {
-  "resource_path": "./docs/spec",
+  "public_root": "./docs",
+  "resource_path": "./docs",
   "specs": [
     {
-      "title": "DIDComm Messaging Protocol",
+      "title": "DIDComm Messaging Specification",
       "logo": "https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg",
       "logo_link": "https://identity.foundation",
       "source": {
@@ -27,12 +28,14 @@
         "connections.md",
         "general_messaging_constructs.md",
         "protocols.md",
+		"feature_discovery.md",
+		"trustping.md",
         "reference_implementation.md",
         "future_proofing.md",
         "references.md"
       ]
     },{
-      "title": "DIDComm Messaging Protocol - Implementers Guide",
+      "title": "DIDComm Messaging - Implementers Guide",
       "logo": "https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg",
       "logo_link": "https://identity.foundation",
       "source": {
@@ -44,7 +47,8 @@
       "spec_directory": "./guide",
       "markdown_paths": [
         "intro.md",
-        "routing.md"
+        "routing.md",
+        "whatsnew.md"
       ]
     }
   ]

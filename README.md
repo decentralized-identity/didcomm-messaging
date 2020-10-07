@@ -7,11 +7,11 @@ This repo is where we develops specs and reference code to explain DIDComm Messa
 
 ### Artifacts
 
-Browse the latest rendered draft of the spec [here](https://identity.foundation/didcomm-messaging/docs/spec/).
+Browse the latest rendered draft of the spec [here](https://identity.foundation/didcomm-messaging/spec/).
 
 View the spec markdown outline [here](spec.md).
 
-View the rendered draft of the Implementer's Guide [here](https://identity.foundation/didcomm-messaging/docs/guide/).
+View the rendered draft of the Implementer's Guide [here](https://identity.foundation/didcomm-messaging/guide/).
 
 ### Process
 
@@ -28,7 +28,7 @@ The WG moves sections to STABLE status once they have code/tests, implementation
 ### People
 Contributors to the repo come from [DIF's DIDComm Working Group](https://medium.com/decentralized-identity/dif-starts-didcomm-working-group-9c114d9308dc). [Here](https://drive.google.com/file/d/1bZBkVrC8Fh5N16oBi2zAoqPxCTghUhpB/view) is our charter, and [here](https://docs.google.com/document/d/1a-KpG734mq-xizcNE0JAu5_1_EslXL07QGr2HYLEZFE/edit) are some more details about how we work.
 
-Our working group meets each Monday at 12 pm PST / 9 pm CET at https://zoom.us/j/199841436. A rolling agenda is [here](https://docs.google.com/document/d/1BpTm5SmgfOJcEsXfizO0ZmH1r7imTJDGKudAZtYsm0M/edit). You can also find us at https://dif.slack.com and on our mailing list at [didcomm-wg@dif.groups.io](mailto:didcomm-wg@dif.groups.io). Anybody is welcome to listen in; however, we need IPR protections around what we build, to keep it free from patent encumbrances -- so if you'd like to contribute more formally, please email [membership@identity.foundation](mailto:membership@identity.foundation).
+Our working group meets each Monday at 12 pm PST / 9 pm CET at https://zoom.us/j/199841436. A rolling agenda is [here](https://docs.google.com/document/d/1BpTm5SmgfOJcEsXfizO0ZmH1r7imTJDGKudAZtYsm0M/edit). You can also find us at https://difdn.slack.com and on our mailing list at [didcomm-wg@dif.groups.io](mailto:didcomm-wg@dif.groups.io). Anybody is welcome to listen in; however, we need IPR protections around what we build, to keep it free from patent encumbrances -- so if you'd like to contribute more formally, please email [membership@identity.foundation](mailto:membership@identity.foundation).
 
 ### Relationship to generic DIDComm
 

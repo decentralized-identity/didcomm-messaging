@@ -18,6 +18,8 @@ The following section defines a JWM profile for DIDComm messages. This profile d
 - **reply_to** - OPTIONAL. Reply to. The `reply_to` attribute value MUST be an array of strings where each element is a valid [DID URL](https://w3c.github.io/did-core/#generic-did-syntax) which identifies the recipients of the reply to the message.
 - **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message.
 - **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired.
+- **thread_id** - OPTIONAL. Identifier for the current protocol's _thread_. The `thread_id` attribute value MUST be equal to the `id` of the message that initiated the protocol. All messages are part of a thread. If `thread_id` is not present, the thread for the message is identified by `id`.
+- **pthread_id** - OPTIONAL. Identifier for the _parent thread_ from which this one branched off from.
 
 ### Example JWM Message Payload
 
@@ -29,6 +31,8 @@ The following section defines a JWM profile for DIDComm messages. This profile d
     "expires_time":1516239022,
     "created_time":1516269022,
     "reply_url": "https://agents-r-us.com/12345",
+    "thread_id": "51c4f434-2c7b-499d-8f22-9edbd889b257",
+    "pthread_id": "b7c217c1-7074-4b38-b0c8-287d3e594d0d"
 }
 ```
 
@@ -113,4 +117,3 @@ In the case of a [nested](Signed-and-Encrypted) message the associated keys and 
 While checking the authorization of the keys used, if the keys are not contained within the did document then the message SHOULD NOT be considered authenticated, even if the cryptographic operations succeeds.
 
 **Note** In general this check should always return an error when the keys cannot be authorized in the appropriate sections of the DID Document. The one scenario where this may present a problem is in the case where the recipient is trying to check the message when the sender has already updated their DID Document to remove and invalidate the keys used in the message. In this case, there's two approaches that should be considered. Either the recipient should return an error saying they weren't able to validate the message with the id of the message included in the error report and await the sender to resend the message. Or the recipient should resolve the did document of the message at the time the message was sent. Even though both of these approaches are valid, the first approach should take preference over the second approach because the recipient cannot be certain why the sender invalidated the keys.
- 
