@@ -322,6 +322,53 @@
 <h3 id="examples"><a class="toc-anchor" href="#examples">§</a> Examples</h3>
 <p>While the details of encrypting a JWM into a JWE are included in the <a href="https://tools.ietf.org/html/draft-looker-jwm-01">JWM spec</a>, a few examples are included here for clarity.</p>
 <p>TODO: Add examples here</p>
+<h2 id="message-signing"><a class="toc-anchor" href="#message-signing">§</a> Message Signing</h2>
+<p>A DIDComm message can be signed, either in conjunction with encryption or independently if the message will remain unencrypted.</p>
+<p>If a message is signed and encrypted to add non-repudiation, it must be signed prior to encryption. This is known as a <a href="https://tools.ietf.org/html/draft-looker-jwm-01#section-1.2">nested JWM</a>.</p>
+<h3 id="algorithms"><a class="toc-anchor" href="#algorithms">§</a> Algorithms</h3>
+<p>When a sender would like for a message to feature a non-repudiable digital signature the JWA’s defined below can be used within the structure of a JWS.</p>
+<p>For digital signatures the following algorithms MUST be verifiable. At least one of the following curves MUST be supported for creating digital signatures.</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm(JWA)</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EdDSA (with crv=Ed25519)</td>
+<td>Elliptic curve digital signature with edwards curves and SHA-512</td>
+</tr>
+<tr>
+<td>ES256</td>
+<td>Elliptic curve digital signature with NIST p-256 curve and SHA-256</td>
+</tr>
+<tr>
+<td>ES256K</td>
+<td>Elliptic curve digital signature with Secp256k1 keys.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="construction"><a class="toc-anchor" href="#construction">§</a> Construction</h3>
+<p>Construct a JWS with the following header:</p>
+<pre class="language-json"><code class="language-json">   <span class="token punctuation">{</span><span class="token property">"typ"</span><span class="token operator">:</span><span class="token string">"JWM"</span><span class="token punctuation">,</span>
+    <span class="token property">"kid"</span><span class="token operator">:</span><span class="token string">"Ef1sFuyOozYm3CEY4iCdwqxiSyXZ5Br-eUDdQXk6jaQ"</span><span class="token punctuation">,</span>
+    <span class="token property">"alg"</span><span class="token operator">:</span><span class="token string">"ES256"</span><span class="token punctuation">}</span>
+</code></pre>
+<p>The JWS payload is the Base64url encoded JWM.</p>
+<p>When transmitted in a normal JWM fashion, the JSON Serialization MUST be used.</p>
+<h3 id="verification"><a class="toc-anchor" href="#verification">§</a> Verification</h3>
+<p>When verifying the signature, an additional check must be performed after verifying the JWS. The key used in the signature must be authorized to do so in the Document resolved from the DID in the <code>from</code> attribute. If the key is not authorized for the signature, the signature is invalid.</p>
+<h3 id="application"><a class="toc-anchor" href="#application">§</a> Application</h3>
+<h4 id="non-repudiation"><a class="toc-anchor" href="#non-repudiation">§</a> Non-Repudiation</h4>
+<p>DIDComm Encrypted messages are repudiable. If non-repudiation is required for a particular protocol message, the message MUST be signed before encryption.</p>
+<h4 id="tamper-resistant-oob-messages"><a class="toc-anchor" href="#tamper-resistant-oob-messages">§</a> Tamper Resistant OOB Messages</h4>
+<p>Out of Band Messages may be signed to provide tamper resistance.</p>
+<h4 id="did-anchoring"><a class="toc-anchor" href="#did-anchoring">§</a> DID Anchoring</h4>
+<p>Signing can allow DIDs to be anchored via keys not usable for encrypting DIDComm messages.</p>
+<h3 id="examples-2"><a class="toc-anchor" href="#examples-2">§</a> Examples</h3>
+<p>TODO: Add examples here</p>
 <h2 id="routing"><a class="toc-anchor" href="#routing">§</a> Routing</h2>
 <h3 id="routing-protocol"><a class="toc-anchor" href="#routing-protocol">§</a> Routing Protocol</h3>
 <h4 id="name-and-version"><a class="toc-anchor" href="#name-and-version">§</a> Name and Version</h4>
@@ -995,6 +1042,21 @@ indicate so via link to the extension spec.</p>
 <li><a href="#examples">Examples</a></li>
 </ul>
 </li>
+<li><a href="#message-signing">Message Signing</a>
+<ul>
+<li><a href="#algorithms">Algorithms</a></li>
+<li><a href="#construction">Construction</a></li>
+<li><a href="#verification">Verification</a></li>
+<li><a href="#application">Application</a>
+<ul>
+<li><a href="#non-repudiation">Non-Repudiation</a></li>
+<li><a href="#tamper-resistant-oob-messages">Tamper Resistant OOB Messages</a></li>
+<li><a href="#did-anchoring">DID Anchoring</a></li>
+</ul>
+</li>
+<li><a href="#examples-2">Examples</a></li>
+</ul>
+</li>
 <li><a href="#routing">Routing</a>
 <ul>
 <li><a href="#routing-protocol">Routing Protocol</a>
@@ -1092,7 +1154,7 @@ indicate so via link to the extension spec.</p>
             </slide-panels>
 
           </body>
-          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","routing.md","transports.md","out_of_band.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","feature_discovery.md","trustping.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
+          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","signature.md","routing.md","transports.md","out_of_band.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","feature_discovery.md","trustping.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
           <script src="../spec-up/compiled/body.js" data-manual></script>
         </html>
       

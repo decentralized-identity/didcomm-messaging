@@ -21,6 +21,7 @@
         "processing_model.md",
 		"message_structure.md",
 		"encryption.md",
+        "signature.md",
         "routing.md",
         "transports.md",
         "out_of_band.md",
