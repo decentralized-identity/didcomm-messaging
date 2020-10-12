@@ -5,6 +5,7 @@
 * [Processing Model](processing_model.md)
 * [Message Structure](message_structure.md)
 * [Encryption](encryption.md)
+* [Signature](signature.md)
 * [Routing](routing.md)
 * [Transports](transports.md)
 * [Out Of Band Messages](out_of_band.md)
