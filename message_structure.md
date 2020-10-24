@@ -39,6 +39,40 @@ Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), DIDComm expl
 
 The body of a message -- everything inside the `body` object -- is different. Here, there is substantial variety and complexity. Structures may be sophisticated graphs, represented with nested objects and arrays. JSON-LD is not required at this level, either. However, it is available, and may be appropriate for certain use cases where extensibility is an important feature. JSON-LD usage, if it occurs, SHOULD be a declared feature of a protocol as a whole, not an ad hoc extension to arbitrary individual messages, and MUST be signalled by the inclusion of a `@context` inside `body`. Unless a protocol declares a JSON-LD dependency, the same rules apply to JSON-LD-isms as apply to any other unrecognized structure in a DIDComm message: additional fields can be added to any part of message structure, should be ignored if not understood, and MUST NOT be the basis of failure by recipients.
 
+## Media Types (MIME types)
+
+### DIDComm Encrypted Message
+
+The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm encrypted message (what would normally move over network transports, as well as the safest format to use for DIDComm data at rest) SHOULD be `application/didcomm+json`.
+
+>Note: If future versions of this spec allow binary encodings, variations like `application/didcomm+cbor` (see [CBOR RFC 7049, section 7.5](https://tools.ietf.org/html/rfc7049#section-7.5)), `application/didcomm+msgpack`, or `application/didcomm+protobuf` may become reasonable. Future DIDComm specs that encompass patterns other than messaging &mdash; DIDComm multicast or DIDComm streaming, for example &mdash; might use a suffix: `application/didcomm-multicast` or similar.
+
+Because a DIDComm encrypted message is also a JWE, a true but less specific media type MIGHT be `application/jose`. (Although `application/jwt` is a registered media type, `application/jwe` and `application/jws` [are not](https://tools.ietf.org/html/rfc7516#section-9). This is [deliberate](https://mailarchive.ietf.org/arch/msg/jose/FRTPwiOLOc5DILfY_QFZyemn9VU/).) Using the more generic type is not recommended, as content categorized in this way is unlikely to get the DIDComm-specific handling it needs. Similarly, it is also true but overly generic and therefore not recommended to describe a DIDComm encrypted message as `application/json`.
+
+When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm encrypted messages SHOULD be `dcem`, giving a globbing pattern of `*.dcem`; this SHOULD be be read as "Star Dot D C E M" or as "D C E M" files.
+
+The name of this file format is "DIDComm Encrypted Message." We imagine people will say, "I am looking at a DIDComm Encrypted Message", or "This file is in DIDComm Encrypted Message format", or "Does my editor have a DIDComm Encrypted Message plugin?" A recommended icon for this file format depicts an envelope protected by a wax seal ([svg](collateral/dcem.svg) | [256x256](collateral/dcem-256.png) | [128x128](collateral/dcem-128.png) | [64x64](collateral/dcem-64.png)):
+
+![DIDComm Encrypted Message Icon](collateral/dcem-128.png)
+
+### DIDComm Plaintext Messages
+
+A DIDComm message in its plaintext form, not packaged into a protective JWE envelope, is known as a DIDComm Plaintext Message. Plaintext messages lack confidentiality and integrity guarantees, and are therefore not normally transported across security boundaries. However, this may be an appropriate format to inspect in debuggers, and it is the format used in this spec to give examples of headers and other internals. Depending on ambient security, plaintext may or may not be an appropriate format for DIDComm data at rest.
+
+When higher-level protocols are built atop DIDComm, applications remove the protective envelope and process the plaintext that's inside. Specs for such protocols typically document message structure and provide examples in this format; the encrypted envelope is assumed but ignored as a low-level detail.
+
+Applications running one or more DIDComm-based protocols may wish to define their own media types for the protocols they support. Absent such customization, the preferred media type for a generic DIDComm plaintext message SHOULD be `application/didcomm-plaintext+json`. This correctly conveys the fact that code handling such content functions at a different level from DIDComm's internals, and that generic JSON tools and actions are likely to be a helpful fallback in processing the content.
+
+DIDComm plaintext messages are also correctly understood as JWM content. Thus a media type for JWMs MIGHT be an accurate but more generic way to categorize them. However, not all JWMs are DIDComm messages, so this categorization is suboptimal. Similarly, `application/json` is true, but overly generic and therefore not recommended.
+
+When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm plaintext messages SHOULD be `dcpm`, giving a globbing pattern of `*.dcpm`; this SHOULD be be read as "Star Dot D C P M" or as "D C P M" files.
+The name of this file format is "DIDComm Plaintext Message." A recommended icon for this file format depicts JSON text pulled from an open but formerly sealed envelope ([svg](collateral/dcpm.svg) | [256x256](collateral/dcpm-256.png) | [128x128](collateral/dcpm-128.png) | [64x64](collateral/dcpm-64.png)):
+
+![DIDComm Plaintext Message Icon](collateral/dcpm-128.png)
+
+
+
+
 ### DID Rotation
 
 DIDComm is based on DIDs and their associated DID Documents. Changes to keys and endpoints are the concern of each DID method and are utilized but not managed by DIDComm. DID Rotation serves a very specific and narrow need to switch from one DID method to another. This is very common at the beginning of a new DIDComm relationship when a public DID or a temporary DID passed unencrypted is rotated out for a DID chosen for the relationship. As rotation between one DID and another is outside the scope of any DID method, the details of DID Rotation are handled within DIDComm itself.
