@@ -115,6 +115,7 @@
 	<span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<h3 id="message-headers"><a class="toc-anchor" href="#message-headers">§</a> Message Headers</h3>
 <p>The attributes of a DIDComm Message at the level of its outer packaging (effectively, the “headers” of the message) are as follows:</p>
 <ul>
 <li><strong>id</strong> - REQUIRED. Message ID. The <code>id</code> attribute value MUST be unique to the sender.</li>
@@ -549,10 +550,117 @@
 <li>Quic</li>
 <li>Transport binding</li>
 </ul>
+<h2 id="advanced-message-passing"><a class="toc-anchor" href="#advanced-message-passing">§</a> Advanced Message Passing</h2>
+<p>TODO:</p>
+<ul>
+<li>Deep linking</li>
+<li>CHAPI</li>
+<li>NFC</li>
+<li>Wifi-Direct</li>
+<li>Bluetooth</li>
+<li>Sneakernet / file oriented / mimetypes</li>
+</ul>
+<h4 id="embedded-messages"><a class="toc-anchor" href="#embedded-messages">§</a> Embedded Messages</h4>
+<p>DIDComm messages may be passed within other messages are protocols when the outer message is passed in a secure way. When messages are passed in this way, they may be passed either as an encrypted message or in plain text. When in plain text format, messages should be represented in json format.</p>
+<h5 id="privacy-considerations"><a class="toc-anchor" href="#privacy-considerations">§</a> Privacy Considerations</h5>
+<p>When messages are passed in plain text, the privacy and security of the message is subject to the properties of the protocol and transport moving the messages. Extreme care must be taken to protect the message.</p>
+<h3 id="connections"><a class="toc-anchor" href="#connections">§</a> Connections</h3>
+<p>A Connection is the practical application of a relationship in DID Communication. Having a connection means that each party in the relationship has a DID for the other parties, and parties can communicate securely using the keys and endpoints within each DID Document.</p>
+<p>In order to establish a new connection, Simply exchange a new message between parties. Knowing the DID of the other parties does not indicate any level of trust. Using the connection to establish a foundation of trust is the next step.</p>
+<h2 id="general-messaging-constructs"><a class="toc-anchor" href="#general-messaging-constructs">§</a> General Messaging Constructs</h2>
+<ul>
+<li>Decorators (headers)</li>
+<li>Threading</li>
+<li>Message types / families</li>
+<li>Reliable Delivery</li>
+<li>Attachments</li>
+<li>Attachment/Payload Signatures</li>
+<li>Timing</li>
+<li>ACKs</li>
+<li>Errors</li>
+<li>Tracing / troubleshooting</li>
+</ul>
+<h3 id="protocols"><a class="toc-anchor" href="#protocols">§</a> Protocols</h3>
+<p>DIDComm serves as a foundational layer for the development of protocols. This spec does not include protocols themselves, but describes the basic requirements and foundational elements.</p>
+<p>Each Protocol is uniquely identified by a Protocol Identifier URI, and contains one or more messages identified by a Message Type URI. In addition to serving as a unique identifier, the URIs may be used by a developer to locate documentation.</p>
+<h4 id="protocol-identifier-uri"><a class="toc-anchor" href="#protocol-identifier-uri">§</a> Protocol Identifier URI</h4>
+<p>A Protocol Identifier URI identifies protocol versions unambiguously.  Additionally, Protocol Identifier URIs may be used by a developer to locate documentation about a protocol.</p>
+<p>The URI must be composed as follows:</p>
+<pre><code>[doc-uri][delim][protocol-name]/[semver]
+</code></pre>
+<p>With ABNF:</p>
+<pre class="language-ABNF"><code class="language-ABNF">protocol-identifier-uri = doc-uri delim protocol-name &quot;/&quot; semver
+delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &quot;:&quot; / &quot;;&quot; / &quot;=&quot;
+</code></pre>
+<p>Its loose matcher regex is:</p>
+<pre><code>(.*?)([a-z0-9._-]+)/(\d[^/]*)/?$
+</code></pre>
+<p>Example Protocol Type URIs:</p>
+<pre><code>http://example.com/protocols?which=lets_do_lunch/1.0
+http://example.com/protocols/lets_do_lunch/1.0
+https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1
+</code></pre>
+<p>The goals of this URI are, in descending priority:</p>
+<ul>
+<li>
+<p>Code can use the URI to route messages to protocol
+handlers using <a href="semver.md">semver rules</a>.</p>
+</li>
+<li>
+<p>The definition of a protocol should be tied to the URI such
+that it is semantically stable. This means that once version 1.0
+of a protocol is defined, its definition <a href="semver.md">should not change in
+ways that would break implementations</a>.</p>
+</li>
+<li>
+<p>Developers can discover information about novel protocols, using
+the URI to browse or search the web.</p>
+</li>
+</ul>
+<p>The <code>doc-uri</code> portion is any URI that exposes documentation about
+protocols. A developer should be able to browse to that URI and use human intelligence
+to look up the named and versioned protocol.</p>
+<h4 id="message-type-uri"><a class="toc-anchor" href="#message-type-uri">§</a> Message Type URI</h4>
+<p>A <strong>Message Type URI</strong> identifies message types unambiguously.
+Standardizing its format is important because it is parsed by agents that
+will map messages to handlers–basically, code will look at this string and
+say, “Do I have something that can handle this message type inside protocol
+<em>X</em> version <em>Y</em>?” When that analysis happens, it must do more than compare
+the string for exact equality; it may need to check for semver compatibility,
+and it has to compare the protocol name and message type name ignoring case
+and punctuation.</p>
+<p>The URI MUST be composed as follows:</p>
+<pre><code>[protocol-identifier-uri] / [message-type-name]
+</code></pre>
+<p>With ABNF:</p>
+<pre class="language-ABNF"><code class="language-ABNF">message-type-uri  = protocol-identifier-uri &quot;/&quot; message-type-name
+protocol-identifier-uri = doc-uri delim protocol-name &quot;/&quot; semver
+delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &quot;:&quot; / &quot;;&quot; / &quot;=&quot;
+protocol-name     = identifier
+protocol-version  = semver
+message-type-name = identifier
+identifier        = alpha *(*(alphanum / &quot;_&quot; / &quot;-&quot; / &quot;.&quot;) alphanum)
+</code></pre>
+<p>It can be loosely matched and parsed with the following regex:</p>
+<pre><code>    (.*?)([a-z0-9._-]+)/(\d[^/]*)/([a-z0-9._-]+)$
+</code></pre>
+<p>A match will have captures groups of (1) = <code>doc-uri</code>, (2) = <code>protocol-name</code>,
+(3) = <code>protocol-version</code>, and (4) = <code>message-type-name</code>.</p>
+<p>The goals of this URI are, in descending priority:</p>
+<ul>
+<li>Use of the <code>protocol-identifier-uri</code> portion as described above.</li>
+<li>Optionally and preferably, the full URI may produce a page of documentation about the specific message type, with no human mediation involved.</li>
+</ul>
+<p>Example Message Type URIs:</p>
+<pre><code>http://example.com/protocols?which=lets_do_lunch/1.0/proposal
+http://example.com/protocols/lets_do_lunch/1.0/proposal
+did:example:1234567890;spec/trust_ping/1.0/ping
+https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1/create-invitation
+</code></pre>
 <h2 id="out-of-band-messages"><a class="toc-anchor" href="#out-of-band-messages">§</a> Out Of Band Messages</h2>
 <h4 id="url-qr-codes"><a class="toc-anchor" href="#url-qr-codes">§</a> URL &amp; QR Codes</h4>
 <p>When passing a DIDComm Message between two parties, it is often useful to present a message in the form of a URL or encoded into the form of a QR code for scanning with a smartphone or other camera. The format for a QR code is simply the encoded URL form of a message.</p>
-<h5 id="privacy-considerations"><a class="toc-anchor" href="#privacy-considerations">§</a> Privacy Considerations</h5>
+<h5 id="privacy-considerations-2"><a class="toc-anchor" href="#privacy-considerations-2">§</a> Privacy Considerations</h5>
 <p>Any information passed via a URL or QR code is unencrypted, and may be observed by another party. This lack of privacy must be minded in two different ways.</p>
 <p>First, no private information may be passed in the message. Private information should be passed between parties in encrypted messages only. Any protocol message that contains private information should not be passed via URL or QR code.</p>
 <p>Second, any identifiers passed in a message sent via URL or QR code must no longer be considered private. Any DID used or other identifier no longer considered private MUST be rotated over a secure connection if privacy is required.</p>
@@ -677,139 +785,32 @@ Knowledge is Good
 </ul>
 <p>A usable QR code will always be able to be generated from the shortened form of the URL.</p>
 <p>Note: Due to the privacy implications, a standard URL shortening service SHOULD NOT be used.</p>
-<h2 id="advanced-message-passing"><a class="toc-anchor" href="#advanced-message-passing">§</a> Advanced Message Passing</h2>
-<p>TODO:</p>
-<ul>
-<li>Deep linking</li>
-<li>CHAPI</li>
-<li>NFC</li>
-<li>Wifi-Direct</li>
-<li>Bluetooth</li>
-<li>Sneakernet / file oriented / mimetypes</li>
-</ul>
-<h4 id="embedded-messages"><a class="toc-anchor" href="#embedded-messages">§</a> Embedded Messages</h4>
-<p>DIDComm messages may be passed within other messages are protocols when the outer message is passed in a secure way. When messages are passed in this way, they may be passed either as an encrypted message or in plain text. When in plain text format, messages should be represented in json format.</p>
-<h5 id="privacy-considerations-2"><a class="toc-anchor" href="#privacy-considerations-2">§</a> Privacy Considerations</h5>
-<p>When messages are passed in plain text, the privacy and security of the message is subject to the properties of the protocol and transport moving the messages. Extreme care must be taken to protect the message.</p>
-<h3 id="connections"><a class="toc-anchor" href="#connections">§</a> Connections</h3>
-<p>A Connection is the practical application of a relationship in DID Communication. Having a connection means that each party in the relationship has a DID for the other parties, and parties can communicate securely using the keys and endpoints within each DID Document.</p>
-<p>In order to establish a new connection, Simply exchange a new message between parties. Knowing the DID of the other parties does not indicate any level of trust. Using the connection to establish a foundation of trust is the next step.</p>
-<h2 id="general-messaging-constructs"><a class="toc-anchor" href="#general-messaging-constructs">§</a> General Messaging Constructs</h2>
-<ul>
-<li>Decorators (headers)</li>
-<li>Threading</li>
-<li>Message types / families</li>
-<li>Reliable Delivery</li>
-<li>Attachments</li>
-<li>Attachment/Payload Signatures</li>
-<li>Timing</li>
-<li>ACKs</li>
-<li>Errors</li>
-<li>Tracing / troubleshooting</li>
-</ul>
-<h3 id="protocols"><a class="toc-anchor" href="#protocols">§</a> Protocols</h3>
-<p>DIDComm serves as a foundational layer for the development of protocols. This spec does not include protocols themselves, but describes the basic requirements and foundational elements.</p>
-<p>Each Protocol is uniquely identified by a Protocol Identifier URI, and contains one or more messages identified by a Message Type URI. In addition to serving as a unique identifier, the URIs may be used by a developer to locate documentation.</p>
-<h4 id="protocol-identifier-uri"><a class="toc-anchor" href="#protocol-identifier-uri">§</a> Protocol Identifier URI</h4>
-<p>A Protocol Identifier URI identifies protocol versions unambiguously.  Additionally, Protocol Identifier URIs may be used by a developer to locate documentation about a protocol.</p>
-<p>The URI must be composed as follows:</p>
-<pre><code>[doc-uri][delim][protocol-name]/[semver]
-</code></pre>
-<p>With ABNF:</p>
-<pre class="language-ABNF"><code class="language-ABNF">protocol-identifier-uri = doc-uri delim protocol-name &quot;/&quot; semver
-delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &quot;:&quot; / &quot;;&quot; / &quot;=&quot;
-</code></pre>
-<p>Its loose matcher regex is:</p>
-<pre><code>(.*?)([a-z0-9._-]+)/(\d[^/]*)/?$
-</code></pre>
-<p>Example Protocol Type URIs:</p>
-<pre><code>http://example.com/protocols?which=lets_do_lunch/1.0
-http://example.com/protocols/lets_do_lunch/1.0
-https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1
-</code></pre>
-<p>The goals of this URI are, in descending priority:</p>
-<ul>
-<li>
-<p>Code can use the URI to route messages to protocol
-handlers using <a href="semver.md">semver rules</a>.</p>
-</li>
-<li>
-<p>The definition of a protocol should be tied to the URI such
-that it is semantically stable. This means that once version 1.0
-of a protocol is defined, its definition <a href="semver.md">should not change in
-ways that would break implementations</a>.</p>
-</li>
-<li>
-<p>Developers can discover information about novel protocols, using
-the URI to browse or search the web.</p>
-</li>
-</ul>
-<p>The <code>doc-uri</code> portion is any URI that exposes documentation about
-protocols. A developer should be able to browse to that URI and use human intelligence
-to look up the named and versioned protocol.</p>
-<h4 id="message-type-uri"><a class="toc-anchor" href="#message-type-uri">§</a> Message Type URI</h4>
-<p>A <strong>Message Type URI</strong> identifies message types unambiguously.
-Standardizing its format is important because it is parsed by agents that
-will map messages to handlers–basically, code will look at this string and
-say, “Do I have something that can handle this message type inside protocol
-<em>X</em> version <em>Y</em>?” When that analysis happens, it must do more than compare
-the string for exact equality; it may need to check for semver compatibility,
-and it has to compare the protocol name and message type name ignoring case
-and punctuation.</p>
-<p>The URI MUST be composed as follows:</p>
-<pre><code>[protocol-identifier-uri] / [message-type-name]
-</code></pre>
-<p>With ABNF:</p>
-<pre class="language-ABNF"><code class="language-ABNF">message-type-uri  = protocol-identifier-uri &quot;/&quot; message-type-name
-protocol-identifier-uri = doc-uri delim protocol-name &quot;/&quot; semver
-delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &quot;:&quot; / &quot;;&quot; / &quot;=&quot;
-protocol-name     = identifier
-protocol-version  = semver
-message-type-name = identifier
-identifier        = alpha *(*(alphanum / &quot;_&quot; / &quot;-&quot; / &quot;.&quot;) alphanum)
-</code></pre>
-<p>It can be loosely matched and parsed with the following regex:</p>
-<pre><code>    (.*?)([a-z0-9._-]+)/(\d[^/]*)/([a-z0-9._-]+)$
-</code></pre>
-<p>A match will have captures groups of (1) = <code>doc-uri</code>, (2) = <code>protocol-name</code>,
-(3) = <code>protocol-version</code>, and (4) = <code>message-type-name</code>.</p>
-<p>The goals of this URI are, in descending priority:</p>
-<ul>
-<li>Use of the <code>protocol-identifier-uri</code> portion as described above.</li>
-<li>Optionally and preferably, the full URI may produce a page of documentation about the specific message type, with no human mediation involved.</li>
-</ul>
-<p>Example Message Type URIs:</p>
-<pre><code>http://example.com/protocols?which=lets_do_lunch/1.0/proposal
-http://example.com/protocols/lets_do_lunch/1.0/proposal
-did:example:1234567890;spec/trust_ping/1.0/ping
-https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1/create-invitation
-</code></pre>
-<h1 id="discover-features-protocol-10"><a class="toc-anchor" href="#discover-features-protocol-10">§</a> Discover Features Protocol 1.0</h1>
-<h2 id="summary-2"><a class="toc-anchor" href="#summary-2">§</a> Summary</h2>
+<h2 id="discover-features-protocol-10"><a class="toc-anchor" href="#discover-features-protocol-10">§</a> Discover Features Protocol 1.0</h2>
+<h3 id="summary-2"><a class="toc-anchor" href="#summary-2">§</a> Summary</h3>
 <p>Describes how agents can query one another to discover which features
 it supports, and to what extent.</p>
-<h2 id="motivation"><a class="toc-anchor" href="#motivation">§</a> Motivation</h2>
+<h3 id="motivation"><a class="toc-anchor" href="#motivation">§</a> Motivation</h3>
 <p>Though some agents will support just one protocol and will be
 statically configured to interact with just one other party, many
 exciting uses of agents are more dynamic and unpredictable. When
 Alice and Bob meet, they won’t know in advance which features are
 supported by one another’s agents. They need a way to find out.</p>
-<h2 id="reference-2"><a class="toc-anchor" href="#reference-2">§</a> Reference</h2>
+<h3 id="reference-2"><a class="toc-anchor" href="#reference-2">§</a> Reference</h3>
 <p>This RFC introduces a protocol for discussing the protocols an agent
 can handle. The identifier for the message family used by this protocol is
 <code>discover-features</code>, and the fully qualified URI for its definition is:</p>
 <pre><code>https://didcomm.org/discover-features/1.0
 </code></pre>
-<h3 id="roles-2"><a class="toc-anchor" href="#roles-2">§</a> Roles</h3>
+<h4 id="roles-2"><a class="toc-anchor" href="#roles-2">§</a> Roles</h4>
 <p>There are two roles in the <code>discover-features</code> protocol: <code>requester</code> and
 <code>responder</code>. The requester asks the responder about the protocols it
 supports, and the responder answers. Each role uses a single message type.</p>
-<h3 id="states-2"><a class="toc-anchor" href="#states-2">§</a> States</h3>
+<h4 id="states-2"><a class="toc-anchor" href="#states-2">§</a> States</h4>
 <p>This is a classic two-step request~response interaction, so it uses the
 predefined state machines for any <code>requester</code> and <code>responder</code>:</p>
 <p><a href="https://docs.google.com/spreadsheets/d/1smY8qhG1qqGs0NH9g2hV4b7mDqrM6MIsmNI93tor2qk/edit"><img src="state-machines.png" alt="state machines"></a></p>
-<h3 id="messages-3"><a class="toc-anchor" href="#messages-3">§</a> Messages</h3>
-<h5 id="query-message-type"><a class="toc-anchor" href="#query-message-type">§</a> <code>query</code> Message Type</h5>
+<h4 id="messages-3"><a class="toc-anchor" href="#messages-3">§</a> Messages</h4>
+<h6 id="query-message-type"><a class="toc-anchor" href="#query-message-type">§</a> <code>query</code> Message Type</h6>
 <p>A <code>discover-features/query</code> message looks like this:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/discover-features/1.0/query"</span><span class="token punctuation">,</span>
@@ -831,7 +832,7 @@ Implementers of agents that intend to support dynamic relationships
 and rich features are <em>strongly</em> encouraged to implement support
 for this message, as it is likely to be among the first messages
 exchanged with a stranger.</p>
-<h5 id="disclose-message-type"><a class="toc-anchor" href="#disclose-message-type">§</a> <code>disclose</code> Message Type</h5>
+<h6 id="disclose-message-type"><a class="toc-anchor" href="#disclose-message-type">§</a> <code>disclose</code> Message Type</h6>
 <p>A <code>discover-features/disclose</code> message looks like this:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/discover-features/1.0/disclose"</span><span class="token punctuation">,</span>
@@ -854,7 +855,7 @@ array that enumerates the roles the responding agent
 can play in the associated protocol.</p>
 <p>Response messages say, “Here are some protocols I support that matched
 your query, and some things I can do with each one.”</p>
-<h5 id="sparse-responses"><a class="toc-anchor" href="#sparse-responses">§</a> Sparse Responses</h5>
+<h6 id="sparse-responses"><a class="toc-anchor" href="#sparse-responses">§</a> Sparse Responses</h6>
 <p>Responses do not have to contain exhaustive detail. For example, the following
 response is probably just as good:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
@@ -885,7 +886,7 @@ under high load, and so forth. And responses to a <code>discover-features</code>
 not guaranteed to be true forever; agents can be upgraded or downgraded,
 although they probably won’t churn in their protocol support from moment
 to moment.</p>
-<h3 id="privacy-considerations-3"><a class="toc-anchor" href="#privacy-considerations-3">§</a> Privacy Considerations</h3>
+<h4 id="privacy-considerations-3"><a class="toc-anchor" href="#privacy-considerations-3">§</a> Privacy Considerations</h4>
 <p>Because the regex in a <code>request</code> message can be very inclusive, the <code>discover-features</code>
 protocol could be used to mine information suitable for agent fingerprinting,
 in much the same way that browser fingerprinting works. This is antithetical
@@ -895,7 +896,7 @@ profiles of one another. However, fingerprinting may be attempted
 anyway.</p>
 <p>For agents that want to maintain privacy, several best practices are
 recommended:</p>
-<h5 id="follow-selective-disclosure"><a class="toc-anchor" href="#follow-selective-disclosure">§</a> Follow selective disclosure.</h5>
+<h6 id="follow-selective-disclosure"><a class="toc-anchor" href="#follow-selective-disclosure">§</a> Follow selective disclosure.</h6>
 <p>Only reveal supported features based on trust in the relationship.
 Even if you support a protocol, you may not wish to use it in
 every relationship. Don’t tell others about protocols you do
@@ -903,10 +904,10 @@ not plan to use with them.</p>
 <p>Patterns are easier to see in larger data samples. However, a pattern
 of ultra-minimal data is also a problem, so use good judgment about
 how forthcoming to be.</p>
-<h1 id="trust-ping-protocol-10"><a class="toc-anchor" href="#trust-ping-protocol-10">§</a> Trust Ping Protocol 1.0</h1>
+<h2 id="trust-ping-protocol-10"><a class="toc-anchor" href="#trust-ping-protocol-10">§</a> Trust Ping Protocol 1.0</h2>
 <p>A standard way for agents to test connectivity,
 responsiveness, and security of a DIDComm channel.</p>
-<h2 id="motivation-2"><a class="toc-anchor" href="#motivation-2">§</a> Motivation</h2>
+<h3 id="motivation-2"><a class="toc-anchor" href="#motivation-2">§</a> Motivation</h3>
 <p>Agents are distributed. They are not guaranteed to be
 connected or running all the time. They support a
 variety of transports, speak a variety of protocols,
@@ -914,23 +915,23 @@ and run software from many different vendors.</p>
 <p>This can make it very difficult to prove that two
 agents have a functional pairwise channel. Troubleshooting
 connectivity, responsiveness, and security is vital.</p>
-<h2 id="reference-3"><a class="toc-anchor" href="#reference-3">§</a> Reference</h2>
+<h3 id="reference-3"><a class="toc-anchor" href="#reference-3">§</a> Reference</h3>
 <p>This protocol is analogous to the familiar <code>ping</code>
 command in networking–but because it operates
 over DIDComm, it is transport
 agnostic and asynchronous, and it can produce insights
 into privacy and security that a regular ping
 cannot.</p>
-<h3 id="roles-3"><a class="toc-anchor" href="#roles-3">§</a> Roles</h3>
+<h4 id="roles-3"><a class="toc-anchor" href="#roles-3">§</a> Roles</h4>
 <p>There are two parties in a trust ping: the <code>sender</code>
 and the <code>receiver</code>. The sender initiates the trust
 ping. The receiver responds. If the receiver wants
 to do a ping of their own, they can, but this is a
 new interaction in which they become the sender.</p>
-<h3 id="protocol-type-uri"><a class="toc-anchor" href="#protocol-type-uri">§</a> Protocol Type URI</h3>
+<h4 id="protocol-type-uri"><a class="toc-anchor" href="#protocol-type-uri">§</a> Protocol Type URI</h4>
 <p><code>https://didcomm.org/trust_ping/1.0</code></p>
-<h3 id="messages-4"><a class="toc-anchor" href="#messages-4">§</a> Messages</h3>
-<h4 id="ping"><a class="toc-anchor" href="#ping">§</a> ping</h4>
+<h4 id="messages-4"><a class="toc-anchor" href="#messages-4">§</a> Messages</h4>
+<h5 id="ping"><a class="toc-anchor" href="#ping">§</a> ping</h5>
 <p>The trust ping interaction begins when <code>sender</code>
 creates a <code>ping</code> message like this:</p>
 <pre class="language-JSON"><code class="language-JSON">{
@@ -942,7 +943,7 @@ creates a <code>ping</code> message like this:</p>
 }
 </code></pre>
 <p><strong>response_requested</strong>: default value is <code>true</code>. If false, the <code>sender</code> is not requesting a <code>ping_response</code> from the <code>receiver</code>. If <code>true</code>, the <code>sender</code> is requesting a response.</p>
-<h4 id="ping_response"><a class="toc-anchor" href="#ping_response">§</a> ping_response</h4>
+<h5 id="ping_response"><a class="toc-anchor" href="#ping_response">§</a> ping_response</h5>
 <p>When the message arrives at the receiver, assuming that <code>response_requested</code>
 is not <code>false</code>, the receiver should reply as quickly as possible with a
 <code>ping_response</code> message that looks like this:</p>
@@ -952,7 +953,7 @@ is not <code>false</code>, the receiver should reply as quickly as possible with
   &quot;thread_id&quot;: &quot;518be002-de8e-456e-b3d5-8fe472477a86&quot;
 }
 </code></pre>
-<h3 id="trust"><a class="toc-anchor" href="#trust">§</a> Trust</h3>
+<h4 id="trust"><a class="toc-anchor" href="#trust">§</a> Trust</h4>
 <p>This is the “<strong>trust</strong> ping protocol”, not just the “ping protocol.”
 The “trust” in its name comes from several features that the interaction
 gains by virtue of the properties of the DIDComm messages. A ping and response verify to both parties that the necessary encryption is in place and working properly for the messages to be understood.</p>
@@ -1027,6 +1028,7 @@ indicate so via link to the extension spec.</p>
 </li>
 <li><a href="#message-structure">Message Structure</a>
 <ul>
+<li><a href="#message-headers">Message Headers</a></li>
 <li><a href="#did-rotation">DID Rotation</a>
 <ul>
 <li><a href="#jwt-details">JWT Details</a></li>
@@ -1093,13 +1095,6 @@ indicate so via link to the extension spec.</p>
 </li>
 </ul>
 </li>
-<li><a href="#out-of-band-messages">Out Of Band Messages</a>
-*
-<ul>
-<li><a href="#url-qr-codes">URL &amp; QR Codes</a></li>
-<li><a href="#invitation-httpsdidcommorgout-of-bandverinvitation">Invitation: <code>https://didcomm.org/out-of-band/%VER/invitation</code></a></li>
-</ul>
-</li>
 <li><a href="#advanced-message-passing">Advanced Message Passing</a>
 *
 <ul>
@@ -1117,6 +1112,15 @@ indicate so via link to the extension spec.</p>
 </li>
 </ul>
 </li>
+<li><a href="#out-of-band-messages">Out Of Band Messages</a>
+*
+<ul>
+<li><a href="#url-qr-codes">URL &amp; QR Codes</a></li>
+<li><a href="#invitation-httpsdidcommorgout-of-bandverinvitation">Invitation: <code>https://didcomm.org/out-of-band/%VER/invitation</code></a></li>
+</ul>
+</li>
+<li><a href="#discover-features-protocol-10">Discover Features Protocol 1.0</a>
+<ul>
 <li><a href="#summary-2">Summary</a></li>
 <li><a href="#motivation">Motivation</a></li>
 <li><a href="#reference-2">Reference</a>
@@ -1127,18 +1131,19 @@ indicate so via link to the extension spec.</p>
 <li><a href="#privacy-considerations-3">Privacy Considerations</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#trust-ping-protocol-10">Trust Ping Protocol 1.0</a>
+<ul>
 <li><a href="#motivation-2">Motivation</a></li>
 <li><a href="#reference-3">Reference</a>
 <ul>
 <li><a href="#roles-3">Roles</a></li>
 <li><a href="#protocol-type-uri">Protocol Type URI</a></li>
-<li><a href="#messages-4">Messages</a>
-<ul>
-<li><a href="#ping">ping</a></li>
-<li><a href="#ping_response">ping_response</a></li>
+<li><a href="#messages-4">Messages</a></li>
+<li><a href="#trust">Trust</a></li>
 </ul>
 </li>
-<li><a href="#trust">Trust</a></li>
 </ul>
 </li>
 <li><a href="#reference-implementation">Reference Implementation</a></li>
@@ -1157,7 +1162,7 @@ indicate so via link to the extension spec.</p>
             </slide-panels>
 
           </body>
-          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","signature.md","routing.md","transports.md","out_of_band.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","feature_discovery.md","trustping.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
+          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","signature.md","routing.md","transports.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","out_of_band.md","feature_discovery.md","trustping.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
           <script src="../spec-up/compiled/body.js" data-manual></script>
         </html>
       

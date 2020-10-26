@@ -20,7 +20,7 @@ The following example shows common elements of a DIDComm Message. Further detail
 }
 ```
 
-
+### Message Headers
 
 The attributes of a DIDComm Message at the level of its outer packaging (effectively, the "headers" of the message) are as follows:
 
@@ -47,9 +47,9 @@ When a DID is rotated, the new DID is put into immediate use encrypting the mess
 
 - **from_prior**: A JWT, with with `sub`: new DID and `iss`: prior DID, with a signature from a key authorized by prior DID.
 
-When a message is received from an unknown DID, the recipient should check for existence of the `from_prior` header. The JWT in the`from_prior` attribute is used to extract the prior DID (`iss`) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information should be used for further communication.  
+When a message is received from an unknown DID, the recipient should check for existence of the `from_prior` header. The JWT in the`from_prior` attribute is used to extract the prior DID (`iss`) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information should be used for further communication.
 
-The validity of the DID rotation is verified by checking the JWT signature against the key indicated in the `kid` header parameter. The indicated key MUST be authorized in the DID Document of the prior DID (`iss`). 
+The validity of the DID rotation is verified by checking the JWT signature against the key indicated in the `kid` header parameter. The indicated key MUST be authorized in the DID Document of the prior DID (`iss`).
 
 The `from_prior` attribute should be included in messages sent until the party rotating receives a message sent to the new DID. If multiple messages are received to containing the rotation headers after being processed by the recipient, they may be ignored.
 

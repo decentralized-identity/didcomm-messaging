@@ -1,12 +1,12 @@
-# Discover Features Protocol 1.0
+## Discover Features Protocol 1.0
 
 
-## Summary
+### Summary
 
 Describes how agents can query one another to discover which features
 it supports, and to what extent.
 
-## Motivation
+### Motivation
 
 Though some agents will support just one protocol and will be
 statically configured to interact with just one other party, many
@@ -14,7 +14,7 @@ exciting uses of agents are more dynamic and unpredictable. When
 Alice and Bob meet, they won't know in advance which features are
 supported by one another's agents. They need a way to find out.
 
-## Reference
+### Reference
 
 This RFC introduces a protocol for discussing the protocols an agent
 can handle. The identifier for the message family used by this protocol is
@@ -22,22 +22,22 @@ can handle. The identifier for the message family used by this protocol is
 
     https://didcomm.org/discover-features/1.0
 
-### Roles
+#### Roles
 
 There are two roles in the `discover-features` protocol: `requester` and
 `responder`. The requester asks the responder about the protocols it
 supports, and the responder answers. Each role uses a single message type.
 
-### States
+#### States
 
 This is a classic two-step request~response interaction, so it uses the
 predefined state machines for any `requester` and `responder`:
 
 [![state machines](state-machines.png)](https://docs.google.com/spreadsheets/d/1smY8qhG1qqGs0NH9g2hV4b7mDqrM6MIsmNI93tor2qk/edit)
 
-### Messages
+#### Messages
 
-##### `query` Message Type
+###### `query` Message Type
 
 A `discover-features/query` message looks like this:
 
@@ -66,7 +66,7 @@ and rich features are *strongly* encouraged to implement support
 for this message, as it is likely to be among the first messages
 exchanged with a stranger.
 
-##### `disclose` Message Type
+###### `disclose` Message Type
 
 A `discover-features/disclose` message looks like this:
 
@@ -95,7 +95,7 @@ can play in the associated protocol.
 Response messages say, "Here are some protocols I support that matched
 your query, and some things I can do with each one."
 
-##### Sparse Responses
+###### Sparse Responses
 
 Responses do not have to contain exhaustive detail. For example, the following
 response is probably just as good:
@@ -133,7 +133,7 @@ not guaranteed to be true forever; agents can be upgraded or downgraded,
 although they probably won't churn in their protocol support from moment
 to moment.
 
-### Privacy Considerations
+#### Privacy Considerations
 
 Because the regex in a `request` message can be very inclusive, the `discover-features`
 protocol could be used to mine information suitable for agent fingerprinting,
@@ -146,7 +146,7 @@ anyway.
 For agents that want to maintain privacy, several best practices are
 recommended:
 
-##### Follow selective disclosure.
+###### Follow selective disclosure.
 
 Only reveal supported features based on trust in the relationship.
 Even if you support a protocol, you may not wish to use it in

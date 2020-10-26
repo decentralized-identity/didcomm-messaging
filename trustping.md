@@ -1,9 +1,9 @@
-# Trust Ping Protocol 1.0
+## Trust Ping Protocol 1.0
 
 A standard way for agents to test connectivity,
 responsiveness, and security of a DIDComm channel.
 
-## Motivation
+### Motivation
 
 Agents are distributed. They are not guaranteed to be
 connected or running all the time. They support a
@@ -14,7 +14,7 @@ This can make it very difficult to prove that two
 agents have a functional pairwise channel. Troubleshooting
 connectivity, responsiveness, and security is vital.
 
-## Reference
+### Reference
 
 This protocol is analogous to the familiar `ping`
 command in networking--but because it operates
@@ -23,7 +23,7 @@ agnostic and asynchronous, and it can produce insights
 into privacy and security that a regular ping
 cannot.
 
-### Roles
+#### Roles
 
 There are two parties in a trust ping: the `sender`
 and the `receiver`. The sender initiates the trust
@@ -31,13 +31,13 @@ ping. The receiver responds. If the receiver wants
 to do a ping of their own, they can, but this is a
 new interaction in which they become the sender.
 
-### Protocol Type URI
+#### Protocol Type URI
 
 `https://didcomm.org/trust_ping/1.0`
 
-### Messages
+#### Messages
 
-#### ping
+##### ping
 
 The trust ping interaction begins when `sender`
 creates a `ping` message like this:
@@ -54,7 +54,7 @@ creates a `ping` message like this:
 
 **response_requested**: default value is `true`. If false, the `sender` is not requesting a `ping_response` from the `receiver`. If `true`, the `sender` is requesting a response.
 
-#### ping_response
+##### ping_response
 
 When the message arrives at the receiver, assuming that `response_requested`
 is not `false`, the receiver should reply as quickly as possible with a
@@ -70,7 +70,7 @@ is not `false`, the receiver should reply as quickly as possible with a
 
 
 
-### Trust
+#### Trust
 
 This is the "**trust** ping protocol", not just the "ping protocol."
 The "trust" in its name comes from several features that the interaction
