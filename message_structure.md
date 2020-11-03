@@ -54,7 +54,7 @@ Applications running one or more DIDComm-based protocols may wish to define thei
 DIDComm plaintext messages are also correctly understood as JWM content. Thus a media type for JWMs MIGHT be an accurate but more generic way to categorize them. However, not all JWMs are DIDComm messages, so this categorization is suboptimal. Similarly, `application/json` is true, but overly generic and therefore not recommended.
 
 When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm plaintext messages SHOULD be `dcpm`, giving a globbing pattern of `*.dcpm`; this SHOULD be be read as "Star Dot D C P M" or as "D C P M" files.
-The name of this file format is "DIDComm Plaintext Message." A recommended icon for this file format depicts JSON text pulled from an open but formerly sealed envelope ([svg](collateral/dcpm.svg) | [256x256](collateral/dcpm-256.png) | [128x128](collateral/dcpm-128.png) | [64x64](collateral/dcpm-64.png)):
+The name of this file format is "DIDComm Plaintext Message." A possible icon for this file format depicts JSON text in a message bubble ([svg](collateral/dcpm.svg) | [256x256](collateral/dcpm-256.png) | [128x128](collateral/dcpm-128.png) | [64x64](collateral/dcpm-64.png)):
 
 ![DIDComm Plaintext Message Icon](collateral/dcpm-128.png)
 
@@ -72,7 +72,7 @@ Because a DIDComm encrypted message is also a JWS, a true but less specific medi
 
 When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm encrypted messages SHOULD be `dcsm`, giving a globbing pattern of `*.dcsm`; this SHOULD be be read as "Star Dot D C S M" or as "D C S M" files.
 
-The name of this file format is "DIDComm Signed Message." We imagine people will say, "I am looking at a DIDComm Signed Message", or "This file is in DIDComm Signed Message format", or "Does my editor have a DIDComm Signed Message plugin?" A recommended icon for this file format depicts a signed envelope ([svg](collateral/dcsm.svg) | [256x256](collateral/dcsm-256.png) | [128x128](collateral/dcsm-128.png) | [64x64](collateral/dcsm-64.png)):
+The name of this file format is "DIDComm Signed Message." We imagine people will say, "I am looking at a DIDComm Signed Message", or "This file is in DIDComm Signed Message format", or "Does my editor have a DIDComm Signed Message plugin?" A possible icon for this file format depicts a signed envelope ([svg](collateral/dcsm.svg) | [256x256](collateral/dcsm-256.png) | [128x128](collateral/dcsm-128.png) | [64x64](collateral/dcsm-64.png)):
 
 ![DIDComm Signed Message Icon](collateral/dcsm-128.png)
 
@@ -86,7 +86,7 @@ Because a DIDComm encrypted message is also a JWE, a true but less specific medi
 
 When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm encrypted messages SHOULD be `dcem`, giving a globbing pattern of `*.dcem`; this SHOULD be be read as "Star Dot D C E M" or as "D C E M" files.
 
-The name of this file format is "DIDComm Encrypted Message." We imagine people will say, "I am looking at a DIDComm Encrypted Message", or "This file is in DIDComm Encrypted Message format", or "Does my editor have a DIDComm Encrypted Message plugin?" A recommended icon for this file format depicts an envelope protected by a wax seal ([svg](collateral/dcem.svg) | [256x256](collateral/dcem-256.png) | [128x128](collateral/dcem-128.png) | [64x64](collateral/dcem-64.png)):
+The name of this file format is "DIDComm Encrypted Message." We imagine people will say, "I am looking at a DIDComm Encrypted Message", or "This file is in DIDComm Encrypted Message format", or "Does my editor have a DIDComm Encrypted Message plugin?" A possible icon for this file format depicts an envelope protected by a wax seal ([svg](collateral/dcem.svg) | [256x256](collateral/dcem-256.png) | [128x128](collateral/dcem-128.png) | [64x64](collateral/dcem-64.png)):
 
 ![DIDComm Encrypted Message Icon](collateral/dcem-128.png)
 
