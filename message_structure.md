@@ -15,18 +15,23 @@ The following example shows common elements of a DIDComm Message. Further detail
     "created_time": 1516269022,
     "expires_time": 1516385931,
     "body": {
-    	"messagespecificattribute": "and it's value"
+    	"messagespecificattribute": "and its value"
 	}
 }
 ```
 
 ### Message Headers
 
-The attributes of a DIDComm Message at the level of its outer packaging (effectively, the "headers" of the message) are as follows:
+The attributes of a DIDComm plaintext message at the level of its outermost object (effectively, its "headers") are as follows:
 
 - **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender.
 - **type** - REQUIRED. Message Type. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri) , that when resolved gives human readable information about the message. The attributes value also informs the content of the message, for example the presence of other attributes and how they should be processed.
-- **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://w3c.github.io/did-core/#generic-did-syntax) that identifies a member of the message's intended audience. This array cannot be used during routing, since it typically becomes visible only after valid recipients decrypt it. Rather, it offers semantics like the `To:`, 'CC:`, and `BCC:` headers in email, allowing a recipient to enumerate all parties that the sender claims might see the message in plaintext.
+- **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://w3c.github.io/did-core/#generic-did-syntax) that identifies a member of the message's intended audience.
+
+  The relationship between this array and routing is worthy of comment. A message from Alice to Bob is seen as plaintext by Alice and by Bob, and as ciphertext by all intermediaries. Thus, the value of the `to` array as seen by Bob cannot be used for routing. Instead, when Bob sees it, it offers semantics like the `To:`, `CC:`, and `BCC:` headers in email, allowing a recipient to enumerate all parties that the sender claims might see the message in plaintext. This has semantic value in application-level protocols built atop DIDComm.
+  
+  However, when the innermost message from Alice to Bob is attached as encrypted payload to a `forward` message in DIDComm's routing protocol, a mediator sees the `to` header of the `forward` message in plaintext. Thus, the `to` header in one or more containing envelopes does play a role in routing.
+  
 - **from** - OPTIONAL. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/#generic-did-syntax) which identifies the sender of the message. For DID methods that use query parameters to carry additional information, they might also be present in the from string. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. See the [message authentication](#Message-Authentication) section for additional details.
 - **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.
 - **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is no longer valid, and is to be used by the recipient to discard expired messages on receipt.
