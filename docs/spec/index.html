@@ -1000,26 +1000,22 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li>Usage</li>
 </ul>
 <h2 id="future-proofing"><a class="toc-anchor" href="#future-proofing">§</a> Future-Proofing</h2>
-<ul>
-<li>
-<p>Versioning of the standard</p>
-</li>
-<li>
-<p>Extensibility</p>
-</li>
-<li>
-<p>Adapting for post-quantum crypto</p>
-</li>
-</ul>
+<h3 id="versioning"><a class="toc-anchor" href="#versioning">§</a> Versioning</h3>
+<p>This version of the standard is known as “DIDComm v2” — acknowledging the fact that a <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0005-didcomm/README.md">v1 generation of DIDComm specs</a> was incubated under the Hyperledger Aries project umbrella. The v1 specs are close conceptual cousins, but use a slightly different encryption envelope, and base their plaintext format on arbitrary JSON instead of JWMs.</p>
+<p>Future evolutions of the spec will follow <a href="https://semver.org">semver</a> conventions. Minor updates that add features without breaking compatibility will carry a minor version number update: 2.1, 2.2, and so forth. Breaking changes will prompt a major version change.</p>
 <h3 id="extensions"><a class="toc-anchor" href="#extensions">§</a> Extensions</h3>
-<p>The general mechanism for DIDComm extensibility is the development of
-DIDComm protocols. In the case where extensibility requires a modification
-to the base DIDComm spec itself, a DIDComm Extension is to be used.</p>
-<p>Each DIDComm Extension is described in a specification. Software that
-implements a DIDComm Extension in addition to the DIDComm spec will
-indicate so via link to the extension spec.</p>
-<h3 id="encoding"><a class="toc-anchor" href="#encoding">§</a> Encoding</h3>
-<p>DIDComm Messages are JSON encoded (based on the JOSE family of specs) at the encryption, signature, and content level. Future encodings MUST specify a deterministic and reliable method for indicating the alternative encoding used.</p>
+<p>The general mechanism for DIDComm extensibility is the development of DIDComm protocols. In the case where extensibility requires a modification to the base DIDComm spec itself, a DIDComm extension is to be used. An extension adds a self-contained set of conventions or features. Support for DIDComm extensions is optional.</p>
+<p>Each DIDComm extension is described in a specification of its own. Software that implements a DIDComm Extension in addition to the DIDComm spec will indicate so via link to the extension spec.</p>
+<h3 id="future-work"><a class="toc-anchor" href="#future-work">§</a> Future Work</h3>
+<h4 id="additional-encodings"><a class="toc-anchor" href="#additional-encodings">§</a> Additional Encodings</h4>
+<p>DIDComm Messages are JSON encoded (based on the JOSE family of specs) at the encryption, signature, and content level. Future encodings might introduce binary serializations. Each innovation like this MUST specify a deterministic and reliable method for indicating the alternative encoding used.</p>
+<h3 id="beyond-messaging"><a class="toc-anchor" href="#beyond-messaging">§</a> Beyond Messaging</h3>
+<p>This is a DIDComm <em>messaging</em> spec. Security, privacy, routing, and metadata concepts from this spec could be adapted to other communication styles, including multicast/broadcast and streaming. This will create sister specs to DIDComm Messaging, rather than evolving DIDComm Messaging itself.</p>
+<h3 id="post-quantum-crypto"><a class="toc-anchor" href="#post-quantum-crypto">§</a> Post-Quantum Crypto</h3>
+<p>The designers of DIDComm are aware that DIDComm’s cryptographic methods will need to be upgraded when quantum computing matures. This is because DIDComm makes heavy use of asymmetric elliptic curve mechanisms that depend on the discrete logarithm problem; this computational hardness is likely to be vulnerable to quantum cracking. Similar risks will drive upgrades to TLS, Ethereum, Bitcoin, and many other systems that are considered highly secure today.</p>
+<p>Some modest preparations for quantum-resistant DIDComm have already begun. DIDComm is able to use arbitrary DID methods, which should allow approaches that are quantum-secure without changing the general pattern of DIDComm’s interaction with key management technology.</p>
+<p>Libraries that provide quantum-resistant algorithms for signing and encryption are now available, but research is needed to determine which approaches are worthy of broad adoption. This is the subject of <a href="https://csrc.nist.gov/projects/post-quantum-cryptography">an ongoing project sponsored by NIST</a>, and of <a href="https://ec.europa.eu/digital-single-market/en/news/future-quantum-eu-countries-plan-ultra-secure-communication-network">a similar project in the EU</a>.</p>
+<p>We expect to update the DIDComm Messaging spec as these projects release mature recommendations and the cryptographic libraries they vet achieve adoption. It is not yet clear whether this will require a breaking change to DIDComm’s encryption envelope or signing formats.</p>
 <h2 id="references"><a class="toc-anchor" href="#references">§</a> References</h2>
 <ul>
 <li>DID spec</li>
@@ -1195,8 +1191,15 @@ indicate so via link to the extension spec.</p>
 <li><a href="#reference-implementation">Reference Implementation</a></li>
 <li><a href="#future-proofing">Future-Proofing</a>
 <ul>
+<li><a href="#versioning">Versioning</a></li>
 <li><a href="#extensions">Extensions</a></li>
-<li><a href="#encoding">Encoding</a></li>
+<li><a href="#future-work">Future Work</a>
+<ul>
+<li><a href="#additional-encodings">Additional Encodings</a></li>
+</ul>
+</li>
+<li><a href="#beyond-messaging">Beyond Messaging</a></li>
+<li><a href="#post-quantum-crypto">Post-Quantum Crypto</a></li>
 </ul>
 </li>
 <li><a href="#references">References</a></li>
