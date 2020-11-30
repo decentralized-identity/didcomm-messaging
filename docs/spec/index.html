@@ -143,7 +143,7 @@
 <span class="token punctuation">}</span>
 </code></pre>
 <h3 id="message-headers"><a class="toc-anchor" href="#message-headers">§</a> Message Headers</h3>
-<p>The attributes of a plaintext message at the level of its outer packaging (effectively, the “headers” of the plaintext message) are as follows:</p>
+<p>The predefined attributes of a DIDComm Message at the level of its outer packaging (effectively, the “headers” of the message) are as follows:</p>
 <ul>
 <li><strong>id</strong> - REQUIRED. Message ID. The <code>id</code> attribute value MUST be unique to the sender.</li>
 <li><strong>type</strong> - REQUIRED. Message Type. The <code>type</code> attribute value MUST be a valid <a href="protocols.md#message-type-uri">Message Type URI</a> , that when resolved gives human readable information about the message. The attributes value also informs the content of the message, for example the presence of other attributes and how they should be processed.</li>
@@ -152,9 +152,17 @@
 <li><strong>created_time</strong> - OPTIONAL. Message Created Time. The <code>created_time</code> attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.</li>
 <li><strong>expires_time</strong> - OPTIONAL. Message Expired Time. The <code>expires_time</code> attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is no longer valid, and is to be used by the recipient to discard expired messages on receipt.</li>
 </ul>
-<p>The problem domain of DIDComm intersects with other aspects of decentralized identity, where JSON-LD plays a role in some standards. Thus it may be natural to wonder about DIDComm’s relationship to JSON-LD and to the rich semantics and extensibility features it offers. The short answer is that DIDComm is not dependent on JSON-LD, but it is compatible with it. We expect these two technologies to remain mostly orthogonal.</p>
-<p>In the packaging of message metadata, DIDComm follows the extensibility pattern established by the JW* family of standards – that is, new headers can be added at will. (It also emulates the design of message headers in SMTP, request headers in HTTP, and labels on physical pieces of mail.) A modest inventory of predefined “header” fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn’t understand such fields should ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.</p>
+<p>In the outer packaging of message metadata, DIDComm follows the extensibility pattern established by the JW* family of standards. (It also emulates the design of message headers in SMTP, request headers in HTTP, and labels on physical pieces of mail.) A modest inventory of predefined “header” fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn’t understand such fields should ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.</p>
 <p>Aligning with <a href="https://tools.ietf.org/html/rfc6648.html">RFC 6648</a>, DIDComm explicitly rejects the <code>X-*</code> headers convention that creates divergent pseudo-standards; if a new header needs broad support, it must be standardized properly. Alternatively, a JSON-LD <code>@context</code> header can be added, providing namespacing for fields other than those predefined in the spec. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.</p>
+<h4 id="simple-vs-structured"><a class="toc-anchor" href="#simple-vs-structured">§</a> Simple vs. Structured</h4>
+<p>Headers can be simple (mapping a header name to an integer or a string) or structured (mapping a header name to JSON substructure – an array or JSON object). When defining a new header type, the following guidelines apply:</p>
+<ul>
+<li>Headers SHOULD NOT use more structure than necessary; simple headers are preferred.</li>
+<li>However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP <code>Accept</code> header. (<a href="https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15">HTTP Structured Headers</a> provide similar functionality but are unnecessary here, since DIDComm plaintext already has an easily parseable syntax.)</li>
+<li>Headers that are only meaningful together SHOULD be grouped into a JSON object.</li>
+</ul>
+<h4 id="relationship-to-json-ld"><a class="toc-anchor" href="#relationship-to-json-ld">§</a> Relationship to JSON-LD</h4>
+<p>The problem domain of DIDComm intersects with other aspects of decentralized identity, where JSON-LD plays a role in some standards. Thus it may be natural to wonder about DIDComm’s relationship to JSON-LD and to the rich semantics and extensibility features it offers. The short answer is that DIDComm is not dependent on JSON-LD, but it is compatible with it. We expect these two technologies to remain mostly orthogonal.</p>
 <p>The body of a message – everything inside the <code>body</code> object – is different. Here, there is substantial variety and complexity. Structures may be sophisticated graphs, represented with nested objects and arrays. JSON-LD is not required at this level, either. However, it is available, and may be appropriate for certain use cases where extensibility is an important feature. JSON-LD usage, if it occurs, SHOULD be a declared feature of a protocol as a whole, not an ad hoc extension to arbitrary individual messages, and MUST be signalled by the inclusion of a <code>@context</code> inside <code>body</code>. Unless a protocol declares a JSON-LD dependency, the same rules apply to JSON-LD-isms as apply to any other unrecognized structure in a DIDComm message: additional fields can be added to any part of message structure, should be ignored if not understood, and MUST NOT be the basis of failure by recipients.</p>
 <h3 id="did-rotation"><a class="toc-anchor" href="#did-rotation">§</a> DID Rotation</h3>
 <p>DIDComm is based on DIDs and their associated DID Documents. Changes to keys and endpoints are the concern of each DID method and are utilized but not managed by DIDComm. DID Rotation serves a very specific and narrow need to switch from one DID method to another. This is very common at the beginning of a new DIDComm relationship when a public DID or a temporary DID passed unencrypted is rotated out for a DID chosen for the relationship. As rotation between one DID and another is outside the scope of any DID method, the details of DID Rotation are handled within DIDComm itself.</p>
@@ -176,11 +184,11 @@
 <span class="token punctuation">}</span>
 </code></pre>
 <p><strong>Payload</strong>:</p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"sub"</span><span class="token operator">:</span> <span class="token string">"&lt;new DID URI>"</span><span class="token punctuation">,</span>
-  <span class="token property">"iss"</span><span class="token operator">:</span> <span class="token string">"&lt;prior DID URI>"</span><span class="token punctuation">,</span>
-  <span class="token property">"iat"</span><span class="token operator">:</span> <span class="token number">1516239022</span> <span class="token comment">//datetime of the rotation, not message</span>
-<span class="token punctuation">}</span>
+<pre class="language-jsonc"><code class="language-jsonc">{
+  &quot;sub&quot;: &quot;&lt;new DID URI&gt;&quot;,
+  &quot;iss&quot;: &quot;&lt;prior DID URI&gt;&quot;,
+  &quot;iat&quot;: 1516239022 //datetime of the rotation, not message
+}
 </code></pre>
 <h4 id="example-message-rotating-did"><a class="toc-anchor" href="#example-message-rotating-did">§</a> Example Message Rotating DID</h4>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
@@ -192,7 +200,7 @@
     <span class="token property">"created_time"</span><span class="token operator">:</span> <span class="token number">1516269022</span><span class="token punctuation">,</span>
     <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token number">1516385931</span><span class="token punctuation">,</span>
     <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    	<span class="token property">"messagespecificattribute"</span><span class="token operator">:</span> <span class="token string">"and it's value"</span>
+    	<span class="token property">"messagespecificattribute"</span><span class="token operator">:</span> <span class="token string">"and its value"</span>
 	<span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
@@ -1064,7 +1072,12 @@ indicate so via link to the extension spec.</p>
 </li>
 <li><a href="#plaintext-message-structure">Plaintext Message Structure</a>
 <ul>
-<li><a href="#message-headers">Message Headers</a></li>
+<li><a href="#message-headers">Message Headers</a>
+<ul>
+<li><a href="#simple-vs-structured">Simple vs. Structured</a></li>
+<li><a href="#relationship-to-json-ld">Relationship to JSON-LD</a></li>
+</ul>
+</li>
 <li><a href="#did-rotation">DID Rotation</a>
 <ul>
 <li><a href="#jwt-details">JWT Details</a></li>
