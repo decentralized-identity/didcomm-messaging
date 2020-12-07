@@ -1,10 +1,61 @@
-## Message Structure
+## Message Types
 
-DIDComm Messages are based on JWM (JSON Web Messages). A message has a basic structure that specifies the message type, id, and other attributes common to all messages. These common attributes appear at the top level of a DIDComm message, and are called headers. A message also includes attributes specific to the message type. Type specific message attributes are contained within the `body` attribute of a message.
+This spec discusses messages in three different formats. The casual phrase "DIDComm message" is ambiguous, but usually refers to DIDComm encrypted messages (the outermost box in the diagram below). These will constitute the vast majority of network traffic in most DIDComm deployments, and they are responsible for security guarantees in the system. However, the role of encrypted messages cannot be understood without reference to the simpler formats they contain.
 
-Prior to being sent to a recipient, the JWM is encrypted into a JWE according to the JWM spec.
+![DIDComm envelopes](collateral/didcomm-envelopes.png)
 
-The following example shows common elements of a DIDComm Message. Further details and advanced usage are covered elsewhere in this spec.
+### DIDComm Plaintext Messages
+
+A DIDComm message in its plaintext form, not packaged into any protective envelope, is known as a **DIDComm plaintext message**. Plaintext messages lack confidentiality and integrity guarantees, and are repudiable. They are therefore not normally transported across security boundaries. However, this may be a helpful format to inspect in debuggers, since it exposes underlying semantics, and it is the format used in this spec to give examples of headers and other internals. Depending on ambient security, plaintext may or may not be an appropriate format for DIDComm data at rest.
+
+When higher-level protocols are built atop DIDComm, applications remove the protective envelope(s) and process the plaintext that's inside. Specs for higher-level protocols typically document message structure and provide examples in this format; protective envelopes are assumed but ignored as a low-level detail.
+
+Applications running one or more DIDComm-based protocols may wish to define their own media types for the protocols they support. Absent such customization, the preferred media type for a generic DIDComm plaintext message SHOULD be `application/didcomm-plain+json`. This correctly conveys the fact that code handling such content functions at a different level from DIDComm's security and routing, and that generic JSON tools and actions are likely to be a helpful fallback in processing the content.
+
+DIDComm plaintext messages are also correctly understood as JWM content (see [Plaintext Message Structure](#plaintext-message-structure), below). Thus a media type for JWMs MIGHT be an accurate but more generic way to categorize them. However, not all JWMs are DIDComm messages, so this categorization is suboptimal. Similarly, `application/json` is true, but overly generic and therefore not recommended.
+
+When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm plaintext messages SHOULD be `dcpm`, giving a globbing pattern of `*.dcpm`; this SHOULD be be read as "Star Dot D C P M" or as "D C P M" files. We imagine people will reference this media type by saying, "I am looking at a DIDComm Plaintext Message file", or "This database record is in DIDComm Plaintext format", or "Does my editor have a DIDComm Plaintext Message plugin?" A possible icon for this file format depicts green JSON text in a message bubble ([svg](collateral/dcpm.svg) | [256x256](collateral/dcpm-256.png) | [128x128](collateral/dcpm-128.png) | [64x64](collateral/dcpm-64.png)):
+
+![DIDComm Plaintext Message Icon](collateral/dcpm-128.png)
+
+### DIDComm Signed Message
+
+A **DIDComm signed message** is a JWS envelope that associates a non-repudiable signature with the plaintext message inside it.
+
+Signed messages are not necessary to provide message integrity (tamper evidence), or to prove the sender to the recipient. Both of these guarantees automatically occur with the authenticated encryption in DIDComm encrypted messages. Signed messages are only necessary when the origin of plaintext must be provable to third parties, or when the sender can't be proven to the recipient by authenticated encryption because the recipient is not known in advance (e.g., in a broadcast scenario). Adding a signature when one is not needed [can degrade rather than enhance security because it relinquishes the sender's ability to speak off the record](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0049-repudiation/README.md#summary). We therefore expect signed messages to be used in a few cases, but not as a matter of course.
+
+When a message is *both* signed and encrypted, the plaintext is signed, and then the signed envelope is encrypted. The opposite order is not used, since it would imply that the signer committed to opaque data (which is unsafe and undermines non-repudiation).
+
+The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm signed message SHOULD be `application/didcomm-signed+json`.
+
+Because a DIDComm signed message is also a JWS, a true but less specific media type MIGHT be `application/jose`. (Although `application/jwt` is a registered media type, `application/jwe` and `application/jws` [are not](https://tools.ietf.org/html/rfc7516#section-9). This is [deliberate](https://mailarchive.ietf.org/arch/msg/jose/FRTPwiOLOc5DILfY_QFZyemn9VU/).) Using the more generic type is not recommended, as content categorized in this way is unlikely to get the DIDComm-specific handling it needs. Similarly, it is also true but overly generic and therefore not recommended to describe a DIDComm signed message as `application/json`.
+
+When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm signed messages SHOULD be `dcsm`, giving a globbing pattern of `*.dcsm`; this SHOULD be be read as "Star Dot D C S M" or as "D C S M" files. A possible icon for this media type depicts a signed envelope ([svg](collateral/dcsm.svg) | [256x256](collateral/dcsm-256.png) | [128x128](collateral/dcsm-128.png) | [64x64](collateral/dcsm-64.png)):
+
+![DIDComm Signed Message Icon](collateral/dcsm-128.png)
+
+### DIDComm Encrypted Message
+
+A **DIDComm encrypted message** hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm applications, and is the safest format for storing DIDComm data at rest.
+ 
+ The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm encrypted message SHOULD be `application/didcomm-encrypted+json`.
+
+>Note: If future versions of this spec allow binary encodings, variations like `application/didcomm-encrypted+cbor` (see [CBOR RFC 7049, section 7.5](https://tools.ietf.org/html/rfc7049#section-7.5)), `application/didcomm-encrypted+msgpack`, or `application/didcomm-encrypted+protobuf` may become reasonable. Future DIDComm specs that encompass comm patterns other than messaging &mdash; DIDComm multicast or DIDComm streaming, for example &mdash; might use a suffix: `application/didcomm-encrypted-multicast` or similar.
+
+Because a DIDComm encrypted message is also a JWE, a true but less specific media type MIGHT be `application/jose`. Note how this overlaps with the generic media type of the JWS of a DIDComm Signed Message. As with DIDComm signed Messages, using more generic media types is ambiguous and not recommended.
+
+When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm encrypted messages SHOULD be `dcem`, giving a globbing pattern of `*.dcem`; this SHOULD be be read as "Star Dot D C E M" or as "D C E M" files. A possible icon for this file format depicts an envelope with binary overlay, protected by a lock ([svg](collateral/dcem.svg) | [256x256](collateral/dcem-256.png) | [128x128](collateral/dcem-128.png) | [64x64](collateral/dcem-64.png)):
+
+![DIDComm Encrypted Message Icon](collateral/dcem-128.png)
+
+
+## Plaintext Message Structure
+
+DIDComm plaintext messages are based on [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01). A message has a basic structure that specifies the message type, id, and other attributes common to all messages. These common attributes appear at the top level of a DIDComm message, and are called headers. A message also includes attributes specific to the message type. Type specific message attributes are contained within the `body` attribute of a message.
+
+Prior to being sent to a recipient, the JWM is usually encrypted into a JWE according to the JWM spec.
+
+The following example shows common elements of a plaintext message. Further details and advanced usage are covered elsewhere in this spec.
 
 ```json
 {
@@ -22,25 +73,35 @@ The following example shows common elements of a DIDComm Message. Further detail
 
 ### Message Headers
 
-The attributes of a DIDComm plaintext message at the level of its outermost object (effectively, its "headers") are as follows:
+The predefined attributes of a DIDComm plaintext message at the level of its outer packaging (effectively, the "headers" of the message) are as follows:
 
 - **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender.
-- **type** - REQUIRED. Message Type. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri) , that when resolved gives human readable information about the message. The attributes value also informs the content of the message, for example the presence of other attributes and how they should be processed.
-- **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://w3c.github.io/did-core/#generic-did-syntax) that identifies a member of the message's intended audience.
 
-  The relationship between this array and routing is worthy of comment. A message from Alice to Bob is seen as plaintext by Alice and by Bob, and as ciphertext by all intermediaries. Thus, the value of the `to` array as seen by Bob cannot be used for routing. Instead, when Bob sees it, it offers semantics like the `To:`, `CC:`, and `BCC:` headers in email, allowing a recipient to enumerate all parties that the sender claims might see the message in plaintext. This has semantic value in application-level protocols built atop DIDComm.
-  
-  However, when the innermost message from Alice to Bob is attached as encrypted payload to a `forward` message in DIDComm's routing protocol, a mediator sees the `to` header of the `forward` message in plaintext. Thus, the `to` header in one or more containing envelopes does play a role in routing.
-  
-- **from** - OPTIONAL. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/#generic-did-syntax) which identifies the sender of the message. For DID methods that use query parameters to carry additional information, they might also be present in the from string. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. See the [message authentication](#Message-Authentication) section for additional details.
+- **type** - REQUIRED. Message Type. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri), that when resolved gives human readable information about the message. The attribute's value also informs the content of the message, for example the presence of other attributes and how they should be processed.
+
+- **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid DID or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience. When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. (This header cannot be used for routing, since it is encrypted at every intermediate point in the route. The `forward` message contains a `next` attribute in its body that specifies the target for the next routing operation.)
+
+- **from** - OPTIONAL. Sender identifier. The `from` attribute MUST be a string that is a valid DID or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. See the [message authentication](#Message-Authentication) section for additional details.
+
 - **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.
-- **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is no longer valid, and is to be used by the recipient to discard expired messages on receipt.
 
-The problem domain of DIDComm intersects with other aspects of decentralized identity, where JSON-LD plays a role in some standards. Thus it may be natural to wonder about DIDComm's relationship to JSON-LD and to the rich semantics and extensibility features it offers. The short answer is that DIDComm is not dependent on JSON-LD, but it is compatible with it. We expect these two technologies to remain mostly orthogonal.
+- **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is no longer valid, and is to be used by the recipient to discard expired messages on receipt.
 
 In the outer packaging of message metadata, DIDComm follows the extensibility pattern established by the JW* family of standards. (It also emulates the design of message headers in SMTP, request headers in HTTP, and labels on physical pieces of mail.) A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields should ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.
 
 Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), DIDComm explicitly rejects the `X-*` headers convention that creates divergent pseudo-standards; if a new header needs broad support, it must be standardized properly. Alternatively, a JSON-LD `@context` header can be added, providing namespacing for fields other than those predefined in the spec. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.
+
+#### Simple vs. Structured
+
+Headers can be simple (mapping a header name to an integer or a string) or structured (mapping a header name to JSON substructure -- an array or JSON object). When defining a new header type, the following guidelines apply:
+
+* Headers SHOULD NOT use more structure than necessary; simple headers are preferred.
+* However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP `Accept` header. ([HTTP Structured Headers](https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15) provide similar functionality but are unnecessary here, since DIDComm plaintext already has an easily parseable syntax.)
+* Headers that are only meaningful together SHOULD be grouped into a JSON object.
+
+#### Relationship to JSON-LD
+
+The problem domain of DIDComm intersects with other aspects of decentralized identity, where JSON-LD plays a role in some standards. Thus it may be natural to wonder about DIDComm's relationship to JSON-LD and to the rich semantics and extensibility features it offers. The short answer is that DIDComm is not dependent on JSON-LD, but it is compatible with it. We expect these two technologies to remain mostly orthogonal.
 
 The body of a message -- everything inside the `body` object -- is different. Here, there is substantial variety and complexity. Structures may be sophisticated graphs, represented with nested objects and arrays. JSON-LD is not required at this level, either. However, it is available, and may be appropriate for certain use cases where extensibility is an important feature. JSON-LD usage, if it occurs, SHOULD be a declared feature of a protocol as a whole, not an ad hoc extension to arbitrary individual messages, and MUST be signalled by the inclusion of a `@context` inside `body`. Unless a protocol declares a JSON-LD dependency, the same rules apply to JSON-LD-isms as apply to any other unrecognized structure in a DIDComm message: additional fields can be added to any part of message structure, should be ignored if not understood, and MUST NOT be the basis of failure by recipients.
 
@@ -75,7 +136,7 @@ The JWT is constructed as follows, with appropriate values changed.
 
 **Payload**:
 
-```json
+```jsonc
 {
   "sub": "<new DID URI>",
   "iss": "<prior DID URI>",
@@ -95,7 +156,7 @@ The JWT is constructed as follows, with appropriate values changed.
     "created_time": 1516269022,
     "expires_time": 1516385931,
     "body": {
-    	"messagespecificattribute": "and it's value"
+    	"messagespecificattribute": "and its value"
 	}
 }
 ```
