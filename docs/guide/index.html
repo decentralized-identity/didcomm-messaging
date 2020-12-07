@@ -166,6 +166,9 @@
 <h4 id="did-exchange-not-needed"><a class="toc-anchor" href="#did-exchange-not-needed">§</a> DID Exchange not needed</h4>
 <p>Each message contains both the sender key (used in the encryption layer), and the sender’s DID. The exchange of DIDs that occurs via the DID Exchange Protocol used in V1 occurs in each message that is transferred. The important step of rotating DIDs is accomplished via the <code>from_prior</code> header that travels alongside any protocol message. These features make the DID Exchange Protocol redundant.</p>
 <p>One side effect of the DID Exchange Protocol in V1 was that you confirmed the validity of the DID with a round trip to the other party. Many protocols will provide this assurance via the flow of the protocol prior to the point where round-trip testing is required. When this round-trip is desired prior to the beginning of a protocol, a round trip with another protocol (such as Trust Ping or Feature Discovery) can provide the same assurance.</p>
+<h4 id="special-handling-of-peer-dids-eliminated"><a class="toc-anchor" href="#special-handling-of-peer-dids-eliminated">§</a> Special Handling of Peer DIDs eliminated</h4>
+<p>DIDComm V1 defined special handling of Peer DIDs, making it very optimized for usage with Peer DIDs. However this made it less obvious how other DID methods could be used with DIDComm. DIDComm V2 eliminated special handling of Peer DIDs, making handling of all DIDs equal from the perspective of the DIDComm spec. This creates a more distinct separation between how DIDs are used (defined by DID Core and specific DID method) and how to securely communicate using DIDs (defined by DIDComm spec).</p>
+<p>The new <code>to</code> and <code>from</code> attributes inside a DIDComm message allow for query parameters to be included on a DID. Using the query parameters you can exchange additional information without using custom fields. DID methods indicate how query parameters can be used to pass state information. For example, the Peer DID method defines the usage of the [<code>initial-state</code> query parameter](link needed) to pass all information needed to construct a DIDDoc in a single field.</p>
 <h4 id="process-from-headers-prior-to-protocol-processing"><a class="toc-anchor" href="#process-from-headers-prior-to-protocol-processing">§</a> Process From Headers prior to Protocol Processing</h4>
 <p>Relationship changes in V1 were handled inside the DID Exchange Protocol. In V2, relationship changes including discovery and rotation are handled in message headers.</p>
 <p>In V2, messages must evaluate the <code>from</code> and <code>from_prior</code> headers of every message prior to beginning the protocol message processing.</p>
@@ -231,6 +234,7 @@
 <li><a href="#practical-changes">Practical Changes</a>
 <ul>
 <li><a href="#did-exchange-not-needed">DID Exchange not needed</a></li>
+<li><a href="#special-handling-of-peer-dids-eliminated">Special Handling of Peer DIDs eliminated</a></li>
 <li><a href="#process-from-headers-prior-to-protocol-processing">Process From Headers prior to Protocol Processing</a></li>
 <li><a href="#no-technical-difference-between-ephemeral-mode-and-full-mode">No technical difference between Ephemeral Mode and Full Mode</a></li>
 <li><a href="#use-peer-dids-or-other-suitable-did-method-in-place-of-anoncrypt">Use Peer DIDs (or other suitable DID method) in place of AnonCrypt</a></li>
