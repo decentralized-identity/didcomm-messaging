@@ -66,20 +66,29 @@ The following example shows common elements of a plaintext message. Further deta
     "created_time": 1516269022,
     "expires_time": 1516385931,
     "body": {
-    	"messagespecificattribute": "and it's value"
+    	"messagespecificattribute": "and its value"
 	}
 }
 ```
 
 ### Message Headers
 
-The predefined attributes of a DIDComm Message at the level of its outer packaging (effectively, the "headers" of the message) are as follows:
+The predefined attributes of a DIDComm plaintext message at the level of its outer packaging (effectively, the "headers" of the message) are as follows:
 
 - **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender.
-- **type** - REQUIRED. Message Type. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri) , that when resolved gives human readable information about the message. The attributes value also informs the content of the message, for example the presence of other attributes and how they should be processed.
-- **to** - OPTIONAL. Recipient(s) identifier. The `to` attribute MUST be an array of strings where each element is a valid [DID URL](https://w3c.github.io/did-core/#did-url-syntax) without the [Fragment component](https://w3c.github.io/did-core/#fragment) which identifies the recipients of the message.
-- **from** - OPTIONAL. Sender identifier. The `from` attribute MUST be a string that is a valid [DID URL](https://w3c.github.io/did-core/#did-url-syntax) without the [Fragment component](https://w3c.github.io/did-core/#fragment) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. See the [message authentication](#Message-Authentication) section for additional details.
+
+- **type** - REQUIRED. Message Type. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri), that when resolved gives human readable information about the message. The attribute's value also informs the content of the message, for example the presence of other attributes and how they should be processed.
+
+- **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid DID or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience.
+
+    When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to `BCC:` addresses).
+    
+    The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the `forward` message contains a `next` attribute in its body that specifies the target for the next routing operation.
+
+- **from** - OPTIONAL. Sender identifier. The `from` attribute MUST be a string that is a valid DID or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. See the [message authentication](#Message-Authentication) section for additional details.
+
 - **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.
+
 - **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is no longer valid, and is to be used by the recipient to discard expired messages on receipt.
 
 In the outer packaging of message metadata, DIDComm follows the extensibility pattern established by the JW* family of standards. (It also emulates the design of message headers in SMTP, request headers in HTTP, and labels on physical pieces of mail.) A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields should ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.
