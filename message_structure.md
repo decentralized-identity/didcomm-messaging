@@ -37,7 +37,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 ### DIDComm Encrypted Message
 
 A **DIDComm encrypted message** hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm applications, and is the safest format for storing DIDComm data at rest.
- 
+
  The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm encrypted message SHOULD be `application/didcomm-encrypted+json`.
 
 >Note: If future versions of this spec allow binary encodings, variations like `application/didcomm-encrypted+cbor` (see [CBOR RFC 7049, section 7.5](https://tools.ietf.org/html/rfc7049#section-7.5)), `application/didcomm-encrypted+msgpack`, or `application/didcomm-encrypted+protobuf` may become reasonable. Future DIDComm specs that encompass comm patterns other than messaging &mdash; DIDComm multicast or DIDComm streaming, for example &mdash; might use a suffix: `application/didcomm-encrypted-multicast` or similar.
@@ -108,6 +108,32 @@ Headers can be simple (mapping a header name to an integer or a string) or struc
 The problem domain of DIDComm intersects with other aspects of decentralized identity, where JSON-LD plays a role in some standards. Thus it may be natural to wonder about DIDComm's relationship to JSON-LD and to the rich semantics and extensibility features it offers. The short answer is that DIDComm is not dependent on JSON-LD, but it is compatible with it. We expect these two technologies to remain mostly orthogonal.
 
 The body of a message -- everything inside the `body` object -- is different. Here, there is substantial variety and complexity. Structures may be sophisticated graphs, represented with nested objects and arrays. JSON-LD is not required at this level, either. However, it is available, and may be appropriate for certain use cases where extensibility is an important feature. JSON-LD usage, if it occurs, SHOULD be a declared feature of a protocol as a whole, not an ad hoc extension to arbitrary individual messages, and MUST be signalled by the inclusion of a `@context` inside `body`. Unless a protocol declares a JSON-LD dependency, the same rules apply to JSON-LD-isms as apply to any other unrecognized structure in a DIDComm message: additional fields can be added to any part of message structure, should be ignored if not understood, and MUST NOT be the basis of failure by recipients.
+
+### Reply Headers
+
+Reply headers allow you to  modify the message flow for a single received message. This method can be used to allow DIDComm use with DIDs that do not support endpoints within their resolved DID Documents, or when legal requirements prevent the publishing of endpoints with a DID.
+
+Note: DIDComm is message based, not request/response. A reply is one or more messages that are sent as a result of a message being received. This may result in more than one message being transmitted using the reply information provided in a single message.
+
+**reply_to** - The DID to use in preparation of the response. When not included, this is assumed to be the same DID presented in in the `from` header.
+
+**reply_url** - An array of endpoints to send reply messages to. This must be included for reply processing. Any endpoint in the list may be used according to the preference of the reply sender. The use of an array allows failover and/or including endpoints of various transports.
+
+**reply_routing** - An array of keys used for wrap the message for routing. When empty or not included, the list of keys is assumed to be empty.
+
+#### Reply Processing
+
+When a message is received with reply headers, any messages generated in reply MUST be sent using the information provided via the reply headers listed above. Routing information present in the associated DID Document for the reply recipient does not apply. This requires the reply headers on the inbound message to be maintained for as long as necessary for any generated replies.
+
+#### Limitations
+
+Usage of the reply headers does not provide a method to send messages not generated as a reply to an inbound message. This restricts the nature of communication in a relationship with a DID without an associated endpoint.
+
+DIDs without endpoints cannot be used alone to establish communication. An Out Of Band message must be used as an invitation to allow specifying the reply headers.
+
+#### Alternatives
+
+Instead of using reply headers and incurring the associated limitations, you can use DID Rotation to rotate to a DID with endpoint support. This allows all of the features of DIDComm while maintaining the provenance of the DID being used.
 
 ### DID Rotation
 
