@@ -14,6 +14,8 @@ exciting uses of agents are more dynamic and unpredictable. When
 Alice and Bob meet, they won't know in advance which features are
 supported by one another's agents. They need a way to find out.
 
+Disclosing features in this manner has a significant privacy benefit over endpoint disclosures contained in a DID Document published to a Verifiable Data Registry (VDR). Using the single DIDComm endpoint published in the document and this protocol, features can be selectively disclosed to other parties at the owner's discretion. The problem of anonymous scanning and fingerprinting enabled with VDR disclosures is solved in a privacy preserving way.
+
 ### Reference
 
 This RFC introduces a protocol for discussing the protocols an agent
