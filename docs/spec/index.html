@@ -225,51 +225,8 @@
 <li>This rotation method only supports the case where a new DID is used, replacing an old DID which is no longer used. Adjustments to DIDs used between different parties that does not fit this narrow use should use a more expressive protocol.</li>
 </ul>
 <h1 id="message-encryption"><a class="toc-anchor" href="#message-encryption">§</a> Message Encryption</h1>
-<p>DIDComm supports two types of message encryption: Authenticated Sender Encryption and Anonymous Sender Encryption. Both forms are encrypted to the recipient, but only Authenticated Sender Encryption provides assurances of who the sender is.</p>
 <p>The encrypted form of a JWM is a JWE. The JOSE family defines <a href="https://tools.ietf.org/html/rfc7518">JSON Web Algorithms</a> (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs, rather it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed here.</p>
-<h2 id="sender-authenticated-encryption"><a class="toc-anchor" href="#sender-authenticated-encryption">§</a> Sender Authenticated Encryption</h2>
-<p>When a sender would like to encrypt a message for a recipient or multiple recipients and also be authenticated such that the recipients can determine they were the party that encrypted the message, the JWA of <code>ECDH-1PU</code> defined by <a href="https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-03">draft</a> SHOULD be used within the structure of a JWE.</p>
-<p>For the keys involved in key agreement, the following elliptic curves MUST be supported.</p>
-<table>
-<thead>
-<tr>
-<th>Curve</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>X25519</td>
-<td>The underlying curve is actually <code>Curve25519</code>, however when used in the context of Diffie-Hellman the identifier of <code>X25519</code> is used</td>
-</tr>
-<tr>
-<td>P-256</td>
-<td>NIST defined P-256 elliptic curve</td>
-</tr>
-</tbody>
-</table>
-<p>For content encryption of the message, the following algorithms MUST be supported.</p>
-<table>
-<thead>
-<tr>
-<th>Algorithm(JWA)</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>XC20P</td>
-<td>XChaCha20Poly1305</td>
-</tr>
-<tr>
-<td>A256GCM</td>
-<td>AES-GCM with a 256 bit key</td>
-</tr>
-</tbody>
-</table>
-<p>TODO: Include language about safe nonce considerations.</p>
-<h2 id="anonymous-encryption"><a class="toc-anchor" href="#anonymous-encryption">§</a> Anonymous Encryption</h2>
-<p>When a sender would like to encrypt a message for a recipient or multiple recipients but not be authenticated by the recipients as the party who encrypted the message, the JWA of <code>ECDH-ES</code> defined by <a href="https://tools.ietf.org/html/rfc7518#section-4.6">RFC 7518</a> SHOULD be used within the structure of a JWE.</p>
+<p>For an encrypted DIDComm Message, the JWA of <code>ECDH-1PU</code> defined by <a href="https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-03">draft</a> MUST be used within the structure of a JWE.</p>
 <p>For the keys involved in key agreement, the following elliptic curves MUST be supported.</p>
 <table>
 <thead>
@@ -321,30 +278,6 @@
 </thead>
 <tbody>
 <tr>
-<td>ECDH-ES+A256KW</td>
-<td>P-256</td>
-<td>EC</td>
-<td>ECDH-ES key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in <a href="https://tools.ietf.org/html/rfc7518#section-4.6.2">7518</a></td>
-</tr>
-<tr>
-<td>ECDH-ES+A256KW</td>
-<td>P-384</td>
-<td>EC</td>
-<td>ECDH-ES key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in <a href="https://tools.ietf.org/html/rfc7518#section-4.6.2">7518</a></td>
-</tr>
-<tr>
-<td>ECDH-ES+A256KW</td>
-<td>P-521</td>
-<td>EC</td>
-<td>ECDH-ES key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in <a href="https://tools.ietf.org/html/rfc7518#section-4.6.2">7518</a></td>
-</tr>
-<tr>
-<td>ECDH-ES+A256KW</td>
-<td>X25519</td>
-<td>OKP</td>
-<td>ECDH-ES with X25519 (<a href="https://tools.ietf.org/html/rfc7748#section-5">RFC7748 section 5</a>) to create a 256 bits key. The underlying curve is actually <code>Curve25519</code>, however when used in the context of Diffie-Hellman the identifier of <code>X25519</code> is used</td>
-</tr>
-<tr>
 <td>ECDH-1PU+A256KW</td>
 <td>P-256</td>
 <td>EC</td>
@@ -370,6 +303,8 @@
 </tr>
 </tbody>
 </table>
+<h2 id="anonymous-messages"><a class="toc-anchor" href="#anonymous-messages">§</a> Anonymous Messages</h2>
+<p>When the sender wishes to remain anonymous, they should identify themselves as a sender using a newly minted DID that’s never been seen before. When the sender is done with the interaction, they can abandon further use of that DID.</p>
 <h2 id="perfect-forward-secrecy"><a class="toc-anchor" href="#perfect-forward-secrecy">§</a> Perfect Forward Secrecy</h2>
 <p>Due to the triple Key Derivation algorithm used in ECDH-1PU, all messages sent via DIDComm have weak perfect forward secrecy without any additional security added by the transport layer. In ECDH-1PU this is achieved by encrypting the content encryption key with the output of the hash of the Ze (ECDH of ephemeral key and recipient static key) and Zs (ECDH of static sender key and recipient static key). With Ze bringing the changed derived secret in each message and Zs bringing the repudiable authenticity of each message, the resulting Z (hash of Ze and Zs) carries the properties of weak perfect forward secrecy and repudiable authenticity for each message as well.</p>
 <h2 id="examples"><a class="toc-anchor" href="#examples">§</a> Examples</h2>
@@ -1098,9 +1033,8 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 </li>
 </ul>
 </li>
-<li><a href="#sender-authenticated-encryption">Sender Authenticated Encryption</a></li>
-<li><a href="#anonymous-encryption">Anonymous Encryption</a></li>
 <li><a href="#key-wrapping-algorithms">Key Wrapping Algorithms</a></li>
+<li><a href="#anonymous-messages">Anonymous Messages</a></li>
 <li><a href="#perfect-forward-secrecy">Perfect Forward Secrecy</a></li>
 <li><a href="#examples">Examples</a></li>
 <li><a href="#message-signing">Message Signing</a>
