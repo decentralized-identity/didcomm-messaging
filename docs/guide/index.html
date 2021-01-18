@@ -38,6 +38,11 @@
               <article id="content">
                 <h1 id="implementers-guide"><a class="toc-anchor" href="#implementers-guide">§</a> Implementers Guide</h1>
 <p>This guide contains concepts, explanations, and important considerations for those building DIDComm capable systems.</p>
+<h2 id="privacy"><a class="toc-anchor" href="#privacy">§</a> Privacy</h2>
+<p>This section discusses best practices and the implications of DIDComm Protocols on the privacy of the communicating parties.</p>
+<h3 id="public-fingerprinting"><a class="toc-anchor" href="#public-fingerprinting">§</a> Public Fingerprinting</h3>
+<p>Users should avoid disclosing supported protocols until sufficient trust has been established. The broad disclosure of supported protocols may provide a unique fingerprint that can be used to correlate multiple identifiers in use by a single party.</p>
+<p>DIDComm’s use of the Discover Features Protocol allows selective disclosure of features to mitigate this problem. Leveraging this protocol as a better substitute for Verifiable Data Registry (VDR) published DID Document endpoints will prevent the disclosure of unique protocols.</p>
 <h2 id="routing"><a class="toc-anchor" href="#routing">§</a> Routing</h2>
 <p><strong>Routing</strong> is the process of managing the delivery of messages from sender to recipient, possibly adapting the packaging and transfer to intermediate nodes. A <strong>route</strong> is a map or plan that specifies enough to achieve delivery in at least one direction; it may omit uninteresting details.</p>
 <p>A <strong>sender</strong> emits a message hoping that a <strong>recipient</strong> eventually receives it. As a message moves toward the recipient, we say it is moving <strong>destward</strong>; the opposite direction is <strong>sourceward</strong>. Note that sender and recipient flip if a request-like message is followed by a response-like message in the opposite direction; the context that defines a sender is a single message, not a paired interaction. (DIDComm supports request-response but does not require it.)</p>
@@ -202,6 +207,11 @@
                 </header>
                 <div id="toc_list">
                   <ul class="toc">
+<li><a href="#privacy">Privacy</a>
+<ul>
+<li><a href="#public-fingerprinting">Public Fingerprinting</a></li>
+</ul>
+</li>
 <li><a href="#routing">Routing</a>
 <ul>
 <li><a href="#routing-requirements">Routing Requirements</a></li>
@@ -251,7 +261,7 @@
             </slide-panels>
 
           </body>
-          <script>window.specConfig = {"title":"DIDComm Messaging - Implementers Guide","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/guide","spec_directory":"./guide/","markdown_paths":["intro.md","routing.md","whatsnew.md"],"destination":"./docs/guide/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
+          <script>window.specConfig = {"title":"DIDComm Messaging - Implementers Guide","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/guide","spec_directory":"./guide/","markdown_paths":["intro.md","privacy.md","routing.md","whatsnew.md"],"destination":"./docs/guide/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
           <script src="../spec-up/compiled/body.js" data-manual></script>
         </html>
       

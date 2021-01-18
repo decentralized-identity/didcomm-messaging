@@ -48,6 +48,7 @@
       "spec_directory": "./guide",
       "markdown_paths": [
         "intro.md",
+	"privacy.md",
         "routing.md",
         "whatsnew.md"
       ]
