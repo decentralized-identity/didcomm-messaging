@@ -37,7 +37,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 ### DIDComm Encrypted Message
 
 A **DIDComm encrypted message** hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm applications, and is the safest format for storing DIDComm data at rest.
- 
+
  The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm encrypted message SHOULD be `application/didcomm-encrypted+json`.
 
 >Note: If future versions of this spec allow binary encodings, variations like `application/didcomm-encrypted+cbor` (see [CBOR RFC 7049, section 7.5](https://tools.ietf.org/html/rfc7049#section-7.5)), `application/didcomm-encrypted+msgpack`, or `application/didcomm-encrypted+protobuf` may become reasonable. Future DIDComm specs that encompass comm patterns other than messaging &mdash; DIDComm multicast or DIDComm streaming, for example &mdash; might use a suffix: `application/didcomm-encrypted-multicast` or similar.
@@ -86,6 +86,8 @@ The predefined attributes of a DIDComm plaintext message at the level of its out
     The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the `forward` message contains a `next` attribute in its body that specifies the target for the next routing operation.
 
 - **from** - OPTIONAL. Sender identifier. The `from` attribute MUST be a string that is a valid DID or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. See the [message authentication](#Message-Authentication) section for additional details.
+
+    When the sender wishes to be anonymous, they should use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose.
 
 - **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.
 
