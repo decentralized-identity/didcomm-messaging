@@ -26,7 +26,7 @@ One side effect of the DID Exchange Protocol in V1 was that you confirmed the va
 
 DIDComm V1 defined special handling of Peer DIDs, making it very optimized for usage with Peer DIDs. However this made it less obvious how other DID methods could be used with DIDComm. DIDComm V2 eliminated special handling of Peer DIDs, making handling of all DIDs equal from the perspective of the DIDComm spec. This creates a more distinct separation between how DIDs are used (defined by DID Core and specific DID method) and how to securely communicate using DIDs (defined by DIDComm spec).
 
-The new `to` and `from` attributes inside a DIDComm message allow for query parameters to be included on a DID. Using the query parameters you can exchange additional information without using custom fields. DID methods indicate how query parameters can be used to pass state information. For example, the Peer DID method defines the usage of the [`initial-state` query parameter](link needed) to pass all information needed to construct a DIDDoc in a single field.
+The new `to` and `from` attributes inside a DIDComm message allow for query parameters to be included on a DID. Using the query parameters you can exchange additional information without using custom fields. DID methods indicate how query parameters can be used to pass state information. For example, the Peer DID method defines the usage of the [`initial-state` query parameter](https://github.com/decentralized-identity/did-spec-extensions/blob/master/parameters/initial-state.md) to pass all information needed to construct a DIDDoc in a single field.
 
 #### Process From Headers prior to Protocol Processing
 
