@@ -158,6 +158,7 @@
 </li>
 <li>
 <p><strong>from</strong> - OPTIONAL. Sender identifier. The <code>from</code> attribute MUST be a string that is a valid DID or <a href="https://w3c.github.io/did-core/#did-url-syntax">DID URL</a> (without the <a href="https://w3c.github.io/did-core/#fragment">fragment component</a>) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. See the <a href="#Message-Authentication">message authentication</a> section for additional details.</p>
+<p>When the sender wishes to be anonymous, they should use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose.</p>
 </li>
 <li>
 <p><strong>created_time</strong> - OPTIONAL. Message Created Time. The <code>created_time</code> attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.</p>
