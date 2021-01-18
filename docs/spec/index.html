@@ -384,57 +384,26 @@
 <h4 id="messages"><a class="toc-anchor" href="#messages">§</a> Messages</h4>
 <p>The only message in this protocol is the <code>forward</code> message. A simple and common version of a <code>forward</code> message might look like this:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-    <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/routing/2.0/forward"</span><span class="token punctuation">,</span>
-    <span class="token property">"to"</span>   <span class="token operator">:</span> <span class="token string">"did:foo:1234abcd"</span><span class="token punctuation">,</span>
-    <span class="token property">"payloads~attach"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-        <span class="token comment">// One payload</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/routing/2.0/forward"</span><span class="token punctuation">,</span>
+    <span class="token property">"to"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:mediator"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token number">1516385931</span><span class="token punctuation">,</span>
+    <span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        <span class="token property">"next"</span>   <span class="token operator">:</span> <span class="token string">"did:foo:1234abcd"</span><span class="token punctuation">,</span>
+        <span class="token property">"payloads~attach"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token comment">// One payload?</span>
+        <span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>A fancier version with many optional attributes has the following potential structure:</p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-    <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"uuid value"</span> <span class="token comment">// optional; only useful for tracing</span>
-    <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/routing/2.0/forward"</span><span class="token punctuation">,</span>
-    <span class="token property">"to"</span>   <span class="token operator">:</span> <span class="token string">"did:foo:1234abcd"</span><span class="token punctuation">,</span>
-    <span class="token property">"payloads~attach"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-        <span class="token comment">// An array of attached payloads, generally assumed</span>
-        <span class="token comment">// to be DIDComm encrypted envelopes, but theoretically</span>
-        <span class="token comment">// could be other message types as well.</span>
-    <span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token comment">// This decorator and everything in it are optional. </span>
-    <span class="token property">"~timing"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token comment">// Usually, delay_milli and wait_until_time don't make</span>
-        <span class="token comment">// sense together; use one or the other but not both. If</span>
-        <span class="token comment">// both do occur, forward shouldn't happen until the later</span>
-        <span class="token comment">// of the two conditions is satisfied.</span>
-        <span class="token property">"delay_milli"</span><span class="token operator">:</span> <span class="token number">12345</span><span class="token punctuation">,</span>
-        <span class="token property">"wait_until_time"</span><span class="token operator">:</span> <span class="token string">"2020-03-25T00:00:00Z"</span><span class="token punctuation">,</span>
-        <span class="token comment">// Abandon attempt to forward after this timestamp.</span>
-        <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token string">"2020-03-27T18:25:00Z"</span> 
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token comment">// Optional: requests use of mix network instead of direct</span>
-    <span class="token comment">// forward, to enhance privacy.</span>
-    <span class="token property">"mix"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token comment">// Likelihood (from 0 to 1) that a random node in a</span>
-        <span class="token comment">// mix network should be the next hop instead of</span>
-        <span class="token comment">// sending the message directly to its final receiver.</span>
-        <span class="token property">"hop_chance"</span><span class="token operator">:</span> <span class="token number">0.8</span><span class="token punctuation">,</span>
-        <span class="token comment">// If next receiver is a mix node, multiply hop_chance</span>
-        <span class="token comment">// by this value so hop_chance attenuates for the next</span>
-        <span class="token comment">// receiver. This prevents infinite mixing. Max value =</span>
-        <span class="token comment">// 0.99.</span>
-        <span class="token property">"hop_decay"</span><span class="token operator">:</span> <span class="token number">0.2</span><span class="token punctuation">,</span>
-        <span class="token comment">// Likelihood (from 0 to 1) that the message size will</span>
-        <span class="token comment">// be distorted to the next receiver. </span>
-        <span class="token property">"noise_chance"</span><span class="token operator">:</span> <span class="token number">0.5</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-</code></pre>
+<ul>
+<li><strong>next</strong> - REQUIRED. The DID of the party to send the attached message to.</li>
+<li><strong>payloads~attach</strong> - REQUIRED. The encrypted message to send to the party indicated in the <code>next</code> body attribute.</li>
+</ul>
+<p>When the internal message expires, it’s a good idea to also include an expiration for forward message requests. Include the <code>expires_time</code> header with the appropriate value.</p>
 <p>[TODO: describe use of the <code>attn</code> field, and explain why it’s an important construct that allows us to encrypt to all (cryptographic route) but deliver just to the agent most likely to be interested (network route).</p>
 <p>[TODO: further revise the following paragraph to clarify that either a key or a DID might be used. Each possibility makes certain tradeoffs, and may be appropriate in certain cases. Keys may be fragile in the face of rotation, and they require a lot of knowledge/maintenance cost for the external mediator. However, DID key references and DIDs may introduce some complications in how the recipient proves control of a DID (a requirement for security, but also a privacy eroder).]</p>
-<p>For most external mediators, the value of the <code>to</code> field is likely to be a DID, not a key. However… (see previous TODO note). This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn’t need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md">RFC 0211: Route Coordination</a>), but that is outside the scope of concerns of this protocol.</p>
+<p>For most external mediators, the value of the <code>next</code> field is likely to be a DID, not a key. However… (see previous TODO note). This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn’t need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md">RFC 0211: Route Coordination</a>), but that is outside the scope of concerns of this protocol.</p>
 <p>The attachment(s) in the <code>payloads~attach</code> field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.</p>
-<p>The <code>mix</code> property is discussed next.</p>
 <h4 id="rewrapping"><a class="toc-anchor" href="#rewrapping">§</a> Rewrapping</h4>
 <p>Normally, the payload attached to the <code>forward</code> message received by the mediator is transmitted directly to the receiver with no further packaging. However, optionally, the mediator can attach the opaque payload to a new <code>forward</code> message, which then acts as a fresh outer envelope for the second half of the delivery. This <a href="#rewrapping">rewrapping</a> means that the “onion” of packed messages stays the same size rather than getting smaller as a result of the forward operation:</p>
 <p><img src="/collateral/routing-roles-2.png" alt="re-wrapped sequence"></p>
