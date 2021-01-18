@@ -2,7 +2,7 @@
 
 The encrypted form of a JWM is a JWE. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs, rather it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed here.
 
-For an encrypted DIDComm Message, the JWA of `ECDH-1PU` defined by [draft](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-03) SHOULD be used within the structure of a JWE.
+For an encrypted DIDComm Message, the JWA of `ECDH-1PU` defined by [draft](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-03) MUST be used within the structure of a JWE.
 
 For the keys involved in key agreement, the following elliptic curves MUST be supported.
 
@@ -31,7 +31,7 @@ TODO: Include language about safe nonce considerations.
 
 ## Anonymous Messages
 
-When the sender wishes to remain anonymous, they should use an unused DID for the interaction. When the sender is done with the interaction, they can abandon further use of that DID. 
+When the sender wishes to remain anonymous, they should identify themselves as a sender using a newly minted DID that's never been seen before. When the sender is done with the interaction, they can abandon further use of that DID. 
 
 ## Perfect Forward Secrecy
 
