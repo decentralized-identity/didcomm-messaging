@@ -38,65 +38,32 @@ The only message in this protocol is the `forward` message. A simple and common 
 
 ```json
 {
-    "@type": "https://didcomm.org/routing/2.0/forward",
-    "to"   : "did:foo:1234abcd",
-    "payloads~attach": [
-        // One payload
+    "type": "https://didcomm.org/routing/2.0/forward",
+    "to": ["did:example:mediator"],
+    "expires_time": 1516385931,
+    "body":{
+        "next"   : "did:foo:1234abcd",
+        "payloads~attach": [
+            // One payload?
+        ]
     }
 }
 ```
 
-A fancier version with many optional attributes has the following potential structure:
+- **next** - REQUIRED. The DID of the party to send the attached message to. 
+- **payloads~attach** - REQUIRED. The encrypted message to send to the party indicated in the `next` body attribute. 
 
-```json
-{
-    "@id": "uuid value" // optional; only useful for tracing
-    "@type": "https://didcomm.org/routing/2.0/forward",
-    "to"   : "did:foo:1234abcd",
-    "payloads~attach": [
-        // An array of attached payloads, generally assumed
-        // to be DIDComm encrypted envelopes, but theoretically
-        // could be other message types as well.
-    ],
-    // This decorator and everything in it are optional. 
-    "~timing": {
-        // Usually, delay_milli and wait_until_time don't make
-        // sense together; use one or the other but not both. If
-        // both do occur, forward shouldn't happen until the later
-        // of the two conditions is satisfied.
-        "delay_milli": 12345,
-        "wait_until_time": "2020-03-25T00:00:00Z",
-        // Abandon attempt to forward after this timestamp.
-        "expires_time": "2020-03-27T18:25:00Z" 
-    },
-    // Optional: requests use of mix network instead of direct
-    // forward, to enhance privacy.
-    "mix": {
-        // Likelihood (from 0 to 1) that a random node in a
-        // mix network should be the next hop instead of
-        // sending the message directly to its final receiver.
-        "hop_chance": 0.8,
-        // If next receiver is a mix node, multiply hop_chance
-        // by this value so hop_chance attenuates for the next
-        // receiver. This prevents infinite mixing. Max value =
-        // 0.99.
-        "hop_decay": 0.2,
-        // Likelihood (from 0 to 1) that the message size will
-        // be distorted to the next receiver. 
-        "noise_chance": 0.5
-    }
-}
-```
+When the internal message expires, it's a good idea to also include an expiration for forward message requests. Include the `expires_time` header with the appropriate value.
+
+
 
 [TODO: describe use of the `attn` field, and explain why it's an important construct that allows us to encrypt to all (cryptographic route) but deliver just to the agent most likely to be interested (network route).
 
 [TODO: further revise the following paragraph to clarify that either a key or a DID might be used. Each possibility makes certain tradeoffs, and may be appropriate in certain cases. Keys may be fragile in the face of rotation, and they require a lot of knowledge/maintenance cost for the external mediator. However, DID key references and DIDs may introduce some complications in how the recipient proves control of a DID (a requirement for security, but also a privacy eroder).]
 
-For most external mediators, the value of the `to` field is likely to be a DID, not a key. However... (see previous TODO note). This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn't need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see [RFC 0211: Route Coordination](https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md)), but that is outside the scope of concerns of this protocol. 
+For most external mediators, the value of the `next` field is likely to be a DID, not a key. However... (see previous TODO note). This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn't need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see [RFC 0211: Route Coordination](https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md)), but that is outside the scope of concerns of this protocol. 
 
 The attachment(s) in the `payloads~attach` field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.
-
-The `mix` property is discussed next.
 
 #### Rewrapping
 
