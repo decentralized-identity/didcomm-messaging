@@ -1,1 +1,9 @@
-../../../ns/didcomm-messaging-v2.0.jsonld
+{
+    "@context": [
+      {
+        "@version": 1.1,
+        "@protected": true,
+        "DIDCommMessaging": "https://identity.foundation/didcomm-messaging/spec/#DIDCommMessaging"
+      }
+    ]
+  }
