@@ -3,7 +3,7 @@
       {
         "@version": 1.1,
         "@protected": true,
-        "DIDCommMessaging": "https://identity.foundation/didcomm-messaging/spec/#DIDCommMessaging"
+        "DIDCommMessaging": "https://w3id.org/didcomm/#DIDCommMessaging"
       }
     ]
   }
