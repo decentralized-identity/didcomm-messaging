@@ -20,7 +20,7 @@ The following section defines a JWM profile for DIDComm messages. This profile d
 - **reply_to** - OPTIONAL. Reply to. The `reply_to` attribute value MUST be an array of strings where each element is a valid [DID URL](https://w3c.github.io/did-core/#did-url-syntax) without the [Fragment component](https://w3c.github.io/did-core/#fragment) which identifies the recipients of the reply to the message.
 - **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message.
 - **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired.
-- **thread_id** - OPTIONAL. Identifier for the current protocol's _thread_. The `thread_id` attribute value MUST be equal to the `id` of the message that initiated the protocol. All messages are part of a thread. If `thread_id` is not present, the thread for the message is identified by `id`.
+- **thread_id** - OPTIONAL. Identifier for the current protocol's _thread_. If the `thread_id` is defined, the thread_id is the value given. But if the `thread_id` is not defined, the `thread_id` is implicitly defined as the `id` of the given message and that message is the first message of a new thread.
 - **pthread_id** - OPTIONAL. Identifier for the _parent thread_ from which this one branched off from.
 
 ### Example JWM Message Payload
