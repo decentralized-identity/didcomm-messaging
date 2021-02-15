@@ -472,9 +472,6 @@
 <span class="token punctuation">}</span>
 </code></pre>
 <p>The message is encrypted to the recipient, then wrapped in a forward message encrypted to <code>did:example:anothermediator#somekey</code>. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the <code>did:example:somemediator</code> DID Document, and transmitted to the URIs present in the <code>did:example:somemediator</code> DID Document with type <code>DIDComm</code>.</p>
-<h5 id="queue"><a class="toc-anchor" href="#queue">§</a> Queue</h5>
-<p>TODO: Does the queue fit here as an alternate URI?</p>
-<p>[TODO: discuss how routing info is exposed in a DID doc, and how it is conveyed in “ephemeral mode” where no DID doc is available.]</p>
 <h2 id="transports"><a class="toc-anchor" href="#transports">§</a> Transports</h2>
 <h3 id="summary"><a class="toc-anchor" href="#summary">§</a> Summary</h3>
 <p>DIDComm Messaging is designed to be transport independent, including message encryption and agent message format. The encryption envelope provides both encryption and authentication, providing trust as a feature of each message. Each transport does have unique features, and we need to standardize how the transport features are (or are not) applied.</p>
