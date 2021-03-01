@@ -482,7 +482,7 @@
 <p>HTTP(S) transports are an effective way to send a message to another online agent.</p>
 <ul>
 <li>Messages are transported via HTTP POST.</li>
-<li>The MIME Type for the POST request is <code>application/didcomm-enc-env</code>. (TODO: Declare Mime Types elsewhere, link from here.)</li>
+<li>The MIME Type for the POST request is <code>application/didcomm-encrypted+json</code>. See <a href="#message-types">Message Types</a> for a general discussion of mime types.</li>
 <li>A successful message receipt MUST return a code in the 2xx HTTP Status Code range. It is recommended that a HTTP POST should return a 202 Accepted status code.</li>
 <li>POST requests are transmit only. Messages are only sent from the code that submitted the POST request.</li>
 <li>HTTP Redirects SHOULD be followed. Only Temporary Redirects (307) are acceptable. Permanent endpoint relocation should be managed with a DID Document update.</li>
