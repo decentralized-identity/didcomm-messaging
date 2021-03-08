@@ -9,7 +9,8 @@ For the keys involved in key agreement, the following elliptic curves MUST be su
 | Curve  | Description                                                  |
 | ------ | ------------------------------------------------------------ |
 | X25519 | The underlying curve is actually `Curve25519`, however when used in the context of Diffie-Hellman the identifier of `X25519` is used |
-| P-256  | NIST defined P-256 elliptic curve                            |
+| P-384  | NIST defined P-384 elliptic curve                            |
+| P-256  | NIST defined P-256 elliptic curve - deprecated in favor of P-384 |
 
 For content encryption of the message, the following algorithms MUST be supported.
 
