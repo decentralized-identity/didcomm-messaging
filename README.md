@@ -7,11 +7,11 @@ This repo is where we develops specs and reference code to explain DIDComm Messa
 
 ### Artifacts
 
-Browse the latest rendered draft of the spec [here](https://identity.foundation/didcomm-messaging/spec/).
+Browse the latest rendered draft of the spec [here](https://identity.foundation/didcomm-messaging/spec/) and its underlying markdown files [here](docs/spec-files/spec-files/).
 
-View the spec markdown outline [here](spec.md).
+View the rendered draft of the Implementer's Guide [here](https://identity.foundation/didcomm-messaging/guide/) and its underlying markdown files [here](docs/guide-files/).
 
-View the rendered draft of the Implementer's Guide [here](https://identity.foundation/didcomm-messaging/guide/).
+When editing locally, run `npm run spec` from the the root directory to continuously render the HTML versions at `/docs/spec/index.html` and `/docs/guide/index.html`, which can be opened in a browser and "refreshed" after each save of the underlying .md files.  For more detailed instructions, see the [specup repo](https://github.com/decentralized-identity/spec-up)
 
 ### Process
 
