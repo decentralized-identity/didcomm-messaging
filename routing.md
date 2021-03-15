@@ -163,12 +163,4 @@ Example 2: Mediator + Routing Keys
 }
 ```
 
-The message is encrypted to the recipient, then wrapped in a forward message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
-
-##### Queue
-
-TODO: Does the queue fit here as an alternate URI?
-
-
-
-[TODO: discuss how routing info is exposed in a DID doc, and how it is conveyed in "ephemeral mode" where no DID doc is available.]
+The message is encrypted to the recipient, then wrapped in a forward message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDComm`.
