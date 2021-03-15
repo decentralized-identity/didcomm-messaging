@@ -1,3 +1,5 @@
+> Note: This file has served as a reference, but is not part of the compiled spec. Any changes to this document should also be made to a file that is included in the compiled spec.
+
 # DIDComm Messaging
 
 DIDComm messaging, is a secure messaging protocol built atop of [decentralized identifiers](https://w3c.github.io/did-core/). DIDComm messages are JSON based leveraging the secure messaging format of JWM (JSON Web Message) which is a [IETF draft](https://github.com/mattrglobal/jwm) to expand the [JOSE](https://datatracker.ietf.org/group/jose/documents/) (Javascript object signing and encryption) family of specifications for the purposes of secure messaging.
