@@ -443,17 +443,17 @@
 <p>DIDComm DID Document endpoints have the following format:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDComm"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDCommMessaging"</span><span class="token punctuation">,</span>
     <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token string">"http://example.com/path"</span><span class="token punctuation">,</span>
     <span class="token property">"routingKeys"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:somemediator#somekey"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <p><strong>id</strong>: must be unique, as required in <a href="https://www.w3.org/TR/did-core/#service-endpoints">DID Core</a>. No special meaning should be inferred from the <code>id</code> chosen.</p>
-<p><strong>type</strong>: MUST be <code>DIDComm</code>.</p>
+<p><strong>type</strong>: MUST be <code>DIDCommMessaging</code>.</p>
 <p><strong>serviceEndpoint</strong>: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.</p>
 <p><strong>routingKeys</strong>: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec.</p>
 <h4 id="multiple-endpoints"><a class="toc-anchor" href="#multiple-endpoints">§</a> Multiple Endpoints</h4>
-<p>A DID Document may contain multiple service entries of type <code>DIDComm</code>. Entries are SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.</p>
+<p>A DID Document may contain multiple service entries of type <code>DIDCommMessaging</code>. Entries are SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.</p>
 <h4 id="alternative-endpoints"><a class="toc-anchor" href="#alternative-endpoints">§</a> Alternative Endpoints</h4>
 <p>In addition to the URIs for [transports], some alternative forms are available.</p>
 <h5 id="did"><a class="toc-anchor" href="#did">§</a> DID</h5>
@@ -462,15 +462,15 @@
 <p>Example 1: Mediator</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDComm"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDCommMessaging"</span><span class="token punctuation">,</span>
     <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token string">"did:example:somemediator"</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the <code>did:example:somemediator</code> DID Document, and transmitted to the URIs present in the <code>did:example:somemediator</code> DID Document with type <code>DIDComm</code>.</p>
+<p>The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the <code>did:example:somemediator</code> DID Document, and transmitted to the URIs present in the <code>did:example:somemediator</code> DID Document with type <code>DIDCommMessaging</code>.</p>
 <p>Example 2: Mediator + Routing Keys</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDComm"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDCommMessaging"</span><span class="token punctuation">,</span>
     <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token string">"did:example:somemediator"</span><span class="token punctuation">,</span>
     <span class="token property">"routingKeys"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:anothermediator#somekey"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
