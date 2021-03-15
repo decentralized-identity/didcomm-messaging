@@ -115,7 +115,7 @@ DIDComm DID Document endpoints have the following format:
 ```json
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
-    "type": "DIDComm",
+    "type": "DIDCommMessaging",
     "serviceEndpoint": "http://example.com/path",
     "routingKeys": ["did:example:somemediator#somekey"]
 }
@@ -123,7 +123,7 @@ DIDComm DID Document endpoints have the following format:
 
 **id**: must be unique, as required in [DID Core](https://www.w3.org/TR/did-core/#service-endpoints). No special meaning should be inferred from the `id` chosen.
 
-**type**: MUST be `DIDComm`. 
+**type**: MUST be `DIDCommMessaging`. 
 
 **serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
@@ -131,7 +131,7 @@ DIDComm DID Document endpoints have the following format:
 
 #### Multiple Endpoints
 
-A DID Document may contain multiple service entries of type `DIDComm`. Entries are SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.
+A DID Document may contain multiple service entries of type `DIDCommMessaging`. Entries are SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.
 
 #### Alternative Endpoints
 
@@ -148,17 +148,17 @@ Example 1: Mediator
 ```json
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
-    "type": "DIDComm",
+    "type": "DIDCommMessaging",
     "serviceEndpoint": "did:example:somemediator"
 }
 ```
-The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDComm`.
+The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
 
 Example 2: Mediator + Routing Keys
 ```json
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
-    "type": "DIDComm",
+    "type": "DIDCommMessaging",
     "serviceEndpoint": "did:example:somemediator",
     "routingKeys": ["did:example:anothermediator#somekey"]
 }
