@@ -147,7 +147,7 @@ Knowledge is Good
 
 Example URL encoded as a QR Code:
 
-![Example QR Code](out_of_band_exampleqr.png)
+![Example QR Code](.//collateral/out_of_band_exampleqr.png)
 
 ##### Short URL Message Retrieval
 

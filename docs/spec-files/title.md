@@ -15,6 +15,4 @@ DIDComm Messaging
 ~ [File a bug](https://github.com/decentralized-identity/didcomm-messaging/issues)
 ~ [Commit history](https://github.com/decentralized-identity/didcomm-messaging/commits/master)
 
-Testing: 4
-
 ------------------------------------
