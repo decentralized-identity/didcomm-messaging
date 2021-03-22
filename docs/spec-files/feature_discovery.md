@@ -35,7 +35,7 @@ supports, and the responder answers. Each role uses a single message type.
 This is a classic two-step request~response interaction, so it uses the
 predefined state machines for any `requester` and `responder`:
 
-[![state machines](state-machines.png)](https://docs.google.com/spreadsheets/d/1smY8qhG1qqGs0NH9g2hV4b7mDqrM6MIsmNI93tor2qk/edit)
+[![state machines](../collateral/routing-state-machines.png)](https://docs.google.com/spreadsheets/d/1smY8qhG1qqGs0NH9g2hV4b7mDqrM6MIsmNI93tor2qk/edit)
 
 #### Messages
 
