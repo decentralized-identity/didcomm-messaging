@@ -164,7 +164,7 @@ Encrypted JWE with `extracted` attribute:
 }
 ```
 Decrypted Plaintext message:
-```json=
+```json
 {
     "type": "<sometype>",
     "to": ["did:example:mediator"],
@@ -181,8 +181,8 @@ Decrypted Plaintext message:
                         }
                     ],
                     "iv": "u5kIzo0m_d2PjI4m",
-                    "ciphertext_external": {'index':0,'length':7,'hash':'hash(ciphertext)'},
-                    "extracted_external": {'index':7,'length':3,'hash':'hash(extracted)'},
+                    "ciphertext_external": {"index":0,"length":7},
+                    "extracted_external": {"index":7,"length":3},
                     "tag": "doeAoagwJe9BwKayfcduiw"
                 }
             }
@@ -191,7 +191,7 @@ Decrypted Plaintext message:
 }
 ```
 Markers replaced with content:
-```json=
+```json
 {
     "type": "<sometype>",
     "to": ["did:example:mediator"],
