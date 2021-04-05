@@ -35,7 +35,7 @@ Each attachment is contained within the following structure.
   - `hash`: The hash of the content encoded in multi-hash format. Optional. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the `links` data attribute. 
   - `links`: A list of zero or more locations at which the content may be fetched. Optional.
   - `base64`: Base64-encoded data, when representing arbitrary content inline instead of via `links`. Optional.
-  - `encrypted`: Already encrypted data, encoded in Base64. Data contained in this field MUST be encrypted.
+  - `jwe`: Already encrypted data in the form of a JWE.
   - `json`: Directly embedded JSON data, when representing content inline instead of via `links`, and when the content is natively conveyable as JSON. Optional.
 
 ### Example
@@ -70,7 +70,9 @@ Each attachment is contained within the following structure.
 			"id": "x",
             "description": "example encrypted attachment",
             "data": {
-            	"encrypted": "<encrypted string>"
+            	"jwe": {
+                    //jwe json structure
+                }
         	}
         }
     ]
