@@ -12,7 +12,7 @@ The name of this protocol is "Routing Protocol", and its [version](https://githu
 
 There are 3 roles in the protocol: `sender`, `mediator`, and `recipient`. The sender emits messages of type `forward` to the `mediator`. The mediator unpacks (decrypts) the payload of an encrypted `forward` message and passes on the result (an opaque blob that probably contains a differently encrypted payload) to the `recipient`.
 
-![ordinary sequence](/collateral/routing-roles.png)
+![ordinary sequence](../collateral/routing-roles.png)
 
 >Note: the protocol is one-way; the return route for communication might not exist at all, or if it did, it could invert the roles of sender and receiver and use the same mediator, or it could use one or more different mediators, or it could use no mediator at all. This is a separate concern partly specified by the service endpoints in the DID docs of the sender and receiver, and partly explored in [RFC 0092: Transports Return Route](https://github.com/hyperledger/aries-rfcs/blob/master/features/0092-transport-return-route/README.md). 
 
@@ -30,7 +30,8 @@ Since data flow is normally one-way, and since the scope of the protocol is a si
 
 However, this doesn't quite work on close inspection, because the mediator is at least potentially stateful with respect to any particular message; it needs to be if it wants to implement delayed delivery or retry logic. (Or, as noted earlier, the possibility of sending to multiple physical receivers. Mediators are not required to implement any of these features, but the state machine needs to account for their possibility.) Plus, the notification terminology obscures the sender and receiver roles. So we use the following formalization:
 
-[![state machines](/collateral/routing-state-machines.png)](https://docs.google.com/spreadsheets/d/1zxm3cPZ1UDQPDpYJjGmg_qY8451WMk105HBSARJkvDI/edit#gid=0)
+![](../collateral/routing-state-machines.png)]
+Src: [state machine diagram on gdocs](https://docs.google.com/spreadsheets/d/1zxm3cPZ1UDQPDpYJjGmg_qY8451WMk105HBSARJkvDI/edit#gid=0)
 
 #### Messages
 
@@ -69,7 +70,7 @@ The attachment(s) in the `payloads~attach` field are able to use the full power 
 
 Normally, the payload attached to the `forward` message received by the mediator is transmitted directly to the receiver with no further packaging. However, optionally, the mediator can attach the opaque payload to a new `forward` message, which then acts as a fresh outer envelope for the second half of the delivery. This [rewrapping](#rewrapping) means that the "onion" of packed messages stays the same size rather than getting smaller as a result of the forward operation:
 
-![re-wrapped sequence](/collateral/routing-roles-2.png)
+![re-wrapped sequence](../collateral/routing-roles-2.png)
 
 Rewrapping mode is invisible to senders, but mediators need to know about it, since they change their behavior as a result. Receivers also need to know about it, because it causes them to receive a double-packaged message instead of a singly-packaged one. The outer envelope is a `forward` message where `to` is the receiver itself.
 
@@ -114,7 +115,7 @@ DIDComm DID Document endpoints have the following format:
 ```json
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
-    "type": "DIDComm",
+    "type": "DIDCommMessaging",
     "serviceEndpoint": "http://example.com/path",
     "routingKeys": ["did:example:somemediator#somekey"]
 }
@@ -122,7 +123,7 @@ DIDComm DID Document endpoints have the following format:
 
 **id**: must be unique, as required in [DID Core](https://www.w3.org/TR/did-core/#service-endpoints). No special meaning should be inferred from the `id` chosen.
 
-**type**: MUST be `DIDComm`. 
+**type**: MUST be `DIDCommMessaging`. 
 
 **serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
@@ -130,7 +131,7 @@ DIDComm DID Document endpoints have the following format:
 
 #### Multiple Endpoints
 
-A DID Document may contain multiple service entries of type `DIDComm`. Entries are SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.
+A DID Document may contain multiple service entries of type `DIDCommMessaging`. Entries are SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.
 
 #### Alternative Endpoints
 
@@ -147,28 +148,20 @@ Example 1: Mediator
 ```json
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
-    "type": "DIDComm",
+    "type": "DIDCommMessaging",
     "serviceEndpoint": "did:example:somemediator"
 }
 ```
-The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDComm`.
+The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
 
 Example 2: Mediator + Routing Keys
 ```json
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
-    "type": "DIDComm",
+    "type": "DIDCommMessaging",
     "serviceEndpoint": "did:example:somemediator",
     "routingKeys": ["did:example:anothermediator#somekey"]
 }
 ```
 
 The message is encrypted to the recipient, then wrapped in a forward message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDComm`.
-
-##### Queue
-
-TODO: Does the queue fit here as an alternate URI?
-
-
-
-[TODO: discuss how routing info is exposed in a DID doc, and how it is conveyed in "ephemeral mode" where no DID doc is available.]

@@ -9,7 +9,8 @@ For the keys involved in key agreement, the following elliptic curves MUST be su
 | Curve  | Description                                                  |
 | ------ | ------------------------------------------------------------ |
 | X25519 | The underlying curve is actually `Curve25519`, however when used in the context of Diffie-Hellman the identifier of `X25519` is used |
-| P-256  | NIST defined P-256 elliptic curve                            |
+| P-384  | NIST defined P-384 elliptic curve                            |
+| P-256  | NIST defined P-256 elliptic curve - deprecated in favor of P-384 |
 
 For content encryption of the message, the following algorithms MUST be supported.
 
@@ -32,6 +33,12 @@ TODO: Include language about safe nonce considerations.
 ## Anonymous Messages
 
 When the sender wishes to remain anonymous, they should identify themselves as a sender using a newly minted DID that's never been seen before. When the sender is done with the interaction, they can abandon further use of that DID. 
+
+## Media Types
+
+The media type of the envelope MUST be set in the `typ` [property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE and the media type of the payload MUST be set in the `cty` [property](https://tools.ietf.org/html/rfc7516#section-4.1.12) of the JWE. The [message types](#message-types) section provides general discussion of the media types.
+
+For example, following the guidelines of [message types](#message-types), an encrypted envelope with a plaintext DIDComm payload contains the `typ` property with the value `application/didcomm-encrypted+json` and `cty` property with the value `application/didcomm-plain+json`.
 
 ## Perfect Forward Secrecy
 

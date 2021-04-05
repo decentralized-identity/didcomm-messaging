@@ -12,7 +12,7 @@ DIDComm Transports serve only as message _delivery_. No information about the ef
 HTTP(S) transports are an effective way to send a message to another online agent.
 
 - Messages are transported via HTTP POST.
-- The MIME Type for the POST request is `application/didcomm-enc-env`. (TODO: Declare Mime Types elsewhere, link from here.)
+- The MIME Type for the POST request is `application/didcomm-encrypted+json`. See [Message Types](#message-types) for a general discussion of mime types.
 - A successful message receipt MUST return a code in the 2xx HTTP Status Code range. It is recommended that a HTTP POST should return a 202 Accepted status code. 
 - POST requests are transmit only. Messages are only sent from the code that submitted the POST request.
 - HTTP Redirects SHOULD be followed. Only Temporary Redirects (307) are acceptable. Permanent endpoint relocation should be managed with a DID Document update.

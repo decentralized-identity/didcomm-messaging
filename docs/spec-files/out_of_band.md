@@ -30,6 +30,10 @@ The out-of-band protocol a single message that is sent by the *sender*.
   "@id": "<id used for context as pthid>",
   "goal_code": "issue-vc",
   "goal": "To issue a Faber College Graduate credential",
+  "accept": [
+    "application/didcomm-encrypted+json",
+    "application/didcomm-enc-env"
+  ],
   "request~attach": [
     {
         "@id": "request-0",
@@ -48,6 +52,8 @@ The items in the message are:
 - `@id` - the unique ID of the message. The ID should be used as the **parent** thread ID (`pthid`) for the response message, rather than the more common thread ID (`thid`) of the response message. This enables multiple uses of a single out-of-band message.
 - `goal_code` - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.
 - `goal` - [optional] a self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.
+- `accept` - [optional] an array of media (aka mime) types in the order of preference of the sender that the receiver can use in responding to the message.
+ If `accept` is not specified, the receiver uses its preferred choice to respond to the message.
 - `request~attach` - an attachment decorator containing an array of request messages in order of preference that the receiver can using in responding to the message. Each message in the array is a rough equivalent of the others, an all are in pursuit of the stated `goal` and `goal_code`. Only one of the messages should be chosen and acted upon.
   - While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.
 
@@ -147,7 +153,7 @@ Knowledge is Good
 
 Example URL encoded as a QR Code:
 
-![Example QR Code](out_of_band_exampleqr.png)
+![Example QR Code](.//collateral/out_of_band_exampleqr.png)
 
 ##### Short URL Message Retrieval
 
