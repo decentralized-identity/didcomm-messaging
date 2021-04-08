@@ -60,7 +60,7 @@ When parties want to communicate via DIDComm, a number of mechanisms must align.
 2. The key types used for encryption and/or signing
 3. The format of the encryption and/or signing envelopes
 4. The encoding of plaintext messages
-5. The protocol used to forward forward and route
+5. The protocol used to forward and route
 6. The protocol embodied in the plaintext messages
 
 Although DIDComm allows flexibility in each of these choices, it is not expected that a given DIDComm implementation will support many permutations. Rather, we expect a few sets of choices that commonly go together. We call a set of choices that work well together a __profile__. Profiles are identified by a string that matches the conventions of IANA media types, but they express choices about plaintext, encryption, signing, and routing in a single value. The following profile identifiers are defined in this version of the spec:
