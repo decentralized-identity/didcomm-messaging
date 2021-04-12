@@ -13,14 +13,14 @@
         "repo": "didcomm-messaging"
       },
       "output_path": "./docs/spec",
-      "spec_directory": "./",
+      "spec_directory": "./docs/spec-files",
       "markdown_paths": [
         "title.md",
         "scope.md",
         "requirements.md",
         "processing_model.md",
-		"message_structure.md",
-		"encryption.md",
+		    "message_structure.md",
+		    "encryption.md",
         "signature.md",
         "routing.md",
         "transports.md",
@@ -29,8 +29,8 @@
         "general_messaging_constructs.md",
         "protocols.md",
         "out_of_band.md",
-		"feature_discovery.md",
-		"trustping.md",
+		    "feature_discovery.md",
+		    "trustping.md",
         "reference_implementation.md",
         "future_proofing.md",
         "references.md"
@@ -45,10 +45,10 @@
         "repo": "didcomm-messaging"
       },
       "output_path": "./docs/guide",
-      "spec_directory": "./guide",
+      "spec_directory": "./docs/guide-files",
       "markdown_paths": [
         "intro.md",
-	"privacy.md",
+	      "privacy.md",
         "routing.md",
         "whatsnew.md"
       ]
