@@ -117,7 +117,11 @@ DIDComm DID Document endpoints have the following format:
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
     "serviceEndpoint": "http://example.com/path",
-    "routingKeys": ["did:example:somemediator#somekey"]
+    "accept": [
+       "didcomm/v2",
+       "didcomm/aip2;env=rfc587"
+     ],
+     "routingKeys": ["did:example:somemediator#somekey"]
 }
 ```
 
@@ -126,6 +130,10 @@ DIDComm DID Document endpoints have the following format:
 **type**: MUST be `DIDCommMessaging`. 
 
 **serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
+
+**accept***: An optional array of media types in the order of preference for sending a message to the endpoint.
+If `accept` is not specified, the sender uses its preferred choice for sending a message to the endpoint.
+Please see [Message Types](#message-types) for details about media types.
 
 **routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec. 
 
