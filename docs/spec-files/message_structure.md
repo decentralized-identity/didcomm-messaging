@@ -76,7 +76,7 @@ Although DIDComm allows flexibility in each of these choices, it is not expected
 * `didcomm/aip2;env=rfc587`: The signing mechanism, plaintext conventions, and routing algorithms embodied in Aries AIP 2.0, circa 2021 -- with the new-style encryption envelope from Aries RFC 0587. This legal variant of AIP 2.0 lays the foundation for DIDComm v2 support by anticipating the eventual envelope change.
 * `didcomm/v2`: The encryption envelope, signing mechanism, plaintext conventions, and routing algorithms embodied in this spec.
 
-Profiles are named in the `accept` section of a DIDComm service endpoint. When Alice declares that she accepts `didcomm/v2`, she is making a declaration about more than her own endpoint. She is saying that all publicly visible steps in an inbound route to her will use the `didcomm/v2` profile, such that a sender only has to use `didcomm/v2` choices to get the message from Alice's outermost mediator to Alice's edge. It is up to Alice to select and configure mediators and internal routing in such a way that this is true for the sender.
+Profiles are named in the `accept` section of a DIDComm service endpoint and in an out-of-band message. When Alice declares that she accepts `didcomm/v2`, she is making a declaration about more than her own endpoint. She is saying that all publicly visible steps in an inbound route to her will use the `didcomm/v2` profile, such that a sender only has to use `didcomm/v2` choices to get the message from Alice's outermost mediator to Alice's edge. It is up to Alice to select and configure mediators and internal routing in such a way that this is true for the sender.
 
 ## Plaintext Message Structure
 
