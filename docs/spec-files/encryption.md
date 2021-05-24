@@ -12,7 +12,7 @@ For an encrypted DIDComm Message, the JWA of `ECDH-1PU` defined by [draft](https
 
 When a sender would like to encrypt a message for a recipient or multiple recipients but not be authenticated by the recipients as the party who encrypted the message, the JWA of `ECDH-ES` defined by [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6) SHOULD be used within the structure of a JWE.
 
-Anonymous Encryption removes authenticated encryption, a significant benefit of the DIDComm specification. Use of Anonymous Encryption MUST NOT be paired with a method of message authentication other than Authenticated Encryption as defined in this specification.
+Anonymous Encryption removes authenticated encryption, a significant benefit of the DIDComm specification. Use of Anonymous Encryption SHOULD NOT be paired with a method of message authentication other than Authenticated Encryption as defined in this specification. Further discussion of message authentication can be found in the Implementation Guide.
 
 ## Curves and Content Encryption Algorithms
 
