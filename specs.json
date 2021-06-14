@@ -50,6 +50,7 @@
         "intro.md",
 	      "privacy.md",
         "routing.md",
+		"authentication.md",
         "whatsnew.md"
       ]
     }

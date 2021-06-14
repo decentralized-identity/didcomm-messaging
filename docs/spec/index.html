@@ -253,6 +253,7 @@
 <p>For an encrypted DIDComm Message, the JWA of <code>ECDH-1PU</code> defined by <a href="https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04">draft</a> MUST be used within the structure of a JWE.</p>
 <h2 id="anonymous-encryption"><a class="toc-anchor" href="#anonymous-encryption">§</a> Anonymous Encryption</h2>
 <p>When a sender would like to encrypt a message for a recipient or multiple recipients but not be authenticated by the recipients as the party who encrypted the message, the JWA of <code>ECDH-ES</code> defined by <a href="https://tools.ietf.org/html/rfc7518#section-4.6">RFC 7518</a> SHOULD be used within the structure of a JWE.</p>
+<p>Anonymous Encryption removes authenticated encryption, a significant benefit of the DIDComm specification. Use of Anonymous Encryption SHOULD NOT be paired with a method of message authentication other than Authenticated Encryption as defined in this specification. Further discussion of message authentication can be found in the Implementation Guide.</p>
 <h2 id="curves-and-content-encryption-algorithms"><a class="toc-anchor" href="#curves-and-content-encryption-algorithms">§</a> Curves and Content Encryption Algorithms</h2>
 <p>For the keys involved in key agreement, the following elliptic curves MUST be supported.</p>
 <table>

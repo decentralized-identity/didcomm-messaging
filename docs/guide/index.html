@@ -151,6 +151,8 @@
 <p>Note how this breaks the simple assumptions of pure request-response technologies like HTTP, that assume the channel in (request) is also the channel out (response). <a href="https://en.wikipedia.org/wiki/Duplex_%28telecommunications%29">Duplex</a> request-response can be modeled with DIDComm, but doing so requires support that may not always be available, plus cooperative behavior governed by the <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0008-message-id-and-threading/README.md"><code>~thread</code></a> decorator.</p>
 <h3 id="routing-protocol"><a class="toc-anchor" href="#routing-protocol">§</a> Routing Protocol</h3>
 <p>Now that we understand mediators and relays, how and why they might be combined in various ways, and how their presence influences delivery semantics, we can describe the actual application-level routing protocol that any DIDComm sender speaks with a destward mediator. See [Routing Protocol] in the spec.</p>
+<h2 id="message-authentication"><a class="toc-anchor" href="#message-authentication">§</a> Message Authentication</h2>
+<p>TODO: Add details about authenticated encryption.</p>
 <h2 id="whats-new"><a class="toc-anchor" href="#whats-new">§</a> What’s New?</h2>
 <p>The version of DIDComm incubated in the Hyperledger Aries community is referred to as Version 1 (V1). This spec describes the next version, referred to as Version 2 (V2). This section will describe the changes between V1 and V2, useful to members of the Aries community.</p>
 <h3 id="summary-of-changes"><a class="toc-anchor" href="#summary-of-changes">§</a> Summary of Changes</h3>
@@ -238,6 +240,7 @@
 <li><a href="#routing-protocol">Routing Protocol</a></li>
 </ul>
 </li>
+<li><a href="#message-authentication">Message Authentication</a></li>
 <li><a href="#whats-new">What’s New?</a>
 <ul>
 <li><a href="#summary-of-changes">Summary of Changes</a></li>
@@ -261,7 +264,7 @@
             </slide-panels>
 
           </body>
-          <script>window.specConfig = {"title":"DIDComm Messaging - Implementers Guide","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/guide","spec_directory":"./docs/guide-files/","markdown_paths":["intro.md","privacy.md","routing.md","whatsnew.md"],"destination":"./docs/guide/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
+          <script>window.specConfig = {"title":"DIDComm Messaging - Implementers Guide","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/guide","spec_directory":"./docs/guide-files/","markdown_paths":["intro.md","privacy.md","routing.md","authentication.md","whatsnew.md"],"destination":"./docs/guide/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
           <script src="../spec-up/compiled/body.js" data-manual></script>
         </html>
       
