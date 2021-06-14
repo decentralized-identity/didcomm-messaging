@@ -73,7 +73,7 @@ Assuming Alice has a DID Doc with the following `KeyAgreement` definition (sourc
 }
 ```
 
-The envelope packing process should set the `skid` header with value `did:example:123456789abcdefghi#keys-1` in the envelope's protected headers and fetch the underlying key to execute ECDH-1PU key derivation for content key wrapping.
+The envelope packing process MUST set the `skid` header with value `did:example:123456789abcdefghi#keys-1` in the envelope's protected headers and fetch the underlying key to execute ECDH-1PU key derivation for content key wrapping.
 
 Assuming she also has Bob's DID document which happens to include the following `KeyAgreement` section:
 
