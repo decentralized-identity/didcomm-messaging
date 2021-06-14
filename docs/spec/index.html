@@ -530,13 +530,13 @@ Src: <a href="https://docs.google.com/spreadsheets/d/1zxm3cPZ1UDQPDpYJjGmg_qY845
 <li>Transmit to <code>serviceEndpoint</code> in the manner specified in the [transports] section.</li>
 </ol>
 <h3 id="mediator-process"><a class="toc-anchor" href="#mediator-process">§</a> Mediator Process</h3>
-<p><em>Prior to using a Mediator, it is the recipient’s responsibility to coordinate with the mediator. Part of this coordination informs them of the <code>to</code> address(es) expected, the endpoint, and any Routing Keys to be used when forwarding messages. That coordination is out of the scope of this spec.</em></p>
+<p><em>Prior to using a Mediator, it is the recipient’s responsibility to coordinate with the mediator. Part of this coordination informs them of the <code>next</code> address(es) expected, the endpoint, and any Routing Keys to be used when forwarding messages. That coordination is out of the scope of this spec.</em></p>
 <ol>
 <li>Receives Forward Message.</li>
-<li>Retrieves Service Endpoint pre-configured by recipient (<code>to</code> attribute).</li>
+<li>Retrieves Service Endpoint pre-configured by recipient (<code>next</code> attribute).</li>
 <li>Transmit <code>payload</code> message to Service Endpoint in the manner specified in the [transports] section.</li>
 </ol>
-<p>The recipient (<code>to</code> attribute of Forward Message) may have pre-configured additional routing keys with the mediator that were not present in the DID Document and therefore unknown to the original sender. If this is the case, the mediator should wrap the attached <code>payload</code> message into an additional Forward message once per routing key. This step is performed between (2) and (3).</p>
+<p>The recipient (<code>next</code> attribute of Forward Message) may have pre-configured additional routing keys with the mediator that were not present in the DID Document and therefore unknown to the original sender. If this is the case, the mediator should wrap the attached <code>payload</code> message into an additional Forward message once per routing key. This step is performed between (2) and (3).</p>
 <h3 id="did-document-keys"><a class="toc-anchor" href="#did-document-keys">§</a> DID Document Keys</h3>
 <p>All keys declared in the DID Document’s <code>keyAgreement</code> section should be used as recipients when encrypting a message. The details of key representation are described in the <a href="https://www.w3.org/TR/did-core/#public-keys">Public Keys section of the DID Core Spec</a>.</p>
 <p>Keys used in a signed JWM are declared in the DID Document’s <code>authentication</code> section.</p>
