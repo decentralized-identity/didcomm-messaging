@@ -364,6 +364,54 @@
 <p>For example, following the guidelines of <a href="#message-types">message types</a>, an encrypted envelope with a plaintext DIDComm payload contains the <code>typ</code> property with the value <code>application/didcomm-encrypted+json</code> and <code>cty</code> property with the value <code>application/didcomm-plain+json</code>.</p>
 <h2 id="perfect-forward-secrecy"><a class="toc-anchor" href="#perfect-forward-secrecy">§</a> Perfect Forward Secrecy</h2>
 <p>Due to the triple Key Derivation algorithm used in ECDH-1PU, all messages sent via DIDComm have weak perfect forward secrecy without any additional security added by the transport layer. In ECDH-1PU this is achieved by encrypting the content encryption key with the output of the hash of the Ze (ECDH of ephemeral key and recipient static key) and Zs (ECDH of static sender key and recipient static key). With Ze bringing the changed derived secret in each message and Zs bringing the repudiable authenticity of each message, the resulting Z (hash of Ze and Zs) carries the properties of weak perfect forward secrecy and repudiable authenticity for each message as well.</p>
+<h2 id="key-ids-kid-and-skid-headers-references-in-the-did-document"><a class="toc-anchor" href="#key-ids-kid-and-skid-headers-references-in-the-did-document">§</a> Key IDs <code>kid</code> and <code>skid</code> headers references in the DID document</h2>
+<p>Keys used by DIDComm envelopes MUST be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipients keys MUST be retrieved from the DID document’s <code>KeyAgreement</code> verification section as per the <a href="https://identity.foundation/didcomm-messaging/spec/#did-document-keys">DID Document Keys</a> definition.</p>
+<p>When Alice is preparing an envelope intended for Bob, the packing process should use a key from both hers and Bob’s DID document’s <code>KeyAgreement</code> section.</p>
+<p>Assuming Alice has a DID Doc with the following <code>KeyAgreement</code> definition (source: <a href="https://www.w3.org/TR/did-core/#example-17-key-agreement-property-containing-two-verification-methods">DID V1 Example 17</a>):</p>
+<pre class="language-jsonc"><code class="language-jsonc">{
+  &quot;@context&quot;: &quot;https://www.w3.org/ns/did/v1&quot;,
+  &quot;id&quot;: &quot;did:example:123456789abcdefghi&quot;,
+  ...
+  &quot;keyAgreement&quot;: [
+    // this method can be used to perform key agreement as did:...fghi
+    &quot;did:example:123456789abcdefghi#keys-1&quot;,
+    // this method is *only* approved for key agreement usage, it will not
+    // be used for any other verification relationship, so its full description is
+    // embedded here rather than using only a reference
+    {
+      &quot;id&quot;: &quot;did:example:123#zC9ByQ8aJs8vrNXyDhPHHNNMSHPcaSgNpjjsBYpMMjsTdS&quot;,
+      &quot;type&quot;: &quot;X25519KeyAgreementKey2019&quot;, // external (property value)
+      &quot;controller&quot;: &quot;did:example:123&quot;,
+      &quot;publicKeyBase58&quot;: &quot;9hFgmPVfmBZwRvFEyniQDBkz9LmV7gDEqytWyGZLmDXE&quot;
+    }
+  ],
+  ...
+}
+</code></pre>
+<p>The envelope packing process MUST set the <code>skid</code> header with value <code>did:example:123456789abcdefghi#keys-1</code> in the envelope’s protected headers and fetch the underlying key to execute ECDH-1PU key derivation for content key wrapping.</p>
+<p>Assuming she also has Bob’s DID document which happens to include the following <code>KeyAgreement</code> section:</p>
+<pre class="language-jsonc"><code class="language-jsonc">{
+  &quot;@context&quot;: &quot;https://www.w3.org/ns/did/v1&quot;,
+  &quot;id&quot;: &quot;did:example:jklmnopqrstuvwxyz1&quot;,
+  ...
+  &quot;keyAgreement&quot;: [
+    {
+      &quot;id&quot;: &quot;did:example:jklmnopqrstuvwxyz1#key-1&quot;,
+      &quot;type&quot;: &quot;X25519KeyAgreementKey2019&quot;, // external (property value)
+      &quot;controller&quot;: &quot;did:example:jklmnopqrstuvwxyz1&quot;,
+      &quot;publicKeyBase58&quot;: &quot;9hFgmPVfmBZwRvFEyniQDBkz9LmV7gDEqytWyGZLmDXE&quot;
+    }
+  ],
+  ...
+}
+</code></pre>
+<p>There should be only 1 entry in the recipients of the envelope, representing Bob. The corresponding <code>kid</code> header for this recipient MUST have <code>did:example:jklmnopqrstuvwxyz1#key-1</code> as value. The packing process MUST extract the public key bytes found in <code>publicKeyBase58</code> of Bob’s DID Doc <code>KeyAgreement[0]</code> to execute the ECDH-1PU key derivation for content key wrapping.</p>
+<p>When Bob receives the envelope, the unpacking process on his end MUST resolve the <code>skid</code> protected header value using Alice’s DID doc’s <code>KeyAgreement[0]</code> in order to extract her public key. In Alice’s DID Doc example above, <code>KeyAgreement[0]</code> is a reference id, it MUST be resolved from the main <code>VerificationMethod[]</code> of Alice’s DID document (not shown in the example).</p>
+<p>Once resolved, the unpacker will then execute ECDH-1PU key derivation using this key and Bob’s own recipient key found in the envelope’s <code>recipients[0]</code> to unwrap the content encryption key.</p>
+<h2 id="protecting-the-skid-header"><a class="toc-anchor" href="#protecting-the-skid-header">§</a> Protecting the <code>skid</code> header</h2>
+<p>When the <code>skid</code> cannot be revealed in a plain-text JWE header (to avoid potentially leaking sender’s key id), the <code>skid</code> MAY be encrypted for each recipient. In this case, instead of having a <code>skid</code> protected header in the envelope, each recipient MAY include an <code>encrypted_skid</code> header with a value based on the encryption of <code>skid</code> using ECDH-ES <code>Z</code> computation of the <code>epk</code> and the recipient’s key as the encryption key.</p>
+<p>For applications that don’t require this protection, they MAY use <code>skid</code> protected header directly without any additional recipient headers.</p>
+<p>Applications MUST use either <code>skid</code> protected header or <code>encrypted_skid</code> recipients header but not both in the same envelope.</p>
 <h2 id="examples"><a class="toc-anchor" href="#examples">§</a> Examples</h2>
 <p>While the details of encrypting a JWM into a JWE are included in the <a href="https://tools.ietf.org/html/draft-looker-jwm-01">JWM spec</a>, a few examples are included here for clarity.</p>
 <p>TODO: Add examples here</p>
@@ -1146,6 +1194,8 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#key-wrapping-algorithms">Key Wrapping Algorithms</a></li>
 <li><a href="#media-types-2">Media Types</a></li>
 <li><a href="#perfect-forward-secrecy">Perfect Forward Secrecy</a></li>
+<li><a href="#key-ids-kid-and-skid-headers-references-in-the-did-document">Key IDs <code>kid</code> and <code>skid</code> headers references in the DID document</a></li>
+<li><a href="#protecting-the-skid-header">Protecting the <code>skid</code> header</a></li>
 <li><a href="#examples">Examples</a></li>
 <li><a href="#message-signing">Message Signing</a>
 <ul>
