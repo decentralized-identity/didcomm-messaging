@@ -193,7 +193,7 @@ The JWT is constructed as follows, with appropriate values changed.
 
 ```json
 {
-    "typ": "application/didcomm-plain-json",
+    "typ": "application/didcomm-plain+json",
     "id": "1234567890",
     "type": "<message-type-uri>",
     "from": "did:example:alice2",
