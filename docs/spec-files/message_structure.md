@@ -112,7 +112,7 @@ The following example shows common elements of a plaintext message. Further deta
 
 The predefined attributes of a DIDComm plaintext message at the level of its outer packaging (effectively, the "headers" of the message) are as follows:
 
-- **typ** - REQUIRED. Media type of the JWM content and MUST be set to `application/didcomm-plain+json`.
+- **typ** - OPTIONAL. Media type of the JWM content and MUST be set to `application/didcomm-plain+json` for **DIDComm plaintext messages**.
 
 - **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender.
 
