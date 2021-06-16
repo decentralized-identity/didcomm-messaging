@@ -43,16 +43,16 @@ The only message in this protocol is the `forward` message. A simple and common 
     "to": ["did:example:mediator"],
     "expires_time": 1516385931,
     "body":{
-        "next"   : "did:foo:1234abcd",
-        "payloads~attach": [
-            // One payload?
-        ]
-    }
+        "next": "did:foo:1234abcd",
+    },
+    "attachments": [
+        // One payload?
+    ]
 }
 ```
 
 - **next** - REQUIRED. The DID of the party to send the attached message to. 
-- **payloads~attach** - REQUIRED. The encrypted message to send to the party indicated in the `next` body attribute. 
+- **attachments** - REQUIRED. The encrypted message to send to the party indicated in the `next` body attribute. 
 
 When the internal message expires, it's a good idea to also include an expiration for forward message requests. Include the `expires_time` header with the appropriate value.
 
@@ -64,7 +64,7 @@ When the internal message expires, it's a good idea to also include an expiratio
 
 For most external mediators, the value of the `next` field is likely to be a DID, not a key. However... (see previous TODO note). This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn't need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see [RFC 0211: Route Coordination](https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md)), but that is outside the scope of concerns of this protocol. 
 
-The attachment(s) in the `payloads~attach` field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.
+The attachment(s) in the `attachments` field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.
 
 #### Rewrapping
 
