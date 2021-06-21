@@ -12,17 +12,21 @@ The value of an `id` property SHOULD be globally, universally unique; at the ver
 
 ### Threads
 
-A thread is uniquely identified by a thread ID. The thread ID is communicated by including a `thid` header in the JWM plaintext of the message. The value of `thid` MUST conform to the same constraints as the value of `id`. The DIDComm plaintext message that begins a thread MAY declare this property for the new thread. If no `thid` property is declared in the first message of an interaction, the `id` property of the message is used as `thid` as well; that is, the message is interpreted as if both `id` and `thid` were present, containing the same value.
+A thread is uniquely identified by a thread ID. The thread ID is communicated by including a `thid` header in the JWM plaintext of the message. The value of `thid` MUST conform to the same constraints as the value of `id`. The DIDComm plaintext message that begins a thread MAY declare this property for the new thread. If no `thid` property is declared in the first message of an interaction, the `id` property of the message MUST be treated as the value of the `thid` as well; that is, the message is interpreted as if both `id` and `thid` were present, containing the same value.
 
-All subsequent messages in a thread MUST include a `thid` header that contains the same value as the `thid` set in the first message of the thread. Messages that do not share the same `thid` MUST NOT be imputed to the same thread.
+All subsequent messages in a thread MUST include a `thid` header that contains the same value as the `thid` set in the first message of the thread. Messages that do not share the same `thid` MUST NOT be considered a part of the same thread.
 
 ### Parent Threads
 
 When one interaction triggers another, the first interaction is called the **parent** of the second. This MAY be modeled by incorporating a `pthid` header in the JWM plaintext of the child. The value of the child's `pthid` header MUST obey the same constraints as `thid` and `id` values.
 
+Suppose a DIDComm-based protocol (and therefore, a thread of messages) is underway in which an issuer wants to give a credential to a holder. At a particular stage in this interaction, perhaps the issuer asks the prospective holder of the credential to pay for what they're about to receive. For composability, encapsulation, reusability, and versioning reasons, negotiating and consummating payment is best modeled as a separable interaction from credential exchange &mdash; so a new sequence of messages (dedicated to payment) begins. In this example, the credential issuance interaction (message thread 1) is the parent of the payment interaction (message thread 2). The first message in thread 2 MUST contain a `pthid` header that references the `thid` from thread 1.
+
+>NOTE: When a child protocol is a simple two-party interaction, mentioning the `pthid` in the first message of the child interaction is enough to establish context. However, in protocols involving more than two parties, the first message of the child protocol may not be seen by everyone, so simply mentioning `pthid` once may not provide enough context. Therefore, the rule is that each party in a child protocol MUST learn the identity of the parent thread via the first child protocol message they see. The simplest way to ensure this is to mention the `pthid` with every message in the child protocol.
+
 ### DIDComm Message URIs
 
-The `id`, `thid`, and `pthid` properties of any DIDComm message may be combined to form a URI that uniquely identifies the message (e.g., in debuggers, in log files, in archives). When this is further combined with [JSPath](https://github.com/dfilatov/jspath#quick-example), individual elements of messages may also be hyperlinked. See [Linkable Message Paths](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0217-linkable-message-paths/README.md). Such a scheme is out of scope for this spec, and support for it is NOT required of implementers. However, this spec reserves the `didcomm://` URI prefix for future work with semantics like these.
+The `id`, `thid`, and `pthid` properties of any DIDComm message may be combined to form a URI that uniquely identifies the message (e.g., in debuggers, in log files, in archives). When this is further combined with something like [JSPath](https://github.com/dfilatov/jspath#quick-example) or [JS Pointer](https://datatracker.ietf.org/doc/html/rfc6901), individual elements of messages may also be hyperlinked. See [Linkable Message Paths](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0217-linkable-message-paths/README.md). Such a scheme is out of scope for this spec, and support for it is NOT required of implementers. However, this spec reserves the `didcomm://` URI prefix for future work with semantics like these.
 
 ### Gaps, Resends, and Sophisticated Ordering
 
