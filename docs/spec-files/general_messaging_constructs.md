@@ -28,6 +28,7 @@ Each attachment is contained within the following structure.
 - `description`: An optional human-readable description of the content.
 - `filename`: A hint about the name that might be used if this attachment is persisted as a file. It is not required, and need not be unique. If this field is present and `mime-type` is not, the extension on the filename may be used to infer a MIME type.
 - `mime_type`: Describes the MIME type of the attached content. Optional but recommended.
+- `format`: If the `mime_type` of the document is insufficient to describe the contents, a format string may also be used to further describe the attachment. The strings used here should be specified in protocols that require the use of attachments.
 - `lastmod_time`: A hint about when the content in this attachment was last modified.
 - `byte_count`: Optional, and mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
 - `data`: A JSON object that gives access to the actual content of the attachment. Contains the following subfields:
