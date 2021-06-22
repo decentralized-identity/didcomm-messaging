@@ -35,7 +35,7 @@ Suppose a DIDComm-based protocol (and therefore, a thread of messages) is underw
 
 ### DIDComm Message URIs
 
-The `id`, `thid`, and `pthid` properties of any DIDComm message may be combined to form a URI that uniquely identifies the message (e.g., in debuggers, in log files, in archives). When this is further combined with something like [JSPath](https://github.com/dfilatov/jspath#quick-example) or [JS Pointer](https://datatracker.ietf.org/doc/html/rfc6901), individual elements of messages may also be hyperlinked. See [Linkable Message Paths](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0217-linkable-message-paths/README.md). Such a scheme is out of scope for this spec, and support for it is NOT required of implementers. However, this spec reserves the `didcomm://` URI prefix for future work with semantics like these.
+The `id`, `thid`, and `pthid` properties of any DIDComm message may be combined to form a URI that uniquely identifies the message (e.g., in debuggers, in log files, in archives). Such a scheme is out of scope for this spec, and support for it is OPTIONAL for implementers. This spec reserves the `didcomm://` URI prefix for future work with semantics like these; it SHALL NOT be used for other purposes.
 
 ### Gaps, Resends, and Sophisticated Ordering
 
