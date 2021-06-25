@@ -34,7 +34,7 @@ The out-of-band protocol a single message that is sent by the *sender*.
     "didcomm/v2",
     "didcomm/aip2;env=rfc587"
   ],
-  "request~attach": [
+  "attachments": [
     {
         "@id": "request-0",
         "mime-type": "application/json",
@@ -55,7 +55,7 @@ The items in the message are:
 - `accept` - [optional] an array of media (aka mime) types in the order of preference of the sender that the receiver can use in responding to the message.
  If `accept` is not specified, the receiver uses its preferred choice to respond to the message.
  Please see [Message Types](#message-types) for details about media types.
-- `request~attach` - an attachment decorator containing an array of request messages in order of preference that the receiver can using in responding to the message. Each message in the array is a rough equivalent of the others, an all are in pursuit of the stated `goal` and `goal_code`. Only one of the messages should be chosen and acted upon.
+- `attachments` - an array of attachments that will contain the invitation messages in order of preference that the receiver can using in responding to the message. Each message in the array is a rough equivalent of the others, an all are in pursuit of the stated `goal` and `goal_code`. Only one of the messages should be chosen and acted upon.
   - While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.
 
 When encoding a message in a URL or QR code, the _sender_ does not know which protocols are supported by the _recipient_ of the message. Encoding multiple alternative messages is a form of optimistic protocol negotiation that allows multiple supported protocols without coordination
@@ -98,23 +98,23 @@ Invitation:
   "body": {
       "goal_code": "",
       "goal": "",
-      "request~attach": [
-          {
-              "@id": "request-0",
-              "mime-type": "application/json",
-              "data": {
-                  "json": "<json of protocol message>"
-              }
+  },
+  "attachments": [
+      {
+          "@id": "request-0",
+          "mime-type": "application/json",
+          "data": {
+              "json": "<json of protocol message>"
           }
-      ]
-  }
+      }
+  ]
 }
 ```
 
 Whitespace removed:
 
 ```json
-{"type":"https://didcomm.org/out-of-band/0.1/invitation","id":"69212a3a-d068-4f9d-a2dd-4741bca89af3","from":"did:example:alice","body":{"goal_code":"","goal": "","request~attach":[{"@id":"request-0","mime-type":"application/json","data":{"json":"<json of protocol message>"}}]}}
+{"type":"https://didcomm.org/out-of-band/0.1/invitation","id":"69212a3a-d068-4f9d-a2dd-4741bca89af3","from":"did:example:alice","body":{"goal_code":"","goal": "","attachments":[{"@id":"request-0","mime-type":"application/json","data":{"json":"<json of protocol message>"}}]}}
 ```
 
 Base 64 URL Encoded:
