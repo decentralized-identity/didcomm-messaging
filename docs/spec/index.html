@@ -494,22 +494,22 @@ Src: <a href="https://docs.google.com/spreadsheets/d/1zxm3cPZ1UDQPDpYJjGmg_qY845
     <span class="token property">"to"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:mediator"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token number">1516385931</span><span class="token punctuation">,</span>
     <span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span>
-        <span class="token property">"next"</span>   <span class="token operator">:</span> <span class="token string">"did:foo:1234abcd"</span><span class="token punctuation">,</span>
-        <span class="token property">"payloads~attach"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-            <span class="token comment">// One payload?</span>
-        <span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
+        <span class="token property">"next"</span><span class="token operator">:</span> <span class="token string">"did:foo:1234abcd"</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"attachments"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token comment">// One payload?</span>
+    <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <ul>
 <li><strong>next</strong> - REQUIRED. The DID of the party to send the attached message to.</li>
-<li><strong>payloads~attach</strong> - REQUIRED. The encrypted message to send to the party indicated in the <code>next</code> body attribute.</li>
+<li><strong>attachments</strong> - REQUIRED. The encrypted message to send to the party indicated in the <code>next</code> body attribute.</li>
 </ul>
 <p>When the internal message expires, it’s a good idea to also include an expiration for forward message requests. Include the <code>expires_time</code> header with the appropriate value.</p>
 <p>[TODO: describe use of the <code>attn</code> field, and explain why it’s an important construct that allows us to encrypt to all (cryptographic route) but deliver just to the agent most likely to be interested (network route).</p>
 <p>[TODO: further revise the following paragraph to clarify that either a key or a DID might be used. Each possibility makes certain tradeoffs, and may be appropriate in certain cases. Keys may be fragile in the face of rotation, and they require a lot of knowledge/maintenance cost for the external mediator. However, DID key references and DIDs may introduce some complications in how the recipient proves control of a DID (a requirement for security, but also a privacy eroder).]</p>
 <p>For most external mediators, the value of the <code>next</code> field is likely to be a DID, not a key. However… (see previous TODO note). This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn’t need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md">RFC 0211: Route Coordination</a>), but that is outside the scope of concerns of this protocol.</p>
-<p>The attachment(s) in the <code>payloads~attach</code> field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.</p>
+<p>The attachment(s) in the <code>attachments</code> field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.</p>
 <h4 id="rewrapping"><a class="toc-anchor" href="#rewrapping">§</a> Rewrapping</h4>
 <p>Normally, the payload attached to the <code>forward</code> message received by the mediator is transmitted directly to the receiver with no further packaging. However, optionally, the mediator can attach the opaque payload to a new <code>forward</code> message, which then acts as a fresh outer envelope for the second half of the delivery. This <a href="#rewrapping">rewrapping</a> means that the “onion” of packed messages stays the same size rather than getting smaller as a result of the forward operation:</p>
 <p><img src="../collateral/routing-roles-2.png" alt="re-wrapped sequence"></p>
@@ -654,19 +654,20 @@ Please see <a href="#message-types">Message Types</a> for details about media ty
 <p>Each attachment is contained within the following structure.</p>
 <ul>
 <li><code>id</code>: Identifies attached content within the scope of a given message. Recommended on appended attachment descriptors. Possible but generally unused on embedded attachment descriptors. Never required if no references to the attachment exist; if omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because <code>id</code> is used to compose URIs, it is recommended that this name be brief and avoid spaces and other characters that require URI escaping.</li>
-<li><code>description</code>: An optional human-readable description of the content.</li>
+<li><code>description</code>: [optional] A human-readable description of the content.</li>
 <li><code>filename</code>: A hint about the name that might be used if this attachment is persisted as a file. It is not required, and need not be unique. If this field is present and <code>mime-type</code> is not, the extension on the filename may be used to infer a MIME type.</li>
-<li><code>mime_type</code>: Describes the MIME type of the attached content. Optional but recommended.</li>
+<li><code>format</code>: [optional] Describes the format of the attachment (ie)</li>
+<li><code>mime_type</code>: [optional] Describes the MIME type of the attached content.</li>
 <li><code>lastmod_time</code>: A hint about when the content in this attachment was last modified.</li>
-<li><code>byte_count</code>: Optional, and mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.</li>
+<li><code>byte_count</code>: [optional] mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.</li>
 <li><code>data</code>: A JSON object that gives access to the actual content of the attachment. Contains the following subfields:
 <ul>
-<li><code>jws</code>: A JSON Web Signature over the content of the attachment. Optional.</li>
-<li><code>hash</code>: The hash of the content encoded in multi-hash format. Optional. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the <code>links</code> data attribute.</li>
-<li><code>links</code>: A list of zero or more locations at which the content may be fetched. Optional.</li>
-<li><code>base64</code>: Base64-encoded data, when representing arbitrary content inline instead of via <code>links</code>. Optional.</li>
+<li><code>jws</code>: [optional] A JSON Web Signature over the content of the attachment.</li>
+<li><code>hash</code>: [optional] The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the <code>links</code> data attribute.</li>
+<li><code>links</code>: [optional] A list of zero or more locations at which the content may be fetched.</li>
+<li><code>base64</code>: [optional]Base64-encoded data, when representing arbitrary content inline instead of via <code>links</code>.</li>
 <li><code>jwe</code>: Already encrypted data in the form of a JWE.</li>
-<li><code>json</code>: Directly embedded JSON data, when representing content inline instead of via <code>links</code>, and when the content is natively conveyable as JSON. Optional.</li>
+<li><code>json</code>: [optional] Directly embedded JSON data, when representing content inline instead of via <code>links</code>, and when the content is natively conveyable as JSON.</li>
 </ul>
 </li>
 </ul>
@@ -807,7 +808,7 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
     &quot;didcomm/v2&quot;,
     &quot;didcomm/aip2;env=rfc587&quot;
   ],
-  &quot;request~attach&quot;: [
+  &quot;attachments&quot;: [
     {
         &quot;@id&quot;: &quot;request-0&quot;,
         &quot;mime-type&quot;: &quot;application/json&quot;,
@@ -827,7 +828,7 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
 <li><code>accept</code> - [optional] an array of media (aka mime) types in the order of preference of the sender that the receiver can use in responding to the message.
 If <code>accept</code> is not specified, the receiver uses its preferred choice to respond to the message.
 Please see <a href="#message-types">Message Types</a> for details about media types.</li>
-<li><code>request~attach</code> - an attachment decorator containing an array of request messages in order of preference that the receiver can using in responding to the message. Each message in the array is a rough equivalent of the others, an all are in pursuit of the stated <code>goal</code> and <code>goal_code</code>. Only one of the messages should be chosen and acted upon.
+<li><code>attachments</code> - an array of attachments that will contain the invitation messages in order of preference that the receiver can using in responding to the message. Each message in the array is a rough equivalent of the others, an all are in pursuit of the stated <code>goal</code> and <code>goal_code</code>. Only one of the messages should be chosen and acted upon.
 <ul>
 <li>While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.</li>
 </ul>
@@ -860,20 +861,20 @@ Please see <a href="#message-types">Message Types</a> for details about media ty
   <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
       <span class="token property">"goal_code"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
       <span class="token property">"goal"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
-      <span class="token property">"request~attach"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-          <span class="token punctuation">{</span>
-              <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"request-0"</span><span class="token punctuation">,</span>
-              <span class="token property">"mime-type"</span><span class="token operator">:</span> <span class="token string">"application/json"</span><span class="token punctuation">,</span>
-              <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-                  <span class="token property">"json"</span><span class="token operator">:</span> <span class="token string">"&lt;json of protocol message>"</span>
-              <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"attachments"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+          <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"request-0"</span><span class="token punctuation">,</span>
+          <span class="token property">"mime-type"</span><span class="token operator">:</span> <span class="token string">"application/json"</span><span class="token punctuation">,</span>
+          <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+              <span class="token property">"json"</span><span class="token operator">:</span> <span class="token string">"&lt;json of protocol message>"</span>
           <span class="token punctuation">}</span>
-      <span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <p>Whitespace removed:</p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/out-of-band/0.1/invitation"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span><span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span><span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"goal_code"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"goal"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"request~attach"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"@id"</span><span class="token operator">:</span><span class="token string">"request-0"</span><span class="token punctuation">,</span><span class="token property">"mime-type"</span><span class="token operator">:</span><span class="token string">"application/json"</span><span class="token punctuation">,</span><span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"json"</span><span class="token operator">:</span><span class="token string">"&lt;json of protocol message>"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/out-of-band/0.1/invitation"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span><span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span><span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"goal_code"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"goal"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"attachments"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"@id"</span><span class="token operator">:</span><span class="token string">"request-0"</span><span class="token punctuation">,</span><span class="token property">"mime-type"</span><span class="token operator">:</span><span class="token string">"application/json"</span><span class="token punctuation">,</span><span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"json"</span><span class="token operator">:</span><span class="token string">"&lt;json of protocol message>"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
 </code></pre>
 <p>Base 64 URL Encoded:</p>
 <pre class="language-text"><code class="language-text">eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=

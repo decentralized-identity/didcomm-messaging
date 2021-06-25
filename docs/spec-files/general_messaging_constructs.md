@@ -25,18 +25,19 @@ Attachments are contained within a list in the `attachments` header.
 Each attachment is contained within the following structure.
 
 - `id`: Identifies attached content within the scope of a given message. Recommended on appended attachment descriptors. Possible but generally unused on embedded attachment descriptors. Never required if no references to the attachment exist; if omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because `id` is used to compose URIs, it is recommended that this name be brief and avoid spaces and other characters that require URI escaping.
-- `description`: An optional human-readable description of the content.
+- `description`: [optional] A human-readable description of the content.
 - `filename`: A hint about the name that might be used if this attachment is persisted as a file. It is not required, and need not be unique. If this field is present and `mime-type` is not, the extension on the filename may be used to infer a MIME type.
-- `mime_type`: Describes the MIME type of the attached content. Optional but recommended.
+- `format`: [optional] Describes the format of the attachment (ie)
+- `mime_type`: [optional] Describes the MIME type of the attached content.
 - `lastmod_time`: A hint about when the content in this attachment was last modified.
-- `byte_count`: Optional, and mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
+- `byte_count`: [optional] mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
 - `data`: A JSON object that gives access to the actual content of the attachment. Contains the following subfields:
-  - `jws`: A JSON Web Signature over the content of the attachment. Optional.
-  - `hash`: The hash of the content encoded in multi-hash format. Optional. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the `links` data attribute. 
-  - `links`: A list of zero or more locations at which the content may be fetched. Optional.
-  - `base64`: Base64-encoded data, when representing arbitrary content inline instead of via `links`. Optional.
+  - `jws`: [optional] A JSON Web Signature over the content of the attachment.
+  - `hash`: [optional] The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the `links` data attribute. 
+  - `links`: [optional] A list of zero or more locations at which the content may be fetched.
+  - `base64`: [optional]Base64-encoded data, when representing arbitrary content inline instead of via `links`.
   - `jwe`: Already encrypted data in the form of a JWE.
-  - `json`: Directly embedded JSON data, when representing content inline instead of via `links`, and when the content is natively conveyable as JSON. Optional.
+  - `json`: [optional] Directly embedded JSON data, when representing content inline instead of via `links`, and when the content is natively conveyable as JSON.
 
 ### Example
 
