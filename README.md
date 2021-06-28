@@ -5,6 +5,15 @@ DIDComm Messaging is a powerful way for people, institutions, and IoT things to 
 
 This repo is where we develops specs and reference code to explain DIDComm Messaging. Some of the work incubated here is likely to be standardized at IETF or in other places.
 
+### Implementations
+
+Here are links to some implementations of the DIDComm v2 spec that you may find useful. This WG is not endorsing these implementations in any special way -- simply listing ones we know about. They might be at different levels of maturity/conformance. If you want to add something to this list, please raise a PR against the repo to let us know.
+
+* JavaScript: https://github.com/uport-project/veramo
+* Go: https://github.com/hyperledger/aries-framework-go/tree/main/pkg/didcomm/packer
+* Rust: https://github.com/decentralized-identity/didcomm-rs
+* WACI/PEx JavaScript: https://github.com/aviarytech/wacinsteins-monster/pull/3
+
 ### Artifacts
 
 Browse the latest rendered draft of the spec [here](https://identity.foundation/didcomm-messaging/spec/) and its underlying markdown files [here](docs/spec-files/).
