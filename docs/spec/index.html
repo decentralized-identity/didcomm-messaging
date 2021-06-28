@@ -680,8 +680,8 @@ Please see <a href="#message-types">Message Types</a> for details about media ty
 <li><code>id</code>: Identifies attached content within the scope of a given message. Recommended on appended attachment descriptors. Possible but generally unused on embedded attachment descriptors. Never required if no references to the attachment exist; if omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because <code>id</code> is used to compose URIs, it is recommended that this name be brief and avoid spaces and other characters that require URI escaping.</li>
 <li><code>description</code>: [optional] A human-readable description of the content.</li>
 <li><code>filename</code>: A hint about the name that might be used if this attachment is persisted as a file. It is not required, and need not be unique. If this field is present and <code>mime-type</code> is not, the extension on the filename may be used to infer a MIME type.</li>
-<li><code>format</code>: [optional] Describes the format of the attachment (ie)</li>
 <li><code>mime_type</code>: [optional] Describes the MIME type of the attached content.</li>
+<li><code>format</code>: [optional] Describes the format of the attachment if the <code>mime_type</code> is not sufficient.</li>
 <li><code>lastmod_time</code>: A hint about when the content in this attachment was last modified.</li>
 <li><code>byte_count</code>: [optional] mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.</li>
 <li><code>data</code>: A JSON object that gives access to the actual content of the attachment. Contains the following subfields:
