@@ -30,7 +30,7 @@ When a message is *both* signed and encrypted, the plaintext is signed, and then
 
 The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm signed message MUST be `application/didcomm-signed+json`.
 
-The media type of the envelope MUST be set in the `typ` [property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the JWS and the media type of the payload MUST be set in the `cty` [property](https://tools.ietf.org/html/rfc7515#section-4.1.10) of the JWS.
+The media type of the envelope MUST be set in the `typ` [property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the JWS.
 
 When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm signed messages SHOULD be `dcsm`, giving a globbing pattern of `*.dcsm`; this SHOULD be be read as "Star Dot D C S M" or as "D C S M" files. A possible icon for this media type depicts a signed envelope ([svg](../collateral/dcsm.svg) | [256x256](../collateral/dcsm-256.png) | [128x128](../collateral/dcsm-128.png) | [64x64](../collateral/dcsm-64.png)):
 
@@ -44,7 +44,7 @@ A **DIDComm encrypted message** is an encrypted [JWM (JSON Web Messages)](https:
 
 >Note: If future versions of this spec allow binary encodings, variations like `application/didcomm-encrypted+cbor` (see [CBOR RFC 7049, section 7.5](https://tools.ietf.org/html/rfc7049#section-7.5)), `application/didcomm-encrypted+msgpack`, or `application/didcomm-encrypted+protobuf` may become reasonable. Future DIDComm specs that encompass comm patterns other than messaging &mdash; DIDComm multicast or DIDComm streaming, for example &mdash; might use a suffix: `application/didcomm-encrypted-multicast` or similar.
 
-The media type of the envelope MUST be set in the `typ` [property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE and the media type of the payload MUST be set in the `cty` [property](https://tools.ietf.org/html/rfc7516#section-4.1.12) of the JWE. Note, if the JWE wraps another JWE, according to [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) the use of `application/JWM` for `cty` [property](https://tools.ietf.org/html/rfc7516#section-4.1.12) is mandated.
+The media type of the envelope MUST be set in the `typ` [property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE.
 
 When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm encrypted messages SHOULD be `dcem`, giving a globbing pattern of `*.dcem`; this SHOULD be be read as "Star Dot D C E M" or as "D C E M" files. A possible icon for this file format depicts an envelope with binary overlay, protected by a lock ([svg](../collateral/dcem.svg) | [256x256](../collateral/dcem-256.png) | [128x128](../collateral/dcem-128.png) | [64x64](../collateral/dcem-64.png)):
 
@@ -55,13 +55,13 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 The following table provides an overview of examples for using the media type properties in various 
 DIDComm messages:
 
-| DIDComm message | `typ` | `cty` |
-|-----------------|-------|-------|
-| Encrypted | `application/didcomm-encrypted+json`| `application/didcomm-plain+json`|
-| Signed, then encrypted | `application/didcomm-encrypted+json`| `application/JWM` |
-| Encrypted, then encrypted | `application/didcomm-encrypted+json` | `application/JWM` |
-| Signed | `application/didcomm-signed+json` | `application/didcomm-plain+json`|
-| Plaintext | `application/didcomm-plain+json`| -
+| DIDComm message | `typ` |
+|-----------------|-------|
+| Encrypted | `application/didcomm-encrypted+json`|
+| Signed, then encrypted | `application/didcomm-encrypted+json`|
+| Encrypted, then encrypted | `application/didcomm-encrypted+json` |
+| Signed | `application/didcomm-signed+json` |
+| Plaintext | `application/didcomm-plain+json`|
 
 ## Negotiating Compatibility
 
