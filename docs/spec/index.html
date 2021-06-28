@@ -462,6 +462,30 @@
 <p>Signing can allow DIDs to be anchored via keys not usable for encrypting DIDComm messages.</p>
 <h3 id="examples-2"><a class="toc-anchor" href="#examples-2">§</a> Examples</h3>
 <p>TODO: Add examples here</p>
+<h2 id="threading"><a class="toc-anchor" href="#threading">§</a> Threading</h2>
+<p>DIDComm provides threading as foundation for extremely powerful protocol features. For background on the intent and best practices for threading, please see the <a href="http://example.com/TODO--find-right-way-to-link-to-section-in-guide">Implementers Guide</a>.</p>
+<h3 id="message-ids"><a class="toc-anchor" href="#message-ids">§</a> Message IDs</h3>
+<p>All plaintext DIDComm messages MUST have an <code>id</code> property, declared in the JWM header. A message without an <code>id</code> property SHOULD be considered invalid and SHOULD be rejected; it MUST NOT be interpreted as part of a multi-message interaction.</p>
+<p>The value of <code>id</code> is a short (&lt;=32 bytes) string consisting entirely of <a href="https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3">unreserved URI characters</a> – meaning that it is not necessary to <a href="https://en.wikipedia.org/wiki/Percent-encoding">percent encode</a> the value to incorporate it in a URI. Beyond this requirement, its format is not strongly constrained, but use of <a href="https://datatracker.ietf.org/doc/html/rfc4122">UUIDs (RFC 4122)</a> is recommended. Because of the affinity for UUIDs, this field inherits UUID case-sensitivity semantics: it SHOULD be written in lower case but MUST be compared case-insensitively.</p>
+<p>The value of an <code>id</code> property SHOULD be globally, universally unique; at the very least, it MUST be unique across all interactions visible to the set of parties that see a given set of interactions.</p>
+<h3 id="threads"><a class="toc-anchor" href="#threads">§</a> Threads</h3>
+<p>A thread is uniquely identified by a thread ID. The thread ID is communicated by including a <code>thid</code> header in the JWM plaintext of the message. The value of <code>thid</code> MUST conform to the same constraints as the value of <code>id</code>. The DIDComm plaintext message that begins a thread MAY declare this property for the new thread. If no <code>thid</code> property is declared in the first message of an interaction, the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code> as well; that is, the message is interpreted as if both <code>id</code> and <code>thid</code> were present, containing the same value.</p>
+<p>All subsequent messages in a thread MUST include a <code>thid</code> header that contains the same value as the <code>thid</code> set in the first message of the thread. Messages that do not share the same <code>thid</code> MUST NOT be considered a part of the same thread.</p>
+<h3 id="parent-threads"><a class="toc-anchor" href="#parent-threads">§</a> Parent Threads</h3>
+<p>When one interaction triggers another, the first interaction is called the <strong>parent</strong> of the second. This MAY be modeled by incorporating a <code>pthid</code> header in the JWM plaintext of the child. The value of the child’s <code>pthid</code> header MUST obey the same constraints as <code>thid</code> and <code>id</code> values.</p>
+<p>Suppose a DIDComm-based protocol (and therefore, a thread of messages) is underway in which an issuer wants to give a credential to a holder. At a particular stage in this interaction, perhaps the issuer asks the prospective holder of the credential to pay for what they’re about to receive. For composability, encapsulation, reusability, and versioning reasons, negotiating and consummating payment is best modeled as a separable interaction from credential exchange — so a new sequence of messages (dedicated to payment) begins. In this example, the credential issuance interaction (message thread 1) is the parent of the payment interaction (message thread 2). The first message in thread 2 MUST contain a <code>pthid</code> header that references the <code>thid</code> from thread 1:</p>
+<pre class="language-jsonc"><code class="language-jsonc">{
+  &quot;id&quot;: &quot;new-uuid-for-payment-thread&quot;,
+  &quot;pthid&quot;: &quot;id-of-old-credential-issuance-thread&quot;
+  // ...more headers and message content...
+}
+
+</code></pre>
+<p>When a child protocol is a simple two-party interaction, mentioning the <code>pthid</code> in the first message of the child interaction is enough to establish context. However, in protocols involving more than two parties, the first message of the child protocol may not be seen by everyone, so simply mentioning <code>pthid</code> once may not provide enough context. Therefore, the rule is that each party in a child protocol MUST learn the identity of the parent thread via the first child protocol message they see. The simplest way to ensure this is to mention the <code>pthid</code> with every message in the child protocol.</p>
+<h3 id="didcomm-message-uris"><a class="toc-anchor" href="#didcomm-message-uris">§</a> DIDComm Message URIs</h3>
+<p>The <code>id</code>, <code>thid</code>, and <code>pthid</code> properties of any DIDComm message may be combined to form a URI that uniquely identifies the message (e.g., in debuggers, in log files, in archives). Such a scheme is out of scope for this spec, and support for it is OPTIONAL for implementers. This spec reserves the <code>didcomm://</code> URI prefix for future work with semantics like these; it SHALL NOT be used for other purposes.</p>
+<h3 id="gaps-resends-and-sophisticated-ordering"><a class="toc-anchor" href="#gaps-resends-and-sophisticated-ordering">§</a> Gaps, Resends, and Sophisticated Ordering</h3>
+<p>Message IDs and threads can be used to build very powerful features for detecting missing and out-of-order messages — and to recovery from them. For more information, see the <a href="http://example.com/TODO--find-right-way-to-link-to-section-in-guide">Implementers Guide</a>.</p>
 <h2 id="routing"><a class="toc-anchor" href="#routing">§</a> Routing</h2>
 <h3 id="routing-protocol"><a class="toc-anchor" href="#routing-protocol">§</a> Routing Protocol</h3>
 <h4 id="name-and-version"><a class="toc-anchor" href="#name-and-version">§</a> Name and Version</h4>
@@ -1213,6 +1237,15 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#examples-2">Examples</a></li>
 </ul>
 </li>
+<li><a href="#threading">Threading</a>
+<ul>
+<li><a href="#message-ids">Message IDs</a></li>
+<li><a href="#threads">Threads</a></li>
+<li><a href="#parent-threads">Parent Threads</a></li>
+<li><a href="#didcomm-message-uris">DIDComm Message URIs</a></li>
+<li><a href="#gaps-resends-and-sophisticated-ordering">Gaps, Resends, and Sophisticated Ordering</a></li>
+</ul>
+</li>
 <li><a href="#routing">Routing</a>
 <ul>
 <li><a href="#routing-protocol">Routing Protocol</a>
@@ -1325,7 +1358,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
             </slide-panels>
 
           </body>
-          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./docs/spec-files/","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","signature.md","routing.md","transports.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","out_of_band.md","feature_discovery.md","trustping.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
+          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./docs/spec-files/","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","signature.md","threading.md","routing.md","transports.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","out_of_band.md","feature_discovery.md","trustping.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
           <script src="../spec-up/compiled/body.js" data-manual></script>
         </html>
       
