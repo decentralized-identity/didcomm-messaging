@@ -26,7 +26,7 @@ A **DIDComm signed message** is a signed [JWM (JSON Web Messages)](https://tools
 
 Signed messages are not necessary to provide message integrity (tamper evidence), or to prove the sender to the recipient. Both of these guarantees automatically occur with the authenticated encryption in DIDComm encrypted messages. Signed messages are only necessary when the origin of plaintext must be provable to third parties, or when the sender can't be proven to the recipient by authenticated encryption because the recipient is not known in advance (e.g., in a broadcast scenario). Adding a signature when one is not needed [can degrade rather than enhance security because it relinquishes the sender's ability to speak off the record](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0049-repudiation/README.md#summary). We therefore expect signed messages to be used in a few cases, but not as a matter of course.
 
-When a message is *both* signed and encrypted, the plaintext is signed, and then the signed envelope is encrypted. The opposite order is not used, since it would imply that the signer committed to opaque data (which is unsafe and undermines non-repudiation).
+When a message is _both_ signed and encrypted, the plaintext is signed, and then the signed envelope is encrypted. The opposite order is not used, since it would imply that the signer committed to opaque data (which is unsafe and undermines non-repudiation).
 
 The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm signed message MUST be `application/didcomm-signed+json`.
 
@@ -40,9 +40,9 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 A **DIDComm encrypted message** is an encrypted [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) and hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm applications, and is the safest format for storing DIDComm data at rest.
 
- The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm encrypted non-nested message MUST be `application/didcomm-encrypted+json`.
+The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm encrypted non-nested message MUST be `application/didcomm-encrypted+json`.
 
->Note: If future versions of this spec allow binary encodings, variations like `application/didcomm-encrypted+cbor` (see [CBOR RFC 7049, section 7.5](https://tools.ietf.org/html/rfc7049#section-7.5)), `application/didcomm-encrypted+msgpack`, or `application/didcomm-encrypted+protobuf` may become reasonable. Future DIDComm specs that encompass comm patterns other than messaging &mdash; DIDComm multicast or DIDComm streaming, for example &mdash; might use a suffix: `application/didcomm-encrypted-multicast` or similar.
+> Note: If future versions of this spec allow binary encodings, variations like `application/didcomm-encrypted+cbor` (see [CBOR RFC 7049, section 7.5](https://tools.ietf.org/html/rfc7049#section-7.5)), `application/didcomm-encrypted+msgpack`, or `application/didcomm-encrypted+protobuf` may become reasonable. Future DIDComm specs that encompass comm patterns other than messaging &mdash; DIDComm multicast or DIDComm streaming, for example &mdash; might use a suffix: `application/didcomm-encrypted-multicast` or similar.
 
 The media type of the envelope MUST be set in the `typ` [property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE.
 
@@ -52,16 +52,16 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ### Examples
 
-The following table provides an overview of examples for using the media type properties in various 
+The following table provides an overview of examples for using the media type properties in various
 DIDComm messages:
 
-| DIDComm message | `typ` |
-|-----------------|-------|
-| Encrypted | `application/didcomm-encrypted+json`|
-| Signed, then encrypted | `application/didcomm-encrypted+json`|
+| DIDComm message           | `typ`                                |
+| ------------------------- | ------------------------------------ |
+| Encrypted                 | `application/didcomm-encrypted+json` |
+| Signed, then encrypted    | `application/didcomm-encrypted+json` |
 | Encrypted, then encrypted | `application/didcomm-encrypted+json` |
-| Signed | `application/didcomm-signed+json` |
-| Plaintext | `application/didcomm-plain+json`|
+| Signed                    | `application/didcomm-signed+json`    |
+| Plaintext                 | `application/didcomm-plain+json`     |
 
 ## Negotiating Compatibility
 
@@ -74,14 +74,14 @@ When parties want to communicate via DIDComm, a number of mechanisms must align.
 5. The protocol used to forward and route
 6. The protocol embodied in the plaintext messages
 
-Although DIDComm allows flexibility in each of these choices, it is not expected that a given DIDComm implementation will support many permutations. Rather, we expect a few sets of choices that commonly go together. We call a set of choices that work well together a __profile__. Profiles are identified by a string that matches the conventions of IANA media types, but they express choices about plaintext, encryption, signing, and routing in a single value. The following profile identifiers are defined in this version of the spec:
+Although DIDComm allows flexibility in each of these choices, it is not expected that a given DIDComm implementation will support many permutations. Rather, we expect a few sets of choices that commonly go together. We call a set of choices that work well together a **profile**. Profiles are identified by a string that matches the conventions of IANA media types, but they express choices about plaintext, encryption, signing, and routing in a single value. The following profile identifiers are defined in this version of the spec:
 
 ### Defined Profiles
 
-* `didcomm/aip1`: The encryption envelope, signing mechanism, plaintext conventions, and routing algorithms embodied in Aries AIP 1.0, circa 2020.
-* `didcomm/aip2;env=rfc19`: The signing mechanism, plaintext conventions, and routing algorithms embodied in Aries AIP 2.0, circa 2021 -- with the old-style encryption envelope from Aries RFC 0019. This legal variant of AIP 2.0 minimizes differences with codebases that shipped AIP 1.0 support.
-* `didcomm/aip2;env=rfc587`: The signing mechanism, plaintext conventions, and routing algorithms embodied in Aries AIP 2.0, circa 2021 -- with the new-style encryption envelope from Aries RFC 0587. This legal variant of AIP 2.0 lays the foundation for DIDComm v2 support by anticipating the eventual envelope change.
-* `didcomm/v2`: The encryption envelope, signing mechanism, plaintext conventions, and routing algorithms embodied in this spec.
+- `didcomm/aip1`: The encryption envelope, signing mechanism, plaintext conventions, and routing algorithms embodied in Aries AIP 1.0, circa 2020.
+- `didcomm/aip2;env=rfc19`: The signing mechanism, plaintext conventions, and routing algorithms embodied in Aries AIP 2.0, circa 2021 -- with the old-style encryption envelope from Aries RFC 0019. This legal variant of AIP 2.0 minimizes differences with codebases that shipped AIP 1.0 support.
+- `didcomm/aip2;env=rfc587`: The signing mechanism, plaintext conventions, and routing algorithms embodied in Aries AIP 2.0, circa 2021 -- with the new-style encryption envelope from Aries RFC 0587. This legal variant of AIP 2.0 lays the foundation for DIDComm v2 support by anticipating the eventual envelope change.
+- `didcomm/v2`: The encryption envelope, signing mechanism, plaintext conventions, and routing algorithms embodied in this spec.
 
 Profiles are named in the `accept` section of a DIDComm service endpoint and in an out-of-band message. When Alice declares that she accepts `didcomm/v2`, she is making a declaration about more than her own endpoint. She is saying that all publicly visible steps in an inbound route to her will use the `didcomm/v2` profile, such that a sender only has to use `didcomm/v2` choices to get the message from Alice's outermost mediator to Alice's edge. It is up to Alice to select and configure mediators and internal routing in such a way that this is true for the sender.
 
@@ -95,16 +95,16 @@ The following example shows common elements of a plaintext message. Further deta
 
 ```json
 {
-    "typ": "application/didcomm-plain+json",
-    "id": "1234567890",
-    "type": "<message-type-uri>",
-    "from": "did:example:alice",
-    "to": ["did:example:bob"],
-    "created_time": 1516269022,
-    "expires_time": 1516385931,
-    "body": {
-    	"messagespecificattribute": "and its value"
-	}
+  "typ": "application/didcomm-plain+json",
+  "id": "1234567890",
+  "type": "<message-type-uri>",
+  "from": "did:example:alice",
+  "to": ["did:example:bob"],
+  "created_time": 1516269022,
+  "expires_time": 1516385931,
+  "body": {
+    "messagespecificattribute": "and its value"
+  }
 }
 ```
 
@@ -120,19 +120,23 @@ The predefined attributes of a DIDComm plaintext message at the level of its out
 
 - **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid DID or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience.
 
-    When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to `BCC:` addresses).
-    
-    The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the `forward` message contains a `next` attribute in its body that specifies the target for the next routing operation.
+  When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to `BCC:` addresses).
+
+  The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the `forward` message contains a `next` attribute in its body that specifies the target for the next routing operation.
 
 - **from** - OPTIONAL. Sender identifier. The `from` attribute MUST be a string that is a valid DID or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. See the [message authentication](#Message-Authentication) section for additional details.
 
-    When the sender wishes to be anonymous, they should use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose.
+  When the sender wishes to be anonymous, they should use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose.
+
+- **thid** - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included the `id` property of the message MUST be treated as the value of the `thid`.
+
+- **pthid** - OPTIONAL. Parent thread identifier. If the message is a child of a thread the `pthid` will uniquely identify which thread is the parent.
 
 - **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.
 
-- **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is considered no longer valid by the sender. When omitted, the message is considered to have no expiration by the sender. 
+- **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is considered no longer valid by the sender. When omitted, the message is considered to have no expiration by the sender.
 
-In the outer packaging of message metadata, DIDComm follows the extensibility pattern established by the JW* family of standards. (It also emulates the design of message headers in SMTP, request headers in HTTP, and labels on physical pieces of mail.) A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields should ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.
+In the outer packaging of message metadata, DIDComm follows the extensibility pattern established by the JW\* family of standards. (It also emulates the design of message headers in SMTP, request headers in HTTP, and labels on physical pieces of mail.) A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields should ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.
 
 Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), DIDComm explicitly rejects the `X-*` headers convention that creates divergent pseudo-standards; if a new header needs broad support, it must be standardized properly. Alternatively, a JSON-LD `@context` header can be added, providing namespacing for fields other than those predefined in the spec. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.
 
@@ -140,9 +144,9 @@ Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), DIDComm expl
 
 Headers can be simple (mapping a header name to an integer or a string) or structured (mapping a header name to JSON substructure -- an array or JSON object). When defining a new header type, the following guidelines apply:
 
-* Headers SHOULD NOT use more structure than necessary; simple headers are preferred.
-* However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP `Accept` header. ([HTTP Structured Headers](https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15) provide similar functionality but are unnecessary here, since DIDComm plaintext already has an easily parseable syntax.)
-* Headers that are only meaningful together SHOULD be grouped into a JSON object.
+- Headers SHOULD NOT use more structure than necessary; simple headers are preferred.
+- However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP `Accept` header. ([HTTP Structured Headers](https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15) provide similar functionality but are unnecessary here, since DIDComm plaintext already has an easily parseable syntax.)
+- Headers that are only meaningful together SHOULD be grouped into a JSON object.
 
 #### Relationship to JSON-LD
 
@@ -193,17 +197,17 @@ The JWT is constructed as follows, with appropriate values changed.
 
 ```json
 {
-    "typ": "application/didcomm-plain+json",
-    "id": "1234567890",
-    "type": "<message-type-uri>",
-    "from": "did:example:alice2",
-    "from_prior": "<JWT with sub:did:example:alice2 and iss:did:example:alice>",
-    "to": ["did:example:bob"],
-    "created_time": 1516269022,
-    "expires_time": 1516385931,
-    "body": {
-    	"messagespecificattribute": "and its value"
-	}
+  "typ": "application/didcomm-plain+json",
+  "id": "1234567890",
+  "type": "<message-type-uri>",
+  "from": "did:example:alice2",
+  "from_prior": "<JWT with sub:did:example:alice2 and iss:did:example:alice>",
+  "to": ["did:example:bob"],
+  "created_time": 1516269022,
+  "expires_time": 1516385931,
+  "body": {
+    "messagespecificattribute": "and its value"
+  }
 }
 ```
 

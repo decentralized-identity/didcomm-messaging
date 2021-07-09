@@ -20,8 +20,8 @@ The following section defines a JWM profile for DIDComm messages. This profile d
 - **reply_to** - OPTIONAL. Reply to. The `reply_to` attribute value MUST be an array of strings where each element is a valid [DID URL](https://w3c.github.io/did-core/#did-url-syntax) without the [Fragment component](https://w3c.github.io/did-core/#fragment) which identifies the recipients of the reply to the message.
 - **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message.
 - **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired.
-- **thread_id** - OPTIONAL. Identifier for the current protocol's _thread_. If the `thread_id` is defined, the thread_id MUST be the value given. But if the `thread_id` is not defined, the `thread_id` MUST be implicitly defined as the `id` of the given message and that message MUST be regarded the first message of a new thread.
-- **pthread_id** - OPTIONAL. Identifier for the _parent thread_ from which this one branched off from.
+- **thid** - OPTIONAL. Identifier for the current protocol's _thread_. If the `thid` is defined, the thid MUST be the value given. But if the `thid` is not defined, the `thid` MUST be implicitly defined as the `id` of the given message and that message MUST be regarded the first message of a new thread.
+- **pthid** - OPTIONAL. Identifier for the _parent thread_ from which this one branched off from.
 
 ### Example JWM Message Payload
 
@@ -33,8 +33,8 @@ The following section defines a JWM profile for DIDComm messages. This profile d
     "expires_time":1516239022,
     "created_time":1516269022,
     "reply_url": "https://agents-r-us.com/12345",
-    "thread_id": "51c4f434-2c7b-499d-8f22-9edbd889b257",
-    "pthread_id": "b7c217c1-7074-4b38-b0c8-287d3e594d0d"
+    "thid": "51c4f434-2c7b-499d-8f22-9edbd889b257",
+    "pthid": "b7c217c1-7074-4b38-b0c8-287d3e594d0d"
 }
 ```
 
@@ -92,11 +92,14 @@ When a sender would like for a message to feature a non-repudiable digital signa
 
 For digital signatures the following algorithms MUST be supported.
 
+| Algorithm(JWA)           | Description                                                        |
 |Algorithm(JWA)               |Description                                                         |
 |-----------------------------|--------------------------------------------------------------------|
 |EdDSA (with crv=Ed25519)     |Elliptic curve digital signature with edwards curves and SHA-512    |
 |ES256                        |Elliptic curve digital signature with NIST p-256 curve and SHA-256  |
 
+| EdDSA (with crv=Ed25519) | Elliptic curve digital signature with edwards curves and SHA-512   |
+| ES256                    | Elliptic curve digital signature with NIST p-256 curve and SHA-256 |
 
 ## Signed and Encrypted
 
