@@ -103,32 +103,62 @@
 <p><img src="../collateral/didcomm-envelopes.png" alt="DIDComm envelopes"></p>
 <h3 id="media-types"><a class="toc-anchor" href="#media-types">§</a> Media Types</h3>
 <p>Media types are based on the conventions of <a href="https://tools.ietf.org/html/rfc6838">RFC6838</a>. Similar to <a href="https://tools.ietf.org/html/rfc7515#section-4.1.9">RFC7515</a>, the <code>application/</code> prefix MAY be omitted and the recipient MUST treat media types not containing <code>/</code> as having the <code>application/</code> prefix present.</p>
-<h3 id="didcomm-plaintext-messages"><a class="toc-anchor" href="#didcomm-plaintext-messages">§</a> DIDComm Plaintext Messages</h3>
+<h4 id="didcomm-plaintext-messages"><a class="toc-anchor" href="#didcomm-plaintext-messages">§</a> DIDComm Plaintext Messages</h4>
 <p>A DIDComm message in its plaintext form, not packaged into any protective envelope, is known as a <strong>DIDComm plaintext message</strong>. Plaintext messages lack confidentiality and integrity guarantees, and are repudiable. They are therefore not normally transported across security boundaries. However, this may be a helpful format to inspect in debuggers, since it exposes underlying semantics, and it is the format used in this spec to give examples of headers and other internals. Depending on ambient security, plaintext may or may not be an appropriate format for DIDComm data at rest.</p>
 <p>When higher-level protocols are built atop DIDComm, applications remove the protective envelope(s) and process the plaintext that’s inside. Specs for higher-level protocols typically document message structure and provide examples in this format; protective envelopes are assumed but ignored as a low-level detail.</p>
-<p>Applications running one or more DIDComm-based protocols may wish to define their own media types for the protocols they support. Absent such customization, the preferred media type for a generic DIDComm plaintext message SHOULD be <code>application/didcomm-plain+json</code>. This correctly conveys the fact that code handling such content functions at a different level from DIDComm’s security and routing, and that generic JSON tools and actions are likely to be a helpful fallback in processing the content.</p>
-<p>DIDComm plaintext messages are also correctly understood as JWM content (see <a href="#plaintext-message-structure">Plaintext Message Structure</a>, below). Thus a media type for JWMs MIGHT be an accurate but more generic way to categorize them. However, not all JWMs are DIDComm messages, so this categorization is suboptimal. Similarly, <code>application/json</code> is true, but overly generic and therefore not recommended.</p>
+<p>The media type for a generic DIDComm plaintext message MUST be <code>application/didcomm-plain+json</code>. DIDComm plaintext messages are also correctly understood as JWM content (see <a href="#plaintext-message-structure">Plaintext Message Structure</a>, below) and the media type MUST be set in the <code>typ</code> <a href="https://tools.ietf.org/html/rfc7515#section-4.1.9">property</a> of the DIDComm plaintext message header.</p>
 <p>When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm plaintext messages SHOULD be <code>dcpm</code>, giving a globbing pattern of <code>*.dcpm</code>; this SHOULD be be read as “Star Dot D C P M” or as “D C P M” files. We imagine people will reference this media type by saying, “I am looking at a DIDComm Plaintext Message file”, or “This database record is in DIDComm Plaintext format”, or “Does my editor have a DIDComm Plaintext Message plugin?” A possible icon for this file format depicts green JSON text in a message bubble (<a href="../collateral/dcpm.svg">svg</a> | <a href="../collateral/dcpm-256.png">256x256</a> | <a href="../collateral/dcpm-128.png">128x128</a> | <a href="../collateral/dcpm-64.png">64x64</a>):</p>
 <p><img src="../collateral/dcpm-128.png" alt="DIDComm Plaintext Message Icon"></p>
-<h3 id="didcomm-signed-message"><a class="toc-anchor" href="#didcomm-signed-message">§</a> DIDComm Signed Message</h3>
-<p>A <strong>DIDComm signed message</strong> is a JWS envelope that associates a non-repudiable signature with the plaintext message inside it.</p>
+<h4 id="didcomm-signed-message"><a class="toc-anchor" href="#didcomm-signed-message">§</a> DIDComm Signed Message</h4>
+<p>A <strong>DIDComm signed message</strong> is a signed <a href="https://tools.ietf.org/html/draft-looker-jwm-01">JWM (JSON Web Messages)</a> envelope that associates a non-repudiable signature with the plaintext message inside it.</p>
 <p>Signed messages are not necessary to provide message integrity (tamper evidence), or to prove the sender to the recipient. Both of these guarantees automatically occur with the authenticated encryption in DIDComm encrypted messages. Signed messages are only necessary when the origin of plaintext must be provable to third parties, or when the sender can’t be proven to the recipient by authenticated encryption because the recipient is not known in advance (e.g., in a broadcast scenario). Adding a signature when one is not needed <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0049-repudiation/README.md#summary">can degrade rather than enhance security because it relinquishes the sender’s ability to speak off the record</a>. We therefore expect signed messages to be used in a few cases, but not as a matter of course.</p>
 <p>When a message is <em>both</em> signed and encrypted, the plaintext is signed, and then the signed envelope is encrypted. The opposite order is not used, since it would imply that the signer committed to opaque data (which is unsafe and undermines non-repudiation).</p>
-<p>The <a href="https://tools.ietf.org/html/rfc6838">media type</a> of a DIDComm signed message SHOULD be <code>application/didcomm-signed+json</code>.</p>
-<p>Because a DIDComm signed message is also a JWS, a true but less specific media type MIGHT be <code>application/jose</code>. (Although <code>application/jwt</code> is a registered media type, <code>application/jwe</code> and <code>application/jws</code> <a href="https://tools.ietf.org/html/rfc7516#section-9">are not</a>. This is <a href="https://mailarchive.ietf.org/arch/msg/jose/FRTPwiOLOc5DILfY_QFZyemn9VU/">deliberate</a>.) Using the more generic type is not recommended, as content categorized in this way is unlikely to get the DIDComm-specific handling it needs. Similarly, it is also true but overly generic and therefore not recommended to describe a DIDComm signed message as <code>application/json</code>.</p>
-<p>The media type of the envelope MUST be set in the <code>typ</code> <a href="https://tools.ietf.org/html/rfc7515#section-4.1.9">property</a> of the JWS and the media type of the payload MUST be set in the <code>cty</code> <a href="https://tools.ietf.org/html/rfc7515#section-4.1.10">property</a> of the JWS.</p>
+<p>The <a href="https://tools.ietf.org/html/rfc6838">media type</a> of a DIDComm signed message MUST be <code>application/didcomm-signed+json</code>.</p>
+<p>The media type of the envelope MUST be set in the <code>typ</code> <a href="https://tools.ietf.org/html/rfc7515#section-4.1.9">property</a> of the JWS.</p>
 <p>When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm signed messages SHOULD be <code>dcsm</code>, giving a globbing pattern of <code>*.dcsm</code>; this SHOULD be be read as “Star Dot D C S M” or as “D C S M” files. A possible icon for this media type depicts a signed envelope (<a href="../collateral/dcsm.svg">svg</a> | <a href="../collateral/dcsm-256.png">256x256</a> | <a href="../collateral/dcsm-128.png">128x128</a> | <a href="../collateral/dcsm-64.png">64x64</a>):</p>
 <p><img src="../collateral/dcsm-128.png" alt="DIDComm Signed Message Icon"></p>
-<h3 id="didcomm-encrypted-message"><a class="toc-anchor" href="#didcomm-encrypted-message">§</a> DIDComm Encrypted Message</h3>
-<p>A <strong>DIDComm encrypted message</strong> hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm applications, and is the safest format for storing DIDComm data at rest.</p>
-<p>The <a href="https://tools.ietf.org/html/rfc6838">media type</a> of a DIDComm encrypted message SHOULD be <code>application/didcomm-encrypted+json</code>.</p>
+<h4 id="didcomm-encrypted-message"><a class="toc-anchor" href="#didcomm-encrypted-message">§</a> DIDComm Encrypted Message</h4>
+<p>A <strong>DIDComm encrypted message</strong> is an encrypted <a href="https://tools.ietf.org/html/draft-looker-jwm-01">JWM (JSON Web Messages)</a> and hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm applications, and is the safest format for storing DIDComm data at rest.</p>
+<p>The <a href="https://tools.ietf.org/html/rfc6838">media type</a> of a DIDComm encrypted non-nested message MUST be <code>application/didcomm-encrypted+json</code>.</p>
 <blockquote>
 <p>Note: If future versions of this spec allow binary encodings, variations like <code>application/didcomm-encrypted+cbor</code> (see <a href="https://tools.ietf.org/html/rfc7049#section-7.5">CBOR RFC 7049, section 7.5</a>), <code>application/didcomm-encrypted+msgpack</code>, or <code>application/didcomm-encrypted+protobuf</code> may become reasonable. Future DIDComm specs that encompass comm patterns other than messaging — DIDComm multicast or DIDComm streaming, for example — might use a suffix: <code>application/didcomm-encrypted-multicast</code> or similar.</p>
 </blockquote>
-<p>Because a DIDComm encrypted message is also a JWE, a true but less specific media type MIGHT be <code>application/jose</code>. Note how this overlaps with the generic media type of the JWS of a DIDComm Signed Message. As with DIDComm signed Messages, using more generic media types is ambiguous and not recommended.</p>
-<p>The media type of the envelope MUST be set in the <code>typ</code> <a href="https://tools.ietf.org/html/rfc7516#section-4.1.11">property</a> of the JWE and the media type of the payload MUST be set in the <code>cty</code> <a href="https://tools.ietf.org/html/rfc7516#section-4.1.12">property</a> of the JWE.</p>
+<p>The media type of the envelope MUST be set in the <code>typ</code> <a href="https://tools.ietf.org/html/rfc7516#section-4.1.11">property</a> of the JWE.</p>
 <p>When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm encrypted messages SHOULD be <code>dcem</code>, giving a globbing pattern of <code>*.dcem</code>; this SHOULD be be read as “Star Dot D C E M” or as “D C E M” files. A possible icon for this file format depicts an envelope with binary overlay, protected by a lock (<a href="../collateral/dcem.svg">svg</a> | <a href="../collateral/dcem-256.png">256x256</a> | <a href="../collateral/dcem-128.png">128x128</a> | <a href="../collateral/dcem-64.png">64x64</a>):</p>
 <p><img src="../collateral/dcem-128.png" alt="DIDComm Encrypted Message Icon"></p>
+<h3 id="examples"><a class="toc-anchor" href="#examples">§</a> Examples</h3>
+<p>The following table provides an overview of examples for using the media type properties in various
+DIDComm messages:</p>
+<table>
+<thead>
+<tr>
+<th>DIDComm message</th>
+<th><code>typ</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Encrypted</td>
+<td><code>application/didcomm-encrypted+json</code></td>
+</tr>
+<tr>
+<td>Signed, then encrypted</td>
+<td><code>application/didcomm-encrypted+json</code></td>
+</tr>
+<tr>
+<td>Encrypted, then encrypted</td>
+<td><code>application/didcomm-encrypted+json</code></td>
+</tr>
+<tr>
+<td>Signed</td>
+<td><code>application/didcomm-signed+json</code></td>
+</tr>
+<tr>
+<td>Plaintext</td>
+<td><code>application/didcomm-plain+json</code></td>
+</tr>
+</tbody>
+</table>
 <h2 id="negotiating-compatibility"><a class="toc-anchor" href="#negotiating-compatibility">§</a> Negotiating Compatibility</h2>
 <p>When parties want to communicate via DIDComm, a number of mechanisms must align. These include:</p>
 <ol>
@@ -153,6 +183,7 @@
 <p>Prior to being sent to a recipient, the JWM is usually encrypted into a JWE according to the JWM spec.</p>
 <p>The following example shows common elements of a plaintext message. Further details and advanced usage are covered elsewhere in this spec.</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"&lt;message-type-uri>"</span><span class="token punctuation">,</span>
     <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
@@ -167,6 +198,9 @@
 <h3 id="message-headers"><a class="toc-anchor" href="#message-headers">§</a> Message Headers</h3>
 <p>The predefined attributes of a DIDComm plaintext message at the level of its outer packaging (effectively, the “headers” of the message) are as follows:</p>
 <ul>
+<li>
+<p><strong>typ</strong> - OPTIONAL. Media type of the JWM content and MUST be set to <code>application/didcomm-plain+json</code> for <strong>DIDComm plaintext messages</strong>.</p>
+</li>
 <li>
 <p><strong>id</strong> - REQUIRED. Message ID. The <code>id</code> attribute value MUST be unique to the sender.</p>
 </li>
@@ -229,6 +263,7 @@
 </code></pre>
 <h4 id="example-message-rotating-did"><a class="toc-anchor" href="#example-message-rotating-did">§</a> Example Message Rotating DID</h4>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"&lt;message-type-uri>"</span><span class="token punctuation">,</span>
     <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice2"</span><span class="token punctuation">,</span>
@@ -359,9 +394,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="media-types-2"><a class="toc-anchor" href="#media-types-2">§</a> Media Types</h2>
-<p>The media type of the envelope MUST be set in the <code>typ</code> <a href="https://tools.ietf.org/html/rfc7516#section-4.1.11">property</a> of the JWE and the media type of the payload MUST be set in the <code>cty</code> <a href="https://tools.ietf.org/html/rfc7516#section-4.1.12">property</a> of the JWE. The <a href="#message-types">message types</a> section provides general discussion of the media types.</p>
-<p>For example, following the guidelines of <a href="#message-types">message types</a>, an encrypted envelope with a plaintext DIDComm payload contains the <code>typ</code> property with the value <code>application/didcomm-encrypted+json</code> and <code>cty</code> property with the value <code>application/didcomm-plain+json</code>.</p>
 <h2 id="perfect-forward-secrecy"><a class="toc-anchor" href="#perfect-forward-secrecy">§</a> Perfect Forward Secrecy</h2>
 <p>Due to the triple Key Derivation algorithm used in ECDH-1PU, all messages sent via DIDComm have weak perfect forward secrecy without any additional security added by the transport layer. In ECDH-1PU this is achieved by encrypting the content encryption key with the output of the hash of the Ze (ECDH of ephemeral key and recipient static key) and Zs (ECDH of static sender key and recipient static key). With Ze bringing the changed derived secret in each message and Zs bringing the repudiable authenticity of each message, the resulting Z (hash of Ze and Zs) carries the properties of weak perfect forward secrecy and repudiable authenticity for each message as well.</p>
 <h2 id="key-ids-kid-and-skid-headers-references-in-the-did-document"><a class="toc-anchor" href="#key-ids-kid-and-skid-headers-references-in-the-did-document">§</a> Key IDs <code>kid</code> and <code>skid</code> headers references in the DID document</h2>
@@ -412,7 +444,7 @@
 <p>When the <code>skid</code> cannot be revealed in a plain-text JWE header (to avoid potentially leaking sender’s key id), the <code>skid</code> MAY be encrypted for each recipient. In this case, instead of having a <code>skid</code> protected header in the envelope, each recipient MAY include an <code>encrypted_skid</code> header with a value based on the encryption of <code>skid</code> using ECDH-ES <code>Z</code> computation of the <code>epk</code> and the recipient’s key as the encryption key.</p>
 <p>For applications that don’t require this protection, they MAY use <code>skid</code> protected header directly without any additional recipient headers.</p>
 <p>Applications MUST use either <code>skid</code> protected header or <code>encrypted_skid</code> recipients header but not both in the same envelope.</p>
-<h2 id="examples"><a class="toc-anchor" href="#examples">§</a> Examples</h2>
+<h2 id="examples-2"><a class="toc-anchor" href="#examples-2">§</a> Examples</h2>
 <p>While the details of encrypting a JWM into a JWE are included in the <a href="https://tools.ietf.org/html/draft-looker-jwm-01">JWM spec</a>, a few examples are included here for clarity.</p>
 <p>TODO: Add examples here</p>
 <h2 id="message-signing"><a class="toc-anchor" href="#message-signing">§</a> Message Signing</h2>
@@ -460,7 +492,7 @@
 <p>Out of Band Messages may be signed to provide tamper resistance.</p>
 <h4 id="did-anchoring"><a class="toc-anchor" href="#did-anchoring">§</a> DID Anchoring</h4>
 <p>Signing can allow DIDs to be anchored via keys not usable for encrypting DIDComm messages.</p>
-<h3 id="examples-2"><a class="toc-anchor" href="#examples-2">§</a> Examples</h3>
+<h3 id="examples-3"><a class="toc-anchor" href="#examples-3">§</a> Examples</h3>
 <p>TODO: Add examples here</p>
 <h2 id="threading"><a class="toc-anchor" href="#threading">§</a> Threading</h2>
 <p>DIDComm provides threading as foundation for extremely powerful protocol features. For background on the intent and best practices for threading, please see the <a href="http://example.com/TODO--find-right-way-to-link-to-section-in-guide">Implementers Guide</a>.</p>
@@ -619,7 +651,7 @@ Please see <a href="#message-types">Message Types</a> for details about media ty
 <p>HTTP(S) transports are an effective way to send a message to another online agent.</p>
 <ul>
 <li>Messages are transported via HTTP POST.</li>
-<li>The MIME Type for the POST request is <code>application/didcomm-encrypted+json</code>. See <a href="#message-types">Message Types</a> for a general discussion of mime types.</li>
+<li>The MIME Type for the POST request is set to the corresponding media type defined in <a href="#media-types">Media Types</a>, e.g., <code>application/didcomm-encrypted+json</code>.</li>
 <li>A successful message receipt MUST return a code in the 2xx HTTP Status Code range. It is recommended that a HTTP POST should return a 202 Accepted status code.</li>
 <li>POST requests are transmit only. Messages are only sent from the code that submitted the POST request.</li>
 <li>HTTP Redirects SHOULD be followed. Only Temporary Redirects (307) are acceptable. Permanent endpoint relocation should be managed with a DID Document update.</li>
@@ -824,8 +856,9 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
 <p>The out-of-band protocol a single message that is sent by the <em>sender</em>.</p>
 <h4 id="invitation-httpsdidcommorgout-of-bandverinvitation"><a class="toc-anchor" href="#invitation-httpsdidcommorgout-of-bandverinvitation">§</a> Invitation: <code>https://didcomm.org/out-of-band/%VER/invitation</code></h4>
 <pre class="language-jsonc"><code class="language-jsonc">{
-  &quot;@type&quot;: &quot;https://didcomm.org/out-of-band/%VER/invitation&quot;,
-  &quot;@id&quot;: &quot;&lt;id used for context as pthid&gt;&quot;,
+  &quot;typ&quot;: &quot;application/didcomm-plain+json&quot;,
+  &quot;type&quot;: &quot;https://didcomm.org/out-of-band/%VER/invitation&quot;,
+  &quot;id&quot;: &quot;&lt;id used for context as pthid&gt;&quot;,
   &quot;goal_code&quot;: &quot;issue-vc&quot;,
   &quot;goal&quot;: &quot;To issue a Faber College Graduate credential&quot;,
   &quot;accept&quot;: [
@@ -845,8 +878,8 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
 </code></pre>
 <p>The items in the message are:</p>
 <ul>
-<li><code>@type</code> - the DIDComm message type</li>
-<li><code>@id</code> - the unique ID of the message. The ID should be used as the <strong>parent</strong> thread ID (<code>pthid</code>) for the response message, rather than the more common thread ID (<code>thid</code>) of the response message. This enables multiple uses of a single out-of-band message.</li>
+<li><code>type</code> - the DIDComm message type</li>
+<li><code>id</code> - the unique ID of the message. The ID should be used as the <strong>parent</strong> thread ID (<code>pthid</code>) for the response message, rather than the more common thread ID (<code>thid</code>) of the response message. This enables multiple uses of a single out-of-band message.</li>
 <li><code>goal_code</code> - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.</li>
 <li><code>goal</code> - [optional] a self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.</li>
 <li><code>accept</code> - [optional] an array of media (aka mime) types in the order of preference of the sender that the receiver can use in responding to the message.
@@ -879,6 +912,7 @@ Please see <a href="#message-types">Message Types</a> for details about media ty
 <h5 id="example-out-of-band-message-encoding"><a class="toc-anchor" href="#example-out-of-band-message-encoding">§</a> Example Out-of-Band Message Encoding</h5>
 <p>Invitation:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span>
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/out-of-band/0.1/invitation"</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span>
   <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
@@ -898,13 +932,13 @@ Please see <a href="#message-types">Message Types</a> for details about media ty
 <span class="token punctuation">}</span>
 </code></pre>
 <p>Whitespace removed:</p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/out-of-band/0.1/invitation"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span><span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span><span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"goal_code"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"goal"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"attachments"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"@id"</span><span class="token operator">:</span><span class="token string">"request-0"</span><span class="token punctuation">,</span><span class="token property">"mime-type"</span><span class="token operator">:</span><span class="token string">"application/json"</span><span class="token punctuation">,</span><span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"json"</span><span class="token operator">:</span><span class="token string">"&lt;json of protocol message>"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/out-of-band/0.1/invitation"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span><span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span><span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"goal_code"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"goal"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"request~attach"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"@id"</span><span class="token operator">:</span><span class="token string">"request-0"</span><span class="token punctuation">,</span><span class="token property">"mime-type"</span><span class="token operator">:</span><span class="token string">"application/json"</span><span class="token punctuation">,</span><span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"json"</span><span class="token operator">:</span><span class="token string">"&lt;json of protocol message>"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
 </code></pre>
 <p>Base 64 URL Encoded:</p>
-<pre class="language-text"><code class="language-text">eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
+<pre class="language-text"><code class="language-text">eyJ0eXAiOiAiYXBwbGljYXRpb24vZGlkY29tbS1wbGFpbitqc29uIiwidHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMC4xL2ludml0YXRpb24iLCJpZCI6IjY5MjEyYTNhLWQwNjgtNGY5ZC1hMmRkLTQ3NDFiY2E4OWFmMyIsImZyb20iOiJkaWQ6ZXhhbXBsZTphbGljZSIsImJvZHkiOnsiZ29hbF9jb2RlIjoiIiwiZ29hbCI6ICIiLCJyZXF1ZXN0fmF0dGFjaCI6W3siQGlkIjoicmVxdWVzdC0wIiwibWltZS10eXBlIjoiYXBwbGljYXRpb24vanNvbiIsImRhdGEiOnsianNvbiI6Ijxqc29uIG9mIHByb3RvY29sIG1lc3NhZ2U-In19XX19
 </code></pre>
 <p>Example URL:</p>
-<pre class="language-text"><code class="language-text">http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
+<pre class="language-text"><code class="language-text">http://example.com/path?_oob=eyJ0eXAiOiAiYXBwbGljYXRpb24vZGlkY29tbS1wbGFpbitqc29uIiwidHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMC4xL2ludml0YXRpb24iLCJpZCI6IjY5MjEyYTNhLWQwNjgtNGY5ZC1hMmRkLTQ3NDFiY2E4OWFmMyIsImZyb20iOiJkaWQ6ZXhhbXBsZTphbGljZSIsImJvZHkiOnsiZ29hbF9jb2RlIjoiIiwiZ29hbCI6ICIiLCJyZXF1ZXN0fmF0dGFjaCI6W3siQGlkIjoicmVxdWVzdC0wIiwibWltZS10eXBlIjoiYXBwbGljYXRpb24vanNvbiIsImRhdGEiOnsianNvbiI6Ijxqc29uIG9mIHByb3RvY29sIG1lc3NhZ2U-In19XX19
 </code></pre>
 <p>DIDComm message URLs can be transferred via any method that can send text, including an email, SMS, posting on a website, or QR Code.</p>
 <p>Example Email Message:</p>
@@ -914,9 +948,9 @@ Subject: Your request to connect and receive your graduate verifiable credential
 
 Dear Alice,
 
-To receive your Faber College graduation certificate, click here to [connect](http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0= with us, or paste the following into your browser:
+To receive your Faber College graduation certificate, click here to [connect](http://example.com/path?_oob=eyJ0eXAiOiAiYXBwbGljYXRpb24vZGlkY29tbS1wbGFpbitqc29uIiwidHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMC4xL2ludml0YXRpb24iLCJpZCI6IjY5MjEyYTNhLWQwNjgtNGY5ZC1hMmRkLTQ3NDFiY2E4OWFmMyIsImZyb20iOiJkaWQ6ZXhhbXBsZTphbGljZSIsImJvZHkiOnsiZ29hbF9jb2RlIjoiIiwiZ29hbCI6ICIiLCJyZXF1ZXN0fmF0dGFjaCI6W3siQGlkIjoicmVxdWVzdC0wIiwibWltZS10eXBlIjoiYXBwbGljYXRpb24vanNvbiIsImRhdGEiOnsianNvbiI6Ijxqc29uIG9mIHByb3RvY29sIG1lc3NhZ2U-In19XX19 with us, or paste the following into your browser:
 
-http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8wLjEvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjogIiIsInJlcXVlc3R-YXR0YWNoIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfX0=
+http://example.com/path?_oob=eyJ0eXAiOiAiYXBwbGljYXRpb24vZGlkY29tbS1wbGFpbitqc29uIiwidHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMC4xL2ludml0YXRpb24iLCJpZCI6IjY5MjEyYTNhLWQwNjgtNGY5ZC1hMmRkLTQ3NDFiY2E4OWFmMyIsImZyb20iOiJkaWQ6ZXhhbXBsZTphbGljZSIsImJvZHkiOnsiZ29hbF9jb2RlIjoiIiwiZ29hbCI6ICIiLCJyZXF1ZXN0fmF0dGFjaCI6W3siQGlkIjoicmVxdWVzdC0wIiwibWltZS10eXBlIjoiYXBwbGljYXRpb24vanNvbiIsImRhdGEiOnsianNvbiI6Ijxqc29uIG9mIHByb3RvY29sIG1lc3NhZ2U-In19XX19
 
 If you don't have an identity agent for holding credentials, you will be given instructions on how you can get one.
 
@@ -1185,10 +1219,14 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 </li>
 <li><a href="#message-types">Message Types</a>
 <ul>
-<li><a href="#media-types">Media Types</a></li>
+<li><a href="#media-types">Media Types</a>
+<ul>
 <li><a href="#didcomm-plaintext-messages">DIDComm Plaintext Messages</a></li>
 <li><a href="#didcomm-signed-message">DIDComm Signed Message</a></li>
 <li><a href="#didcomm-encrypted-message">DIDComm Encrypted Message</a></li>
+</ul>
+</li>
+<li><a href="#examples">Examples</a></li>
 </ul>
 </li>
 <li><a href="#negotiating-compatibility">Negotiating Compatibility</a>
@@ -1217,11 +1255,10 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#anonymous-encryption">Anonymous Encryption</a></li>
 <li><a href="#curves-and-content-encryption-algorithms">Curves and Content Encryption Algorithms</a></li>
 <li><a href="#key-wrapping-algorithms">Key Wrapping Algorithms</a></li>
-<li><a href="#media-types-2">Media Types</a></li>
 <li><a href="#perfect-forward-secrecy">Perfect Forward Secrecy</a></li>
 <li><a href="#key-ids-kid-and-skid-headers-references-in-the-did-document">Key IDs <code>kid</code> and <code>skid</code> headers references in the DID document</a></li>
 <li><a href="#protecting-the-skid-header">Protecting the <code>skid</code> header</a></li>
-<li><a href="#examples">Examples</a></li>
+<li><a href="#examples-2">Examples</a></li>
 <li><a href="#message-signing">Message Signing</a>
 <ul>
 <li><a href="#algorithms">Algorithms</a></li>
@@ -1234,7 +1271,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#did-anchoring">DID Anchoring</a></li>
 </ul>
 </li>
-<li><a href="#examples-2">Examples</a></li>
+<li><a href="#examples-3">Examples</a></li>
 </ul>
 </li>
 <li><a href="#threading">Threading</a>
