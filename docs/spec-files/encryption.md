@@ -112,12 +112,13 @@ When Bob receives the envelope, the unpacking process on his end MUST resolve th
 
 Once resolved, the unpacker will then execute ECDH-1PU key derivation using this key and Bob's own recipient key found in the envelope's `recipients[0]` to unwrap the content encryption key.
 
-## Protecting the `skid` header
-When the `skid` cannot be revealed in a plain-text JWE header (to avoid potentially leaking sender's key id), the `skid` MAY be encrypted for each recipient. In this case, instead of having a `skid` protected header in the envelope, each recipient MAY include an `encrypted_skid` header with a value based on the encryption of `skid` using ECDH-ES `Z` computation of the `epk` and the recipient's key as the encryption key.
+## Protecting the Sender Identity
 
-For applications that don't require this protection, they MAY use `skid` protected header directly without any additional recipient headers.
+The header of the encrypted message envelope must necessarily reveal the key identifier used by the sender of the message (the `skid`) for recipients to resolve the sender's public key material in order to decrypt the message. In the case of communication between two public DIDs, this may directly correlate the sender of an encrypted message to a known identity for outside parties.
 
-Applications MUST use either `skid` protected header or `encrypted_skid` recipients header but not both in the same envelope.
+If two communicating parties establish single-purpose DIDs (peer DIDs) for secure communication, then the correlation to any publicly known identities may be limited, although multiple messages referencing the same DIDs will still provide an opportunity for correlation.
+
+If it is deemed necessary to avoid exposing the sender's public key identifier while maintaining an authenticated channel, an encrypted message envelope (employing ECDH-1PU) may be wrapped by an anonymous message envelope (employing ECDH-ES) targeting the same recipients.
 
 ## Examples
 
