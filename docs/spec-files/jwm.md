@@ -92,14 +92,11 @@ When a sender would like for a message to feature a non-repudiable digital signa
 
 For digital signatures the following algorithms MUST be supported.
 
-| Algorithm(JWA)           | Description                                                        |
 |Algorithm(JWA)               |Description                                                         |
 |-----------------------------|--------------------------------------------------------------------|
 |EdDSA (with crv=Ed25519)     |Elliptic curve digital signature with edwards curves and SHA-512    |
 |ES256                        |Elliptic curve digital signature with NIST p-256 curve and SHA-256  |
 
-| EdDSA (with crv=Ed25519) | Elliptic curve digital signature with edwards curves and SHA-512   |
-| ES256                    | Elliptic curve digital signature with NIST p-256 curve and SHA-256 |
 
 ## Signed and Encrypted
 

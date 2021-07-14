@@ -44,4 +44,4 @@ Anoncrypt was a method present in V1 that allowed a message to be encrypted to a
 
 #### Message Level Decorators now represented as Headers
 
-The adjusted structure of DIDComm messages now represents message level decorators as message headers. An example includes `thid` (previously known as `thread_id`).
+The adjusted structure of DIDComm messages now represents message level decorators as message headers. An example includes `thid`.
