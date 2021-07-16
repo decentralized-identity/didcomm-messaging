@@ -22,6 +22,22 @@ Any DIDComm message that continues a previously begun application-level protocol
 
 In addition, messages MAY use the [Advanced Sequencing](../../extensions/advanced_sequencing/main.md) extension to detect gaps in delivery or messages arriving out of order.
 
+### Route Tracing
+
+To troubleshoot routing issues, DIDComm offers a header, `trace`. Any party that processes a DIDComm plaintext message containing this header MAY do an HTTP POST of a **route trace report** to the URI in the header's value.
+
+This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as OpenTracing. It is only intended as a debugging or troubleshooting feature.
+
+[TODO: describe the trace report.] For example, in a message for Bob that is double-wrapped (once for his external mediator and once for his cloud agent), three plaintext messages might contain `trace` headers:
+
+1. The outermost message, decrypted by Bob's external mediator, containing forwarding instructions to Bob's cloud agent.
+2. The center message, decrypted by Bob's cloud agent, containing an inner encrypted payload and instructions to forward it to Bob's DID.
+3. The inner message, seen by Bob's iPhone.
+
+If Alice, the sender of this message, includes a `trace` header on each one, and if handlers of this message along the route cooperate with her request to trace, then Alice can learn where in a route a message delivery is failing.
+
+Tracing has security, privacy, and performance implications. Support for tracing is not required of DIDComm implementations, but it is recommended for parties that need sophisticated debugging. Parties that implement tracing MUST decide whether or not to honor trace requests based upon a policy that ensures accountability and transparency, and MUST default to reject tracing requests unless they have independent reason to believe that appropriate safeguards are in place. 
+
 ### Explicit problem reports
 
 DIDComm features a standard method for reporting problems to other parties.
