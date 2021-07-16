@@ -26,7 +26,7 @@ In addition, messages MAY use the [Advanced Sequencing](../../extensions/advance
 
 To troubleshoot routing issues, DIDComm offers a header, `trace`. Any party that processes a DIDComm plaintext message containing this header MAY do an HTTP POST of a **route trace report** to the URI in the header's value.
 
-This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as OpenTracing. It is only intended as a debugging or troubleshooting feature.
+This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as technologies like [OpenTracing](https://opentracing.io/). This mechanism also spans trust domains (paralleling a message's journey from Alice to a web service hosting Bob's endpoint, to Bob himself). It thus is quite different in scope from enterprise-centric logging and monitoring technolgies like Splunk and Kibana. It is only intended as an occasional DIDComm debugging or troubleshooting feature.
 
 [TODO: describe the trace report.] For example, in a message for Bob that is double-wrapped (once for his external mediator and once for his cloud agent), three plaintext messages might contain `trace` headers:
 
