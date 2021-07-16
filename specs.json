@@ -22,6 +22,7 @@
 		    "message_structure.md",
 		    "encryption.md",
         "signature.md",
+        "errors.md",
         "threading.md",
         "routing.md",
         "transports.md",
