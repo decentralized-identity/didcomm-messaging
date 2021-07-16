@@ -22,22 +22,6 @@ Any DIDComm message that continues a previously begun application-level protocol
 
 In addition, messages MAY use the [Advanced Sequencing](../../extensions/advanced_sequencing/main.md) extension to detect gaps in delivery or messages arriving out of order.
 
-#### Route Tracing
-
-To troubleshoot routing issues, DIDComm offers a header, `trace`. Any party that processes a DIDComm plaintext message containing this header MAY do an HTTP POST of a **route trace report** to the URI in the header's value.
-
->Note: This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as technologies like [OpenTracing](https://opentracing.io/). It also *spans* trust domains (paralleling a message's journey from Alice to a web service hosting Bob's endpoint, to Bob himself) -- and thus differs in scope from in-house logging and monitoring technolgies like Splunk and Kibana. Although DIDComm tracing could be integrated with these other technologies, doing so in a methodical way is probably an antipattern; it may indicate a misunderstanding about its purpose as a tool for ad hoc debugging or troubleshooting between unrelated parties.
-
-[TODO: describe the trace report.] For example, in a message for Bob that is double-wrapped (once for his external mediator and once for his cloud agent), three plaintext messages might contain `trace` headers:
-
-1. The outermost message, decrypted by Bob's external mediator, containing forwarding instructions to Bob's cloud agent.
-2. The center message, decrypted by Bob's cloud agent, containing an inner encrypted payload and instructions to forward it to Bob's DID.
-3. The inner message, seen by Bob's iPhone.
-
-If Alice, the sender of this message, includes a `trace` header on each one, and if handlers of this message along the route cooperate with her request to trace, then Alice can learn where in a route a message delivery is failing.
-
-Tracing has security, privacy, and performance implications. Support for tracing is not required of DIDComm implementations, but it is recommended for parties that need sophisticated debugging. Parties that implement tracing MUST decide whether or not to honor trace requests based upon a policy that ensures accountability and transparency, and MUST default to reject tracing requests unless they have independent reason to believe that appropriate safeguards are in place. 
-
 ### Explicit problem reports
 
 DIDComm features a standard method for reporting problems (errors) to other parties. This is not always possible (e.g., when a sender has o route to the other party, or when a recipient's crypto is incompatible with a sender's). But when it is possible, it can be very helpful.
@@ -80,6 +64,22 @@ The optional `owner` field declares who the reporter of the problem considers to
 The required `state_outcome` field tells what the sender's state state machine is in, in the parent protocol, after processing this error. In this case, the sender's state has reverted to `null`, meaning it considers the protocol to be aborted.
 
 The optional `escalate_to` field provides a URI where additional help on the issue can be received.
+
+### Route Tracing
+
+To troubleshoot routing issues, DIDComm offers a header, `trace`. Any party that processes a DIDComm plaintext message containing this header MAY do an HTTP POST of a **route trace report** to the URI in the header's value.
+
+>Note: This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as technologies like [OpenTracing](https://opentracing.io/). It also *spans* trust domains (paralleling a message's journey from Alice to a web service hosting Bob's endpoint, to Bob himself) -- and thus differs in scope from in-house logging and monitoring technolgies like Splunk and Kibana. Although DIDComm tracing could be integrated with these other technologies, doing so in a methodical way is probably an antipattern; it may indicate a misunderstanding about its purpose as a tool for ad hoc debugging or troubleshooting between unrelated parties.
+
+[TODO: describe the trace report.] For example, in a message for Bob that is double-wrapped (once for his external mediator and once for his cloud agent), three plaintext messages might contain `trace` headers:
+
+1. The outermost message, decrypted by Bob's external mediator, containing forwarding instructions to Bob's cloud agent.
+2. The center message, decrypted by Bob's cloud agent, containing an inner encrypted payload and instructions to forward it to Bob's DID.
+3. The inner message, seen by Bob's iPhone.
+
+If Alice, the sender of this message, includes a `trace` header on each one, and if handlers of this message along the route cooperate with her request to trace, then Alice can learn where in a route a message delivery is failing.
+
+Tracing has security, privacy, and performance implications. Support for tracing is not required of DIDComm implementations, but it is recommended for parties that need sophisticated debugging. Parties that implement tracing MUST decide whether or not to honor trace requests based upon a policy that ensures accountability and transparency, and MUST default to reject tracing requests unless they have independent reason to believe that appropriate safeguards are in place.
 
 ### Incompatible crypto 
 
