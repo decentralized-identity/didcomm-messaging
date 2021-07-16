@@ -22,7 +22,7 @@ Any DIDComm message that continues a previously begun application-level protocol
 
 In addition, messages MAY use the [Advanced Sequencing](../../extensions/advanced_sequencing/main.md) extension to detect gaps in delivery or messages arriving out of order.
 
-### Route Tracing
+#### Route Tracing
 
 To troubleshoot routing issues, DIDComm offers a header, `trace`. Any party that processes a DIDComm plaintext message containing this header MAY do an HTTP POST of a **route trace report** to the URI in the header's value.
 
