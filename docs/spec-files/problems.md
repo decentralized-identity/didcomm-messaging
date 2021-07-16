@@ -40,7 +40,7 @@ Tracing has security, privacy, and performance implications. Support for tracing
 
 ### Explicit problem reports
 
-DIDComm features a standard method for reporting problems to other parties.
+DIDComm features a standard method for reporting problems (errors) to other parties. This is not always possible (e.g., when a sender has o route to the other party, or when a recipient's crypto is incompatible with a sender's). But when it is possible, it can be very helpful.
 
 >NOTE: DIDComm calls these things "problems" instead of "errors" because we use the same reporting mechanism for both errors and warnings.
 
