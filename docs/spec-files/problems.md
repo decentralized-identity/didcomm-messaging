@@ -24,7 +24,11 @@ In addition, messages MAY use the [Advanced Sequencing](../../extensions/advance
 
 ### Explicit problem reports
 
-DIDComm features a standard method for reporting problems to other parties. It is to send a simple message called a **problem report** that looks like this:
+DIDComm features a standard method for reporting problems to other parties.
+
+>NOTE: DIDComm calls these things "problems" instead of "errors" because we use the same reporting mechanism for both errors and warnings.
+
+The mechanism requires the reporting party to send a simple message called a **problem report** that looks like this:
 
 ```json
 {
@@ -37,7 +41,8 @@ DIDComm features a standard method for reporting problems to other parties. It i
     "args": [
       "did:sov:C805sNYhMrjHiqZDTUASHg"
     ],
-    "owner": "did:example:foo",
+    "cause": "",
+    "trigger": "did:example:foo",
     "state_outcome": null,
     "escalate_to": "mailto:admin@foo.org"
   }
@@ -51,6 +56,8 @@ The required `code` field is a machine-readable string -- lower kabob case by co
 The optional `comment` field contains localizable, human-friendly text.
 
 The optional `args` field contains args that are associated with the code when it is defined. In this example, `args` apparently lists a DID that cannot be routed.
+
+The optional `cause` field allows the sender to include a stack trace or other background material to explain what triggered the error. This is akin to the `cause` property of Java's `Throwable`. 
 
 The optional `owner` field declares who the reporter of the problem considers to have the responsibility to do something about it. Typically this would be one of the parties in the protocol. If the sender plans to retry, it would be the sender's DID; if the sender wants to recipient to fix the problem, it would be the recipient's DID.
 
