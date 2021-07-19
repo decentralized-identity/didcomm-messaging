@@ -4,7 +4,7 @@ DIDComm Messaging
 **Specification Status:** Editor's Draft
 
 **Latest published version:**
-  [identity.foundation/didcomm-messaging/docs/spec](https://identity.foundation/didcomm-messaging/docs/spec)
+  [identity.foundation/didcomm-messaging/spec](https://identity.foundation/didcomm-messaging/spec)
 
 **Editors:**
 
