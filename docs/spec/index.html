@@ -183,16 +183,16 @@ DIDComm messages:</p>
 <p>Prior to being sent to a recipient, the JWM is usually encrypted into a JWE according to the JWM spec.</p>
 <p>The following example shows common elements of a plaintext message. Further details and advanced usage are covered elsewhere in this spec.</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-    <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"&lt;message-type-uri>"</span><span class="token punctuation">,</span>
-    <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
-    <span class="token property">"to"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:bob"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token property">"created_time"</span><span class="token operator">:</span> <span class="token number">1516269022</span><span class="token punctuation">,</span>
-    <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token number">1516385931</span><span class="token punctuation">,</span>
-    <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    	<span class="token property">"messagespecificattribute"</span><span class="token operator">:</span> <span class="token string">"and its value"</span>
-	<span class="token punctuation">}</span>
+  <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"&lt;message-type-uri>"</span><span class="token punctuation">,</span>
+  <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
+  <span class="token property">"to"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:bob"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"created_time"</span><span class="token operator">:</span> <span class="token number">1516269022</span><span class="token punctuation">,</span>
+  <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token number">1516385931</span><span class="token punctuation">,</span>
+  <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"messagespecificattribute"</span><span class="token operator">:</span> <span class="token string">"and its value"</span>
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <h3 id="message-headers"><a class="toc-anchor" href="#message-headers">§</a> Message Headers</h3>
@@ -209,12 +209,20 @@ DIDComm messages:</p>
 </li>
 <li>
 <p><strong>to</strong> - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid DID or <a href="https://w3c.github.io/did-core/#did-url-syntax">DID URL</a> (without the <a href="https://w3c.github.io/did-core/#fragment">fragment component</a>) that identifies a member of the message’s intended audience.</p>
+</li>
+</ul>
 <p>When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to <code>BCC:</code> addresses).</p>
 <p>The <code>to</code> header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the <code>forward</code> message contains a <code>next</code> attribute in its body that specifies the target for the next routing operation.</p>
-</li>
+<ul>
 <li>
 <p><strong>from</strong> - OPTIONAL. Sender identifier. The <code>from</code> attribute MUST be a string that is a valid DID or <a href="https://w3c.github.io/did-core/#did-url-syntax">DID URL</a> (without the <a href="https://w3c.github.io/did-core/#fragment">fragment component</a>) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. See the <a href="#Message-Authentication">message authentication</a> section for additional details.</p>
 <p>When the sender wishes to be anonymous, they should use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose.</p>
+</li>
+<li>
+<p><strong>thid</strong> - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code>.</p>
+</li>
+<li>
+<p><strong>pthid</strong> - OPTIONAL. Parent thread identifier. If the message is a child of a thread the <code>pthid</code> will uniquely identify which thread is the parent.</p>
 </li>
 <li>
 <p><strong>created_time</strong> - OPTIONAL. Message Created Time. The <code>created_time</code> attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.</p>
@@ -263,17 +271,17 @@ DIDComm messages:</p>
 </code></pre>
 <h4 id="example-message-rotating-did"><a class="toc-anchor" href="#example-message-rotating-did">§</a> Example Message Rotating DID</h4>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-    <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"&lt;message-type-uri>"</span><span class="token punctuation">,</span>
-    <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice2"</span><span class="token punctuation">,</span>
-    <span class="token property">"from_prior"</span><span class="token operator">:</span> <span class="token string">"&lt;JWT with sub:did:example:alice2 and iss:did:example:alice>"</span><span class="token punctuation">,</span>
-    <span class="token property">"to"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:bob"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token property">"created_time"</span><span class="token operator">:</span> <span class="token number">1516269022</span><span class="token punctuation">,</span>
-    <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token number">1516385931</span><span class="token punctuation">,</span>
-    <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    	<span class="token property">"messagespecificattribute"</span><span class="token operator">:</span> <span class="token string">"and its value"</span>
-	<span class="token punctuation">}</span>
+  <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"&lt;message-type-uri>"</span><span class="token punctuation">,</span>
+  <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice2"</span><span class="token punctuation">,</span>
+  <span class="token property">"from_prior"</span><span class="token operator">:</span> <span class="token string">"&lt;JWT with sub:did:example:alice2 and iss:did:example:alice>"</span><span class="token punctuation">,</span>
+  <span class="token property">"to"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:bob"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"created_time"</span><span class="token operator">:</span> <span class="token number">1516269022</span><span class="token punctuation">,</span>
+  <span class="token property">"expires_time"</span><span class="token operator">:</span> <span class="token number">1516385931</span><span class="token punctuation">,</span>
+  <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"messagespecificattribute"</span><span class="token operator">:</span> <span class="token string">"and its value"</span>
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <h4 id="rotation-limitations"><a class="toc-anchor" href="#rotation-limitations">§</a> Rotation Limitations</h4>
@@ -877,7 +885,7 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
 <p>First, no private information may be passed in the message. Private information should be passed between parties in encrypted messages only. Any protocol message that contains private information should not be passed via URL or QR code.</p>
 <p>Second, any identifiers passed in a message sent via URL or QR code must no longer be considered private. Any DID used or other identifier no longer considered private MUST be rotated over a secure connection if privacy is required.</p>
 <h5 id="message-correlation"><a class="toc-anchor" href="#message-correlation">§</a> Message Correlation</h5>
-<p>The <code>id</code> of the message passed in a URL or a QR code is used to as the <code>thread_id</code> on a response sent by the recipient of this message. The response recipient can use the <code>thread_id</code> to correlate it with the original message.</p>
+<p>The <code>id</code> of the message passed in a URL or a QR code is used to as the <code>thid</code> on a response sent by the recipient of this message. The response recipient can use the <code>thid</code> to correlate it with the original message.</p>
 <h5 id="messages-2"><a class="toc-anchor" href="#messages-2">§</a> Messages</h5>
 <p>Each message passed this way must be contained within an <code>out-of-band</code> message, as described below.</p>
 <p>The out-of-band protocol a single message that is sent by the <em>sender</em>.</p>
@@ -1058,7 +1066,7 @@ exchanged with a stranger.</p>
 <p>A <code>discover-features/disclose</code> message looks like this:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/discover-features/1.0/disclose"</span><span class="token punctuation">,</span>
-    <span class="token property">"thread_id"</span><span class="token operator">:</span> <span class="token string">"yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU"</span><span class="token punctuation">,</span>
+    <span class="token property">"thid"</span><span class="token operator">:</span> <span class="token string">"yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU"</span><span class="token punctuation">,</span>
     <span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span>
         <span class="token property">"protocols"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
             <span class="token punctuation">{</span>
@@ -1082,7 +1090,7 @@ your query, and some things I can do with each one.”</p>
 response is probably just as good:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/discover-features/1.0/disclose"</span><span class="token punctuation">,</span>
-  <span class="token property">"thread_id"</span><span class="token operator">:</span> <span class="token string">"yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU"</span><span class="token punctuation">,</span>
+  <span class="token property">"thid"</span><span class="token operator">:</span> <span class="token string">"yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU"</span><span class="token punctuation">,</span>
   <span class="token property">"protocols"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span><span class="token property">"ptid"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/tictactoe/1.0"</span><span class="token punctuation">}</span>
   <span class="token punctuation">]</span>
@@ -1172,7 +1180,7 @@ is not <code>false</code>, the receiver should reply as quickly as possible with
 <pre class="language-JSON"><code class="language-JSON">{
   &quot;type&quot;: &quot;https://didcomm.org/trust_ping/1.0/ping_response&quot;,
   &quot;id&quot;: &quot;e002518b-456e-b3d5-de8e-7a86fe472847&quot;,
-  &quot;thread_id&quot;: &quot;518be002-de8e-456e-b3d5-8fe472477a86&quot;
+  &quot;thid&quot;: &quot;518be002-de8e-456e-b3d5-8fe472477a86&quot;
 }
 </code></pre>
 <h4 id="trust"><a class="toc-anchor" href="#trust">§</a> Trust</h4>
