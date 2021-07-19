@@ -32,7 +32,7 @@ The new `to` and `from` attributes inside a DIDComm message allow for query para
 
 Relationship changes in V1 were handled inside the DID Exchange Protocol. In V2, relationship changes including discovery and rotation are handled in message headers.
 
-In V2, messages must evaluate the `from` and `from_prior` headers of every message prior to beginning the protocol message processing. 
+In V2, messages must evaluate the `from` and `from_prior` headers of every message prior to beginning the protocol message processing.
 
 #### No technical difference between Ephemeral Mode and Full Mode
 
@@ -44,5 +44,4 @@ Anoncrypt was a method present in V1 that allowed a message to be encrypted to a
 
 #### Message Level Decorators now represented as Headers
 
-The adjusted structure of DIDComm messages now represents message level decorators as message headers. An example includes `thread_id`.
-
+The adjusted structure of DIDComm messages now represents message level decorators as message headers. An example includes `thid`.
