@@ -487,7 +487,7 @@ DIDComm messages:</p>
 <p>If a message is signed and encrypted to add non-repudiation, it must be signed prior to encryption. This is known as a <a href="https://tools.ietf.org/html/draft-looker-jwm-01#section-1.2">nested JWM</a>.</p>
 <h3 id="algorithms"><a class="toc-anchor" href="#algorithms">§</a> Algorithms</h3>
 <p>When a sender would like for a message to feature a non-repudiable digital signature the JWA’s defined below can be used within the structure of a JWS.</p>
-<p>For digital signatures the following algorithms MUST be verifiable. At least one of the following curves MUST be supported for creating digital signatures.</p>
+<p>Implementations MUST be able to verify all of the following algorithms and MUST support signing with at least one.</p>
 <table>
 <thead>
 <tr>
