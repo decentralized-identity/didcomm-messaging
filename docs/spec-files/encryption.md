@@ -114,11 +114,11 @@ Once resolved, the unpacker will then execute ECDH-1PU key derivation using this
 
 ## Protecting the Sender Identity
 
-The header of the encrypted message envelope must necessarily reveal the key identifier used by the sender of the message (the `skid`) for recipients to resolve the sender's public key material in order to decrypt the message. In the case of communication between two public DIDs, this may directly correlate the sender of an encrypted message to a known identity for outside parties.
+When employing authenticated encryption, the header of the encrypted message envelope must necessarily reveal the key identifier used by the sender of the message (the `skid`). This is used by recipients to resolve the sender's public key material in order to decrypt the message. In the case of communication between two public DIDs, this may allow outside parties to directly correlate the sender of an encrypted message to a known identity.
 
 If two communicating parties establish single-purpose DIDs (peer DIDs) for secure communication, then the correlation to any publicly known identities may be limited, although multiple messages referencing the same DIDs will still provide an opportunity for correlation.
 
-If it is deemed necessary to avoid exposing the sender's public key identifier while maintaining an authenticated channel, an encrypted message envelope (employing ECDH-1PU) may be wrapped by an anonymous message envelope (employing ECDH-ES) targeting the same recipients.
+A layer of anonymous encryption (employing ECDH-ES) may be applied around an authenticated encryption envelope (employing ECDH-1PU), obscuring the sender's identity for all but the recipient of the inner envelope. In the case of a message forwarded via mediators, anonymous encryption is automatic.
 
 ## Examples
 
