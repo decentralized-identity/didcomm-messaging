@@ -6,9 +6,9 @@ Explains how to support advanced localization use cases.
 
 ## Scope
 
-DIDComm's `lang` and `accept-lang` headers cover most localization needs. However, some protocols may have push the envelope. For example, a three-party introduction protocol may be conducted among parties that have mutually contradictory language preferences. A government policy to be multilingual may require a sender to provide the same field value in multiple languages at the same time. A bilingual dictionary lookup protocol may place source and target language fields next to one another in the same message.
+DIDComm's `lang` and `accept-lang` headers cover most localization needs. However, some protocols may push the envelope. For example, a three-party introduction protocol may be conducted among parties that have mutually contradictory language preferences. A government policy to be multilingual may require a sender to provide the same field value in multiple languages at the same time. A bilingual dictionary lookup protocol may place source and target language fields next to one another in the same message.
 
-This extension is for those scenarios.
+This extension is for those scenarios. It supplements rather than replacing DIDComm's basic i18n features.
 
 ## Reference
 
