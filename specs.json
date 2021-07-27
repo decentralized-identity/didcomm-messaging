@@ -25,6 +25,7 @@
         "threading.md",
         "routing.md",
         "transports.md",
+        "i18n.md",
         "advanced_message_passing.md",
         "connections.md",
         "general_messaging_constructs.md",
