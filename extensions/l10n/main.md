@@ -14,7 +14,7 @@ This extension is for those scenarios. It supplements rather than replacing DIDC
 
 A sender MAY add the `l10n` header to any message to provide powerful, flexible localization features. This header MUST declare a **localization strategy subfield** from the following list:
 
-* `inline`: an array of triples (3-item arrays) where each triple is in the form `("lang", "field", "translation")`. The second value in the triple uses dotted JSON-Path notation. Building on the main spec's example of Alice and Bob playing chess, if Alice wanted to use this strategy when she checkmates Bob, she might send:
+* `inline`: The value of this field is an array of triples (3-item arrays) where each triple is in the form `("lang", "field", "translation")`. The second value in the triple identifies the field from `body` that the triple translates, using a relative path from `body` in dotted JSON-Path notation. Building on the main spec's example of Alice and Bob playing chess, if Alice wanted to use this strategy when she checkmates Bob, she might send:
 
 ```json
 {
@@ -26,7 +26,7 @@ A sender MAY add the `l10n` header to any message to provide powerful, flexible 
       ["fr", "comment", "C'est échec et mat, mon pote."]
       ["es", "comment", "Eso es jaque mate, amigo"]
     ]
-  }
+  },
   "body": {
     "move": "BC4+",
     "comment": "That's checkmate, buddy."
