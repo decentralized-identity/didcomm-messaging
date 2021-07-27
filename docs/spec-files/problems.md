@@ -24,9 +24,9 @@ In addition, messages MAY use the [Advanced Sequencing](../../extensions/advance
 
 ### Explicit problem reports
 
-DIDComm features a standard method for reporting problems (errors) to other parties. This is not always possible (e.g., when a sender has o route to the other party, or when a recipient's crypto is incompatible with a sender's). But when it is possible, it can be very helpful.
+DIDComm features a standard method for reporting problems to other parties. This is not always possible (e.g., when a sender lacks o route to the other party, or when a recipient's crypto is incompatible with a sender's). But when it *is* possible, it can be very helpful. Reporting problems is a best practice, although it needs to be implemented judiciously, such that it does not undermine cybersecurity goals.
 
->NOTE: DIDComm calls these things "problems" instead of "errors" because we use the same reporting mechanism for both errors and warnings.
+>NOTE: DIDComm uses the term "problems" instead of "errors" because we use the same reporting mechanism for both errors and warnings.
 
 The mechanism requires the reporting party to send a simple message called a **problem report** that looks like this:
 
@@ -36,7 +36,7 @@ The mechanism requires the reporting party to send a simple message called a **p
   "id": "7c9de639-c51c-4d60-ab95-103fa613c805",
   "pthid": "1e513ad4-48c9-444e-9e7e-5b8b45c5e325",
   "body": {
-    "code": "cant-find-route",
+    "code": "e.cant-find-route",
     "comment": "Unable to find a route to the specified recipient.",
     "args": [
       "did:sov:C805sNYhMrjHiqZDTUASHg"
