@@ -63,32 +63,32 @@ Problem codes are lower kabob-case. They are structured as a sequence of tokens 
 
 ![problem code structure](problem-code-structure.png)
 
-##### Clarity Indicator
+##### Sorter
 
-The leftmost component of a problem code is its **clarity indicator**. This is a single character that tells whether the consequence of the problem are fully understood. Two values are defined:
+The leftmost component of a problem code is its **sorter**. This is a single character that tells whether the consequence of the problem are fully understood. Two values are defined:
 
 * **`e`**: This problem clearly defeats the intentions of at least one of the parties. It is therefore an **error**. A situation with error semantics might be that a protocol requires payment, but a payment attempt was rejected.
 * **`w`**: The consequences of this problem are not obvious to the reporter; evaluating its effects requires judgment from a human or from some other party or system. Thus, the message constitutes a **warning** from the sender's perspective. A situation with warning semantics might be that a sender is only able to encrypt a message for some of the recipient's `keyAgreement` keys instead of all of them (perhaps due to an imperfect overlap of supported crypto types). The sender in such a situation might not know whether the recipient considers this an error.
 
 >Note:  What distinguishes an error from a warning is *clarity about its consequences*, not its *severity*. This clarity is inherently contextual. A warning might prove to be just as problematic as an error, once it's fully evaluated. This implies that the same problem can be an error in some contexts, and a warning in others. In our example above, we imagined a payment failure as an error. But if this problem occurs in a context where retries are expected, and there's a good chance of future success, perhaps the problem is a warning the first three times it's reported &mdash; then becomes an error when all hope is lost.
 
-##### Reset Scope
+##### Scope
 
-Reading left to right, the next token in a problem code is called the **reset scope**. This gives the sender's opinion about how much context should be undone if the problem is deemed an error.
+Reading left to right, the next token in a problem code is called the **scope**. This gives the sender's opinion about how much context should be undone if the problem is deemed an error.
 
->Note: A problem always acquires the maximum clarity that parties to a protocol assign it. If the sender of a problem report deems it an error, then it is. If the sender deems it a warning, but a recipient with greater context decides that it clearly frustrates their goals, then it becomes an error; see [Replying to Warnings](#replying-to-warnings). Thus, *reset scope* is relevant even if the sender chooses a problem code that starts with `w`.)
+>Note: A problem always sorts according to the most pessimistic view that is taken by participants in the protocol. If the sender of a problem report deems it an error, then it is. If the sender deems it a warning, but a recipient with greater context decides that it clearly frustrates their goals, then it becomes an error; see [Replying to Warnings](#replying-to-warnings). Thus, *scope* is relevant even if the sender chooses a problem code that starts with `w`.)
 
-The possible values of *reset scope* are:
+The possible values of *scope* are:
 
 * **`p`**: The protocol within which the error occurs (and any [co-protocols](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0478-coprotocols/README.md) started by and depended on by the protocol) is abandoned or reset. In simple two-party request-response protocols, the `p` reset scope is common and appropriate. However, if a protocol is complex and long-lived, the `p` reset scope may be undesirable. Consider a situation where a protocol helps a person apply for college, and the problem code is `e.p.payment-failed`. With such a `p` reset scope, the entire apply-for-college workflow (collecting letters of recommendation, proving qualifications, filling out various forms) is abandoned when the payment fails.  
 
-* **`m`**: The error was triggered by the previous message on the thread. The outcome is that the problematic message is rejected (has no effect). If the protocol is a chess game, and the problem code is `e.m.invalid-move`, then someone's invalid move is rejected, and it is still their turn.
+* **`m`**: The error was triggered by the previous message on the thread; the scope is one message. The outcome is that the problematic message is rejected (has no effect). If the protocol is a chess game, and the problem code is `e.m.invalid-move`, then someone's invalid move is rejected, and it is still their turn.
 
-* **A formal *state name* from the sender's state machine in the active protocol.** This means the error represented a partial failure of the protocol, but the protocol as a whole is not abandoned. Instead, the sender uses the reset scope to indicate what state it reverts to. If the protocol is one that helps a person apply for college, and the problem code is `e.get-pay-details.payment-failed`, then the sender is saying that, because of the error, it is moving back to the `get-pay-details` state in the larger workflow.
+* **A formal *state name* from the sender's state machine in the active protocol.** This means the error represented a partial failure of the protocol, but the protocol as a whole is not abandoned. Instead, the sender uses the scope to indicate what state it reverts to. If the protocol is one that helps a person apply for college, and the problem code is `e.get-pay-details.payment-failed`, then the sender is saying that, because of the error, it is moving back to the `get-pay-details` state in the larger workflow.
 
 ##### Descriptors
 
-After the *clarity indicator* and the *reset scope*, problem codes consist of one or more **descriptors**. These are kabob-case tokens separated by the `.` character, where the semantics get progressively more detailed reading left to right. Senders of problem reports SHOULD include at least one descriptor in their problem code, and SHOULD use the most specific descriptor they can. Recipients MAY specialize their reactions to problems in a very granular way, or MAY examine only a prefix of a problem code.
+After the *sorter* and the *scope*, problem codes consist of one or more **descriptors**. These are kabob-case tokens separated by the `.` character, where the semantics get progressively more detailed reading left to right. Senders of problem reports SHOULD include at least one descriptor in their problem code, and SHOULD use the most specific descriptor they can. Recipients MAY specialize their reactions to problems in a very granular way, or MAY examine only a prefix of a problem code.
 
 The following descriptor tokens are defined. They can be used by themselves, or as prefixes to more specific descriptors. Additional descriptors &mdash; particularly more granular ones &mdash; may be defined in individual protocols.
 
@@ -109,7 +109,7 @@ Token | Value of `comment` string | Notes
 
 When Alice sends a `w.*` problem report to Bob, and Bob decides that the warning is actually an error, he SHOULD reply to Alice to let her know about the consequences of his evaluation. Bob's reply is another `problem-report` message. It looks very similar to Alice's original, except:
 
-* The `code` in Bob's message now begins with `e.`. The remainder of the code MAY (often will be) identical, but this is not required; if Bob knows more details than Alice did, he SHOULD provide them. The *reset scope* in Bob's code MUST be at least as far-reaching as the reset scope in Alice's original message. (For example, Bob MUST NOT use reset scope `m` to say the protocol continues with only a bad message ignored, if Alice's original warning said she considered the reset scope to be `p`.)
+* The `code` in Bob's message now begins with `e.`. The remainder of the code MAY (often will be) identical, but this is not required; if Bob knows more details than Alice did, he SHOULD provide them. The *scope* in Bob's code MUST be at least as broad as the scope in Alice's original message. (For example, Bob MUST NOT use scope `m` to say the protocol continues with only a bad message ignored, if Alice's original warning said she considered the scope to be `p`.)
 * The `args` property may or may not match.  
 * The `id` header for Bob's message has a new value. (Bob's message and Alice's MUST both be part of the same thread, so Bob's message is processed as a reply to Alice's. See [Threading](#threading).)
 
