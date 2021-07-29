@@ -61,7 +61,7 @@ Perhaps the most important feature of each problem report message is its `code` 
 
 Problem codes are lower kabob-case. They are structured as a sequence of tokens delimited by the dot character `.`, with the tokens being more general to the left, and more specific to the right. Because recipients can do matching by prefix instead of full string, a recipient can recognize and handle broad semantics even if the trailing tokens of the string contain unfamiliar details. In the example below, for example, relatively sophisticated handling is possible even if a recipient only recognizes the `e.p.xfer.` portion of the code.
 
-![problem code structure](problem-code-structure.png)
+![problem code structure](../collateral/problem-code-structure.png)
 
 ##### Sorter
 
