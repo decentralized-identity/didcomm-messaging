@@ -22,6 +22,7 @@
 		    "message_structure.md",
 		    "encryption.md",
         "signature.md",
+        "problems.md",
         "threading.md",
         "routing.md",
         "transports.md",
@@ -51,6 +52,7 @@
         "intro.md",
 	      "privacy.md",
         "routing.md",
+        "problems.md",
 		"authentication.md",
         "whatsnew.md"
       ]

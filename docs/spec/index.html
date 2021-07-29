@@ -529,13 +529,169 @@ DIDComm messages:</p>
 <p>Signing can allow DIDs to be anchored via keys not usable for encrypting DIDComm messages.</p>
 <h3 id="examples-3"><a class="toc-anchor" href="#examples-3">§</a> Examples</h3>
 <p>TODO: Add examples here</p>
+<h2 id="when-problems-happen"><a class="toc-anchor" href="#when-problems-happen">§</a> When Problems Happen</h2>
+<p>Detecting, reporting, and handling problems is a challenge in any system. The challenge deepens when systems are decentralized, consist of components written by independent teams, and communicate asynchronously. This is the landscape over which DIDComm operates.</p>
+<p>To the extent that it is practical, DIDComm must surface problems, and their supporting contexts, to people and/or automated systems that want to know about them (and perhaps separately, to entities that can actually fix them). (“Practical” here means that it can be done with reasonable effort and without undermining DIDComm’s security, privacy, or other technical goals.)</p>
+<p>DIDComm offers several tools to deal with these issues. Individually they are easy to use; collectively they offer attractive robustness and clarity.</p>
+<h3 id="low-level-tools"><a class="toc-anchor" href="#low-level-tools">§</a> Low-level tools</h3>
+<h4 id="timeouts"><a class="toc-anchor" href="#timeouts">§</a> Timeouts</h4>
+<p>In many cases, a DIDComm message SHOULD use the <code>expires_time</code> header to announce when its sender will consider the message invalid. This allows for state to be reset in a predictable way. The <code>expires_time</code> header is so common that it is discussed in the general <a href="#message-headers">Message Headers</a> section of the spec. Best practice with timeouts is <a href="../guide-files/problems.md#timeouts">discussed in the Implementers Guide</a>.</p>
+<h4 id="acks"><a class="toc-anchor" href="#acks">§</a> ACKs</h4>
+<p>Any DIDComm message MAY use the <code>please_ack</code> header to request a read receipt from a recipient. Cooperative parties who wish to honor this request MUST include an <code>ack</code> header on a subsequent message, where the value of the header is an array that contains the <code>id</code> of one or more messages being acknowledged.</p>
+<h4 id="threads"><a class="toc-anchor" href="#threads">§</a> Threads</h4>
+<p>Any DIDComm message that continues a previously begun application-level protocol MUST use a <code>thid</code> property that associates it with the prior context. This context is vital for error handling. See <a href="#threading">Threading</a>.</p>
+<p>In addition, messages MAY use the <a href="../../extensions/advanced_sequencing/main.md">Advanced Sequencing</a> extension to detect gaps in delivery or messages arriving out of order.</p>
+<h3 id="problem-reports"><a class="toc-anchor" href="#problem-reports">§</a> Problem reports</h3>
+<p>DIDComm features a standard mechanism for reporting problems to other entities. These could be parties in the active protocol, or logging products, or internal health monitors, or human tech support staff. Reporting problems remotely is not always possible (e.g., when a sender lacks a route to the other party, or when a recipient’s crypto is incompatible with a sender’s). Using this mechanism is therefore not a general <em>requirement</em> of DIDComm, but it <em>is</em> a best practice because it improves robustness and human experience. (But be aware of some <a href="../guide#cybersecurity-considerations-for-problem-reports">cybersecurity considerations</a>.)</p>
+<p>Other entities are notified of problems by sending a simple message called a <strong>problem report</strong> that looks like this:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/notify/1.0/problem-report"</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"7c9de639-c51c-4d60-ab95-103fa613c805"</span><span class="token punctuation">,</span>
+  <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"1e513ad4-48c9-444e-9e7e-5b8b45c5e325"</span><span class="token punctuation">,</span>
+  <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"code"</span><span class="token operator">:</span> <span class="token string">"e.p.xfer.cant-use-endpoint"</span><span class="token punctuation">,</span>
+    <span class="token property">"comment"</span><span class="token operator">:</span> <span class="token string">"Unable to use the {1} endpoint for {2}."</span><span class="token punctuation">,</span>
+    <span class="token property">"args"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token string">"https://agents.r.us/inbox"</span><span class="token punctuation">,</span>
+      <span class="token string">"did:sov:C805sNYhMrjHiqZDTUASHg"</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"escalate_to"</span><span class="token operator">:</span> <span class="token string">"mailto:admin@foo.org"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The <code>pthid</code> header MUST be included with problem reports. Its value is the <code>thid</code> of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)</p>
+<p>The <code>code</code> field is worthy of its own section; <a href="#problem-codes">see below</a>.</p>
+<p>The optional <code>comment</code> field contains human-friendly text describing the problem. The text MUST be statically associated with <code>code</code>, meaning that each time circumstances trigger a problem with the same <code>code</code>, the value of <code>comment</code> will be the same. This enables <a href="#i18n">localization</a> and cached lookups, and it has some <a href="#cybersecurity-implications">cybersecurity benefits</a>. The value of <code>comment</code> supports simple interopolation with <code>args</code> (see next), where args are referenced as <code>{1}</code>, <code>{2}</code>, and so forth.</p>
+<p>The optional <code>args</code> field contains situation-specific values that are interpolated into the value of <code>comment</code>, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, <code>e.p.xfer.cant-use-endpoint</code> apparently expects two values in <code>args</code>: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (<code>?</code>) during interpolation; extra args MUST be appended to the main text as comma-separated values.</p>
+<p>The optional <code>escalate_to</code> field provides a URI where additional help on the issue can be received.</p>
+<h4 id="problem-codes"><a class="toc-anchor" href="#problem-codes">§</a> Problem Codes</h4>
+<p>Perhaps the most important feature of each problem report message is its <code>code</code> field. This required value is the main piece of data that recipient software uses to automate reactions. It categorizes what went wrong.</p>
+<p>Problem codes are lower kabob-case. They are structured as a sequence of tokens delimited by the dot character <code>.</code>, with the tokens being more general to the left, and more specific to the right. Because recipients can do matching by prefix instead of full string, a recipient can recognize and handle broad semantics even if the trailing tokens of the string contain unfamiliar details. In the example below, for example, relatively sophisticated handling is possible even if a recipient only recognizes the <code>e.p.xfer.</code> portion of the code.</p>
+<p><img src="../collateral/problem-code-structure.png" alt="problem code structure"></p>
+<h5 id="sorter"><a class="toc-anchor" href="#sorter">§</a> Sorter</h5>
+<p>The leftmost component of a problem code is its <strong>sorter</strong>. This is a single character that tells whether the consequence of the problem are fully understood. Two values are defined:</p>
+<ul>
+<li><strong><code>e</code></strong>: This problem clearly defeats the intentions of at least one of the parties. It is therefore an <strong>error</strong>. A situation with error semantics might be that a protocol requires payment, but a payment attempt was rejected.</li>
+<li><strong><code>w</code></strong>: The consequences of this problem are not obvious to the reporter; evaluating its effects requires judgment from a human or from some other party or system. Thus, the message constitutes a <strong>warning</strong> from the sender’s perspective. A situation with warning semantics might be that a sender is only able to encrypt a message for some of the recipient’s <code>keyAgreement</code> keys instead of all of them (perhaps due to an imperfect overlap of supported crypto types). The sender in such a situation might not know whether the recipient considers this an error.</li>
+</ul>
+<blockquote>
+<p>Note:  What distinguishes an error from a warning is <em>clarity about its consequences</em>, not its <em>severity</em>. This clarity is inherently contextual. A warning might prove to be just as problematic as an error, once it’s fully evaluated. This implies that the same problem can be an error in some contexts, and a warning in others. In our example above, we imagined a payment failure as an error. But if this problem occurs in a context where retries are expected, and there’s a good chance of future success, perhaps the problem is a warning the first three times it’s reported — then becomes an error when all hope is lost.</p>
+</blockquote>
+<h5 id="scope"><a class="toc-anchor" href="#scope">§</a> Scope</h5>
+<p>Reading left to right, the next token in a problem code is called the <strong>scope</strong>. This gives the sender’s opinion about how much context should be undone if the problem is deemed an error.</p>
+<blockquote>
+<p>Note: A problem always sorts according to the most pessimistic view that is taken by participants in the protocol. If the sender of a problem report deems it an error, then it is. If the sender deems it a warning, but a recipient with greater context decides that it clearly frustrates their goals, then it becomes an error; see <a href="#replying-to-warnings">Replying to Warnings</a>. Thus, <em>scope</em> is relevant even if the sender chooses a problem code that starts with <code>w</code>.)</p>
+</blockquote>
+<p>The possible values of <em>scope</em> are:</p>
+<ul>
+<li>
+<p><strong><code>p</code></strong>: The protocol within which the error occurs (and any <a href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0478-coprotocols/README.md">co-protocols</a> started by and depended on by the protocol) is abandoned or reset. In simple two-party request-response protocols, the <code>p</code> reset scope is common and appropriate. However, if a protocol is complex and long-lived, the <code>p</code> reset scope may be undesirable. Consider a situation where a protocol helps a person apply for college, and the problem code is <code>e.p.payment-failed</code>. With such a <code>p</code> reset scope, the entire apply-for-college workflow (collecting letters of recommendation, proving qualifications, filling out various forms) is abandoned when the payment fails.</p>
+</li>
+<li>
+<p><strong><code>m</code></strong>: The error was triggered by the previous message on the thread; the scope is one message. The outcome is that the problematic message is rejected (has no effect). If the protocol is a chess game, and the problem code is <code>e.m.invalid-move</code>, then someone’s invalid move is rejected, and it is still their turn.</p>
+</li>
+<li>
+<p><strong>A formal <em>state name</em> from the sender’s state machine in the active protocol.</strong> This means the error represented a partial failure of the protocol, but the protocol as a whole is not abandoned. Instead, the sender uses the scope to indicate what state it reverts to. If the protocol is one that helps a person apply for college, and the problem code is <code>e.get-pay-details.payment-failed</code>, then the sender is saying that, because of the error, it is moving back to the <code>get-pay-details</code> state in the larger workflow.</p>
+</li>
+</ul>
+<h5 id="descriptors"><a class="toc-anchor" href="#descriptors">§</a> Descriptors</h5>
+<p>After the <em>sorter</em> and the <em>scope</em>, problem codes consist of one or more <strong>descriptors</strong>. These are kabob-case tokens separated by the <code>.</code> character, where the semantics get progressively more detailed reading left to right. Senders of problem reports SHOULD include at least one descriptor in their problem code, and SHOULD use the most specific descriptor they can. Recipients MAY specialize their reactions to problems in a very granular way, or MAY examine only a prefix of a problem code.</p>
+<p>The following descriptor tokens are defined. They can be used by themselves, or as prefixes to more specific descriptors. Additional descriptors — particularly more granular ones — may be defined in individual protocols.</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value of <code>comment</code> string</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>trust</code></td>
+<td>Failed to achieve required trust.</td>
+<td>Typically this code indicates incorrect or suboptimal behavior by the sender of a previous message in a protocol. For example, a protocol required a known sender but a message arrived anoncrypted instead — or the encryption is well formed and usable, but is considered weak. Problems with this descriptor are similar to those reported by HTTP’s <code>401</code>, <code>403</code>, or <code>407</code> status codes.</td>
+</tr>
+<tr>
+<td><code>trust.crypto</code></td>
+<td>Cryptographic operation failed.</td>
+<td>A cryptographic operation cannot be performed, or it gives results that indicate tampering or incorrectness. For example, a key is invalid — or the key types used by another party are not supported — or a signature doesn’t verify — or a message won’t decrypt with the specified key.</td>
+</tr>
+<tr>
+<td><code>xfer</code></td>
+<td>Unable to transport data.</td>
+<td>The problem is with the mechanics of moving messages or associated data over a transport. For example, the sender failed to download an external attachment — or attempted to contact an endpoint, but found nobody listening on the specified port.</td>
+</tr>
+<tr>
+<td><code>did</code></td>
+<td>DID is unusable.</td>
+<td>A DID is unusable because its method is unsupported — or because its DID doc cannot be parsed — or because its DID doc lacks required data.</td>
+</tr>
+<tr>
+<td><code>msg</code></td>
+<td>Bad message.</td>
+<td>Something is wrong with content as seen by application-level protocols (i.e., in a plaintext message). For example, the message might lack a required field, use an unsupported version, or hold data with logical contradictions. Problems in this category resemble HTTP’s <code>400</code> status code.</td>
+</tr>
+<tr>
+<td><code>me</code></td>
+<td>Internal error.</td>
+<td>The problem is with conditions inside the sender’s system. For example, the sender is too busy to do the work entailed by the next step in the active protocol. Problems in this category resemble HTTP’s <code>5xx</code> status codes.</td>
+</tr>
+<tr>
+<td><code>me.res</code></td>
+<td>A required resource is inadequate or unavailable.</td>
+<td>The following subdescriptors are also defined: <code>me.res.net</code>, <code>me.res.memory</code>, <code>me.res.storage</code>, <code>me.res.compute</code>, <code>me.res.money</code></td>
+</tr>
+<tr>
+<td><code>req</code></td>
+<td>Circumstances don’t satisfy requirements.</td>
+<td>A behavior occurred out of order or without satisfying certain preconditions — or circumstances changed in a way that violates constraints. For example, a protocol that books plane tickets fails because, halfway through, it is discovered that all tickets on the flight have been sold.</td>
+</tr>
+<tr>
+<td><code>req.time</code></td>
+<td>Failed to satisfy timing constraints.</td>
+<td>A message has expired — or a protocol has timed out — or it is the wrong time of day/day of week.</td>
+</tr>
+<tr>
+<td><code>legal</code></td>
+<td>Failed for legal reasons.</td>
+<td>An injunction or a regulatory requirement prevents progress on the workflow. Compare HTTP status code <code>451</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="replying-to-warnings"><a class="toc-anchor" href="#replying-to-warnings">§</a> Replying to Warnings</h4>
+<p>When Alice sends a <code>w.*</code> problem report to Bob, and Bob decides that the warning is actually an error, he SHOULD reply to Alice to let her know about the consequences of his evaluation. Bob’s reply is another <code>problem-report</code> message. It looks very similar to Alice’s original, except:</p>
+<ul>
+<li>The <code>code</code> in Bob’s message now begins with <code>e.</code>. The remainder of the code MAY (often will be) identical, but this is not required; if Bob knows more details than Alice did, he SHOULD provide them. The <em>scope</em> in Bob’s code MUST be at least as broad as the scope in Alice’s original message. (For example, Bob MUST NOT use scope <code>m</code> to say the protocol continues with only a bad message ignored, if Alice’s original warning said she considered the scope to be <code>p</code>.)</li>
+<li>The <code>args</code> property may or may not match.</li>
+<li>The <code>id</code> header for Bob’s message has a new value. (Bob’s message and Alice’s MUST both be part of the same thread, so Bob’s message is processed as a reply to Alice’s. See <a href="#threading">Threading</a>.)</li>
+</ul>
+<h4 id="cascading-problems"><a class="toc-anchor" href="#cascading-problems">§</a> Cascading Problems</h4>
+<p>Many problems may be experienced during a long-running or complex protocol. Implementers must have the option of tolerating and recovering from them, if we want robustness; perhaps several network retries will be followed by eventual success. However, care must be exercised to prevent situations where malformed or careless problem reports trigger infinite recursion or vicious cycles:</p>
+<ol>
+<li>Implementations SHOULD consider implementing a <a href="https://codecraft.co/2013/01/11/dont-forget-the-circuit-breakers/">circuit breaker design pattern</a> to prevent this problem.</li>
+<li><a href="#timeouts">Timeouts</a> SHOULD be used judiciously.</li>
+<li>Implementations SHOULD use their own configuration or judgment to establish some type of max error count as they begin a protocol instance. This limit could be protocol-specific, and could be evaluated per unit time (e.g., in a human chat protocol of infinite duration, perhaps the limit is max errors per hour rather than max errors across all time). If implementations establish such a limit, they SHOULD check to see whether this count has been exceeded, both when they receive and when they emit errors. If the limit is crossed as a result of a problem report they <em>receive</em>, they SHOULD send back a problem report with <code>&quot;code&quot;: &quot;e.p.req.max-errors-exceeded&quot;</code> to abort the protocol. If the limit is crossed as a result of an error they are emitting, they MUST NOT emit the problem report for the triggering error; instead, they MUST emit a problem report with <code>&quot;code&quot;: &quot;e.p.req.max-errors-exceeded&quot;</code> to abort the protocol. In either case, they MUST cease responding to messages that use the <code>thid</code> of that protocol instance, once this limit has been crossed.</li>
+</ol>
+<h3 id="route-tracing"><a class="toc-anchor" href="#route-tracing">§</a> Route Tracing</h3>
+<p>To troubleshoot routing issues, DIDComm offers a header, <code>trace</code>. Any party that processes a DIDComm plaintext message containing this header MAY do an HTTP POST of a <strong>route trace report</strong> to the URI in the header’s value.</p>
+<blockquote>
+<p>Note: This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as technologies like <a href="https://opentracing.io/">OpenTracing</a>. It also <em>spans</em> trust domains (paralleling a message’s journey from Alice to a web service hosting Bob’s endpoint, to Bob himself) – and thus differs in scope from in-house logging and monitoring technolgies like Splunk and Kibana. Although DIDComm tracing could be integrated with these other technologies, doing so in a methodical way is probably an antipattern; it may indicate a misunderstanding about its purpose as a tool for ad hoc debugging or troubleshooting between unrelated parties.</p>
+</blockquote>
+<p>[TODO: describe the trace report.] For example, in a message for Bob that is double-wrapped (once for his external mediator and once for his cloud agent), three plaintext messages might contain <code>trace</code> headers:</p>
+<ol>
+<li>The outermost message, decrypted by Bob’s external mediator, containing forwarding instructions to Bob’s cloud agent.</li>
+<li>The center message, decrypted by Bob’s cloud agent, containing an inner encrypted payload and instructions to forward it to Bob’s DID.</li>
+<li>The inner message, seen by Bob’s iPhone.</li>
+</ol>
+<p>If Alice, the sender of this message, includes a <code>trace</code> header on each one, and if handlers of this message along the route cooperate with her request to trace, then Alice can learn where in a route a message delivery is failing.</p>
+<p>Tracing has security, privacy, and performance implications. Support for tracing is not required of DIDComm implementations, but it is recommended for parties that need sophisticated debugging. Parties that implement tracing MUST decide whether or not to honor trace requests based upon a policy that ensures accountability and transparency, and MUST default to reject tracing requests unless they have independent reason to believe that appropriate safeguards are in place.</p>
 <h2 id="threading"><a class="toc-anchor" href="#threading">§</a> Threading</h2>
 <p>DIDComm provides threading as foundation for extremely powerful protocol features. For background on the intent and best practices for threading, please see the <a href="http://example.com/TODO--find-right-way-to-link-to-section-in-guide">Implementers Guide</a>.</p>
 <h3 id="message-ids"><a class="toc-anchor" href="#message-ids">§</a> Message IDs</h3>
 <p>All plaintext DIDComm messages MUST have an <code>id</code> property, declared in the JWM header. A message without an <code>id</code> property SHOULD be considered invalid and SHOULD be rejected; it MUST NOT be interpreted as part of a multi-message interaction.</p>
 <p>The value of <code>id</code> is a short (&lt;=32 bytes) string consisting entirely of <a href="https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3">unreserved URI characters</a> – meaning that it is not necessary to <a href="https://en.wikipedia.org/wiki/Percent-encoding">percent encode</a> the value to incorporate it in a URI. Beyond this requirement, its format is not strongly constrained, but use of <a href="https://datatracker.ietf.org/doc/html/rfc4122">UUIDs (RFC 4122)</a> is recommended. Because of the affinity for UUIDs, this field inherits UUID case-sensitivity semantics: it SHOULD be written in lower case but MUST be compared case-insensitively.</p>
 <p>The value of an <code>id</code> property SHOULD be globally, universally unique; at the very least, it MUST be unique across all interactions visible to the set of parties that see a given set of interactions.</p>
-<h3 id="threads"><a class="toc-anchor" href="#threads">§</a> Threads</h3>
+<h3 id="threads-2"><a class="toc-anchor" href="#threads-2">§</a> Threads</h3>
 <p>A thread is uniquely identified by a thread ID. The thread ID is communicated by including a <code>thid</code> header in the JWM plaintext of the message. The value of <code>thid</code> MUST conform to the same constraints as the value of <code>id</code>. The DIDComm plaintext message that begins a thread MAY declare this property for the new thread. If no <code>thid</code> property is declared in the first message of an interaction, the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code> as well; that is, the message is interpreted as if both <code>id</code> and <code>thid</code> were present, containing the same value.</p>
 <p>All subsequent messages in a thread MUST include a <code>thid</code> header that contains the same value as the <code>thid</code> set in the first message of the thread. Messages that do not share the same <code>thid</code> MUST NOT be considered a part of the same thread.</p>
 <h3 id="parent-threads"><a class="toc-anchor" href="#parent-threads">§</a> Parent Threads</h3>
@@ -1310,10 +1466,29 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#examples-3">Examples</a></li>
 </ul>
 </li>
+<li><a href="#when-problems-happen">When Problems Happen</a>
+<ul>
+<li><a href="#low-level-tools">Low-level tools</a>
+<ul>
+<li><a href="#timeouts">Timeouts</a></li>
+<li><a href="#acks">ACKs</a></li>
+<li><a href="#threads">Threads</a></li>
+</ul>
+</li>
+<li><a href="#problem-reports">Problem reports</a>
+<ul>
+<li><a href="#problem-codes">Problem Codes</a></li>
+<li><a href="#replying-to-warnings">Replying to Warnings</a></li>
+<li><a href="#cascading-problems">Cascading Problems</a></li>
+</ul>
+</li>
+<li><a href="#route-tracing">Route Tracing</a></li>
+</ul>
+</li>
 <li><a href="#threading">Threading</a>
 <ul>
 <li><a href="#message-ids">Message IDs</a></li>
-<li><a href="#threads">Threads</a></li>
+<li><a href="#threads-2">Threads</a></li>
 <li><a href="#parent-threads">Parent Threads</a></li>
 <li><a href="#didcomm-message-uris">DIDComm Message URIs</a></li>
 <li><a href="#gaps-resends-and-sophisticated-ordering">Gaps, Resends, and Sophisticated Ordering</a></li>
@@ -1431,7 +1606,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
             </slide-panels>
 
           </body>
-          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./docs/spec-files/","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","signature.md","threading.md","routing.md","transports.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","out_of_band.md","feature_discovery.md","trustping.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
+          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./docs/spec-files/","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","signature.md","problems.md","threading.md","routing.md","transports.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","out_of_band.md","feature_discovery.md","trustping.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
           <script src="../spec-up/compiled/body.js" data-manual></script>
         </html>
       
