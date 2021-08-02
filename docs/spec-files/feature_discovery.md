@@ -75,7 +75,7 @@ A `discover-features/disclose` message looks like this:
 ```json
 {
     "type": "https://didcomm.org/discover-features/1.0/disclose",
-    "thread_id": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
+    "thid": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
     "body":{
         "protocols": [
             {
@@ -105,7 +105,7 @@ response is probably just as good:
 ```json
 {
   "type": "https://didcomm.org/discover-features/1.0/disclose",
-  "thread_id": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
+  "thid": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
   "protocols": [
     {"ptid": "https://didcomm.org/tictactoe/1.0"}
   ]
