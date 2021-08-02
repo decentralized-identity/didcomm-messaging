@@ -1393,6 +1393,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <h3 id="future-work"><a class="toc-anchor" href="#future-work">§</a> Future Work</h3>
 <h4 id="additional-encodings"><a class="toc-anchor" href="#additional-encodings">§</a> Additional Encodings</h4>
 <p>DIDComm Messages are JSON encoded (based on the JOSE family of specs) at the encryption, signature, and content level. Future encodings might introduce binary serializations. Each innovation like this MUST specify a deterministic and reliable method for indicating the alternative encoding used.</p>
+<p>At multiple points in the creation of this spec the community discussed switching to CBOR as a primary encoding format to replace JSON. Two reasons prevented that switch: The maturity of the JSON related standards as compared to CBOR related standards, and the cost of switching so late in spec development.</p>
 <h3 id="beyond-messaging"><a class="toc-anchor" href="#beyond-messaging">§</a> Beyond Messaging</h3>
 <p>This is a DIDComm <em>messaging</em> spec. Security, privacy, routing, and metadata concepts from this spec could be adapted to other communication styles, including multicast/broadcast and streaming. This will create sister specs to DIDComm Messaging, rather than evolving DIDComm Messaging itself.</p>
 <h3 id="post-quantum-crypto"><a class="toc-anchor" href="#post-quantum-crypto">§</a> Post-Quantum Crypto</h3>
