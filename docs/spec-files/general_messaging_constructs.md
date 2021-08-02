@@ -24,19 +24,18 @@ Attachments are contained within a list in the `attachments` header.
 
 Each attachment is contained within the following structure.
 
-- `id`: Identifies attached content within the scope of a given message. Recommended on appended attachment descriptors. Possible but generally unused on embedded attachment descriptors. Never required if no references to the attachment exist; if omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because `id` is used to compose URIs, it is recommended that this name be brief and avoid spaces and other characters that require URI escaping.
+- `id`: [optional but recommended] Identifies attached content within the scope of a given message, so it can be referenced. For example, in a message documenting items for sale on an auction website, there might be a field named `front_view` that contains the value `#attachment1`; this would reference an attachment to the message with `id` equal to `attachment1`. Recommended on appended attachment descriptors. If omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because `id` is used to compose URIs, this value should be brief and MUST consist entirely of [unreserved URI characters](https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3) – meaning that it is not necessary to [percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the value to incorporate it in a URI.
 - `description`: [optional] A human-readable description of the content.
 - `filename`: A hint about the name that might be used if this attachment is persisted as a file. It is not required, and need not be unique. If this field is present and `mime-type` is not, the extension on the filename may be used to infer a MIME type.
-- `mime_type`: [optional] Describes the MIME type of the attached content.
-- `format`: [optional] Describes the format of the attachment if the `mime_type` is not sufficient.
-- `lastmod_time`: A hint about when the content in this attachment was last modified.
+- `media_type`: [optional] Describes the media (MIME) type of the attached content.
+- `format`: [optional] Describes the format of the attachment if the `media_type` is not sufficient.
+- `lastmod_time`: [optional] A hint about when the content in this attachment was last modified.
 - `byte_count`: [optional] mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
-- `data`: A JSON object that gives access to the actual content of the attachment. Contains the following subfields:
-  - `jws`: [optional] A JSON Web Signature over the content of the attachment.
+- `data`: A JSON object that gives access to the actual content of the attachment. Contains enough of the following subfields to allow access to the data:
+  - `jws`: [optional] A [JWS](https://tools.ietf.org/html/rfc7515) in [detached dontent mode](https://tools.ietf.org/html/rfc7515#appendix-F), where the `payload` field of the JWS maps to `base64` or to something fetchable via `links`. This allows attachments to be signed. The signature need not come from the author of the message.
   - `hash`: [optional] The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the `links` data attribute. 
   - `links`: [optional] A list of zero or more locations at which the content may be fetched.
-  - `base64`: [optional]Base64-encoded data, when representing arbitrary content inline instead of via `links`.
-  - `jwe`: Already encrypted data in the form of a JWE.
+  - `base64`: [optional][Base64url](https://tools.ietf.org/html/rfc4648#section-5)-encoded data, when representing arbitrary content inline instead of via `links`.
   - `json`: [optional] Directly embedded JSON data, when representing content inline instead of via `links`, and when the content is natively conveyable as JSON.
 
 ### Example
@@ -69,9 +68,10 @@ Each attachment is contained within the following structure.
         	}
         },{
 			"id": "x",
-            "description": "example encrypted attachment",
+            "description": "example encrypted DIDComm message as attachment",
+            "media_type": "application/didcomm-encrypted+json",
             "data": {
-            	"jwe": {
+            	"json": {
                     //jwe json structure
                 }
         	}
