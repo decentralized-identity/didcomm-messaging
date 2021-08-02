@@ -64,15 +64,12 @@ is not `false`, the receiver should reply as quickly as possible with a
 {
   "type": "https://didcomm.org/trust_ping/1.0/ping_response",
   "id": "e002518b-456e-b3d5-de8e-7a86fe472847",
-  "thread_id": "518be002-de8e-456e-b3d5-8fe472477a86"
+  "thid": "518be002-de8e-456e-b3d5-8fe472477a86"
 }
 ```
-
-
 
 #### Trust
 
 This is the "**trust** ping protocol", not just the "ping protocol."
 The "trust" in its name comes from several features that the interaction
 gains by virtue of the properties of the DIDComm messages. A ping and response verify to both parties that the necessary encryption is in place and working properly for the messages to be understood.
-

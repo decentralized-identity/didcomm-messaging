@@ -22,9 +22,11 @@
 		    "message_structure.md",
 		    "encryption.md",
         "signature.md",
+        "problems.md",
         "threading.md",
         "routing.md",
         "transports.md",
+        "i18n.md",
         "advanced_message_passing.md",
         "connections.md",
         "general_messaging_constructs.md",
@@ -51,6 +53,7 @@
         "intro.md",
 	      "privacy.md",
         "routing.md",
+        "problems.md",
 		"authentication.md",
         "whatsnew.md"
       ]

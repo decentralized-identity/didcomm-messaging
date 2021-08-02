@@ -107,12 +107,13 @@ When Bob receives the envelope, the unpacking process on his end MUST resolve th
 
 Once resolved, the unpacker will then execute ECDH-1PU key derivation using this key and Bob's own recipient key found in the envelope's `recipients[0]` to unwrap the content encryption key.
 
-### Protecting the `skid` header
-When the `skid` cannot be revealed in a plain-text JWE header (to avoid potentially leaking sender's key id), the `skid` MAY be encrypted for each recipient. In this case, instead of having a `skid` protected header in the envelope, each recipient MAY include an `encrypted_skid` header with a value based on the encryption of `skid` using ECDH-ES `Z` computation of the `epk` and the recipient's key as the encryption key.
+### Protecting the Sender Identity
 
-For applications that don't require this protection, they MAY use `skid` protected header directly without any additional recipient headers.
+When employing authenticated encryption, the header of the encrypted message envelope must necessarily reveal the key identifier used by the sender of the message (the `skid`). This is used by recipients to resolve the sender's public key material in order to decrypt the message. In the case of communication between two public DIDs, this may allow outside parties to directly correlate the sender of an encrypted message to a known identity.
 
-Applications MUST use either `skid` protected header or `encrypted_skid` recipients header but not both in the same envelope.
+If two communicating parties establish single-purpose DIDs (peer DIDs) for secure communication, then the correlation to any publicly known identities may be limited, although multiple messages referencing the same DIDs will still provide an opportunity for correlation.
+
+A layer of anonymous encryption (employing ECDH-ES) may be applied around an authenticated encryption envelope (employing ECDH-1PU), obscuring the sender's identity for all but the recipient of the inner envelope. In the case of a message forwarded via mediators, anonymous encryption is automatic.
 
 ### ECDH-1PU key wrapping and common protected headers
 When using authcrypt, the 1PU draft [requires](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1) mandates the use of AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common `epk`, `apu`, `apv` and `alg` headers for all recipients. They MUST be set in the `protected` headers JWE section.

@@ -8,7 +8,7 @@ If a message is signed and encrypted to add non-repudiation, it must be signed p
 
 When a sender would like for a message to feature a non-repudiable digital signature the JWA's defined below can be used within the structure of a JWS.
 
-For digital signatures the following algorithms MUST be verifiable. At least one of the following curves MUST be supported for creating digital signatures.
+Implementations MUST be able to verify all of the following algorithms and MUST support signing with at least one.
 
 | Algorithm(JWA)           | Description                                                  |
 | ------------------------ | ------------------------------------------------------------ |
