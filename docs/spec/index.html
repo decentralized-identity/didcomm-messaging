@@ -863,6 +863,41 @@ Please see <a href="#message-types">Message Types</a> for details about media ty
 <li>Quic</li>
 <li>Transport binding</li>
 </ul>
+<h3 id="internationalization-i18n"><a class="toc-anchor" href="#internationalization-i18n">§</a> Internationalization (i18n)</h3>
+<p>Because automation makes life easier for humans, the data in DIDComm messages is usually assumed to have software as its audience. However, sometimes humans should see part of the data in a DIDComm message. For example, if the high-level application protocol running atop DIDComm is a kind of rich chat, humans may not see message headers and the details of threads – but they will want to read the text sent to them by a friend. Similarly, humans may need to read error messages or terms and conditions in their natural language.</p>
+<p>DIDComm offers simple i18n features to address this need. They are intended to impose no up-front design burden on protocol implementers; multi-language support can be added once a protocol has adoption, with very little effort. These features also degrade gracefully and without coordination. Any party can introduce them to an interaction, but if others do not understand or support them, or if parties to the protocol have no human language in common, the interaction is typically still viable. (A protocol that inherently <em>requires</em> multilanguage support — e.g., to provides close captioning in second language — is the only exception.)</p>
+<h4 id="internationalized-by-default"><a class="toc-anchor" href="#internationalized-by-default">§</a> Internationalized by default</h4>
+<p>The default assumption about every field in a DIDComm message is that it is locale-independent (internationalized) already. Since number representation is governed by JSON syntax, and dates are represented as seconds-since-epoch or as ISO/IETF 3339 strings, this assumption is automatically true for data types that are not strings.</p>
+<p>All string values in DIDComm messages are encoded as UTF-8, which is capable of representing the full Unicode character inventory. However, the default assumption for every string field in DIDComm also MUST be that it is locale-independent. This is appropriate for headers like <code>id</code> and <code>type</code>, for fields that contain URIs, and so forth.</p>
+<h4 id="accept-lang-header"><a class="toc-anchor" href="#accept-lang-header">§</a> <code>accept-lang</code> header</h4>
+<p>For string values that are language-specific, any party in a DIDComm interaction MAY declare the human languages that they prefer by using the <code>accept-lang</code> header. This allows those who send them messages to localize the content appropriately.</p>
+<p>The value of this header is an array of <a href="https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry">IANA’s language codes</a>, ranked from most to least preferred. Once a language preference has been set, it MUST be assumed to apply until it is changed, or for the duration of an application-level protocol instance (a DIDComm thread) — whichever comes first. Parties who see this header MAY assume it is an appropriate default for future interactions as well. However, they MUST NOT apply the assumption to any other interactions that are already underway, as this would allow one protocol to trigger unpredictable side effects in another.</p>
+<h4 id="lang-header"><a class="toc-anchor" href="#lang-header">§</a> <code>lang</code> header</h4>
+<p>When a sender is preparing a message that contains language-specific fields, they SHOULD clarify how to interpret those fields by using the <code>lang</code> header. This is a general best practices. Individual protocols that have strong dependencies on human language MAY require this header in contexts they govern.</p>
+<p>Ideally, the value of <code>lang</code> will derive from a previously-seen <code>accept-lang</code> header, reflecting the fact that the sender is communicating in a language that the recipient prefers. (The sender could get matching language content by looking it up in message tables, calling a machine translation service, or  — if the content is generated dynamically by a human — simply asking the human sender to speak or write in the target language.) However, even when no match is achieved, declaring <code>lang</code> lets the recipient call a machine translation service or take other intelligent action.</p>
+<p>This header works much like <code>lang</code> in HTML, and its value comes from <a href="https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry">IANA’s language subtag registry</a>. If this header is present, then any string field inside <code>body</code> that contains human-readable text (according to the active protocol’s definition of the message type) MUST hold text in the identified language.</p>
+<h4 id="i18n-example"><a class="toc-anchor" href="#i18n-example">§</a> i18n example</h4>
+<p>Suppose a chess protocol allows players to include human-friendly comments with their moves. At the beginning of the chess game, Bob includes a message that contains this header:</p>
+<pre class="language-json"><code class="language-json"><span class="token property">"accept-lang"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"fr"</span><span class="token punctuation">,</span> <span class="token string">"en"</span><span class="token punctuation">]</span>
+</code></pre>
+<p>This tells Alice that Bob prefers to interact in French, with English as a backup preference.</p>
+<p>When Alice puts Bob in checkmate, assuming she has the desire and ability to honor Bob’s preference, her message might look like this:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"388d599a-fdc1-4890-b32a-be6cd3893564"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/chess/1.0/move"</span><span class="token punctuation">,</span>
+  <span class="token property">"lang"</span><span class="token operator">:</span> <span class="token string">"fr"</span><span class="token punctuation">,</span>
+  <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"move"</span><span class="token operator">:</span> <span class="token string">"BC4+"</span><span class="token punctuation">,</span>
+    <span class="token property">"comment"</span><span class="token operator">:</span> <span class="token string">"C'est échec et mat, mon pote."</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>On the other hand, if Alice is unable to send French text, her message might contain <code>&quot;lang&quot;: &quot;en&quot;</code> and <code>&quot;comment&quot;: &quot;That's checkmate, buddy.&quot;</code> Even though this is not the language content Bob requested, at least Bob knows what language it <em>is</em>.</p>
+<h4 id="asking-for-a-different-lang"><a class="toc-anchor" href="#asking-for-a-different-lang">§</a> Asking for a different <code>lang</code></h4>
+<p>What if Alice doesn’t support any of the languages in Bob’s <code>accept-lang</code> header – or if Bob never used such a header in the first place?</p>
+<p>Bob MAY tell Alice that the language she used is problematic by sending her a <code>problem-report</code> message where the <code>code</code> field is <code>w.msg.bad-lang</code>. (In some protocols where language-specific fields may be vital rather than incidental, a problem like this might be an error instead of a warning; in such cases, the code MUST be <code>e.msg.bad-lang</code> instead.) Bob may include an <code>accept-lang</code> header on this <code>problem-report</code> message, teaching Alice what it will take to fix the problem.</p>
+<h4 id="advanced-i18n-patterns"><a class="toc-anchor" href="#advanced-i18n-patterns">§</a> Advanced i18n patterns</h4>
+<p>When protocols have i18n needs that are more advanced than this, a DIDComm extension such as the l10n extension is recommended.</p>
 <h2 id="advanced-message-passing"><a class="toc-anchor" href="#advanced-message-passing">§</a> Advanced Message Passing</h2>
 <p>TODO:</p>
 <ul>
@@ -1526,6 +1561,16 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#websocket">WebSocket</a></li>
 </ul>
 </li>
+<li><a href="#internationalization-i18n">Internationalization (i18n)</a>
+<ul>
+<li><a href="#internationalized-by-default">Internationalized by default</a></li>
+<li><a href="#accept-lang-header"><code>accept-lang</code> header</a></li>
+<li><a href="#lang-header"><code>lang</code> header</a></li>
+<li><a href="#i18n-example">i18n example</a></li>
+<li><a href="#asking-for-a-different-lang">Asking for a different <code>lang</code></a></li>
+<li><a href="#advanced-i18n-patterns">Advanced i18n patterns</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#advanced-message-passing">Advanced Message Passing</a>
@@ -1606,7 +1651,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
             </slide-panels>
 
           </body>
-          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./docs/spec-files/","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","signature.md","problems.md","threading.md","routing.md","transports.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","out_of_band.md","feature_discovery.md","trustping.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
+          <script>window.specConfig = {"title":"DIDComm Messaging Specification","logo":"https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg","logo_link":"https://identity.foundation","source":{"host":"github","account":"decentralized-identity","repo":"didcomm-messaging"},"output_path":"./docs/spec","spec_directory":"./docs/spec-files/","markdown_paths":["title.md","scope.md","requirements.md","processing_model.md","message_structure.md","encryption.md","signature.md","problems.md","threading.md","routing.md","transports.md","i18n.md","advanced_message_passing.md","connections.md","general_messaging_constructs.md","protocols.md","out_of_band.md","feature_discovery.md","trustping.md","reference_implementation.md","future_proofing.md","references.md"],"destination":"./docs/spec/","rootResourcePrefix":"./docs/","destinationResourcePrefix":"../"}</script>
           <script src="../spec-up/compiled/body.js" data-manual></script>
         </html>
       
