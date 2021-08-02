@@ -935,20 +935,19 @@ Please see <a href="#message-types">Message Types</a> for details about media ty
 <p>Attachments are contained within a list in the <code>attachments</code> header.</p>
 <p>Each attachment is contained within the following structure.</p>
 <ul>
-<li><code>id</code>: Identifies attached content within the scope of a given message. Recommended on appended attachment descriptors. Possible but generally unused on embedded attachment descriptors. Never required if no references to the attachment exist; if omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because <code>id</code> is used to compose URIs, it is recommended that this name be brief and avoid spaces and other characters that require URI escaping.</li>
+<li><code>id</code>: [optional but recommended] Identifies attached content within the scope of a given message, so it can be referenced. For example, in a message documenting items for sale on an auction website, there might be a field named <code>front_view</code> that contains the value <code>#attachment1</code>; this would reference an attachment to the message with <code>id</code> equal to <code>attachment1</code>. Recommended on appended attachment descriptors. If omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because <code>id</code> is used to compose URIs, this value should be brief and MUST consist entirely of <a href="https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3">unreserved URI characters</a> – meaning that it is not necessary to <a href="https://en.wikipedia.org/wiki/Percent-encoding">percent encode</a> the value to incorporate it in a URI.</li>
 <li><code>description</code>: [optional] A human-readable description of the content.</li>
 <li><code>filename</code>: A hint about the name that might be used if this attachment is persisted as a file. It is not required, and need not be unique. If this field is present and <code>mime-type</code> is not, the extension on the filename may be used to infer a MIME type.</li>
-<li><code>mime_type</code>: [optional] Describes the MIME type of the attached content.</li>
-<li><code>format</code>: [optional] Describes the format of the attachment if the <code>mime_type</code> is not sufficient.</li>
-<li><code>lastmod_time</code>: A hint about when the content in this attachment was last modified.</li>
+<li><code>media_type</code>: [optional] Describes the media (MIME) type of the attached content.</li>
+<li><code>format</code>: [optional] Describes the format of the attachment if the <code>media_type</code> is not sufficient.</li>
+<li><code>lastmod_time</code>: [optional] A hint about when the content in this attachment was last modified.</li>
 <li><code>byte_count</code>: [optional] mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.</li>
-<li><code>data</code>: A JSON object that gives access to the actual content of the attachment. Contains the following subfields:
+<li><code>data</code>: A JSON object that gives access to the actual content of the attachment. Contains enough of the following subfields to allow access to the data:
 <ul>
-<li><code>jws</code>: [optional] A JSON Web Signature over the content of the attachment.</li>
+<li><code>jws</code>: [optional] A <a href="https://tools.ietf.org/html/rfc7515">JWS</a> in <a href="https://tools.ietf.org/html/rfc7515#appendix-F">detached dontent mode</a>, where the <code>payload</code> field of the JWS maps to <code>base64</code> or to something fetchable via <code>links</code>. This allows attachments to be signed. The signature need not come from the author of the message.</li>
 <li><code>hash</code>: [optional] The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the <code>links</code> data attribute.</li>
 <li><code>links</code>: [optional] A list of zero or more locations at which the content may be fetched.</li>
-<li><code>base64</code>: [optional]Base64-encoded data, when representing arbitrary content inline instead of via <code>links</code>.</li>
-<li><code>jwe</code>: Already encrypted data in the form of a JWE.</li>
+<li><code>base64</code>: [optional]<a href="https://tools.ietf.org/html/rfc4648#section-5">Base64url</a>-encoded data, when representing arbitrary content inline instead of via <code>links</code>.</li>
 <li><code>json</code>: [optional] Directly embedded JSON data, when representing content inline instead of via <code>links</code>, and when the content is natively conveyable as JSON.</li>
 </ul>
 </li>
@@ -981,9 +980,10 @@ Please see <a href="#message-types">Message Types</a> for details about media ty
         	<span class="token punctuation">}</span>
         <span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span>
 			<span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"x"</span><span class="token punctuation">,</span>
-            <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"example encrypted attachment"</span><span class="token punctuation">,</span>
+            <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"example encrypted DIDComm message as attachment"</span><span class="token punctuation">,</span>
+            <span class="token property">"media_type"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-encrypted+json"</span><span class="token punctuation">,</span>
             <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-            	<span class="token property">"jwe"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            	<span class="token property">"json"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
                     <span class="token comment">//jwe json structure</span>
                 <span class="token punctuation">}</span>
         	<span class="token punctuation">}</span>
