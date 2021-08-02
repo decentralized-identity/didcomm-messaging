@@ -68,9 +68,10 @@ Each attachment is contained within the following structure.
         	}
         },{
 			"id": "x",
-            "description": "example encrypted attachment",
+            "description": "example encrypted DIDComm message as attachment",
+            "media_type": "application/didcomm-encrypted+json",
             "data": {
-            	"jwe": {
+            	"json": {
                     //jwe json structure
                 }
         	}
