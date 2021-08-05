@@ -1099,7 +1099,7 @@ Please see <a href="#message-types">Message Types</a> for details about media ty
 <p>Using a standard message encoding allows for easier interoperability between multiple projects and software platforms. Using a URL for that standard encoding provides a built in fallback flow for users who are unable to automatically process the message. Those new users will load the URL in a browser as a default behavior, and may be presented with instructions on how to install software capable of processing the message. Already onboarded users will be able to process the message without loading in a browser via mobile app URL capture, or via capability detection after being loaded in a browser.</p>
 <p>The standard message format is a URL with a Base64URLEncoded plaintext JWM json object as a query parameter.</p>
 <p>The URL format is as follows, with some elements described below:</p>
-<pre class="language-text"><code class="language-text">https://&lt;domain&gt;/&lt;path&gt;?_oob=&lt;encodedplaintextjwm&gt;
+<pre class="language-text"><code class="language-text">https://&lt;domain>/&lt;path>?_oob=&lt;encodedplaintextjwm>
 </code></pre>
 <p><code>&lt;domain&gt;</code> and <code>&lt;path&gt;</code> should be kept as short as possible, and the full URL should return human readable instructions when loaded in a browser. This is intended to aid new users. The <code>_oob</code> query parameter is required and is reserved to contain the DIDComm message string. Additional path elements or query parameters are allowed, and can be leveraged to provide coupons or other promise of payment for new users.</p>
 <blockquote>
