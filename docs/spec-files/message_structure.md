@@ -24,7 +24,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 A **DIDComm signed message** is a signed [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) envelope that associates a non-repudiable signature with the plaintext message inside it.
 
-**DIDComm signed messages** are not necessary to provide message integrity (tamper evidence), or to prove the sender to the recipient. Both of these guarantees automatically occur with the authenticated encryption in **DIDComm encrypted messages**. **DIDComm signed messages** are only necessary when the origin of plaintext must be provable to third parties, or when the sender can't be proven to the recipient by authenticated encryption because the recipient is not known in advance (e.g., in a broadcast scenario). Adding a signature when one is not needed [can degrade rather than enhance security because it relinquishes the sender's ability to speak off the record](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0049-repudiation/README.md#summary). We therefore expect **DIDComm signed messages** to be used in a few cases, but not as a matter of course.
+**DIDComm signed messages** are not necessary to provide message integrity (tamper evidence), or to prove the sender to the recipient. Both of these guarantees automatically occur with the authenticated encryption in **DIDComm encrypted messages**. **DIDComm signed messages** are only necessary when the origin of plaintext has to be provable to third parties, or when the sender can't be proven to the recipient by authenticated encryption because the recipient is not known in advance (e.g., in a broadcast scenario). Adding a signature when one is not needed [can degrade rather than enhance security because it relinquishes the sender's ability to speak off the record](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0049-repudiation/README.md#summary). We therefore expect **DIDComm signed messages** to be used in a few cases, but not as a matter of course.
 
 When a message is *both* signed and encrypted, the plaintext is signed, and then the signed envelope is encrypted. The opposite order is not used, since it would imply that the signer committed to opaque data (which is unsafe and undermines non-repudiation).
 
@@ -83,7 +83,7 @@ Headers in [DIDComm Messaging](.) are intended to be extensible in much the same
 
 - **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender.
 
-- **type** - REQUIRED. Plaintext message type, useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri), that when resolved gives human readable information about the message. The attribute's value predicts the content in the `body` of the message, for example the presence of other attributes and how they should be processed.
+- **type** - REQUIRED. Plaintext message type, useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri), that when resolved gives human readable information about the message. The attribute's value predicts the content in the `body` of the message, for example the presence of other attributes and how they SHOULD be processed.
 
 - **typ** - OPTIONAL. Media type of the JWM content. MUST be set to `application/didcomm-plain+json` for **DIDComm plaintext messages**. This tells generic JOSE libraries that the [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) in question is [DIDComm Messaging](.) rather than a different [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) type and is therefore helpful if messages will be processed in a system that supports a variety of [JWMs](https://tools.ietf.org/html/draft-looker-jwm-01).
 
@@ -105,7 +105,7 @@ The `to` header cannot be used for routing, since it is encrypted at every inter
 
 - **from** - OPTIONAL. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this [DID](https://w3c.github.io/did-core/). Authorization of the encryption key for this [DID](https://w3c.github.io/did-core/) MUST be verified by message recipient with the proper proof purposes. See the [message authentication](#Message-Authentication) section for additional details.
 
-  When the sender wishes to be anonymous, they should use a new [DID](https://w3c.github.io/did-core/) created for the purpose to avoid correlation with any other behavior or identity. Peer [DIDs](https://w3c.github.io/did-core/) are lightweight and require no ledger writes, and therefore a good method to use for this purpose.
+  When the sender wishes to be anonymous, they SHOULD use a new [DID](https://w3c.github.io/did-core/) created for the purpose to avoid correlation with any other behavior or identity. Peer [DIDs](https://w3c.github.io/did-core/) are lightweight and require no ledger writes, and therefore a good method to use for this purpose.
 
 - **thid** - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included the `id` property of the message MUST be treated as the value of the `thid`.
 
@@ -117,7 +117,7 @@ The `to` header cannot be used for routing, since it is encrypted at every inter
 
 With respect to headers, [DIDComm Messaging](.) follows the extensibility pattern established by the JW* family of standards. A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields SHOULD ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.
 
-Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), [DIDComm Messaging](.) explicitly rejects the `X-*` headers convention that creates divergent pseudo-standards; if a new header needs broad support, it must be standardized properly. Alternatively, a JSON-LD `@context` header can be added, providing namespacing for fields other than those predefined in the specification. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.
+Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), [DIDComm Messaging](.) explicitly rejects the `X-*` headers convention that creates divergent pseudo-standards; if a new header needs broad support, proper standardization is required. Alternatively, a JSON-LD `@context` header can be added, providing namespacing for fields other than those predefined in the specification. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.
 
 #### Simple vs. Structured
 
@@ -131,7 +131,7 @@ Headers can be simple (mapping a header name to an integer or a string) or struc
 
 The problem domain of [DIDComm Messaging](.) intersects with other aspects of decentralized identity, where JSON-LD plays a role in some standards. Thus it may be natural to wonder about [DIDComm Messaging's](.) relationship to JSON-LD and to the rich semantics and extensibility features it offers. The short answer is that [DIDComm Messaging](.) is not dependent on JSON-LD, but it is compatible with it. We expect these two technologies to remain mostly orthogonal.
 
-The body of a message -- everything inside the `body` object -- is different. Here, there is substantial variety and complexity. Structures may be sophisticated graphs, represented with nested objects and arrays. JSON-LD is not required at this level, either. However, it is available, and may be appropriate for certain use cases where extensibility is an important feature. JSON-LD usage, if it occurs, SHOULD be a declared feature of a protocol as a whole, not an ad hoc extension to arbitrary individual messages, and MUST be signalled by the inclusion of a `@context` inside `body`. Unless a protocol declares a JSON-LD dependency, the same rules apply to JSON-LD-isms as apply to any other unrecognized structure in a [DIDComm Messaging](.) message: additional fields can be added to any part of message structure, should be ignored if not understood, and MUST NOT be the basis of failure by recipients.
+The body of a message -- everything inside the `body` object -- is different. Here, there is substantial variety and complexity. Structures may be sophisticated graphs, represented with nested objects and arrays. JSON-LD is not required at this level, either. However, it is available, and may be appropriate for certain use cases where extensibility is an important feature. JSON-LD usage, if it occurs, SHOULD be a declared feature of a protocol as a whole, not an ad hoc extension to arbitrary individual messages, and MUST be signalled by the inclusion of a `@context` inside `body`. Unless a protocol declares a JSON-LD dependency, the same rules apply to JSON-LD-isms as apply to any other unrecognized structure in a [DIDComm Messaging](.) message: additional fields can be added to any part of message structure, SHOULD be ignored if not understood, and MUST NOT be the basis of failure by recipients.
 
 ### DID Rotation
 
@@ -141,11 +141,11 @@ When a [DID](https://www.w3.org/TR/did-core/) is rotated, the new [DID](https://
 
 - **from_prior**: REQUIRED. A JWT, with with `sub`: new [DID](https://www.w3.org/TR/did-core/) and `iss`: prior [DID](https://www.w3.org/TR/did-core/), with a signature from a key authorized by prior [DID](https://www.w3.org/TR/did-core/).
 
-When a message is received from an unknown [DID](https://www.w3.org/TR/did-core/), the recipient should check for existence of the `from_prior` header. The JWT in the`from_prior` attribute is used to extract the prior [DID](https://www.w3.org/TR/did-core/) (`iss`) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new [DID](https://www.w3.org/TR/did-core/) and associated [DID](https://www.w3.org/TR/did-core/) Document information should be used for further communication.
+When a message is received from an unknown [DID](https://www.w3.org/TR/did-core/), the recipient SHOULD check for existence of the `from_prior` header. The JWT in the`from_prior` attribute is used to extract the prior [DID](https://www.w3.org/TR/did-core/) (`iss`) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new [DID](https://www.w3.org/TR/did-core/) and associated [DID](https://www.w3.org/TR/did-core/) Document information SHOULD be used for further communication.
 
 The validity of the DID rotation is verified by checking the JWT signature against the key indicated in the `kid` header parameter. The indicated key MUST be authorized in the [DID Document](https://www.w3.org/TR/did-core/#dfn-did-documents) of the prior [DID](https://www.w3.org/TR/did-core/) (`iss`).
 
-The `from_prior` attribute should be included in messages sent until the party rotating receives a message sent to the new [DID](https://www.w3.org/TR/did-core/). If multiple messages are received to containing the rotation headers after being processed by the recipient, they may be ignored.
+The `from_prior` attribute SHOULD be included in messages sent until the party rotating receives a message sent to the new [DID](https://www.w3.org/TR/did-core/). If multiple messages are received to containing the rotation headers after being processed by the recipient, they may be ignored.
 
 #### JWT Details
 
@@ -192,5 +192,5 @@ The JWT is constructed as follows, with appropriate values changed.
 
 #### Rotation Limitations
 
-- This rotation method does not cover cases where a multi-sig is required. Rotations with such requirements should use a more expressive protocol.
-- This rotation method only supports the case where a new [DID](https://www.w3.org/TR/did-core/) is used, replacing an old [DID](https://www.w3.org/TR/did-core/) which is no longer used. Adjustments to [DIDs](https://www.w3.org/TR/did-core/) used between different parties that does not fit this narrow use should use a more expressive protocol.
+- This rotation method does not cover cases where a multi-sig is required. Rotations with such requirements SHOULD use a more expressive protocol.
+- This rotation method only supports the case where a new [DID](https://www.w3.org/TR/did-core/) is used, replacing an old [DID](https://www.w3.org/TR/did-core/) which is no longer used. Adjustments to [DIDs](https://www.w3.org/TR/did-core/) used between different parties that does not fit this narrow use SHOULD use a more expressive protocol.
