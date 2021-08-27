@@ -56,6 +56,7 @@
         "routing.md",
         "problems.md",
 		"authentication.md",
+        "ecdh1pu.md",
         "whatsnew.md"
       ]
     }
