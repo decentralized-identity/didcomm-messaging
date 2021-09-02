@@ -97,7 +97,7 @@ Headers in DIDComm are intended to be extensible in much the same way that heade
     | Signed | `application/didcomm-signed+json` |
     | Plaintext | `application/didcomm-plain+json`|
 
-- **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid DID or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience.
+- **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid DID or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.
 
  When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to `BCC:` addresses).
 
