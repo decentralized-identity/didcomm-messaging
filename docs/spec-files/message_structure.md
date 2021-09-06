@@ -89,7 +89,7 @@ Headers in [DIDComm Messaging](.) are intended to be extensible in much the same
 
     The following table provides an overview of using the media type properties in supported [DIDComm Messaging](.) messages:
 
-    | DIDComm message | `typ` |
+    | Envelope | `typ` |
     |-----------------|-------|
     | Authcrypted and/or anoncrypted | `application/didcomm-encrypted+json`|
     | Signed and anoncrypted | `application/didcomm-encrypted+json`|
