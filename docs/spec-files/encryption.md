@@ -101,7 +101,7 @@ Assuming she also has Bob's DID document which happens to include the following 
 }
 ```
 
-There should be only 1 entry in the recipients of the envelope, representing Bob. The corresponding `kid` header for this recipient MUST have `did:example:jklmnopqrstuvwxyz1#key-1` as value. The packing process MUST extract the public key bytes found in `publicKeyBase58` of Bob's DID Doc `KeyAgreement[0]` to execute the ECDH-1PU key derivation for content key wrapping.
+Unless previously coordinated in a layer above DIDComm, the default recipients of the envelope MUST include all the `KeyAgreement` entries, representing Bob. The corresponding `kid` header for this recipient MUST have a DID URL pointing to a corresponding verification method in the DID document. This verification method MUST be associated with the `KeyAgreement` verification relationship and the verification material MUST be retrieved from the DID document to execute the ECDH-1PU key derivation for content key wrapping.
 
 When Bob receives the envelope, the unpacking process on his end MUST resolve the `skid` protected header value using Alice's DID doc's `KeyAgreement[0]` in order to extract her public key. In Alice's DID Doc example above, `KeyAgreement[0]` is a reference id, it MUST be resolved from the main `VerificationMethod[]` of Alice's DID document (not shown in the example).
 
