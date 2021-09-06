@@ -117,7 +117,7 @@ The `to` header cannot be used for routing, since it is encrypted at every inter
 
 With respect to headers, [DIDComm Messaging](.) follows the extensibility pattern established by the JW* family of standards. A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields SHOULD ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.
 
-Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), [DIDComm Messaging](.) explicitly rejects the `X-*` headers convention that creates divergent pseudo-standards; if a new header needs broad support, proper standardization is required. Alternatively, a JSON-LD `@context` header can be added, providing namespacing for fields other than those predefined in the specification. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.
+Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), [DIDComm Messaging](.) explicitly rejects the `X-*` headers convention that creates divergent pseudo-standards; if a new header needs broad support, proper standardization is required. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.
 
 #### Simple vs. Structured
 
