@@ -145,7 +145,7 @@ When a message is received from an unknown [DID](https://www.w3.org/TR/did-core/
 
 The validity of the [DID Rotation](#did-rotation) is verified by checking the JWT signature against the key indicated in the `kid` header parameter. The indicated key MUST be authorized in the [DID Document](https://www.w3.org/TR/did-core/#dfn-did-documents) of the prior [DID](https://www.w3.org/TR/did-core/) (`iss`).
 
-The `from_prior` attribute SHOULD be included in messages sent until the party rotating receives a message sent to the new [DID](https://www.w3.org/TR/did-core/). If multiple messages are received to containing the rotation headers after being processed by the recipient, they may be ignored.
+The `from_prior` attribute MUST be included in messages sent until the party rotating receives a message sent to the new [DID](https://www.w3.org/TR/did-core/). If multiple messages are received to containing the rotation headers after being processed by the recipient, they MAY be ignored.
 
 #### JWT Details
 
