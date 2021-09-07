@@ -55,8 +55,6 @@ creates a `ping` message like this:
 
 **response_requested**: default value is `true`. If false, the `sender` is not requesting a `ping_response` from the `receiver`. If `true`, the `sender` is requesting a response.
 
-**from**: is required if a response is requested so that the receiver knows where to send the response
-
 ##### ping_response
 
 When the message arrives at the receiver, assuming that `response_requested`
