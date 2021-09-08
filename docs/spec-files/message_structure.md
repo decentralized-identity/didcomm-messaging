@@ -114,6 +114,8 @@ The `to` header cannot be used for routing, since it is encrypted at every inter
 
 - **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is considered no longer valid by the sender. When omitted, the message is considered to have no expiration by the sender.
 
+- **body** - REQUIRED. The `body` attribute contains all the message type specific attributes of the message type indicated in the `type` attribute. This attribute MUST be present, even if empty.
+
 With respect to headers, [DIDComm Messaging](.) follows the extensibility pattern established by the JW* family of standards. A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields SHOULD ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.
 
 Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), [DIDComm Messaging](.) explicitly rejects the `X-*` headers convention that creates divergent pseudo-standards; if a new header needs broad support, proper standardization is required. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.
@@ -191,5 +193,6 @@ The JWT is constructed as follows, with appropriate values changed.
 
 #### Rotation Limitations
 
+- This rotation method does not cover cases where a multi-sig is required. Rotations with such requirements should use a more expressive protocol.
+
 - This rotation method only supports the case where a new [DID](https://www.w3.org/TR/did-core/) is used, replacing an old [DID](https://www.w3.org/TR/did-core/) which is no longer used. Adjustments to [DIDs](https://www.w3.org/TR/did-core/) used between different parties that does not fit this narrow use are expected to define a separate protocol to do so.
-- This rotation method only supports the case where a new [DID](https://www.w3.org/TR/did-core/) is used, replacing an old [DID](https://www.w3.org/TR/did-core/) which is no longer used. Adjustments to [DIDs](https://www.w3.org/TR/did-core/) used between different parties that does not fit this narrow use SHOULD use a more expressive protocol.
