@@ -193,6 +193,9 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <li>
 <p><strong>expires_time</strong> - OPTIONAL. Message Expired Time. The <code>expires_time</code> attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is considered no longer valid by the sender. When omitted, the message is considered to have no expiration by the sender.</p>
 </li>
+<li>
+<p><strong>body</strong> - REQUIRED. The <code>body</code> attribute contains all the message type specific attributes of the message type indicated in the <code>type</code> attribute. This attribute MUST be present, even if empty.</p>
+</li>
 </ul>
 <p>With respect to headers, <a href="." >DIDComm Messaging</a> follows the extensibility pattern established by the JW* family of standards. A modest inventory of predefined “header” fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn’t understand such fields SHOULD ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.</p>
 <p>Aligning with <a path-0="tools.ietf.org"path-1="html"path-2="rfc6648.html"href="https://tools.ietf.org/html/rfc6648.html" >RFC 6648</a>, <a href="." >DIDComm Messaging</a> explicitly rejects the <code>X-*</code> headers convention that creates divergent pseudo-standards; if a new header needs broad support, proper standardization is required. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.</p>
@@ -249,8 +252,12 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </code></pre>
 <h4 id="rotation-limitations"><a class="toc-anchor" href="#rotation-limitations" >§</a> Rotation Limitations</h4>
 <ul>
-<li>This rotation method only supports the case where a new <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> is used, replacing an old <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> which is no longer used. Adjustments to <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DIDs</a> used between different parties that does not fit this narrow use are expected to define a separate protocol to do so.</li>
-<li>This rotation method only supports the case where a new <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> is used, replacing an old <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> which is no longer used. Adjustments to <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DIDs</a> used between different parties that does not fit this narrow use SHOULD use a more expressive protocol.</li>
+<li>
+<p>This rotation method does not cover cases where a multi-sig is required. Rotations with such requirements should use a more expressive protocol.</p>
+</li>
+<li>
+<p>This rotation method only supports the case where a new <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> is used, replacing an old <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> which is no longer used. Adjustments to <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DIDs</a> used between different parties that does not fit this narrow use are expected to define a separate protocol to do so.</p>
+</li>
 </ul>
 <h2 id="negotiating-compatibility"><a class="toc-anchor" href="#negotiating-compatibility" >§</a> Negotiating Compatibility</h2>
 <p>When parties want to communicate via DIDComm, a number of mechanisms must align. These include:</p>
