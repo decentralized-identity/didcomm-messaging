@@ -162,13 +162,6 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </li>
 <li>
 <p><strong>typ</strong> - OPTIONAL. Media type of the JWM content.</p>
-<p>The following table provides an overview of using the media type properties in supported <a href="." >DIDComm Messaging</a> messages:</p>
-<p>| Envelope | <code>typ</code> |
-|-----------------|-------|
-| Authcrypted and/or anoncrypted | <code>application/didcomm-encrypted+json</code>|
-| Signed and anoncrypted | <code>application/didcomm-encrypted+json</code>|
-| Signed | <code>application/didcomm-signed+json</code> |
-| Plaintext | <code>application/didcomm-plain+json</code>|</p>
 </li>
 <li>
 <p><strong>to</strong> - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) that identifies a member of the message’s intended audience.</p>

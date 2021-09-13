@@ -87,15 +87,6 @@ Headers in [DIDComm Messaging](.) are intended to be extensible in much the same
 
 - **typ** - OPTIONAL. Media type of the JWM content.
 
-    The following table provides an overview of using the media type properties in supported [DIDComm Messaging](.) messages:
-
-    | Envelope | `typ` |
-    |-----------------|-------|
-    | Authcrypted and/or anoncrypted | `application/didcomm-encrypted+json`|
-    | Signed and anoncrypted | `application/didcomm-encrypted+json`|
-    | Signed | `application/didcomm-signed+json` |
-    | Plaintext | `application/didcomm-plain+json`|
-
 - **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience.
 
  When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to `BCC:` addresses).
