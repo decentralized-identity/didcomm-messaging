@@ -46,6 +46,7 @@ creates a `ping` message like this:
 {
   "type": "https://didcomm.org/trust_ping/1.0/ping",
   "id": "518be002-de8e-456e-b3d5-8fe472477a86",
+  "from": "did:example:123456",
   "body": {
       "response_requested": true
   }
