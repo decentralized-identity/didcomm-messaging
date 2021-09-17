@@ -107,6 +107,9 @@ When Bob receives the envelope, the unpacking process on his end MUST resolve th
 
 Once resolved, the unpacker will then execute ECDH-1PU key derivation using this key and Bob's own recipient key found in the envelope's `recipients[0]` to unwrap the content encryption key.
 
+#### Note about Messages without DIDs
+In requests where the DIDs have not yet been exchanged (eg: OOB invitations or the actual DID exchange request), agents MAY send these requests in plaintext. If an agent accepts only encrypted messages, only then an encrypted envelope MAY be used. Since the DIDs are still not exchanged in this specific case, the `kid`/`skid` values SHOULD be the `did:key` representation of the key, assuming the sender agent knows the recipient's public key. Once DIDs are exchanged, only encrypted messages MUST be used and `kid`/`skid` values MUST adhere to the DID's `KeyAgreement.ID` requirement as mentioned in the previous section. 
+
 ### Protecting the Sender Identity
 
 When employing authenticated encryption, the header of the encrypted message envelope must necessarily reveal the key identifier used by the sender of the message (the `skid`). This is used by recipients to resolve the sender's public key material in order to decrypt the message. In the case of communication between two public DIDs, this may allow outside parties to directly correlate the sender of an encrypted message to a known identity.
