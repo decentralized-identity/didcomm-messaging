@@ -83,7 +83,7 @@ Headers in [DIDComm Messaging](.) are intended to be extensible in much the same
 
 - **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender.
 
-- **type** - REQUIRED. Plaintext message type, useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri), that when resolved fgives human readable information about the message. The attribute's value SHOULD predict the content in the `body` of the message.
+- **type** - REQUIRED. Plaintext message type, useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri), that when resolved gives human readable information about the message. The attribute's value SHOULD predict the content in the `body` of the message.
 
 - **typ** - OPTIONAL. Media type of the JWM content.
 
