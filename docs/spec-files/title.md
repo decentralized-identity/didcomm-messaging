@@ -6,7 +6,7 @@ DIDComm Messaging
 **Latest published version:**
   [identity.foundation/didcomm-messaging/spec](https://identity.foundation/didcomm-messaging/spec)
 
-**Editors:**
+**Editors:** Sam Curren
 
 **Contributors:** Daniel Hardman
 
