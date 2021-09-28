@@ -87,26 +87,24 @@ Headers in [DIDComm Messaging](.) are intended to be extensible in much the same
 
 - **typ** - OPTIONAL. Media type of the JWM content.
 
-- **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience.
-    
-    The following table provides an overview of using the media type properties in supported [DIDComm Messaging](.) messages:
+The following table provides an overview of using the media type properties in supported [DIDComm Messaging](.) messages:
 
-    | Envelope | `typ` |
-    |-----------------|-------|
-    | Authcrypted and/or anoncrypted | `application/didcomm-encrypted+json`|
-    | Signed and anoncrypted | `application/didcomm-encrypted+json`|
-    | Signed | `application/didcomm-signed+json` |
-    | Plaintext | `application/didcomm-plain+json`|
+| Envelope | `typ` |
+|-----------------|-------|
+| Authcrypted and/or anoncrypted | `application/didcomm-encrypted+json`|
+| Signed and anoncrypted | `application/didcomm-encrypted+json`|
+| Signed | `application/didcomm-signed+json` |
+| Plaintext | `application/didcomm-plain+json`|
 
 - **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.
 
- When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to `BCC:` addresses).
+When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to `BCC:` addresses).
 
 The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the `forward` message contains a `next` attribute in its body that specifies the target for the next routing operation.
 
--**from** - REQUIRED. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this [DID](https://w3c.github.io/did-core/). Authorization of the encryption key for this [DID](https://w3c.github.io/did-core/) MUST be verified by message recipient with the proper proof purposes. When the sender wishes to remain anonymous, they should use a new, ephemeral DID. See the [message authentication](#Message-Authentication) section for additional details.
+- **from** - OPTIONAL when the message is to be encrypted via anoncrypt. REQUIRED when the message is encrypted via authcrypt. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this [DID](https://w3c.github.io/did-core/). Authorization of the encryption key for this [DID](https://w3c.github.io/did-core/) MUST be verified by message recipient with the proper proof purposes. When the sender wishes to remain anonymous, they should use a new, ephemeral DID. See the [message authentication](#Message-Authentication) section for additional details.
 
-  When the sender wishes to be anonymous, they SHOULD use a new [DID](https://w3c.github.io/did-core/) created for the purpose to avoid correlation with any other behavior or identity. Peer [DIDs](https://w3c.github.io/did-core/) are lightweight and require no ledger writes, and therefore a good method to use for this purpose.
+When the sender wishes to be anonymous using authcrypt, they SHOULD use a new [DID](https://w3c.github.io/did-core/) created for the purpose to avoid correlation with any other behavior or identity. Peer [DIDs](https://w3c.github.io/did-core/) are lightweight and require no ledger writes, and therefore a good method to use for this purpose.
 
 - **thid** - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included the `id` property of the message MUST be treated as the value of the `thid`.
 
