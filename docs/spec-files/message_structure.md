@@ -32,7 +32,7 @@ The [media type](https://tools.ietf.org/html/rfc6838) of a **DIDComm signed mess
 
 The media type of the envelope MUST be set in the `typ` [property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the JWS.
 
-In order to avoid [surreptitious forwarding or malicious usage](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html) of a signed message, a **DIDComm signed message** SHOULD contain a properly defined `to` header, In the case when a message is *both* signed and encrypted the inner JWM being signed MUST contain a `to` header.
+In order to avoid [surreptitious forwarding or malicious usage](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html) of a signed message, a **DIDComm signed message** SHOULD contain a properly defined `to` header. In the case where a message is *both* signed and encrypted, the inner JWM being signed MUST contain a `to` header.
 
 When persisted as a file or attached as a payload in other contexts, the file extension for **DIDComm signed messages** SHOULD be `dcsm`, giving a globbing pattern of `*.dcsm`; this SHOULD be be read as "Star Dot D C S M" or as "D C S M" files. A possible icon for this media type depicts a signed envelope ([svg](../collateral/dcsm.svg) | [256x256](../collateral/dcsm-256.png) | [128x128](../collateral/dcsm-128.png) | [64x64](../collateral/dcsm-64.png)):
 
@@ -88,6 +88,8 @@ Headers in [DIDComm Messaging](.) are intended to be extensible in much the same
 - **type** - REQUIRED. Plaintext message type, useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri), that when resolved gives human readable information about the message. The attribute's value SHOULD predict the content in the `body` of the message.
 
 - **typ** - OPTIONAL. Media type of the JWM content.
+
+- **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience.
     
     The following table provides an overview of using the media type properties in supported [DIDComm Messaging](.) messages:
 
@@ -102,9 +104,9 @@ Headers in [DIDComm Messaging](.) are intended to be extensible in much the same
 
  When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to `BCC:` addresses).
 
-For signed messages, there's specific requirements around properly defined `to` header outlined in the `to` header definition above. The reason for this is to prevents certain kind of [forwarding attacks](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html), where a message that wasn't meant for a given recipient is forwarded along with its signature to that recipient which then could blindly trust it because of the signature.
+For signed messages, there are specific requirements around properly defining the `to` header outlined in the **DIDComm Signed Message** definition above. The reason for this is to prevents certain kind of [forwarding attacks](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html), where a message that was not meant for a given recipient is forwarded along with its signature to a recipient which then could blindly trust it because of the signature.
 
-Upon reception of a message whose `to` header is defined, the recipient SHOULD verify that they are included in that field and implementations SHOULD give a warning to their user when it is not the case as it could indicate malicious intent from the sender.
+Upon reception of a message whose `to` header is defined, the recipient SHOULD verify that they are included in that field. Implementations MUST NOT fail when it is not the case and SHOULD give a warning to their user as it could indicate malicious intent from the sender.
 
 The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the `forward` message contains a `next` attribute in its body that specifies the target for the next routing operation.
 
