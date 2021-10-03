@@ -32,11 +32,12 @@
         "general_messaging_constructs.md",
         "protocols.md",
         "out_of_band.md",
-		    "feature_discovery.md",
-		    "trustping.md",
+        "feature_discovery.md",
+        "trustping.md",
         "reference_implementation.md",
         "future_proofing.md",
-        "references.md"
+        "references.md",
+        "appendix.md"
       ]
     },{
       "title": "DIDComm Messaging - Implementers Guide",
