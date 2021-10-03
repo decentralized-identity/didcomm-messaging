@@ -451,7 +451,7 @@ The following example defines DIDComm Plaintext message. The message is used for
 
 #### C.2 DIDComm Signed Messages
 
-This section provides examples for DIDComm Signed Messages
+This section provides examples for DIDComm Signed Messages. Examples sign [DIDComm Plaintext Message](#c1-didcomm-plaintext-messages).
 
 This example uses EdDSA digital signature with a curve Ed25519.
 
@@ -506,7 +506,7 @@ This example uses ES256K digital signature.
 
 #### C.3. DIDComm Encrypted Messages
 
-This section provides examples for DIDComm Encrypted Messages.
+This section provides examples for DIDComm Encrypted Messages. Examples encrypt the [DIDComm Plaintext Message](#c1-didcomm-plaintext-messages).
 
 This example uses ECDH-ES key wrapping algorithm using key with X25519 elliptic curve and XC20P for content encryption of the message.
 
