@@ -142,7 +142,7 @@ The body of a message -- everything inside the `body` object -- is different. He
 
 When a [DID](https://www.w3.org/TR/did-core/) is rotated, the new [DID](https://www.w3.org/TR/did-core/) is put into immediate use encrypting the message, and one additional attribute MUST be included as a message header:
 
-- **from_prior**: REQUIRED. A JWT, with with `sub`: new [DID](https://www.w3.org/TR/did-core/) and `iss`: prior [DID](https://www.w3.org/TR/did-core/), with a signature from a key authorized by prior [DID](https://www.w3.org/TR/did-core/).
+- **from_prior**: REQUIRED. A JWT, with `sub`: new [DID](https://www.w3.org/TR/did-core/) and `iss`: prior [DID](https://www.w3.org/TR/did-core/), with a signature from a key authorized by prior [DID](https://www.w3.org/TR/did-core/).
 
 When a message is received from an unknown [DID](https://www.w3.org/TR/did-core/), the recipient SHOULD check for existence of the `from_prior` header. The JWT in the`from_prior` attribute is used to extract the prior [DID](https://www.w3.org/TR/did-core/) (`iss`) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new [DID](https://www.w3.org/TR/did-core/) and associated [DID](https://www.w3.org/TR/did-core/) Document information SHOULD be used for further communication.
 
