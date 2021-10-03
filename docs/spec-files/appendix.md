@@ -1,193 +1,13 @@
 ## Appendix
-### Appendix A. DID Docs for Test Vectors 
+This section provides test vectors of DIDComm Messages. The test vectors defined in the [Appendix C](#appendix-c-test-vectors) MIGHT be used to validate implementations of [DIDComm Messaging](.). The test vectors  MUST use the sender and recipient private keys defined in the [Appendix A](#appendix-a-secrets-for-test-vectors) to encrypt and sign DIDComm Messages. The test vectors MUST use the sender and recipient public keys defined in the [Appendix B](#appendix-b-diddocs-for-test-vectors) to decrypt DIDComm Encrypted Messages and verify signature of DIDComm Signed Messages.
 
-The following docs can be used to validate implementations of the did comm messages defined in Section 5.2.  They are also intended to test cases defined in the section.
+### Appendix A. Secrets for Test Vectors 
 
-```json
-{
-   "@context":[
-      "https://www.w3.org/ns/did/v2"
-   ],
-   "id":"did:example:alice",
-   "authentication":[
-      {
-         "id":"did:example:alice#key-1",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-1",
-         "publicKeyJwk":{
-            "kty":"OKP",
-            "crv":"Ed25519",
-            "x":"G-boxFB6vOZBu-wXkm-9Lh79I8nf9Z50cILaOgKKGww"
-         }
-      },
-      {
-         "id":"did:example:alice#key-2",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-2",
-         "publicKeyJwk":{
-            "kty":"EC",
-            "crv":"P-256",
-            "x":"2syLh57B-dGpa0F8p1JrO6JU7UUSF6j7qL-vfk1eOoY",
-            "y":"BgsGtI7UPsObMRjdElxLOrgAO9JggNMjOcfzEPox18w"
-         }
-      },
-      {
-         "id":"did:example:alice#key-3",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-3",
-         "publicKeyJwk":{
-            "kty":"EC",
-            "crv":"secp256k1",
-            "x":"aToW5EaTq5mlAf8C5ECYDSkqsJycrW-e1SQ6_GJcAOk",
-            "y":"JAGX94caA21WKreXwYUaOCYTBMrqaX4KWIlsQZTHWCk"
-         }
-      }
-   ],
-   "keyAgreement":[
-      {
-         "id":"did:example:alice#key-x25519-1",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-x25519-1",
-         "publicKeyJwk":{
-            "kty":"OKP",
-            "crv":"X25519",
-            "x":"avH0O2Y4tqLAq8y9zpianr8ajii5m4F_mICrzNlatXs"
-         }
-      },
-      {
-         "id":"did:example:alice#key-p256-1",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-p256-1",
-         "publicKeyJwk":{
-            "kty":"EC",
-            "crv":"P-256",
-            "x":"L0crjMN1g0Ih4sYAJ_nGoHUck2cloltUpUVQDhF2nHE",
-            "y":"SxYgE7CmEJYi7IDhgK5jI4ZiajO8jPRZDldVhqFpYoo"
-         }
-      },
-      {
-         "id":"did:example:alice#key-p521-1",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-p521-1",
-         "publicKeyJwk":{
-            "kty":"EC",
-            "crv":"P-521",
-            "x":"AHBEVPRhAv-WHDEvxVM9S0px9WxxwHL641Pemgk9sDdxvli9VpKCBdra5gg_4kupBDhz__AlaBgKOC_15J2Byptz",
-            "y":"AciGcHJCD_yMikQvlmqpkBbVqqbg93mMVcgvXBYAQPP-u9AF7adybwZrNfHWCKAQwGF9ugd0Zhg7mLMEszIONFRk"
-         }
-      }
-   ]
-}
-```
+This section provides the sender and recipient private keys. These keys MUST be used for encryption and signing DIDComm Messages.
 
-```json
-{
-   "@context":[
-      "https://www.w3.org/ns/did/v2"
-   ],
-   "id":"did:example:bob",
-   "keyAgreement":[
-      {
-         "id":"did:example:bob#key-x25519-1",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-x25519-1",
-         "publicKeyJwk":{
-            "kty":"OKP",
-            "crv":"X25519",
-            "x":"GDTrI66K0pFfO54tlCSvfjjNapIs44dzpneBgyx0S3E"
-         }
-      },
-      {
-         "id":"did:example:bob#key-x25519-2",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-x25519-2",
-         "publicKeyJwk":{
-            "kty":"OKP",
-            "crv":"X25519",
-            "x":"UT9S3F5ep16KSNBBShU2wh3qSfqYjlasZimn0mB8_VM"
-         }
-      },
-      {
-         "id":"did:example:bob#key-x25519-3",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-x25519-3",
-         "publicKeyJwk":{
-            "kty":"OKP",
-            "crv":"X25519",
-            "x":"82k2BTUiywKv49fKLZa-WwDi8RBf0tB0M8bvSAUQ3yY"
-         }
-      },
-      {
-         "id":"did:example:bob#key-p256-1",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p256-1",
-         "publicKeyJwk":{
-            "kty":"EC",
-            "crv":"P-256",
-            "x":"FQVaTOksf-XsCUrt4J1L2UGvtWaDwpboVlqbKBY2AIo",
-            "y":"6XFB9PYo7dyC5ViJSO9uXNYkxTJWn0d_mqJ__ZYhcNY"
-         }
-      },
-      {
-         "id":"did:example:bob#key-p256-2",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p256-2",
-         "publicKeyJwk":{
-            "kty":"EC",
-            "crv":"P-256",
-            "x":"n0yBsGrwGZup9ywKhzD4KoORGicilzIUyfcXb1CSwe0",
-            "y":"ov0buZJ8GHzV128jmCw1CaFbajZoFFmiJDbMrceCXIw"
-         }
-      },
-      {
-         "id":"did:example:bob#key-p384-1",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p384-1",
-         "publicKeyJwk":{
-            "kty":"EC",
-            "crv":"P-384",
-            "x":"MvnE_OwKoTcJVfHyTX-DLSRhhNwlu5LNoQ5UWD9Jmgtdxp_kpjsMuTTBnxg5RF_Y",
-            "y":"X_3HJBcKFQEG35PZbEOBn8u9_z8V1F9V1Kv-Vh0aSzmH-y9aOuDJUE3D4Hvmi5l7"
-         }
-      },
-      {
-         "id":"did:example:bob#key-p384-2",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p384-2",
-         "publicKeyJwk":{
-            "kty":"EC",
-            "crv":"P-384",
-            "x":"2x3HOTvR8e-Tu6U4UqMd1wUWsNXMD0RgIunZTMcZsS-zWOwDgsrhYVHmv3k_DjV3",
-            "y":"W9LLaBjlWYcXUxOf6ECSfcXKaC3-K9z4hCoP0PS87Q_4ExMgIwxVCXUEB6nf0GDd"
-         }
-      },
-      {
-         "id":"did:example:bob#key-p521-1",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p521-1",
-         "publicKeyJwk":{
-            "kty":"EC",
-            "crv":"P-521",
-            "x":"Af9O5THFENlqQbh2Ehipt1Yf4gAd9RCa3QzPktfcgUIFADMc4kAaYVViTaDOuvVS2vMS1KZe0D5kXedSXPQ3QbHi",
-            "y":"ATZVigRQ7UdGsQ9j-omyff6JIeeUv3CBWYsZ0l6x3C_SYqhqVV7dEG-TafCCNiIxs8qeUiXQ8cHWVclqkH4Lo1qH"
-         }
-      },
-      {
-         "id":"did:example:bob#key-p521-2",
-         "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p521-2",
-         "publicKeyJwk":{
-            "kty":"EC",
-            "crv":"P-521",
-            "x":"ATp_WxCfIK_SriBoStmA0QrJc2pUR1djpen0VdpmogtnKxJbitiPq-HJXYXDKriXfVnkrl2i952MsIOMfD2j0Ots",
-            "y":"AEJipR0Dc-aBZYDqN51SKHYSWs9hM58SmRY1MxgXANgZrPaq1EeGMGOjkbLMEJtBThdjXhkS5VlXMkF0cYhZELiH"
-         }
-      }
-   ]
-}
-```
+#### A.1. Sender Secrets
 
-### Appendix B. Secrets for Test Vectors 
+This section defines the sender private keys. 
 
 ```json
 [
@@ -275,6 +95,10 @@ The following docs can be used to validate implementations of the did comm messa
    }
 ]
 ```
+
+#### A.2. Recipient Secrets
+
+This section defines the recipient private keys.
 
 ```json
 [
@@ -404,9 +228,209 @@ The following docs can be used to validate implementations of the did comm messa
 ]
 ```
 
+### Appendix B. DIDDocs for Test Vectors
+
+This section provides DIDDocs for a sender and recipient. The following DIDDocs MIGHT be used to validate implementations of the [DIDComm Messaging](.). They are also intended to test vectors defined in the [Appendix C](#appendix-c-test-vectors).
+
+#### B.1. Sender DIDDocs 
+
+This section defines the sender DIDDoc.
+
+```json
+{
+   "@context":[
+      "https://www.w3.org/ns/did/v2"
+   ],
+   "id":"did:example:alice",
+   "authentication":[
+      {
+         "id":"did:example:alice#key-1",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:alice#key-1",
+         "publicKeyJwk":{
+            "kty":"OKP",
+            "crv":"Ed25519",
+            "x":"G-boxFB6vOZBu-wXkm-9Lh79I8nf9Z50cILaOgKKGww"
+         }
+      },
+      {
+         "id":"did:example:alice#key-2",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:alice#key-2",
+         "publicKeyJwk":{
+            "kty":"EC",
+            "crv":"P-256",
+            "x":"2syLh57B-dGpa0F8p1JrO6JU7UUSF6j7qL-vfk1eOoY",
+            "y":"BgsGtI7UPsObMRjdElxLOrgAO9JggNMjOcfzEPox18w"
+         }
+      },
+      {
+         "id":"did:example:alice#key-3",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:alice#key-3",
+         "publicKeyJwk":{
+            "kty":"EC",
+            "crv":"secp256k1",
+            "x":"aToW5EaTq5mlAf8C5ECYDSkqsJycrW-e1SQ6_GJcAOk",
+            "y":"JAGX94caA21WKreXwYUaOCYTBMrqaX4KWIlsQZTHWCk"
+         }
+      }
+   ],
+   "keyAgreement":[
+      {
+         "id":"did:example:alice#key-x25519-1",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:alice#key-x25519-1",
+         "publicKeyJwk":{
+            "kty":"OKP",
+            "crv":"X25519",
+            "x":"avH0O2Y4tqLAq8y9zpianr8ajii5m4F_mICrzNlatXs"
+         }
+      },
+      {
+         "id":"did:example:alice#key-p256-1",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:alice#key-p256-1",
+         "publicKeyJwk":{
+            "kty":"EC",
+            "crv":"P-256",
+            "x":"L0crjMN1g0Ih4sYAJ_nGoHUck2cloltUpUVQDhF2nHE",
+            "y":"SxYgE7CmEJYi7IDhgK5jI4ZiajO8jPRZDldVhqFpYoo"
+         }
+      },
+      {
+         "id":"did:example:alice#key-p521-1",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:alice#key-p521-1",
+         "publicKeyJwk":{
+            "kty":"EC",
+            "crv":"P-521",
+            "x":"AHBEVPRhAv-WHDEvxVM9S0px9WxxwHL641Pemgk9sDdxvli9VpKCBdra5gg_4kupBDhz__AlaBgKOC_15J2Byptz",
+            "y":"AciGcHJCD_yMikQvlmqpkBbVqqbg93mMVcgvXBYAQPP-u9AF7adybwZrNfHWCKAQwGF9ugd0Zhg7mLMEszIONFRk"
+         }
+      }
+   ]
+}
+```
+
+#### B.2. Sender DIDDocs
+
+This section defines the recipient DIDDoc.
+
+```json
+{
+   "@context":[
+      "https://www.w3.org/ns/did/v2"
+   ],
+   "id":"did:example:bob",
+   "keyAgreement":[
+      {
+         "id":"did:example:bob#key-x25519-1",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:bob#key-x25519-1",
+         "publicKeyJwk":{
+            "kty":"OKP",
+            "crv":"X25519",
+            "x":"GDTrI66K0pFfO54tlCSvfjjNapIs44dzpneBgyx0S3E"
+         }
+      },
+      {
+         "id":"did:example:bob#key-x25519-2",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:bob#key-x25519-2",
+         "publicKeyJwk":{
+            "kty":"OKP",
+            "crv":"X25519",
+            "x":"UT9S3F5ep16KSNBBShU2wh3qSfqYjlasZimn0mB8_VM"
+         }
+      },
+      {
+         "id":"did:example:bob#key-x25519-3",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:bob#key-x25519-3",
+         "publicKeyJwk":{
+            "kty":"OKP",
+            "crv":"X25519",
+            "x":"82k2BTUiywKv49fKLZa-WwDi8RBf0tB0M8bvSAUQ3yY"
+         }
+      },
+      {
+         "id":"did:example:bob#key-p256-1",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:bob#key-p256-1",
+         "publicKeyJwk":{
+            "kty":"EC",
+            "crv":"P-256",
+            "x":"FQVaTOksf-XsCUrt4J1L2UGvtWaDwpboVlqbKBY2AIo",
+            "y":"6XFB9PYo7dyC5ViJSO9uXNYkxTJWn0d_mqJ__ZYhcNY"
+         }
+      },
+      {
+         "id":"did:example:bob#key-p256-2",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:bob#key-p256-2",
+         "publicKeyJwk":{
+            "kty":"EC",
+            "crv":"P-256",
+            "x":"n0yBsGrwGZup9ywKhzD4KoORGicilzIUyfcXb1CSwe0",
+            "y":"ov0buZJ8GHzV128jmCw1CaFbajZoFFmiJDbMrceCXIw"
+         }
+      },
+      {
+         "id":"did:example:bob#key-p384-1",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:bob#key-p384-1",
+         "publicKeyJwk":{
+            "kty":"EC",
+            "crv":"P-384",
+            "x":"MvnE_OwKoTcJVfHyTX-DLSRhhNwlu5LNoQ5UWD9Jmgtdxp_kpjsMuTTBnxg5RF_Y",
+            "y":"X_3HJBcKFQEG35PZbEOBn8u9_z8V1F9V1Kv-Vh0aSzmH-y9aOuDJUE3D4Hvmi5l7"
+         }
+      },
+      {
+         "id":"did:example:bob#key-p384-2",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:bob#key-p384-2",
+         "publicKeyJwk":{
+            "kty":"EC",
+            "crv":"P-384",
+            "x":"2x3HOTvR8e-Tu6U4UqMd1wUWsNXMD0RgIunZTMcZsS-zWOwDgsrhYVHmv3k_DjV3",
+            "y":"W9LLaBjlWYcXUxOf6ECSfcXKaC3-K9z4hCoP0PS87Q_4ExMgIwxVCXUEB6nf0GDd"
+         }
+      },
+      {
+         "id":"did:example:bob#key-p521-1",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:bob#key-p521-1",
+         "publicKeyJwk":{
+            "kty":"EC",
+            "crv":"P-521",
+            "x":"Af9O5THFENlqQbh2Ehipt1Yf4gAd9RCa3QzPktfcgUIFADMc4kAaYVViTaDOuvVS2vMS1KZe0D5kXedSXPQ3QbHi",
+            "y":"ATZVigRQ7UdGsQ9j-omyff6JIeeUv3CBWYsZ0l6x3C_SYqhqVV7dEG-TafCCNiIxs8qeUiXQ8cHWVclqkH4Lo1qH"
+         }
+      },
+      {
+         "id":"did:example:bob#key-p521-2",
+         "type":"JsonWebKey2020",
+         "controller":"did:example:bob#key-p521-2",
+         "publicKeyJwk":{
+            "kty":"EC",
+            "crv":"P-521",
+            "x":"ATp_WxCfIK_SriBoStmA0QrJc2pUR1djpen0VdpmogtnKxJbitiPq-HJXYXDKriXfVnkrl2i952MsIOMfD2j0Ots",
+            "y":"AEJipR0Dc-aBZYDqN51SKHYSWs9hM58SmRY1MxgXANgZrPaq1EeGMGOjkbLMEJtBThdjXhkS5VlXMkF0cYhZELiH"
+         }
+      }
+   ]
+}
+```
+
 ### Appendix C. Test Vectors 
 
-#### DIDComm Plaintext Messages
+This section provides a test vectors. The following the test vectors MIGHT be used to validate implementations of [DIDComm Messaging](.). The test vectors use private keys defined in the [Appendix A](#appendix-a-secrets-for-test-vectors) and public keys defined in the [Appendix B](#appendix-b-diddocs-for-test-vectors). 
+
+#### C.1. DIDComm Plaintext Messages
+
+The following example defines DIDComm Plaintext message. The message is used for DIDComm Signed Messages and DIDComm Encrypted Messages. 
 
 ```json
 {
@@ -425,9 +449,11 @@ The following docs can be used to validate implementations of the did comm messa
 }
 ```
 
-#### DIDComm Signed Messages
+#### C.2 DIDComm Signed Messages
 
-EdDSA (with crv=Ed25519)
+This section provides examples for DIDComm Signed Messages
+
+This example uses EdDSA digital signature with a curve Ed25519.
 
 ```json
 {
@@ -444,7 +470,7 @@ EdDSA (with crv=Ed25519)
 }
 ```
 
-ES256
+This example uses ES256 digital signature.
 
 ```json
 {
@@ -461,7 +487,7 @@ ES256
 }
 ```
 
-ES256K
+This example uses ES256K digital signature.
 
 ```json
 {
@@ -478,9 +504,11 @@ ES256K
 }
 ```
 
-#### DIDComm Encrypted Messages
+#### C.3. DIDComm Encrypted Messages
 
-Anoncrypt XC20P
+This section provides examples for DIDComm Encrypted Messages.
+
+This example uses ECDH-ES key wrapping algorithm using key with X25519 elliptic curve and XC20P for content encryption of the message.
 
 ```json
 {
@@ -511,7 +539,7 @@ Anoncrypt XC20P
 }
 ```
 
-Anoncrypt A256CBC
+This example uses ECDH-ES key wrapping algorithm using key with NIST defined P-384 elliptic curve and A256CBC-HS512 for content encryption of the message.
 
 ```json
 {
@@ -536,7 +564,7 @@ Anoncrypt A256CBC
 }
 ```
 
-Anoncrypt A256GCM
+This example uses ECDH-ES key wrapping algorithm using key with NIST defined P-521 elliptic curve and A256GCM for content encryption of the message.
 
 ```json
 {
@@ -561,7 +589,8 @@ Anoncrypt A256GCM
 }
 ```
 
-Authcrypt A256CBC-HS512
+This example uses ECDH-1PU key wrapping algorithm using key with X25519 elliptic curve and A256CBC-HS512 for content encryption of the message.
+
 ```json
 {
    "ciphertext":"MJezmxJ8DzUB01rMjiW6JViSaUhsZBhMvYtezkhmwts1qXWtDB63i4-FHZP6cJSyCI7eU-gqH8lBXO_UVuviWIqnIUrTRLaumanZ4q1dNKAnxNL-dHmb3coOqSvy3ZZn6W17lsVudjw7hUUpMbeMbQ5W8GokK9ZCGaaWnqAzd1ZcuGXDuemWeA8BerQsfQw_IQm-aUKancldedHSGrOjVWgozVL97MH966j3i9CJc3k9jS9xDuE0owoWVZa7SxTmhl1PDetmzLnYIIIt-peJtNYGdpd-FcYxIFycQNRUoFEr77h4GBTLbC-vqbQHJC1vW4O2LEKhnhOAVlGyDYkNbA4DSL-LMwKxenQXRARsKSIMn7z-ZIqTE-VCNj9vbtgR",
@@ -591,7 +620,7 @@ Authcrypt A256CBC-HS512
 }
 ```
 
-Authcrypt A256CBC-HS512 with signature (with crv=Ed25519)
+In this example, the message is first signed with EdDSA digital signature and then encrypted with ECDH-1PU key wrapping algorithm using key with NIST defined P-521 elliptic curve and A256CBC-HS512 for content encryption of the message.
 
 ```json
 {
@@ -616,7 +645,8 @@ Authcrypt A256CBC-HS512 with signature (with crv=Ed25519)
 }
 ```
 
-Anoncrypt (XC20P) Authcrypt A256CBC-HS512 with signature (with crv=Ed25519)
+In this example, the message is first signed with EdDSA digital signature and then encrypted with ECDH-1PU key wrapping algorithm using key with X25519 elliptic curve and A256CBC-HS512 for content encryption of the message, after that the message is encrypted a second time with ECDH-ES key wrapping algorithm using key with X25519 elliptic curve and XC20P for content encryption of the message.
+
 
 ```json
 {
