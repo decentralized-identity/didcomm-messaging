@@ -230,7 +230,7 @@ This section defines the recipient private keys.
 
 ### Appendix B. DIDDocs for Test Vectors
 
-This section provides DIDDocs for a sender and recipient. The following DIDDocs MIGHT be used to validate implementations of the [DIDComm Messaging](.). They are also intended to test vectors defined in the [Appendix C](#appendix-c-test-vectors).
+This section provides DIDDocs for the sender and recipient. The following DIDDocs MIGHT be used to validate implementations of the [DIDComm Messaging](.). They are also intended to test vectors defined in the [Appendix C](#appendix-c-test-vectors).
 
 #### B.1. Sender DIDDocs 
 
@@ -426,7 +426,7 @@ This section defines the recipient DIDDoc.
 
 ### Appendix C. Test Vectors 
 
-This section provides a test vectors. The following the test vectors MIGHT be used to validate implementations of [DIDComm Messaging](.). The test vectors use private keys defined in the [Appendix A](#appendix-a-secrets-for-test-vectors) and public keys defined in the [Appendix B](#appendix-b-diddocs-for-test-vectors). 
+This section provides the test vectors. The following the test vectors MIGHT be used to validate implementations of [DIDComm Messaging](.). The test vectors use private keys defined in the [Appendix A](#appendix-a-secrets-for-test-vectors) and public keys defined in the [Appendix B](#appendix-b-diddocs-for-test-vectors). 
 
 #### C.1. DIDComm Plaintext Messages
 
@@ -645,8 +645,7 @@ In this example, the message is first signed with EdDSA digital signature and th
 }
 ```
 
-In this example, the message is first signed with EdDSA digital signature and then encrypted with ECDH-1PU key wrapping algorithm using key with X25519 elliptic curve and A256CBC-HS512 for content encryption of the message, after that the message is encrypted a second time with ECDH-ES key wrapping algorithm using key with X25519 elliptic curve and XC20P for content encryption of the message.
-
+In this example, the message is first signed with EdDSA digital signature and then encrypted with ECDH-1PU key wrapping algorithm using key with X25519 elliptic curve and A256CBC-HS512 for content encryption of the message. After that the message is encrypted a second time with ECDH-ES key wrapping algorithm using key with X25519 elliptic curve and XC20P for content encryption of the message. The second anoncrypt is used to protect the sender ID.
 
 ```json
 {
