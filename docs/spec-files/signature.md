@@ -50,4 +50,4 @@ Signing can allow DIDs to be anchored via keys not usable for encrypting DIDComm
 
 ### Examples
 
-TODO: Add examples here
+See section [Appendix C.2.](#c2-didcomm-signed-messages) for examples.
