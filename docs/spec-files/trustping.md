@@ -33,7 +33,7 @@ new interaction in which they become the sender.
 
 #### Protocol Type URI
 
-`https://didcomm.org/trust_ping/1.0`
+`https://didcomm.org/trust_ping/2.0`
 
 #### Messages
 
@@ -44,7 +44,7 @@ creates a `ping` message like this:
 
 ```JSON
 {
-  "type": "https://didcomm.org/trust_ping/1.0/ping",
+  "type": "https://didcomm.org/trust_ping/2.0/ping",
   "id": "518be002-de8e-456e-b3d5-8fe472477a86",
   "from": "did:example:123456",
   "body": {
@@ -63,7 +63,7 @@ is not `false`, the receiver should reply as quickly as possible with a
 
 ```JSON
 {
-  "type": "https://didcomm.org/trust_ping/1.0/ping_response",
+  "type": "https://didcomm.org/trust_ping/2.0/ping_response",
   "id": "e002518b-456e-b3d5-de8e-7a86fe472847",
   "thid": "518be002-de8e-456e-b3d5-8fe472477a86"
 }
