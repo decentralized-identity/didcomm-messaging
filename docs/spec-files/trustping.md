@@ -1,4 +1,4 @@
-## Trust Ping Protocol 1.0
+## Trust Ping Protocol 2.0
 
 A standard way for agents to test connectivity,
 responsiveness, and security of a DIDComm channel.
