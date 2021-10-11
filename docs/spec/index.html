@@ -1319,7 +1319,7 @@ not plan to use with them.</p>
 <p>Patterns are easier to see in larger data samples. However, a pattern
 of ultra-minimal data is also a problem, so use good judgment about
 how forthcoming to be.</p>
-<h2 id="trust-ping-protocol-10"><a class="toc-anchor" href="#trust-ping-protocol-10" >§</a> Trust Ping Protocol 1.0</h2>
+<h2 id="trust-ping-protocol-20"><a class="toc-anchor" href="#trust-ping-protocol-20" >§</a> Trust Ping Protocol 2.0</h2>
 <p>A standard way for agents to test connectivity,
 responsiveness, and security of a DIDComm channel.</p>
 <h3 id="motivation-2"><a class="toc-anchor" href="#motivation-2" >§</a> Motivation</h3>
@@ -1344,13 +1344,13 @@ ping. The receiver responds. If the receiver wants
 to do a ping of their own, they can, but this is a
 new interaction in which they become the sender.</p>
 <h4 id="protocol-type-uri"><a class="toc-anchor" href="#protocol-type-uri" >§</a> Protocol Type URI</h4>
-<p><code>https://didcomm.org/trust_ping/1.0</code></p>
+<p><code>https://didcomm.org/trust-ping/2.0</code></p>
 <h4 id="messages-4"><a class="toc-anchor" href="#messages-4" >§</a> Messages</h4>
 <h5 id="ping"><a class="toc-anchor" href="#ping" >§</a> ping</h5>
 <p>The trust ping interaction begins when <code>sender</code>
 creates a <code>ping</code> message like this:</p>
 <pre class="language-JSON"><code class="language-JSON">{
-  &quot;type&quot;: &quot;https://didcomm.org/trust_ping/1.0/ping&quot;,
+  &quot;type&quot;: &quot;https://didcomm.org/trust-ping/2.0/ping&quot;,
   &quot;id&quot;: &quot;518be002-de8e-456e-b3d5-8fe472477a86&quot;,
   &quot;from&quot;: &quot;did:example:123456&quot;,
   &quot;body&quot;: {
@@ -1364,7 +1364,7 @@ creates a <code>ping</code> message like this:</p>
 is not <code>false</code>, the receiver should reply as quickly as possible with a
 <code>ping_response</code> message that looks like this:</p>
 <pre class="language-JSON"><code class="language-JSON">{
-  &quot;type&quot;: &quot;https://didcomm.org/trust_ping/1.0/ping_response&quot;,
+  &quot;type&quot;: &quot;https://didcomm.org/trust-ping/2.0/ping-response&quot;,
   &quot;id&quot;: &quot;e002518b-456e-b3d5-de8e-7a86fe472847&quot;,
   &quot;thid&quot;: &quot;518be002-de8e-456e-b3d5-8fe472477a86&quot;
 }
@@ -1610,7 +1610,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 </li>
 </ul>
 </li>
-<li><a href="#trust-ping-protocol-10" >Trust Ping Protocol 1.0</a>
+<li><a href="#trust-ping-protocol-20" >Trust Ping Protocol 2.0</a>
 <ul>
 <li><a href="#motivation-2" >Motivation</a></li>
 <li><a href="#reference-4" >Reference</a>
