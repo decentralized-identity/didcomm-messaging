@@ -163,26 +163,42 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <li>
 <p><strong>typ</strong> - OPTIONAL. Media type of the JWM content.</p>
 </li>
-<li>
-<p><strong>to</strong> - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) that identifies a member of the message’s intended audience.</p>
+</ul>
 <p>The following table provides an overview of using the media type properties in supported <a href="." >DIDComm Messaging</a> messages:</p>
-<p>| Envelope | <code>typ</code> |
-|-----------------|-------|
-| Authcrypted and/or anoncrypted | <code>application/didcomm-encrypted+json</code>|
-| Signed and anoncrypted | <code>application/didcomm-encrypted+json</code>|
-| Signed | <code>application/didcomm-signed+json</code> |
-| Plaintext | <code>application/didcomm-plain+json</code>|</p>
-</li>
-<li>
-<p><strong>to</strong> - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) that identifies a member of the message’s intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.</p>
-</li>
+<table>
+<thead>
+<tr>
+<th>Envelope</th>
+<th><code>typ</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Authcrypted and/or anoncrypted</td>
+<td><code>application/didcomm-encrypted+json</code></td>
+</tr>
+<tr>
+<td>Signed and anoncrypted</td>
+<td><code>application/didcomm-encrypted+json</code></td>
+</tr>
+<tr>
+<td>Signed</td>
+<td><code>application/didcomm-signed+json</code></td>
+</tr>
+<tr>
+<td>Plaintext</td>
+<td><code>application/didcomm-plain+json</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>to</strong> - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) that identifies a member of the message’s intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.</li>
 </ul>
 <p>When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to <code>BCC:</code> addresses).</p>
 <p>The <code>to</code> header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the <code>forward</code> message contains a <code>next</code> attribute in its body that specifies the target for the next routing operation.</p>
 <ul>
 <li>
-<p><strong>from</strong> - OPTIONAL. Sender identifier. The <code>from</code> attribute MUST be a string that is a valid <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a>. Authorization of the encryption key for this <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> MUST be verified by message recipient with the proper proof purposes. See the <a href="#Message-Authentication" >message authentication</a> section for additional details.</p>
-<p>When the sender wishes to be anonymous, they SHOULD use a new <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> created for the purpose to avoid correlation with any other behavior or identity. Peer <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DIDs</a> are lightweight and require no ledger writes, and therefore a good method to use for this purpose.</p>
+<p><strong>from</strong> - OPTIONAL when the message is to be encrypted via anoncrypt. REQUIRED when the message is encrypted via authcrypt. Sender identifier. The <code>from</code> attribute MUST be a string that is a valid <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a>. Authorization of the encryption key for this <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> created for the purpose to avoid correlation with any other behavior or identity. Peer <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DIDs</a> are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the <a href="#Message-Authentication" >message authentication</a> section for additional details.</p>
 </li>
 <li>
 <p><strong>thid</strong> - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code>.</p>
