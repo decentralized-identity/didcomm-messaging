@@ -149,7 +149,8 @@ This section defines the sender DIDDoc.
 ```json
 {
    "@context":[
-      "https://www.w3.org/ns/did/v2"
+      "https://www.w3.org/ns/did/v1",
+      "http://w3id.org/security/suites/jws-2020/v1"
    ],
    "id":"did:example:alice",
    "authentication":[
