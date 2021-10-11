@@ -30,7 +30,7 @@ Other entities are notified of problems by sending a simple message called a **p
 
 ```json
 {
-  "type": "https://didcomm.org/notify/1.0/problem-report",
+  "type": "https://didcomm.org/report-problem/2.0/problem-report",
   "id": "7c9de639-c51c-4d60-ab95-103fa613c805",
   "pthid": "1e513ad4-48c9-444e-9e7e-5b8b45c5e325",
   "body": {
