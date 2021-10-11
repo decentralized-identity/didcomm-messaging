@@ -134,4 +134,4 @@ A final note about `skid` header: since the 1PU draft [does not require](https:/
 
 While the details of encrypting a JWM into a JWE are included in the [JWM spec](https://tools.ietf.org/html/draft-looker-jwm-01), a few examples are included here for clarity.
 
-TODO: Add examples here
+See section [Appendix C.3](#c3-didcomm-encrypted-messages) for examples.
