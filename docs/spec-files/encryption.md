@@ -49,25 +49,7 @@ TODO: Include language about safe nonce considerations.
 
 ### Perfect Forward Secrecy
 
-A cryptographic method exhibits perfect forward secrecy (PFS) if the compromise of long-term keys does not allow an attacker to read old messages. The secrecy of the old messages persists forward in time. See [the Wikipedia article](https://en.wikipedia.org/wiki/Forward_secrecy). *This property is valuable to the extent that comm channels are long-lasting and carry many interactions.*
-
-Whether DIDComm exhibits this property depends on how we define the concept of "long-term keys" and "session keys" with respect to DIDComm. The answer is not obvious, since DIDComm lacks a session construct. 
-
-In TLS, session keys are symmetric keys negotiated during a Diffie-Hellman handshake at the beginning of a [series of request-response interactions that cluster together](https://www.cloudflare.com/learning/ssl/what-is-a-session-key/). Browsers running HTTPS &mdash; the most familiar embodiment of TLS &mdash; typically do a new DH exchange each time a tab is opened to a site's initial page, but not for subsequent requests to fetch graphics, scripts, CSS files, or the content and collateral of subsequent pages. Cryptographic sessions (not to be confused with cookie-based login sessions) may be re-established whenever a socket is re-opened (possibly at intervals only a few seconds apart), or may use techniques like [TLS Session Resumption](https://www.venafi.com/blog/tls-session-resumption) to last for hours or even days.  
-
-A simple analysis of DIDComm might map PFS "session keys" to the ephemeral symmetric keys negotiated by the ECDH-1PU key agreement algorithm; this might imply that the static keys in Alice's DID doc would be the "long-term keys" from the PFS definition. In this framing, DIDComm does NOT exhibit PFS, because an attacker that possesses a key from Alice's DID doc can decrypt any old messages sent to that key.
-
-But this analysis misses two important insights:
-
-1. The ephemeral symmetric keys in TLS are two-way and reusable. It makes sense to call them "session" keys. In contrast, the ephemeral symmetric keys negotiated by ECDH-1PU in DIDComm are one-way and single-use only. Calling a one-way delivery of a single message a "session" seems a bit odd. The natural unit of clustered interaction in DIDComm &mdash; what we use "sessions" for in TLS, and what lasts seconds to minutes or hours &mdash; is a single protocol or group of protocols that accomplish one goal for the parties. This is a higher level of abstraction that a single DIDComm message.
-
-2. Only one compromise is contemplated by normal PFS &mdash; the compromise of a single long-term key. But DIDComm is more dynamic. It supports two types of rotation &mdash; rotation of DID doc keys and rotation of DIDs themselves. Moreover, DIDComm supports multiple devices per party, and it encourages the use of pairwise DIDs with a limited lifespan, often not exceeding a single interaction. It is the *value of historic communication* that makes PFS valuable. If DIDComm throws away DIDs after a single brief interaction, then PFS is irrelevant. If DIDComm rotates DIDs on the same time scales as static key rotation in TLS, then it is a *DID's* comm history, not *Alice's* (DID-spanning) comm history, that's endangered by a compromise. And if Alice has a stable DID but updates her DID doc regularly to track an evolving collection of devices, then her vulnerability to long-term key compromise doesn't map very well to the simpler PFS model.
-
-Here is an alternate analysis of DIDComm's PFS features: "sessions" have the same scope as DIDs, and "long-term keys" have the same scope as a multi-DID-spanning connection between two parties. A compromise of the second "long-term key" (DID and associated keys for all her devices) used by Alice in her relationship with Bob allows an attacker to read everything sent to Alice in *that session* (while she was using DID #2). However, it doesn't let the attacker read anything sent to Alice in the previous sessions (with previous DID values). DIDComm thus exhibits perfect forward secrecy.
-
-Here is another alternate analysis: "sessions" have the same scope as a single snapshot of the key agreement keys in a DID doc, and "long-term keys" are the signing keys that authorize updates to a new set of key agreement keys. A compromise of long-term keys does not allow the attacker to decrypt any historical communication at all. DIDComm thus exhibits perfect forward secrecy.
-
-The point here is not to argue that the alternate analysis is true. Rather, it is to highlight the importance of assumptions. What is the lifespan of a DID? How often are its keys rotated &mdash; and with what purposes? DIDComm allows various answers to these questions; depending on the answers, it may or may not provide enough built-in protection of old communication at the point of a future compromise. To achieve the same post-compromise safety as perfect forward secrecy, enforce safe assumptions.   
+The mapping of the Perfect Forward Secrecy concepts to DIDComm requires some discussion. Please refer to the Implementers Guide for more details.
 
 ### Key IDs `kid` and `skid` headers references in the DID document
 
@@ -152,4 +134,4 @@ A final note about `skid` header: since the 1PU draft [does not require](https:/
 
 While the details of encrypting a JWM into a JWE are included in the [JWM spec](https://tools.ietf.org/html/draft-looker-jwm-01), a few examples are included here for clarity.
 
-TODO: Add examples here
+See section [Appendix C.3](#c3-didcomm-encrypted-messages) for examples.
