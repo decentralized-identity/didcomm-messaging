@@ -56,6 +56,7 @@
         "routing.md",
         "problems.md",
 		"authentication.md",
+        "mitm.md",
         "whatsnew.md"
       ]
     }
