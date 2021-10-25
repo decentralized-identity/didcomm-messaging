@@ -51,6 +51,10 @@ TODO: Include language about safe nonce considerations.
 
 The mapping of the Perfect Forward Secrecy concepts to DIDComm requires some discussion. Please refer to the Implementers Guide for more details.
 
+### Man in the middle
+
+DIDComm's profile with respect to man-in-the-middle attacks is easily misunderstood. Please refer to the Implementers Guide for more details.
+
 ### Key IDs `kid` and `skid` headers references in the DID document
 
 Keys used by DIDComm envelopes MUST be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipients keys MUST be retrieved from the DID document's `KeyAgreement` verification section as per the [DID Document Keys](https://identity.foundation/didcomm-messaging/spec/#did-document-keys) definition.

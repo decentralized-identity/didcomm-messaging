@@ -420,6 +420,8 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </table>
 <h3 id="perfect-forward-secrecy"><a class="toc-anchor" href="#perfect-forward-secrecy" >§</a> Perfect Forward Secrecy</h3>
 <p>The mapping of the Perfect Forward Secrecy concepts to DIDComm requires some discussion. Please refer to the Implementers Guide for more details.</p>
+<h3 id="man-in-the-middle"><a class="toc-anchor" href="#man-in-the-middle" >§</a> Man in the middle</h3>
+<p>DIDComm’s profile with respect to man-in-the-middle attacks is easily misunderstood. Please refer to the Implementers Guide for more details.</p>
 <h3 id="key-ids-kid-and-skid-headers-references-in-the-did-document"><a class="toc-anchor" href="#key-ids-kid-and-skid-headers-references-in-the-did-document" >§</a> Key IDs <code>kid</code> and <code>skid</code> headers references in the DID document</h3>
 <p>Keys used by DIDComm envelopes MUST be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipients keys MUST be retrieved from the DID document’s <code>KeyAgreement</code> verification section as per the <a path-0="identity.foundation"path-1="didcomm-messaging"path-2="spec"path-3="#did-document-keys"href="https://identity.foundation/didcomm-messaging/spec/#did-document-keys" >DID Document Keys</a> definition.</p>
 <p>When Alice is preparing an envelope intended for Bob, the packing process should use a key from both hers and Bob’s DID document’s <code>KeyAgreement</code> section.</p>
@@ -2016,6 +2018,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#curves-and-content-encryption-algorithms" >Curves and Content Encryption Algorithms</a></li>
 <li><a href="#key-wrapping-algorithms" >Key Wrapping Algorithms</a></li>
 <li><a href="#perfect-forward-secrecy" >Perfect Forward Secrecy</a></li>
+<li><a href="#man-in-the-middle" >Man in the middle</a></li>
 <li><a href="#key-ids-kid-and-skid-headers-references-in-the-did-document" >Key IDs <code>kid</code> and <code>skid</code> headers references in the DID document</a></li>
 <li><a href="#protecting-the-sender-identity" >Protecting the Sender Identity</a></li>
 <li><a href="#ecdh-1pu-key-wrapping-and-common-protected-headers" >ECDH-1PU key wrapping and common protected headers</a></li>
