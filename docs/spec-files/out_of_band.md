@@ -174,3 +174,67 @@ It seems inevitable that the length of some DIDComm messages will be too long to
 A usable QR code will always be able to be generated from the shortened form of the URL.
 
 Note: Due to the privacy implications, a standard URL shortening service SHOULD NOT be used.
+
+#### Redirecting Back to Sender
+
+##### Summary
+Describes how receiving party of out-of-band invitation can redirect back to sender application once protocol execution is over.
+
+##### Motivation
+In some cases, interaction between sender and receiver of out-of-band invitation would require receiver application to redirect back to sender.
+
+For example,
+* A web based verifier sends out-of-band invitation to a holder application and requests redirect back once present proof protocol execution is over, so that it can show credential verification results and guide the user with next steps.
+* A verifier mobile application sending deep link of its mobile application to an agent based mobile wallet application requesting redirect to verifier mobile application.
+
+These redirects may not be required in many cases, for example,
+* A mobile application scanning QR code from sender and performing protocol execution. In this case the mobile application may choose to handle successful protocol execution in its own way and close the application.
+
+
+##### Reference
+During the protocol execution sender can securely send [`web-redirect`](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator) info as part of messages concluding protocol executions like [acknowledgement and problem report](problems.md).
+Once protocol is ended then receiver can optionally choose to redirect by extracting the redirect information from the message.
+
+Example acknowledgement message from verifier to prover containing web redirect information.
+```json
+{
+  "type":"https://didcomm.org/present-proof/3.0/ack",
+  "id":"e2f3747b-41e8-4e46-abab-ba51472ab1c3",
+  "pthid":"95e63a5f-73e1-46ac-b269-48bb22591bfa",
+  "from":"did:example:verifier",
+  "to":["did:example:prover"],
+  "web-redirect":{
+    "status":"OK",
+    "redirectUrl":"https://example.com/handle-success/51e63a5f-93e1-46ac-b269-66bb22591bfa"
+  }
+}
+```
+
+Problem report with web redirect header from [Problem Reports Example](#problem-reports) will look like,
+```json
+{
+  "type": "https://didcomm.org/report-problem/2.0/problem-report",
+  "id": "7c9de639-c51c-4d60-ab95-103fa613c805",
+  "pthid": "1e513ad4-48c9-444e-9e7e-5b8b45c5e325",
+  "web-redirect":{
+      "status":"FAIL",
+      "redirectUrl":"https://example.com/handle-error/99e80a9f-34e1-41ac-b277-91bb64481bxb"
+   },
+  "body": {
+    "code": "e.p.xfer.cant-use-endpoint",
+    "comment": "Unable to use the {1} endpoint for {2}.",
+    "args": [
+      "https://agents.r.us/inbox",
+      "did:sov:C805sNYhMrjHiqZDTUASHg"
+    ]
+  }
+}
+```
+
+A sender MUST use ``web-redirect`` headers to request redirect from receiver. A ``web-redirect`` header MUST contain ``status`` and ``redirectUrl`` properties. 
+The value of ``status`` property MUST be one of the Acknowledgement statuses defined [here](https://github.com/hyperledger/aries-rfcs/blob/main/features/0015-acks/README.md#ack-status) which indicates protocol execution outcome.
+
+
+
+
+
