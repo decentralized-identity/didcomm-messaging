@@ -52,15 +52,15 @@ A `discover-features/query` message looks like this:
     "body": {
         "queries": [
             { "feature-type": "protocol", "match": "https://didcomm.org/tictactoe/1.*" },
-            { "feature-type": "goal-code", "match": "aries.*" }
+            { "feature-type": "goal-code", "match": "org.didcomm.*" }
         ]
     }
 }
 ```
 
-Queries messages contain one or more **query objects** in the `queries` array. Each query essentially says, "Please tell me what features of type X you support, where the feature identifiers match this (potentially wildcarded) string." This particular example asks an agent if it supports any 1.x versions of the [tictactoe protocol](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0003-protocols/tictactoe/README.md), and if it supports any [goal codes](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0519-goal-codes/README.md) that begin with "aries.".
+Queries messages contain one or more **query objects** in the `queries` array. Each query essentially says, "Please tell me what features of type X you support, where the feature identifiers match this (potentially wildcarded) string." This particular example asks an agent if it supports any 1.x versions of the [tictactoe protocol](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0003-protocols/tictactoe/README.md), and if it supports any [goal codes](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0519-goal-codes/README.md) that begin with "org.didcomm.".
 
-Implementations of this protocol must recognize the following values for `feature-type`: `protocol`, `goal-code`, `gov-fw`, `didcomm-version`, and `decorator`/`header`. (The concept known as `decorator` in DIDComm v1 approximately maps to the concept known as `header` in DIDComm v2. The two values should be considered synonyms and must both be recognized.) Additional values of `feature-type` may be standardized by raising a PR against this RFC that defines the new type and increments the minor protocol version number; non-standardized values are also valid, but there is no guarantee that their semantics will be recognized.
+Implementations of this protocol must recognize the following values for `feature-type`: `protocol`, `goal-code`, `gov-fw`, `didcomm-version`, and `header`.  Additional values of `feature-type` may be used, and unrecognized values MUST be ignored.
 
 Identifiers for feature types vary. For protocols, identifiers are PIURIs. For goal codes, identifiers are goal code values. For governance frameworks, identifiers are URIs where the framework is published (typically the [`data_uri` field if machine-readable](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0430-machine-readable-governance-frameworks/README.md#data_uri). For DIDComm versions, identifiers are the URIs where DIDComm versions are developed (`https://github.com/hyperledger/aries-rfcs` for V1 and `https://github.com/decentralized-identity/didcomm-messaging` for V2; see ["Detecting DIDComm Versions" in RFC 0044](https://github.com/hyperledger/aries-rfcs/blob/main/features/0044-didcomm-file-and-mime-types/README.md#detecting-didcomm-versions) for more details).
 
@@ -85,7 +85,7 @@ A `discover-features/disclose` message looks like this:
             },
             {
                 "feature-type": "goal-code",
-                "id": "aries.sell.goods.consumer"
+                "id": "org.didcomm.sell.goods.consumer"
             }
         ]
     }
