@@ -1217,18 +1217,69 @@ Knowledge is Good
 </ul>
 <p>A usable QR code will always be able to be generated from the shortened form of the URL.</p>
 <p>Note: Due to the privacy implications, a standard URL shortening service SHOULD NOT be used.</p>
+<h4 id="redirecting-back-to-sender"><a class="toc-anchor" href="#redirecting-back-to-sender" >§</a> Redirecting Back to Sender</h4>
+<h5 id="summary-3"><a class="toc-anchor" href="#summary-3" >§</a> Summary</h5>
+<p>Describes how receiving party of out-of-band invitation can redirect back to sender application once protocol execution is over.</p>
+<h5 id="motivation"><a class="toc-anchor" href="#motivation" >§</a> Motivation</h5>
+<p>In some cases, interaction between sender and receiver of out-of-band invitation would require receiver application to redirect back to sender.</p>
+<p>For example,</p>
+<ul>
+<li>A web based verifier sends out-of-band invitation to a holder application and requests redirect back once present proof protocol execution is over, so that it can show credential verification results and guide the user with next steps.</li>
+<li>A verifier mobile application sending deep link of its mobile application to an agent based mobile wallet application requesting redirect to verifier mobile application.</li>
+</ul>
+<p>These redirects may not be required in many cases, for example,</p>
+<ul>
+<li>A mobile application scanning QR code from sender and performing protocol execution. In this case the mobile application may choose to handle successful protocol execution in its own way and close the application.</li>
+</ul>
+<h5 id="reference-3"><a class="toc-anchor" href="#reference-3" >§</a> Reference</h5>
+<p>During the protocol execution sender can securely send <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="tree"path-4="main"path-5="concepts"path-6="0700-oob-through-redirect#web-redirect-decorator"href="https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator" ><code>web-redirect</code></a> info as part of messages concluding protocol executions like <a href="problems.md" >acknowledgement and problem report</a>.
+Once protocol is ended then receiver can optionally choose to redirect by extracting the redirect information from the message.</p>
+<p>Example acknowledgement message from verifier to prover containing web redirect information.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/present-proof/3.0/ack"</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"e2f3747b-41e8-4e46-abab-ba51472ab1c3"</span><span class="token punctuation">,</span>
+  <span class="token property">"pthid"</span><span class="token operator">:</span><span class="token string">"95e63a5f-73e1-46ac-b269-48bb22591bfa"</span><span class="token punctuation">,</span>
+  <span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:verifier"</span><span class="token punctuation">,</span>
+  <span class="token property">"to"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:example:prover"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"web-redirect"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+    <span class="token property">"status"</span><span class="token operator">:</span><span class="token string">"OK"</span><span class="token punctuation">,</span>
+    <span class="token property">"redirectUrl"</span><span class="token operator">:</span><span class="token string">"https://example.com/handle-success/51e63a5f-93e1-46ac-b269-66bb22591bfa"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Problem report with web redirect header from <a href="#problem-reports" >Problem Reports Example</a> will look like,</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/report-problem/2.0/problem-report"</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"7c9de639-c51c-4d60-ab95-103fa613c805"</span><span class="token punctuation">,</span>
+  <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"1e513ad4-48c9-444e-9e7e-5b8b45c5e325"</span><span class="token punctuation">,</span>
+  <span class="token property">"web-redirect"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      <span class="token property">"status"</span><span class="token operator">:</span><span class="token string">"FAIL"</span><span class="token punctuation">,</span>
+      <span class="token property">"redirectUrl"</span><span class="token operator">:</span><span class="token string">"https://example.com/handle-error/99e80a9f-34e1-41ac-b277-91bb64481bxb"</span>
+   <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"code"</span><span class="token operator">:</span> <span class="token string">"e.p.xfer.cant-use-endpoint"</span><span class="token punctuation">,</span>
+    <span class="token property">"comment"</span><span class="token operator">:</span> <span class="token string">"Unable to use the {1} endpoint for {2}."</span><span class="token punctuation">,</span>
+    <span class="token property">"args"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token string">"https://agents.r.us/inbox"</span><span class="token punctuation">,</span>
+      <span class="token string">"did:sov:C805sNYhMrjHiqZDTUASHg"</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>A sender MUST use <code>web-redirect</code> headers to request redirect from receiver. A <code>web-redirect</code> header MUST contain <code>status</code> and <code>redirectUrl</code> properties.
+The value of <code>status</code> property MUST be one of the Acknowledgement statuses defined <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="main"path-5="features"path-6="0015-acks"path-7="README.md#ack-status"href="https://github.com/hyperledger/aries-rfcs/blob/main/features/0015-acks/README.md#ack-status" >here</a> which indicates protocol execution outcome.</p>
 <h2 id="discover-features-protocol-10"><a class="toc-anchor" href="#discover-features-protocol-10" >§</a> Discover Features Protocol 1.0</h2>
-<h3 id="summary-3"><a class="toc-anchor" href="#summary-3" >§</a> Summary</h3>
+<h3 id="summary-4"><a class="toc-anchor" href="#summary-4" >§</a> Summary</h3>
 <p>Describes how agents can query one another to discover which features
 it supports, and to what extent.</p>
-<h3 id="motivation"><a class="toc-anchor" href="#motivation" >§</a> Motivation</h3>
+<h3 id="motivation-2"><a class="toc-anchor" href="#motivation-2" >§</a> Motivation</h3>
 <p>Though some agents will support just one protocol and will be
 statically configured to interact with just one other party, many
 exciting uses of agents are more dynamic and unpredictable. When
 Alice and Bob meet, they won’t know in advance which features are
 supported by one another’s agents. They need a way to find out.</p>
 <p>Disclosing features in this manner has a significant privacy benefit over endpoint disclosures contained in a DID Document published to a Verifiable Data Registry (VDR). Using the single DIDComm endpoint published in the document and this protocol, features can be selectively disclosed to other parties at the owner’s discretion. The problem of anonymous scanning and fingerprinting enabled with VDR disclosures is solved in a privacy preserving way.</p>
-<h3 id="reference-3"><a class="toc-anchor" href="#reference-3" >§</a> Reference</h3>
+<h3 id="reference-4"><a class="toc-anchor" href="#reference-4" >§</a> Reference</h3>
 <p>This RFC introduces a protocol for discussing the protocols an agent
 can handle. The identifier for the message family used by this protocol is
 <code>discover-features</code>, and the fully qualified URI for its definition is:</p>
@@ -1340,7 +1391,7 @@ how forthcoming to be.</p>
 <h2 id="trust-ping-protocol-20"><a class="toc-anchor" href="#trust-ping-protocol-20" >§</a> Trust Ping Protocol 2.0</h2>
 <p>A standard way for agents to test connectivity,
 responsiveness, and security of a DIDComm channel.</p>
-<h3 id="motivation-2"><a class="toc-anchor" href="#motivation-2" >§</a> Motivation</h3>
+<h3 id="motivation-3"><a class="toc-anchor" href="#motivation-3" >§</a> Motivation</h3>
 <p>Agents are distributed. They are not guaranteed to be
 connected or running all the time. They support a
 variety of transports, speak a variety of protocols,
@@ -1348,7 +1399,7 @@ and run software from many different vendors.</p>
 <p>This can make it very difficult to prove that two
 agents have a functional pairwise channel. Troubleshooting
 connectivity, responsiveness, and security is vital.</p>
-<h3 id="reference-4"><a class="toc-anchor" href="#reference-4" >§</a> Reference</h3>
+<h3 id="reference-5"><a class="toc-anchor" href="#reference-5" >§</a> Reference</h3>
 <p>This protocol is analogous to the familiar <code>ping</code>
 command in networking–but because it operates
 over DIDComm, it is transport
@@ -2138,13 +2189,14 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <ul>
 <li><a href="#url-qr-codes" >URL &amp; QR Codes</a></li>
 <li><a href="#invitation-httpsdidcommorgout-of-band20invitation" >Invitation: <code>https://didcomm.org/out-of-band/2.0/invitation</code></a></li>
+<li><a href="#redirecting-back-to-sender" >Redirecting Back to Sender</a></li>
 </ul>
 </li>
 <li><a href="#discover-features-protocol-10" >Discover Features Protocol 1.0</a>
 <ul>
-<li><a href="#summary-3" >Summary</a></li>
-<li><a href="#motivation" >Motivation</a></li>
-<li><a href="#reference-3" >Reference</a>
+<li><a href="#summary-4" >Summary</a></li>
+<li><a href="#motivation-2" >Motivation</a></li>
+<li><a href="#reference-4" >Reference</a>
 <ul>
 <li><a href="#roles-2" >Roles</a></li>
 <li><a href="#states-2" >States</a></li>
@@ -2156,8 +2208,8 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 </li>
 <li><a href="#trust-ping-protocol-20" >Trust Ping Protocol 2.0</a>
 <ul>
-<li><a href="#motivation-2" >Motivation</a></li>
-<li><a href="#reference-4" >Reference</a>
+<li><a href="#motivation-3" >Motivation</a></li>
+<li><a href="#reference-5" >Reference</a>
 <ul>
 <li><a href="#roles-3" >Roles</a></li>
 <li><a href="#protocol-type-uri" >Protocol Type URI</a></li>
