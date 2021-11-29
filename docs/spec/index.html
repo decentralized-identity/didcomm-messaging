@@ -937,6 +937,10 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <li>Errors</li>
 <li>Tracing / troubleshooting</li>
 </ul>
+<h2 id="goal-codes"><a class="toc-anchor" href="#goal-codes" >§</a> Goal Codes</h2>
+<p>Goal codes are used to coordinate the purpose of an interaction. Some protocols are generic enough to be used for different purposes, and goal codes are a mechanism to communicate the purpose of an interaction in that situation. They are used in Out of Band messages for that reason.</p>
+<p>Goal codes may also be used to signal a set of protocols or other mechanisms. This is often useful for interoperability profiles.</p>
+<p>In order to avoid collision between different efforts and goal codes, goal codes defined outside of this spec MUST use Reverse Domain Notation with the associated effort’s domain, such as com.example.category.specific, where any structure after the domain name portion is acceptable.</p>
 <h2 id="attachments"><a class="toc-anchor" href="#attachments" >§</a> Attachments</h2>
 <h3 id="summary-2"><a class="toc-anchor" href="#summary-2" >§</a> Summary</h3>
 <p>DIDComm messages use a structured format with a defined schema and a small inventory of scalar data types (string, number, date, etc). However, it will be quite common for messages to supplement formalized exchange with arbitrary data–images, documents, or types of media not yet invented.</p>
@@ -1096,7 +1100,7 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
   &quot;type&quot;: &quot;https://didcomm.org/out-of-band/2.0/invitation&quot;,
   &quot;id&quot;: &quot;&lt;id used for context as pthid&gt;&quot;,
   &quot;body&quot;: {
-    &quot;goal_code&quot;: &quot;issue-vc&quot;,
+    &quot;goal-code&quot;: &quot;issue-vc&quot;,
     &quot;goal&quot;: &quot;To issue a Faber College Graduate credential&quot;,
     &quot;accept&quot;: [
       &quot;didcomm/v2&quot;,
@@ -1118,12 +1122,12 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
 <ul>
 <li><code>type</code> - the DIDComm message type</li>
 <li><code>id</code> - the unique ID of the message. The ID should be used as the <strong>parent</strong> thread ID (<code>pthid</code>) for the response message, rather than the more common thread ID (<code>thid</code>) of the response message. This enables multiple uses of a single out-of-band message.</li>
-<li><code>goal_code</code> - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.</li>
+<li><code>goal-code</code> - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.</li>
 <li><code>goal</code> - [optional] a self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.</li>
 <li><code>accept</code> - [optional] an array of media (aka mime) types in the order of preference of the sender that the receiver can use in responding to the message.
 If <code>accept</code> is not specified, the receiver uses its preferred choice to respond to the message.
 Please see <a href="#message-types" >Message Types</a> for details about media types.</li>
-<li><code>attachments</code> - an array of attachments that will contain the invitation messages in order of preference that the receiver can use in responding to the message. Each message in the array is a rough equivalent of the others, and all are in pursuit of the stated <code>goal</code> and <code>goal_code</code>. Only one of the messages should be chosen and acted upon.
+<li><code>attachments</code> - an array of attachments that will contain the invitation messages in order of preference that the receiver can use in responding to the message. Each message in the array is a rough equivalent of the others, and all are in pursuit of the stated <code>goal</code> and <code>goal-code</code>. Only one of the messages should be chosen and acted upon.
 <ul>
 <li>While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.</li>
 </ul>
@@ -1155,7 +1159,7 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span>
   <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
   <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">"goal_code"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+      <span class="token property">"goal-code"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
       <span class="token property">"goal"</span><span class="token operator">:</span> <span class="token string">""</span>
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token property">"attachments"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
@@ -1268,7 +1272,7 @@ Once protocol is ended then receiver can optionally choose to redirect by extrac
 </code></pre>
 <p>A sender MUST use <code>web-redirect</code> headers to request redirect from receiver. A <code>web-redirect</code> header MUST contain <code>status</code> and <code>redirectUrl</code> properties.
 The value of <code>status</code> property MUST be one of the Acknowledgement statuses defined <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="main"path-5="features"path-6="0015-acks"path-7="README.md#ack-status"href="https://github.com/hyperledger/aries-rfcs/blob/main/features/0015-acks/README.md#ack-status" >here</a> which indicates protocol execution outcome.</p>
-<h2 id="discover-features-protocol-10"><a class="toc-anchor" href="#discover-features-protocol-10" >§</a> Discover Features Protocol 1.0</h2>
+<h2 id="discover-features-protocol-20"><a class="toc-anchor" href="#discover-features-protocol-20" >§</a> Discover Features Protocol 2.0</h2>
 <h3 id="summary-4"><a class="toc-anchor" href="#summary-4" >§</a> Summary</h3>
 <p>Describes how agents can query one another to discover which features
 it supports, and to what extent.</p>
@@ -1283,12 +1287,13 @@ supported by one another’s agents. They need a way to find out.</p>
 <p>This RFC introduces a protocol for discussing the protocols an agent
 can handle. The identifier for the message family used by this protocol is
 <code>discover-features</code>, and the fully qualified URI for its definition is:</p>
-<pre><code>https://didcomm.org/discover-features/1.0
+<pre><code>https://didcomm.org/discover-features/2.0
 </code></pre>
 <h4 id="roles-2"><a class="toc-anchor" href="#roles-2" >§</a> Roles</h4>
 <p>There are two roles in the <code>discover-features</code> protocol: <code>requester</code> and
 <code>responder</code>. The requester asks the responder about the protocols it
 supports, and the responder answers. Each role uses a single message type.</p>
+<p>It is also possible to proactively disclose features; in this case a requester receives a disclosure without asking for it. This may eliminate some chattiness in certain use cases (e.g., where two-way connectivity is limited).</p>
 <h4 id="states-2"><a class="toc-anchor" href="#states-2" >§</a> States</h4>
 <p>This is a classic two-step request~response interaction, so it uses the
 predefined state machines for any <code>requester</code> and <code>responder</code>:</p>
@@ -1297,97 +1302,72 @@ predefined state machines for any <code>requester</code> and <code>responder</co
 <h6 id="query-message-type"><a class="toc-anchor" href="#query-message-type" >§</a> <code>query</code> Message Type</h6>
 <p>A <code>discover-features/query</code> message looks like this:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/discover-features/1.0/query"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/discover-features/2.0/queries"</span><span class="token punctuation">,</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU"</span><span class="token punctuation">,</span>
     <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"query"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/tictactoe/1.*"</span>
+        <span class="token property">"queries"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">{</span> <span class="token property">"feature-type"</span><span class="token operator">:</span> <span class="token string">"protocol"</span><span class="token punctuation">,</span> <span class="token property">"match"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/tictactoe/1.*"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token punctuation">{</span> <span class="token property">"feature-type"</span><span class="token operator">:</span> <span class="token string">"goal-code"</span><span class="token punctuation">,</span> <span class="token property">"match"</span><span class="token operator">:</span> <span class="token string">"org.didcomm.*"</span> <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>Query messages say, “Please tell me what your capabilities are with
-respect to the protocols that match this string.” This particular example
-asks if another agent knows any 1.x versions of the tictactoe protocol.</p>
-<p>The <code>query</code> field may use the * wildcard. By itself, a query with just
-the wildcard says, “I’m interested in anything you want to share with
-me.” But usually, this wildcard will be to match a prefix that’s a little
-more specific, as in the example that matches any 1.x version.</p>
-<p>Any agent may send another agent this message type at any time.
-Implementers of agents that intend to support dynamic relationships
-and rich features are <em>strongly</em> encouraged to implement support
-for this message, as it is likely to be among the first messages
-exchanged with a stranger.</p>
+<p>Queries messages contain one or more <strong>query objects</strong> in the <code>queries</code> array. Each query essentially says, “Please tell me what features of type X you support, where the feature identifiers match this (potentially wildcarded) string.” This particular example asks an agent if it supports any 1.x versions of the <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="main"path-5="concepts"path-6="0003-protocols"path-7="tictactoe"path-8="README.md"href="https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0003-protocols/tictactoe/README.md" >tictactoe protocol</a>, and if it supports any <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="main"path-5="concepts"path-6="0519-goal-codes"path-7="README.md"href="https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0519-goal-codes/README.md" >goal codes</a> that begin with “org.didcomm.”.</p>
+<p>Implementations of this protocol must recognize the following values for <code>feature-type</code>: <code>protocol</code>, <code>goal-code</code>,  and <code>header</code>.  Additional values of <code>feature-type</code> may be used, and unrecognized values MUST be ignored.</p>
+<p>Identifiers for feature types vary. For protocols, identifiers are PIURIs. For goal codes, identifiers are goal code values. For governance frameworks, identifiers are URIs where the framework is published (typically the <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="main"path-5="concepts"path-6="0430-machine-readable-governance-frameworks"path-7="README.md#data_uri"href="https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0430-machine-readable-governance-frameworks/README.md#data_uri" ><code>data_uri</code> field if machine-readable</a>. For DIDComm versions, identifiers are the URIs where DIDComm versions are developed (<code>https://github.com/hyperledger/aries-rfcs</code> for V1 and <code>https://github.com/decentralized-identity/didcomm-messaging</code> for V2; see <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="main"path-5="features"path-6="0044-didcomm-file-and-mime-types"path-7="README.md#detecting-didcomm-versions"href="https://github.com/hyperledger/aries-rfcs/blob/main/features/0044-didcomm-file-and-mime-types/README.md#detecting-didcomm-versions" >“Detecting DIDComm Versions” in RFC 0044</a> for more details).</p>
+<p>The <code>match</code> field of a query descriptor may use the * wildcard. By itself, a <code>match</code> with just the wildcard says, “I’m interested in anything you want to share with me.” But usually, this wildcard will be to match a prefix that’s a little more specific, as in the example that matches any 1.x version.</p>
+<p>Any agent may send another agent this message type at any time. Implementers of agents that intend to support dynamic relationships and rich features are <em>strongly</em> encouraged to implement support for this message, as it is likely to be among the first messages exchanged with a stranger.</p>
 <h6 id="disclose-message-type"><a class="toc-anchor" href="#disclose-message-type" >§</a> <code>disclose</code> Message Type</h6>
 <p>A <code>discover-features/disclose</code> message looks like this:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/discover-features/1.0/disclose"</span><span class="token punctuation">,</span>
     <span class="token property">"thid"</span><span class="token operator">:</span> <span class="token string">"yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU"</span><span class="token punctuation">,</span>
     <span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span>
-        <span class="token property">"protocols"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token property">"disclosures"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
             <span class="token punctuation">{</span>
-                <span class="token property">"ptid"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/tictactoe/1.0"</span><span class="token punctuation">,</span>
+                <span class="token property">"feature-type"</span><span class="token operator">:</span> <span class="token string">"protocol"</span><span class="token punctuation">,</span>
+                <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/tictactoe/1.0"</span><span class="token punctuation">,</span>
                 <span class="token property">"roles"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"player"</span><span class="token punctuation">]</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token punctuation">{</span>
+                <span class="token property">"feature-type"</span><span class="token operator">:</span> <span class="token string">"goal-code"</span><span class="token punctuation">,</span>
+                <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"org.didcomm.sell.goods.consumer"</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>The <code>protocols</code> field is a JSON array of <strong>protocol support descriptor</strong>
-objects that match the query. Each descriptor has a <code>pid</code> that contains
-a protocol version (fully qualified message family identifier such as
-<code>https://didcomm.org/tictactoe/1.0</code>), plus a <code>roles</code>
-array that enumerates the roles the responding agent
-can play in the associated protocol.</p>
-<p>Response messages say, “Here are some protocols I support that matched
-your query, and some things I can do with each one.”</p>
+<p>The <code>disclosures</code> field is a JSON array of zero or more <strong>disclosure objects</strong> that describe a feature. Each descriptor has a <code>feature-type</code> field that contains data corresponding to <code>feature-type</code> in a query object, and an <code>id</code> field that unambiguously identifies a single item of that feature type. When the item is a protocol, the disclosure object may also contain a <code>roles</code> array that enumerates the roles the responding agent can play in the associated protocol. Future feature types may add additional optional fields, though no other fields are being standardized with this version of the RFC.</p>
+<p>Disclosures messages say, “Here are some features I support (that matched your queries).”</p>
 <h6 id="sparse-responses"><a class="toc-anchor" href="#sparse-responses" >§</a> Sparse Responses</h6>
-<p>Responses do not have to contain exhaustive detail. For example, the following
-response is probably just as good:</p>
+<p>Disclosures do not have to contain exhaustive detail. For example, the following response omits the optional <code>roles</code> field but may be just as useful as one that includes it:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/discover-features/1.0/disclose"</span><span class="token punctuation">,</span>
   <span class="token property">"thid"</span><span class="token operator">:</span> <span class="token string">"yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU"</span><span class="token punctuation">,</span>
-  <span class="token property">"protocols"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span><span class="token property">"ptid"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/tictactoe/1.0"</span><span class="token punctuation">}</span>
-  <span class="token punctuation">]</span>
+    <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"disclosures"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">{</span><span class="token property">"feature-type"</span><span class="token operator">:</span> <span class="token string">"protocol"</span><span class="token punctuation">,</span> <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/tictactoe/1.0"</span><span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>The reason why less detail probably suffices is that agents do not need to
-know everything about one another’s implementations in order to start an
-interaction–usually the flow will organically reveal what’s needed. For
-example, the <code>outcome</code> message in the <code>tictactoe</code> protocol isn’t needed
-until the end, and is optional anyway. Alice can start a tictactoe game
-with Bob and will eventually see whether he has the right idea about
-<code>outcome</code> messages.</p>
-<p>The missing <code>roles</code> in this response does not say, “I support no roles
-in this protocol.” It says, “I support the protocol but
-I’m providing no detail about specific roles.”</p>
-<p>Even an empty <code>protocols</code> map does not say, “I support no protocols
-that match your query.” It says, “I’m not telling you that I support any
-protocols that match your query.” An agent might not tell another that
-it supports a protocol for various reasons, including: the trust that
-it imputes to the other party based on cumulative interactions so far,
-whether it’s in the middle of upgrading a plugin, whether it’s currently
-under high load, and so forth. And responses to a <code>discover-features</code> request are
-not guaranteed to be true forever; agents can be upgraded or downgraded,
-although they probably won’t churn in their protocol support from moment
-to moment.</p>
+<p>Less detail probably suffices because agents do not need to know everything about one another’s implementations in order to start an interaction–usually the flow will organically reveal what’s needed. For example, the <code>outcome</code> message in the <code>tictactoe</code> protocol isn’t needed until the end, and is optional anyway. Alice can start a tictactoe game with Bob and will eventually see whether he has the right idea about <code>outcome</code> messages.</p>
+<p>The missing <code>roles</code> in this disclosure does not say, “I support no roles in this protocol.” It says, “I support the protocol but I’m providing no detail about specific roles.” Similar logic applies to any other omitted fields.</p>
+<p>An empty <code>disclosures</code> array does not say, “I support no features that match your query.” It says, “I’m not disclosing to you that I support any features (that match your query).” An agent might not tell another that it supports a feature for various reasons, including: the trust that it imputes to the other party based on cumulative interactions so far, whether it’s in the middle of upgrading a plugin, whether it’s currently under high load, and so forth. And responses to a <code>discover-features</code> query are not guaranteed to be true forever; agents can be upgraded or downgraded, although they probably won’t churn in their feature profiles from moment to moment.</p>
 <h4 id="privacy-considerations-3"><a class="toc-anchor" href="#privacy-considerations-3" >§</a> Privacy Considerations</h4>
-<p>Because the regex in a <code>request</code> message can be very inclusive, the <code>discover-features</code>
-protocol could be used to mine information suitable for agent fingerprinting,
-in much the same way that browser fingerprinting works. This is antithetical
-to the ethos of our ecosystem, and represents bad behavior. Agents should
-use <code>discover-features</code> to answer legitimate questions, and not to build detailed
-profiles of one another. However, fingerprinting may be attempted
-anyway.</p>
-<p>For agents that want to maintain privacy, several best practices are
-recommended:</p>
-<h6 id="follow-selective-disclosure"><a class="toc-anchor" href="#follow-selective-disclosure" >§</a> Follow selective disclosure.</h6>
-<p>Only reveal supported features based on trust in the relationship.
-Even if you support a protocol, you may not wish to use it in
-every relationship. Don’t tell others about protocols you do
-not plan to use with them.</p>
-<p>Patterns are easier to see in larger data samples. However, a pattern
-of ultra-minimal data is also a problem, so use good judgment about
-how forthcoming to be.</p>
+<p>Because the wildcards in a <code>queries</code> message can be very inclusive, the <code>discover-features</code> protocol could be used to mine information suitable for agent fingerprinting, in much the same way that browser fingerprinting works. This is antithetical to the ethos of our ecosystem, and represents bad behavior. Agents should use <code>discover-features</code> to answer legitimate questions, and not to build detailed profiles of one another. However, fingerprinting may be attempted anyway.</p>
+<p>For agents that want to maintain privacy, several best practices are recommended:</p>
+<h5 id="follow-selective-disclosure"><a class="toc-anchor" href="#follow-selective-disclosure" >§</a> Follow selective disclosure.</h5>
+<p>Only reveal supported features based on trust in the relationship. Even if you support a protocol, you may not wish to use it in every relationship. Don’t tell others about features you do not plan to use with them.</p>
+<p>Patterns are easier to see in larger data samples. However, a pattern of ultra-minimal data is also a problem, so use good judgment about how forthcoming to be.</p>
+<h5 id="vary-the-format-of-responses"><a class="toc-anchor" href="#vary-the-format-of-responses" >§</a> Vary the format of responses.</h5>
+<p>Sometimes, you might prettify your agent plaintext message one way, sometimes another.</p>
+<h5 id="vary-the-order-of-items-in-the-disclosures-array"><a class="toc-anchor" href="#vary-the-order-of-items-in-the-disclosures-array" >§</a> Vary the order of items in the <code>disclosures</code> array.</h5>
+<p>If more than one key matches a query, do not always return them in alphabetical order or version order. If you do return them in order, do not always return them in ascending order.</p>
+<h5 id="consider-adding-some-spurious-details"><a class="toc-anchor" href="#consider-adding-some-spurious-details" >§</a> Consider adding some spurious details.</h5>
+<p>If a query could match multiple features, then occasionally you might add some made-up features as matches. If a wildcard allows multiple versions of a protocol, then sometimes you might use some made-up <em>versions</em>. And sometimes not. (Doing this too aggressively might reveal your agent implementation, so use sparingly.)</p>
+<h5 id="vary-how-you-query-too"><a class="toc-anchor" href="#vary-how-you-query-too" >§</a> Vary how you query, too.</h5>
+<p>How you ask questions may also be fingerprintable.</p>
 <h2 id="trust-ping-protocol-20"><a class="toc-anchor" href="#trust-ping-protocol-20" >§</a> Trust Ping Protocol 2.0</h2>
 <p>A standard way for agents to test connectivity,
 responsiveness, and security of a DIDComm channel.</p>
@@ -2171,6 +2151,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 </ul>
 </li>
 <li><a href="#general-messaging-constructs" >General Messaging Constructs</a></li>
+<li><a href="#goal-codes" >Goal Codes</a></li>
 <li><a href="#attachments" >Attachments</a>
 <ul>
 <li><a href="#summary-2" >Summary</a></li>
@@ -2192,7 +2173,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#redirecting-back-to-sender" >Redirecting Back to Sender</a></li>
 </ul>
 </li>
-<li><a href="#discover-features-protocol-10" >Discover Features Protocol 1.0</a>
+<li><a href="#discover-features-protocol-20" >Discover Features Protocol 2.0</a>
 <ul>
 <li><a href="#summary-4" >Summary</a></li>
 <li><a href="#motivation-2" >Motivation</a></li>
