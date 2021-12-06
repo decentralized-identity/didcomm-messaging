@@ -1099,6 +1099,7 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
   &quot;typ&quot;: &quot;application/didcomm-plain+json&quot;,
   &quot;type&quot;: &quot;https://didcomm.org/out-of-band/2.0/invitation&quot;,
   &quot;id&quot;: &quot;&lt;id used for context as pthid&gt;&quot;,
+  &quot;from&quot;:&quot;&lt;sender's did&gt;&quot;,
   &quot;body&quot;: {
     &quot;goal-code&quot;: &quot;issue-vc&quot;,
     &quot;goal&quot;: &quot;To issue a Faber College Graduate credential&quot;,
@@ -1122,6 +1123,7 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
 <ul>
 <li><code>type</code> - the DIDComm message type</li>
 <li><code>id</code> - the unique ID of the message. The ID should be used as the <strong>parent</strong> thread ID (<code>pthid</code>) for the response message, rather than the more common thread ID (<code>thid</code>) of the response message. This enables multiple uses of a single out-of-band message.</li>
+<li><code>from</code> - the DID representing the sender to be used by recipients for future interactions.</li>
 <li><code>goal-code</code> - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.</li>
 <li><code>goal</code> - [optional] a self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.</li>
 <li><code>accept</code> - [optional] an array of media (aka mime) types in the order of preference of the sender that the receiver can use in responding to the message.

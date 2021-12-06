@@ -29,6 +29,7 @@ The out-of-band protocol a single message that is sent by the *sender*.
   "typ": "application/didcomm-plain+json",
   "type": "https://didcomm.org/out-of-band/2.0/invitation",
   "id": "<id used for context as pthid>",
+  "from":"<sender's did>",
   "body": {
     "goal-code": "issue-vc",
     "goal": "To issue a Faber College Graduate credential",
@@ -53,6 +54,7 @@ The items in the message are:
 
 - `type` - the DIDComm message type
 - `id` - the unique ID of the message. The ID should be used as the **parent** thread ID (`pthid`) for the response message, rather than the more common thread ID (`thid`) of the response message. This enables multiple uses of a single out-of-band message.
+- `from` - the DID representing the sender to be used by recipients for future interactions.
 - `goal-code` - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.
 - `goal` - [optional] a self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.
 - `accept` - [optional] an array of media (aka mime) types in the order of preference of the sender that the receiver can use in responding to the message.
