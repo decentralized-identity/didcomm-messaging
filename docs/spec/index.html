@@ -1090,7 +1090,7 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
 <p>First, no private information may be passed in the message. Private information should be passed between parties in encrypted messages only. Any protocol message that contains private information should not be passed via URL or QR code.</p>
 <p>Second, any identifiers passed in a message sent via URL or QR code must no longer be considered private. Any DID used or other identifier no longer considered private MUST be rotated over a secure connection if privacy is required.</p>
 <h5 id="message-correlation"><a class="toc-anchor" href="#message-correlation" >§</a> Message Correlation</h5>
-<p>The <code>id</code> of the message passed in a URL or a QR code is used to as the <code>thid</code> on a response sent by the recipient of this message. The response recipient can use the <code>thid</code> to correlate it with the original message.</p>
+<p>The <code>id</code> of the message passed in a URL or a QR code is used to as the <code>pthid</code> on a response sent by the recipient of this message. The response recipient can use the <code>pthid</code> to correlate it with the original message.</p>
 <h5 id="messages-2"><a class="toc-anchor" href="#messages-2" >§</a> Messages</h5>
 <p>Each message passed this way must be contained within an <code>out-of-band</code> message, as described below.</p>
 <p>The out-of-band protocol a single message that is sent by the <em>sender</em>.</p>
