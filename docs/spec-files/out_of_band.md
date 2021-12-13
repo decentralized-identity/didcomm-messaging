@@ -14,7 +14,7 @@ Second, any identifiers passed in a message sent via URL or QR code must no long
 
 ##### Message Correlation
 
-The `id` of the message passed in a URL or a QR code is used to as the `thid` on a response sent by the recipient of this message. The response recipient can use the `thid` to correlate it with the original message.
+The `id` of the message passed in a URL or a QR code is used to as the `pthid` on a response sent by the recipient of this message. The response recipient can use the `pthid` to correlate it with the original message.
 
 ##### Messages
 
