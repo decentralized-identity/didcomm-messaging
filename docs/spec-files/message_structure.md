@@ -26,7 +26,7 @@ A **DIDComm signed message** is a signed [JWM (JSON Web Messages)](https://tools
 
 **DIDComm signed messages** are not necessary to provide message integrity (tamper evidence), or to prove the sender to the recipient. Both of these guarantees automatically occur with the authenticated encryption in **DIDComm encrypted messages**. **DIDComm signed messages** are only necessary when the origin of plaintext has to be provable to third parties, or when the sender can't be proven to the recipient by authenticated encryption because the recipient is not known in advance (e.g., in a broadcast scenario). Adding a signature when one is not needed [can degrade rather than enhance security because it relinquishes the sender's ability to speak off the record](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0049-repudiation/README.md#summary). We therefore expect **DIDComm signed messages** to be used in a few cases, but not as a matter of course.
 
-When a message is *both* signed and encrypted, the plaintext SHOULD be signed, and then the signed envelope SHOULD be encrypted. The opposite order SHOULD NOT be used, since it would imply that the signer committed to opaque data (which is unsafe and undermines non-repudiation).
+When a message is *both* signed and encrypted, we RECOMMEND following the [JOSE recommendations](https://datatracker.ietf.org/doc/html/rfc7519#section-11.2) with the plaintext being signed first, and then the signed envelope being encrypted. The opposite order would imply that the signer committed to opaque data (which is less safe and also undermines non-repudiation).
 
 The [media type](https://tools.ietf.org/html/rfc6838) of a **DIDComm signed message** MUST be `application/didcomm-signed+json`.
 
