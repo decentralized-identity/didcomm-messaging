@@ -194,3 +194,10 @@ The JWT is constructed as follows, with appropriate values changed.
 - This rotation method does not cover cases where a multi-sig is required. Rotations with such requirements should use a more expressive protocol.
 
 - This rotation method only supports the case where a new [DID](https://www.w3.org/TR/did-core/) is used, replacing an old [DID](https://www.w3.org/TR/did-core/) which is no longer used. Adjustments to [DIDs](https://www.w3.org/TR/did-core/) used between different parties that does not fit this narrow use are expected to define a separate protocol to do so.
+
+#### Ending a Relationship
+
+A relationship may be ended by rotating the DID used in the relationship to nothing. This works the same way as described above, with the following differences:
+
+- Omit 'sub' in the `from_prior` JWT.
+- Send the message without a `from` attribute of the message.

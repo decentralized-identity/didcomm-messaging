@@ -278,6 +278,12 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p>This rotation method only supports the case where a new <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> is used, replacing an old <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> which is no longer used. Adjustments to <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DIDs</a> used between different parties that does not fit this narrow use are expected to define a separate protocol to do so.</p>
 </li>
 </ul>
+<h4 id="ending-a-relationship"><a class="toc-anchor" href="#ending-a-relationship" >§</a> Ending a Relationship</h4>
+<p>A relationship may be ended by rotating the DID used in the relationship to nothing. This works the same way as described above, with the following differences:</p>
+<ul>
+<li>Omit ‘sub’ in the <code>from_prior</code> JWT.</li>
+<li>Send the message without a <code>from</code> attribute of the message.</li>
+</ul>
 <h2 id="negotiating-compatibility"><a class="toc-anchor" href="#negotiating-compatibility" >§</a> Negotiating Compatibility</h2>
 <p>When parties want to communicate via DIDComm, a number of mechanisms must align. These include:</p>
 <ol>
@@ -2035,6 +2041,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#jwt-details" >JWT Details</a></li>
 <li><a href="#example-message-rotating-did" >Example Message Rotating DID</a></li>
 <li><a href="#rotation-limitations" >Rotation Limitations</a></li>
+<li><a href="#ending-a-relationship" >Ending a Relationship</a></li>
 </ul>
 </li>
 </ul>
