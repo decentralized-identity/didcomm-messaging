@@ -49,7 +49,7 @@ The `pthid` header MUST be included with problem reports. Its value is the `thid
 
 The `code` field is worthy of its own section; [see below](#problem-codes).
 
-The optional `comment` field contains human-friendly text describing the problem. The text MUST be statically associated with `code`, meaning that each time circumstances trigger a problem with the same `code`, the value of `comment` will be the same. This enables [localization](#i18n) and cached lookups, and it has some [cybersecurity benefits](#cybersecurity-implications). The value of `comment` supports simple interopolation with `args` (see next), where args are referenced as `{1}`, `{2}`, and so forth. 
+The optional `comment` field contains human-friendly text describing the problem. The text MUST be statically associated with `code`, meaning that each time circumstances trigger a problem with the same `code`, the value of `comment` will be the same. This enables [localization](#i18n) and cached lookups, and it has some [cybersecurity benefits](#cybersecurity-implications). The value of `comment` supports simple interpolation with `args` (see next), where args are referenced as `{1}`, `{2}`, and so forth. 
 
 The optional `args` field contains situation-specific values that are interpolated into the value of `comment`, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, `e.p.xfer.cant-use-endpoint` apparently expects two values in `args`: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (`?`) during interpolation; extra args MUST be appended to the main text as comma-separated values. 
 

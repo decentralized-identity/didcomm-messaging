@@ -480,7 +480,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p>If two communicating parties establish single-purpose DIDs (peer DIDs) for secure communication, then the correlation to any publicly known identities may be limited, although multiple messages referencing the same DIDs will still provide an opportunity for correlation.</p>
 <p>A layer of anonymous encryption (employing ECDH-ES) may be applied around an authenticated encryption envelope (employing ECDH-1PU), obscuring the sender’s identity for all but the recipient of the inner envelope. In the case of a message forwarded via mediators, anonymous encryption is automatic.</p>
 <h3 id="ecdh-1pu-key-wrapping-and-common-protected-headers"><a class="toc-anchor" href="#ecdh-1pu-key-wrapping-and-common-protected-headers" >§</a> ECDH-1PU key wrapping and common protected headers</h3>
-<p>When using authcrypt, the 1PU draft <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="draft-madden-jose-ecdh-1pu-04#section-2.1"href="https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1" >requires</a> mandates the use of AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common <code>epk</code>, <code>apu</code>, <code>apv</code> and <code>alg</code> headers for all recipients. They MUST be set in the <code>protected</code> headers JWE section.</p>
+<p>When using authcrypt, the 1PU draft <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="draft-madden-jose-ecdh-1pu-04#section-2.1"href="https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1" >mandates</a> the use of the AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common <code>epk</code>, <code>apu</code>, <code>apv</code> and <code>alg</code> headers for all recipients. They MUST be set in the <code>protected</code> headers JWE section.</p>
 <p>As per this requirement, the JWE building must first encrypt the payload then use the resulting <code>tag</code> as part of the key derivation process when wrapping the <code>cek</code>.</p>
 <p>To meet this requirement, the above headers must be defined as follows:</p>
 <ul>
@@ -517,7 +517,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <tbody>
 <tr>
 <td>EdDSA (with crv=Ed25519)</td>
-<td>Elliptic curve digital signature with edwards curves and SHA-512</td>
+<td>Elliptic curve digital signature with Edwards curves and SHA-512</td>
 </tr>
 <tr>
 <td>ES256</td>
@@ -580,7 +580,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </code></pre>
 <p>The <code>pthid</code> header MUST be included with problem reports. Its value is the <code>thid</code> of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)</p>
 <p>The <code>code</code> field is worthy of its own section; <a href="#problem-codes" >see below</a>.</p>
-<p>The optional <code>comment</code> field contains human-friendly text describing the problem. The text MUST be statically associated with <code>code</code>, meaning that each time circumstances trigger a problem with the same <code>code</code>, the value of <code>comment</code> will be the same. This enables <a href="#i18n" >localization</a> and cached lookups, and it has some <a href="#cybersecurity-implications" >cybersecurity benefits</a>. The value of <code>comment</code> supports simple interopolation with <code>args</code> (see next), where args are referenced as <code>{1}</code>, <code>{2}</code>, and so forth.</p>
+<p>The optional <code>comment</code> field contains human-friendly text describing the problem. The text MUST be statically associated with <code>code</code>, meaning that each time circumstances trigger a problem with the same <code>code</code>, the value of <code>comment</code> will be the same. This enables <a href="#i18n" >localization</a> and cached lookups, and it has some <a href="#cybersecurity-implications" >cybersecurity benefits</a>. The value of <code>comment</code> supports simple interpolation with <code>args</code> (see next), where args are referenced as <code>{1}</code>, <code>{2}</code>, and so forth.</p>
 <p>The optional <code>args</code> field contains situation-specific values that are interpolated into the value of <code>comment</code>, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, <code>e.p.xfer.cant-use-endpoint</code> apparently expects two values in <code>args</code>: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (<code>?</code>) during interpolation; extra args MUST be appended to the main text as comma-separated values.</p>
 <p>The optional <code>escalate_to</code> field provides a URI where additional help on the issue can be received.</p>
 <h4 id="problem-codes"><a class="toc-anchor" href="#problem-codes" >§</a> Problem Codes</h4>
@@ -727,7 +727,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <h3 id="didcomm-message-uris"><a class="toc-anchor" href="#didcomm-message-uris" >§</a> DIDComm Message URIs</h3>
 <p>The <code>id</code>, <code>thid</code>, and <code>pthid</code> properties of any DIDComm message may be combined to form a URI that uniquely identifies the message (e.g., in debuggers, in log files, in archives). Such a scheme is out of scope for this spec, and support for it is OPTIONAL for implementers. This spec reserves the <code>didcomm://</code> URI prefix for future work with semantics like these; it SHALL NOT be used for other purposes.</p>
 <h3 id="gaps-resends-and-sophisticated-ordering"><a class="toc-anchor" href="#gaps-resends-and-sophisticated-ordering" >§</a> Gaps, Resends, and Sophisticated Ordering</h3>
-<p>Message IDs and threads can be used to build very powerful features for detecting missing and out-of-order messages — and to recovery from them. For more information, see the <a path-0="example.com"path-1="TODO--find-right-way-to-link-to-section-in-guide"href="http://example.com/TODO--find-right-way-to-link-to-section-in-guide" >Implementers Guide</a>.</p>
+<p>Message IDs and threads can be used to build very powerful features for detecting missing and out-of-order messages — and to recover from them. For more information, see the <a path-0="example.com"path-1="TODO--find-right-way-to-link-to-section-in-guide"href="http://example.com/TODO--find-right-way-to-link-to-section-in-guide" >Implementers Guide</a>.</p>
 <h2 id="routing"><a class="toc-anchor" href="#routing" >§</a> Routing</h2>
 <h3 id="routing-protocol"><a class="toc-anchor" href="#routing-protocol" >§</a> Routing Protocol</h3>
 <h4 id="name-and-version"><a class="toc-anchor" href="#name-and-version" >§</a> Name and Version</h4>
@@ -782,7 +782,7 @@ Src: <a path-0="docs.google.com"path-1="spreadsheets"path-2="d"path-3="1zxm3cPZ1
 <p>Rewrapping mode is invisible to senders, but mediators need to know about it, since they change their behavior as a result. Receivers also need to know about it, because it causes them to receive a double-packaged message instead of a singly-packaged one. The outer envelope is a <code>forward</code> message where <code>to</code> is the receiver itself.</p>
 <p>Why is such indirection useful?</p>
 <ul>
-<li>It lets the mediator decorate messages with its own timing and tracing mixins, which may aid troubleshooting. (This would otherwise be impossible, since the inner payload is an opaque blob that almost certainly tamper-evident and encrypted.)</li>
+<li>It lets the mediator decorate messages with its own timing and tracing mixins, which may aid troubleshooting. (This would otherwise be impossible, since the inner payload is an opaque blob that is almost certainly tamper-evident and encrypted.)</li>
 <li>It lets the mediator remain uncommitted to whether the next receiver is another mediator or not. This may provide flexibility in some routing scenarios.</li>
 <li>It lets the mediator change the size of the message by adding or subtracting noise from the content.</li>
 <li>It allows for dynamic routing late in the delivery chain.</li>
@@ -823,17 +823,17 @@ Src: <a path-0="docs.google.com"path-1="spreadsheets"path-2="d"path-3="1zxm3cPZ1
 <p><strong>id</strong>: must be unique, as required in <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3="#service-endpoints"href="https://www.w3.org/TR/did-core/#service-endpoints" >DID Core</a>. No special meaning should be inferred from the <code>id</code> chosen.</p>
 <p><strong>type</strong>: MUST be <code>DIDCommMessaging</code>.</p>
 <p><strong>serviceEndpoint</strong>: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.</p>
-<p><strong>accept</strong>*: An optional array of media types in the order of preference for sending a message to the endpoint.
+<p><strong>accept</strong>: An optional array of media types in the order of preference for sending a message to the endpoint.
 If <code>accept</code> is not specified, the sender uses its preferred choice for sending a message to the endpoint.
 Please see <a href="#message-types" >Message Types</a> for details about media types.</p>
 <p><strong>routingKeys</strong>: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec.</p>
 <h4 id="multiple-endpoints"><a class="toc-anchor" href="#multiple-endpoints" >§</a> Multiple Endpoints</h4>
-<p>A DID Document may contain multiple service entries of type <code>DIDCommMessaging</code>. Entries are SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.</p>
+<p>A DID Document may contain multiple service entries of type <code>DIDCommMessaging</code>. Entries SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.</p>
 <h4 id="alternative-endpoints"><a class="toc-anchor" href="#alternative-endpoints" >§</a> Alternative Endpoints</h4>
 <p>In addition to the URIs for [transports], some alternative forms are available.</p>
 <h5 id="did"><a class="toc-anchor" href="#did" >§</a> DID</h5>
 <p>Using a DID for the <code>serviceEndpoint</code> is useful when using a mediator. The DID should be resolved, and services with type of “DIDComm” will contain valid <code>serviceEndpoints</code>. The keyAgreement keys of that DID Document should be implicitly appended at the end of the routingKeys section from the message recipient’s DID Document as per the process in [Sender Forward Process]. The advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients` DID Documents.</p>
-<p>A DID representing a mediator SHOULD NOT use alternative endpoints in it’s own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [transports] will prevent such recursion.</p>
+<p>A DID representing a mediator SHOULD NOT use alternative endpoints in its own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [transports] will prevent such recursion.</p>
 <p>Example 1: Mediator</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
@@ -932,8 +932,8 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <h5 id="privacy-considerations"><a class="toc-anchor" href="#privacy-considerations" >§</a> Privacy Considerations</h5>
 <p>When messages are passed in plain text, the privacy and security of the message is subject to the properties of the protocol and transport moving the messages. Extreme care must be taken to protect the message.</p>
 <h3 id="connections"><a class="toc-anchor" href="#connections" >§</a> Connections</h3>
-<p>A Connection is the practical application of a relationship in DID Communication. Having a connection means that each party in the relationship has a DID for the other parties, and parties can communicate securely using the keys and endpoints within each DID Document.</p>
-<p>In order to establish a new connection, Simply exchange a new message between parties. Knowing the DID of the other parties does not indicate any level of trust. Using the connection to establish a foundation of trust is the next step.</p>
+<p>A connection is the practical application of a relationship in DID Communication. Having a connection means that each party in the relationship has a DID for the other parties, and parties can communicate securely using the keys and endpoints within each DID Document.</p>
+<p>In order to establish a new connection, simply exchange a new message between parties. Knowing the DID of the other parties does not indicate any level of trust. Using the connection to establish a foundation of trust is the next step.</p>
 <h2 id="general-messaging-constructs"><a class="toc-anchor" href="#general-messaging-constructs" >§</a> General Messaging Constructs</h2>
 <ul>
 <li>Decorators (headers)</li>
@@ -967,10 +967,10 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <li><code>byte_count</code>: [optional] mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.</li>
 <li><code>data</code>: A JSON object that gives access to the actual content of the attachment. Contains enough of the following subfields to allow access to the data:
 <ul>
-<li><code>jws</code>: [optional] A <a path-0="tools.ietf.org"path-1="html"path-2="rfc7515"href="https://tools.ietf.org/html/rfc7515" >JWS</a> in <a path-0="tools.ietf.org"path-1="html"path-2="rfc7515#appendix-F"href="https://tools.ietf.org/html/rfc7515#appendix-F" >detached dontent mode</a>, where the <code>payload</code> field of the JWS maps to <code>base64</code> or to something fetchable via <code>links</code>. This allows attachments to be signed. The signature need not come from the author of the message.</li>
+<li><code>jws</code>: [optional] A <a path-0="tools.ietf.org"path-1="html"path-2="rfc7515"href="https://tools.ietf.org/html/rfc7515" >JWS</a> in <a path-0="tools.ietf.org"path-1="html"path-2="rfc7515#appendix-F"href="https://tools.ietf.org/html/rfc7515#appendix-F" >detached content mode</a>, where the <code>payload</code> field of the JWS maps to <code>base64</code> or to something fetchable via <code>links</code>. This allows attachments to be signed. The signature need not come from the author of the message.</li>
 <li><code>hash</code>: [optional] The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the <code>links</code> data attribute.</li>
 <li><code>links</code>: [optional] A list of zero or more locations at which the content may be fetched.</li>
-<li><code>base64</code>: [optional]<a path-0="tools.ietf.org"path-1="html"path-2="rfc4648#section-5"href="https://tools.ietf.org/html/rfc4648#section-5" >Base64url</a>-encoded data, when representing arbitrary content inline instead of via <code>links</code>.</li>
+<li><code>base64</code>: [optional] <a path-0="tools.ietf.org"path-1="html"path-2="rfc4648#section-5"href="https://tools.ietf.org/html/rfc4648#section-5" >Base64url</a>-encoded data, when representing arbitrary content inline instead of via <code>links</code>.</li>
 <li><code>json</code>: [optional] Directly embedded JSON data, when representing content inline instead of via <code>links</code>, and when the content is natively conveyable as JSON.</li>
 </ul>
 </li>
@@ -1078,7 +1078,7 @@ identifier        = alpha *(*(alphanum / &quot;_&quot; / &quot;-&quot; / &quot;.
 <p>It can be loosely matched and parsed with the following regex:</p>
 <pre><code>    (.*?)([a-z0-9._-]+)/(\d[^/]*)/([a-z0-9._-]+)$
 </code></pre>
-<p>A match will have captures groups of (1) = <code>doc-uri</code>, (2) = <code>protocol-name</code>,
+<p>A match will have capturing groups of (1) = <code>doc-uri</code>, (2) = <code>protocol-name</code>,
 (3) = <code>protocol-version</code>, and (4) = <code>message-type-name</code>.</p>
 <p>The goals of this URI are, in descending priority:</p>
 <ul>
@@ -1102,7 +1102,7 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
 <p>The <code>id</code> of the message passed in a URL or a QR code is used to as the <code>pthid</code> on a response sent by the recipient of this message. The response recipient can use the <code>pthid</code> to correlate it with the original message.</p>
 <h5 id="messages-2"><a class="toc-anchor" href="#messages-2" >§</a> Messages</h5>
 <p>Each message passed this way must be contained within an <code>out-of-band</code> message, as described below.</p>
-<p>The out-of-band protocol a single message that is sent by the <em>sender</em>.</p>
+<p>The out-of-band protocol consists in a single message that is sent by the <em>sender</em>.</p>
 <h4 id="invitation-httpsdidcommorgout-of-band20invitation"><a class="toc-anchor" href="#invitation-httpsdidcommorgout-of-band20invitation" >§</a> Invitation: <code>https://didcomm.org/out-of-band/2.0/invitation</code></h4>
 <pre class="language-jsonc"><code class="language-jsonc">{
   &quot;typ&quot;: &quot;application/didcomm-plain+json&quot;,
