@@ -83,7 +83,7 @@ It can be loosely matched and parsed with the following regex:
 ```
     (.*?)([a-z0-9._-]+)/(\d[^/]*)/([a-z0-9._-]+)$
 ```
-A match will have captures groups of (1) = `doc-uri`, (2) = `protocol-name`,
+A match will have capturing groups of (1) = `doc-uri`, (2) = `protocol-name`,
 (3) = `protocol-version`, and (4) = `message-type-name`.
 
 The goals of this URI are, in descending priority:

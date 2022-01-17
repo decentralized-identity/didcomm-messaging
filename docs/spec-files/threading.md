@@ -39,4 +39,4 @@ The `id`, `thid`, and `pthid` properties of any DIDComm message may be combined 
 
 ### Gaps, Resends, and Sophisticated Ordering
 
-Message IDs and threads can be used to build very powerful features for detecting missing and out-of-order messages &mdash; and to recovery from them. For more information, see the [Implementers Guide](http://example.com/TODO--find-right-way-to-link-to-section-in-guide). 
+Message IDs and threads can be used to build very powerful features for detecting missing and out-of-order messages &mdash; and to recover from them. For more information, see the [Implementers Guide](http://example.com/TODO--find-right-way-to-link-to-section-in-guide). 
