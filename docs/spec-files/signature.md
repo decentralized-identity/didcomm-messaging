@@ -12,7 +12,7 @@ Implementations MUST be able to verify all of the following algorithms and MUST 
 
 | Algorithm(JWA)           | Description                                                  |
 | ------------------------ | ------------------------------------------------------------ |
-| EdDSA (with crv=Ed25519) | Elliptic curve digital signature with edwards curves and SHA-512 |
+| EdDSA (with crv=Ed25519) | Elliptic curve digital signature with Edwards curves and SHA-512 |
 | ES256                    | Elliptic curve digital signature with NIST p-256 curve and SHA-256 |
 | ES256K                   | Elliptic curve digital signature with Secp256k1 keys.        |
 

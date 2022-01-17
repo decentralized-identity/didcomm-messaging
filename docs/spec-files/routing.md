@@ -76,7 +76,7 @@ Rewrapping mode is invisible to senders, but mediators need to know about it, si
 
 Why is such indirection useful?
 
-* It lets the mediator decorate messages with its own timing and tracing mixins, which may aid troubleshooting. (This would otherwise be impossible, since the inner payload is an opaque blob that almost certainly tamper-evident and encrypted.)
+* It lets the mediator decorate messages with its own timing and tracing mixins, which may aid troubleshooting. (This would otherwise be impossible, since the inner payload is an opaque blob that is almost certainly tamper-evident and encrypted.)
 * It lets the mediator remain uncommitted to whether the next receiver is another mediator or not. This may provide flexibility in some routing scenarios.
 * It lets the mediator change the size of the message by adding or subtracting noise from the content. 
 * It allows for dynamic routing late in the delivery chain.
@@ -131,7 +131,7 @@ DIDComm DID Document endpoints have the following format:
 
 **serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
-**accept***: An optional array of media types in the order of preference for sending a message to the endpoint.
+**accept**: An optional array of media types in the order of preference for sending a message to the endpoint.
 If `accept` is not specified, the sender uses its preferred choice for sending a message to the endpoint.
 Please see [Message Types](#message-types) for details about media types.
 
@@ -139,7 +139,7 @@ Please see [Message Types](#message-types) for details about media types.
 
 #### Multiple Endpoints
 
-A DID Document may contain multiple service entries of type `DIDCommMessaging`. Entries are SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.
+A DID Document may contain multiple service entries of type `DIDCommMessaging`. Entries SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.
 
 #### Alternative Endpoints
 
@@ -149,7 +149,7 @@ In addition to the URIs for [transports], some alternative forms are available.
 
 Using a DID for the `serviceEndpoint` is useful when using a mediator. The DID should be resolved, and services with type of "DIDComm" will contain valid `serviceEndpoints`. The keyAgreement keys of that DID Document should be implicitly appended at the end of the routingKeys section from the message recipient's DID Document as per the process in [Sender Forward Process]. The advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients` DID Documents.
 
-A DID representing a mediator SHOULD NOT use alternative endpoints in it's own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [transports] will prevent such recursion.
+A DID representing a mediator SHOULD NOT use alternative endpoints in its own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [transports] will prevent such recursion.
 
 Example 1: Mediator
 

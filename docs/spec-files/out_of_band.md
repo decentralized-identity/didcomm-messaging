@@ -20,7 +20,7 @@ The `id` of the message passed in a URL or a QR code is used to as the `pthid` o
 
 Each message passed this way must be contained within an `out-of-band` message, as described below.
 
-The out-of-band protocol a single message that is sent by the *sender*.
+The out-of-band protocol consists in a single message that is sent by the *sender*.
 
 #### Invitation: `https://didcomm.org/out-of-band/2.0/invitation`
 
