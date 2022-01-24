@@ -19,6 +19,7 @@ Here are links to some implementations of the DIDComm v2 spec that you may find 
 - Rust
   - https://github.com/decentralized-identity/didcomm-rs
   - https://github.com/sicpa-dlab/didcomm-rust
+  - https://github.com/idp2p/idp2p
 - Python
   - https://github.com/sicpa-dlab/didcomm-python
   - https://github.com/hyperledger/aries-cloudagent-python/pull/1331
