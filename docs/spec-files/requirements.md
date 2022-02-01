@@ -2,7 +2,7 @@
 
 The [DIDComm Messaging](.) design attempts to be:
 
-1. **Secure** (tamper-proof; uses best-of-breed crypto; allows parties to talk both on and off the record.)
+1. **Secure** (specifically, MUST have message confidentiality,message integrity, and message authentication; MUST use best-of-breed crypto; MUST allows parties to emit both repudiable and non-repudiable messages.)
 2. **Private** (unauthorized third parties can’t learn who’s communicating about what, when; lets sender be anonymous to recipient) 
 3. **Decentralized** (derives trust for encryption, signing, authn, and authz from control of [DIDs]((https://www.w3.org/TR/did-core/)) rather than oracles like CAs, IDPs, etc; usable at the edge)
 4. **Transport-agnostic** (usable over HTTPS 1.x and 2.0, WebSockets, BlueTooth, chat, push notifications, libp2p, AMQP, SMTP, NFC, sneakernet, snail mail; supports both simplex and duplex; works offline; doesn't assume client-server or synchronous or real-time; allows paired or n-wise or public broadcast usage)
