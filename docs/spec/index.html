@@ -84,8 +84,8 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <h3 id="specific-requirements"><a class="toc-anchor" href="#specific-requirements" >§</a> Specific Requirements</h3>
 <p>The <a href="." >DIDComm Messaging</a> design attempts to be:</p>
 <ol>
-<li><strong>Secure</strong> (tamper-proof; uses best-of-breed crypto; allows parties to talk both on and off the record.)</li>
-<li><strong>Private</strong> (unauthorized third parties can’t learn who’s communicating about what, when; lets sender be anonymous to recipient)</li>
+<li><strong>Secure</strong> (specifically, MUST preserve the integrity of messages against tampering; MUST allow the authenticity of messages and message senders to be proved; MUST use best-of-breed crypto; MUST allow parties to emit both repudiable and non-repudiable messages; perfect forward secrecy is not formally required due to the lack of a session construct, but similar outcomes must be achievable, as described in the <a href="guide.md#pfs" >Implementer’s Guide</a>)</li>
+<li><strong>Private</strong> (MUST prevent unauthorized third parties from learning who’s communicating about what, when; MUST let sender be anonymous to recipient)</li>
 <li><strong>Decentralized</strong> (derives trust for encryption, signing, authn, and authz from control of <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=")"href="(https://www.w3.org/TR/did-core/)" >DIDs</a> rather than oracles like CAs, IDPs, etc; usable at the edge)</li>
 <li><strong>Transport-agnostic</strong> (usable over HTTPS 1.x and 2.0, WebSockets, BlueTooth, chat, push notifications, libp2p, AMQP, SMTP, NFC, sneakernet, snail mail; supports both simplex and duplex; works offline; doesn’t assume client-server or synchronous or real-time; allows paired or n-wise or public broadcast usage)</li>
 <li><strong>Routable</strong> (like email, Alice can talk to Bob without a direct connection to Bob; allows mixed and dynamic transports; passes through mix networks and other generic infrastructure that sees only payload BLOBs)</li>
