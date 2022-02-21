@@ -1,6 +1,6 @@
 ## Message Types
 
-This specification discusses messages in three different formats. The casual phrase [DIDComm Messaging](.) is ambiguous, but usually refers to [DIDComm Messaging](.) encrypted messages (the outermost box in the diagram below). These will constitute the vast majority of network traffic in most [DIDComm Messaging](.) deployments, and they are responsible for security guarantees in the system. However, the role of encrypted messages cannot be understood without reference to the simpler formats they contain.
+This specification discusses messages in three different formats. The casual phrase "DIDComm message" is ambiguous, but usually refers to [DIDComm Encrypted Messages](#didcomm-encrypted-messages) (the outermost box in the diagram below). These will constitute the vast majority of network traffic in most DIDComm Messaging deployments, and they are responsible for security guarantees in the system. However, the role of encrypted messages cannot be understood without reference to the simpler formats they contain.
 
 ![DIDComm envelopes](../collateral/didcomm-envelopes.png)
 
@@ -10,9 +10,9 @@ Media types are based on the conventions of [RFC6838](https://tools.ietf.org/htm
 
 ### DIDComm Plaintext Messages
 
-A [DIDComm Messaging](.) message in its plaintext form, not packaged into any protective envelope, is known as a **DIDComm plaintext message**. Plaintext messages lack confidentiality and integrity guarantees, and are repudiable. They are therefore not normally transported across security boundaries. However, this may be a helpful format to inspect in debuggers, since it exposes underlying semantics, and it is the format used in this specification to give examples of headers and other internals. Depending on ambient security, plaintext may or may not be an appropriate format for [DIDComm Messaging](.) data at rest.
+A DIDComm message in its plaintext form, not packaged into any protective envelope, is known as a **DIDComm plaintext message**. Plaintext messages lack confidentiality and integrity guarantees, and are repudiable. They are therefore not normally transported across security boundaries. However, this may be a helpful format to inspect in debuggers, since it exposes underlying semantics, and it is the format used in this specification to give examples of headers and other internals. Depending on ambient security, plaintext may or may not be an appropriate format for DIDComm Messaging data at rest.
 
-When higher-level protocols are built atop [DIDComm Messaging](.), applications remove the protective envelope(s) and process the plaintext that's inside. Specifications for higher-level protocols typically document message structure and provide examples in this format; protective envelopes are assumed but ignored as a low-level detail.
+When higher-level protocols are built atop DIDComm Messaging, applications remove the protective envelope(s) and process the plaintext that's inside. Specifications for higher-level protocols typically document message structure and provide examples in this format; protective envelopes are assumed but ignored as a low-level detail.
 
 The media type for a generic **DIDComm plaintext message** MUST be `application/didcomm-plain+json`. **DIDComm plaintext messages** are also correctly understood as [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) content (see [Plaintext Message Structure](#plaintext-message-structure), below) and the media type MUST be set in the `typ` [property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the **DIDComm plaintext message** header.
 
@@ -20,7 +20,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ![DIDComm Plaintext Message Icon](../collateral/dcpm-128.png)
 
-### DIDComm Signed Message
+### DIDComm Signed Messages
 
 A **DIDComm signed message** is a signed [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) envelope that associates a non-repudiable signature with the plaintext message inside it.
 
@@ -38,9 +38,9 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ![DIDComm Signed Message Icon](../collateral/dcsm-128.png)
 
-### DIDComm Encrypted Message
+### DIDComm Encrypted Messages
 
-A **DIDComm encrypted message** is an encrypted [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) and hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in [DIDComm Messaging](.) applications, and is the safest format for storing [DIDComm Messaging](.) data at rest.
+A **DIDComm encrypted message** is an encrypted [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) and hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.
 
 The [media type](https://tools.ietf.org/html/rfc6838) of a non-nested **DIDComm encrypted message** MUST be `application/didcomm-encrypted+json`.
 
@@ -81,7 +81,7 @@ A **DIDComm plaintext message** conveys most of its application-level data insid
 
 However, some attributes are common to many different message types. When metadata about a message means the same thing regardless of context, and when it is susceptible to generic rather than message-specific handling, that metadata can be placed in **headers**. Headers are siblings of `body` and may be added to any message type. They are encrypted and decrypted along with `body` and therefore have an identical audience.
 
-Headers in [DIDComm Messaging](.) are intended to be extensible in much the same way that headers in HTTP or SMTP are extensible. A few headers are predefined:
+Headers in DIDComm Messaging are intended to be extensible in much the same way that headers in HTTP or SMTP are extensible. A few headers are predefined:
 
 - **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender.
 
@@ -89,7 +89,7 @@ Headers in [DIDComm Messaging](.) are intended to be extensible in much the same
 
 - **typ** - OPTIONAL. Media type of the JWM content.
 
-The following table provides an overview of using the media type properties in supported [DIDComm Messaging](.) messages:
+The following table provides an overview of using the media type properties in supported DIDComm messages:
 
 | Envelope | `typ` |
 |-----------------|-------|
@@ -120,9 +120,9 @@ The `to` header cannot be used for routing, since it is encrypted at every inter
 
 - **body** - REQUIRED. The `body` attribute contains all the message type specific attributes of the message type indicated in the `type` attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to [RFC 7159](https://datatracker.ietf.org/doc/html/rfc7159).
 
-With respect to headers, [DIDComm Messaging](.) follows the extensibility pattern established by the JW* family of standards. A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields SHOULD ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.
+With respect to headers, DIDComm Messaging follows the extensibility pattern established by the JW* family of standards. A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields SHOULD ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.
 
-Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), [DIDComm Messaging](.) explicitly rejects the `X-*` headers convention that creates divergent pseudo-standards; if a new header needs broad support, proper standardization is required. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.
+Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), DIDComm Messaging explicitly rejects the `X-*` headers convention that creates divergent pseudo-standards; if a new header needs broad support, proper standardization is required. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.
 
 #### Simple vs. Structured
 
@@ -134,7 +134,7 @@ Headers can be simple (mapping a header name to an integer or a string) or struc
 
 ### DID Rotation
 
-[DIDComm Messaging](.) is based on [DIDs](https://www.w3.org/TR/did-core/) and their associated [DID Documents](https://www.w3.org/TR/did-core/#dfn-did-documents). Changes to keys and endpoints are the concern of each [DID](https://www.w3.org/TR/did-core/) method and are utilized but not managed by [DIDComm Messaging](.). [DID Rotation](#did-rotation) serves a very specific and narrow need to switch from one [DID](https://www.w3.org/TR/did-core/) method to another. This is very common at the beginning of a new [DIDComm Messaging](.) relationship when a public [DID](https://www.w3.org/TR/did-core/) or a temporary [DID](https://www.w3.org/TR/did-core/) passed unencrypted is rotated out for a [DID](https://www.w3.org/TR/did-core/) chosen for the relationship. As rotation between one [DID](https://www.w3.org/TR/did-core/) and another is outside the scope of any [DID](https://www.w3.org/TR/did-core/) method, the details of [DID Rotation](#did-rotation) are handled within [DIDComm Messaging](.) itself.
+DIDComm Messaging is based on [DIDs](https://www.w3.org/TR/did-core/) and their associated [DID Documents](https://www.w3.org/TR/did-core/#dfn-did-documents). Changes to keys and endpoints are the concern of each [DID](https://www.w3.org/TR/did-core/) method and are utilized but not managed by DIDComm Messaging. [DID Rotation](#did-rotation) serves a very specific and narrow need to switch from one [DID](https://www.w3.org/TR/did-core/) method to another. This is very common at the beginning of a new DIDComm Messaging relationship when a public [DID](https://www.w3.org/TR/did-core/) or a temporary [DID](https://www.w3.org/TR/did-core/) passed unencrypted is rotated out for a [DID](https://www.w3.org/TR/did-core/) chosen for the relationship. As rotation between one [DID](https://www.w3.org/TR/did-core/) and another is outside the scope of any [DID](https://www.w3.org/TR/did-core/) method, the details of [DID Rotation](#did-rotation) are handled within DIDComm Messaging itself.
 
 When a [DID](https://www.w3.org/TR/did-core/) is rotated, the new [DID](https://www.w3.org/TR/did-core/) is put into immediate use encrypting the message, and one additional attribute MUST be included as a message header:
 
