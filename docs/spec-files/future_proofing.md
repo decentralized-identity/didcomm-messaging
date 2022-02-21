@@ -16,7 +16,7 @@ Each DIDComm extension is described in a specification of its own. Software that
 
 #### Additional Encodings
 
-DIDComm Messages are JSON encoded (based on the JOSE family of specs) at the encryption, signature, and content level. Future encodings might introduce binary serializations. Each innovation like this MUST specify a deterministic and reliable method for indicating the alternative encoding used.
+DIDComm messages are JSON encoded (based on the JOSE family of specs) at the encryption, signature, and content level. Future encodings might introduce binary serializations. Each innovation like this MUST specify a deterministic and reliable method for indicating the alternative encoding used.
 
 At multiple points in the creation of this spec the community discussed switching to CBOR as a primary encoding format to replace JSON. Two reasons prevented that switch: The maturity of the JSON related standards as compared to CBOR related standards, and the cost of switching so late in spec development.
 

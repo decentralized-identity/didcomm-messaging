@@ -24,6 +24,6 @@ Reporting and resolving errors and warnings is also a good use case for parent a
 
 Sometimes the parent of a thread is not known, or is so independent of its child as to be irrelevant. If Alice and Bob connected three years ago, each new interaction that they begin doesn't need to declare a `pthid` that references the original interaction that connected them. Declare a parent relationship for a thread when it is likely to be useful.
 
-### DIDComm Message URIs
+### Message URIs
 
 It's generally considered this functionality will be combined with [JSPath](https://github.com/dfilatov/jspath#quick-example) or [JS Pointer](https://datatracker.ietf.org/doc/html/rfc6901) so individual elements of messages may also be hyperlinked. For a good idea of the concepts that we'd like to enable with this capability, see [Linkable Message Paths](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0217-linkable-message-paths/README.md).

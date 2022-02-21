@@ -6,7 +6,7 @@ The encrypted form of a JWM is a JWE. The JOSE family defines [JSON Web Algorith
 
 ### Sender Authenticated Encryption
 
-For an encrypted DIDComm Message, the JWA of `ECDH-1PU` defined by [draft](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04) MUST be used within the structure of a JWE.
+For an encrypted DIDComm message, the JWA of `ECDH-1PU` defined by [draft](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04) MUST be used within the structure of a JWE.
 
 ### Anonymous Encryption
 

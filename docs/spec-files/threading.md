@@ -33,7 +33,7 @@ Suppose a DIDComm-based protocol (and therefore, a thread of messages) is underw
 
 When a child protocol is a simple two-party interaction, mentioning the `pthid` in the first message of the child interaction is enough to establish context. However, in protocols involving more than two parties, the first message of the child protocol may not be seen by everyone, so simply mentioning `pthid` once may not provide enough context. Therefore, the rule is that each party in a child protocol MUST learn the identity of the parent thread via the first child protocol message they see. The simplest way to ensure this is to mention the `pthid` with every message in the child protocol.
 
-### DIDComm Message URIs
+### Message URIs
 
 The `id`, `thid`, and `pthid` properties of any DIDComm message may be combined to form a URI that uniquely identifies the message (e.g., in debuggers, in log files, in archives). Such a scheme is out of scope for this spec, and support for it is OPTIONAL for implementers. This spec reserves the `didcomm://` URI prefix for future work with semantics like these; it SHALL NOT be used for other purposes.
 
