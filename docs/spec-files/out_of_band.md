@@ -194,7 +194,7 @@ These redirects may not be required in many cases, for example,
 
 
 ##### Reference
-During the protocol execution sender can securely send [`web-redirect`](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator) info as part of messages concluding protocol executions like [acknowledgement and problem report](problems.md).
+During the protocol execution sender can securely send [`web-redirect`](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator) info as part of messages concluding protocol executions, like [a formal acknowledgement message](#acks) or a [problem report](#problem-reports).
 Once protocol is ended then receiver can optionally choose to redirect by extracting the redirect information from the message.
 
 Example acknowledgement message from verifier to prover containing web redirect information.
