@@ -2,7 +2,7 @@
 
 #### URL & QR Codes
 
-When passing a DIDComm Message between two parties, it is often useful to present a message in the form of a URL or encoded into the form of a QR code for scanning with a smartphone or other camera. The format for a QR code is simply the encoded URL form of a message.
+When passing a DIDComm message between two parties, it is often useful to present a message in the form of a URL or encoded into the form of a QR code for scanning with a smartphone or other camera. The format for a QR code is simply the encoded URL form of a message.
 
 ##### Privacy Considerations
 

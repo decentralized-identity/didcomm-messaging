@@ -1,9 +1,9 @@
 ## Appendix
-This section provides test vectors of DIDComm Messages. The test vectors defined in the [Appendix C](#appendix-c-test-vectors) might be used to validate implementations of [DIDComm Messaging](.). The test vectors use the sender and recipient private keys defined in the [Appendix A](#appendix-a-secrets-for-test-vectors) to decrypt and sign DIDComm Messages. The test vectors use the sender and recipient public keys defined in the [Appendix B](#appendix-b-diddocs-for-test-vectors) to encrypt DIDComm Encrypted Messages and verify signature of DIDComm Signed Messages.
+This section provides test vectors of DIDComm messages. The test vectors defined in the [Appendix C](#appendix-c-test-vectors) might be used to validate implementations of DIDComm Messaging. The test vectors use the sender and recipient private keys defined in the [Appendix A](#appendix-a-secrets-for-test-vectors) to decrypt and sign DIDComm messages. The test vectors use the sender and recipient public keys defined in the [Appendix B](#appendix-b-diddocs-for-test-vectors) to encrypt DIDComm Encrypted Messages and verify signature of DIDComm Signed Messages.
 
 ### Appendix A. Secrets for Test Vectors 
 
-This section provides the sender and recipient private keys. These keys might be used for decryption and signing DIDComm Messages.
+This section provides the sender and recipient private keys. These keys might be used for decryption and signing DIDComm messages.
 
 #### A.1. Sender Secrets
 
@@ -140,7 +140,7 @@ This section defines the recipient private keys in JWK format.
 
 ### Appendix B. DIDDocs for Test Vectors
 
-This section provides DIDDocs for the sender and recipient. The following DIDDocs might be used to validate implementations of the [DIDComm Messaging](.). They are also intended to test vectors defined in the [Appendix C](#appendix-c-test-vectors).
+This section provides DIDDocs for the sender and recipient. The following DIDDocs might be used to validate implementations of DIDComm Messaging. They are also intended to test vectors defined in the [Appendix C](#appendix-c-test-vectors).
 
 #### B.1. Sender DIDDocs 
 
@@ -337,7 +337,7 @@ This section defines the recipient DIDDoc.
 
 ### Appendix C. Test Vectors 
 
-This section provides the test vectors. The following the test vectors might be used to validate implementations of [DIDComm Messaging](.). The test vectors use private keys defined in the [Appendix A](#appendix-a-secrets-for-test-vectors) and public keys defined in the [Appendix B](#appendix-b-diddocs-for-test-vectors). 
+This section provides the test vectors. The following the test vectors might be used to validate implementations of DIDComm Messaging. The test vectors use private keys defined in the [Appendix A](#appendix-a-secrets-for-test-vectors) and public keys defined in the [Appendix B](#appendix-b-diddocs-for-test-vectors). 
 
 #### C.1. DIDComm Plaintext Messages
 
