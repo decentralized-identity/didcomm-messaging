@@ -124,6 +124,10 @@ With respect to headers, DIDComm Messaging follows the extensibility pattern est
 
 Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), DIDComm Messaging explicitly rejects the `X-*` headers convention that creates divergent pseudo-standards; if a new header needs broad support, proper standardization is required. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.
 
+#### The Empty Message
+
+Sometimes, only headers need to be communicated; there is no content for the body. DIDComm explicitly defines a message type with MIURI `https://didcomm.org/reserved/2.0/empty` for this purpose. This message may or may not include an actual `body` element; if present, its value MUST be `null` or an empty JSON object.
+
 #### Simple vs. Structured
 
 Headers can be simple (mapping a header name to an integer or a string) or structured (mapping a header name to JSON substructure -- an array or JSON object). When defining a new header type, the following guidelines apply:
