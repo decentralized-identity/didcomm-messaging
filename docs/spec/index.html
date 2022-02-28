@@ -221,6 +221,8 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </ul>
 <p>With respect to headers, DIDComm Messaging follows the extensibility pattern established by the JW* family of standards. A modest inventory of predefined “header” fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn’t understand such fields SHOULD ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.</p>
 <p>Aligning with <a path-0="tools.ietf.org"path-1="html"path-2="rfc6648.html"href="https://tools.ietf.org/html/rfc6648.html" >RFC 6648</a>, DIDComm Messaging explicitly rejects the <code>X-*</code> headers convention that creates divergent pseudo-standards; if a new header needs broad support, proper standardization is required. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.</p>
+<h4 id="the-empty-message"><a class="toc-anchor" href="#the-empty-message" >§</a> The Empty Message</h4>
+<p>Sometimes, only headers need to be communicated; there is no content for the body. DIDComm explicitly defines a message type with MIURI <code>https://didcomm.org/reserved/2.0/empty</code> for this purpose. This message may or may not include an actual <code>body</code> element; if present, its value MUST be <code>null</code> or an empty JSON object.</p>
 <h4 id="simple-vs-structured"><a class="toc-anchor" href="#simple-vs-structured" >§</a> Simple vs. Structured</h4>
 <p>Headers can be simple (mapping a header name to an integer or a string) or structured (mapping a header name to JSON substructure – an array or JSON object). When defining a new header type, the following guidelines apply:</p>
 <ul>
@@ -335,30 +337,35 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </tr>
 </tbody>
 </table>
-<p>For content encryption of the message, the following algorithms MUST be supported.</p>
+<p>For content encryption of the message, DIDComm inherits the implementation definitions from <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc7518#section-5.1"href="https://datatracker.ietf.org/doc/html/rfc7518#section-5.1" >JSON Web Algorithms</a> for AES 256-bit keys.
+In addition, DIDComm defines optional implementation usage of the draft <a path-0="tools.ietf.org"path-1="id"path-2="draft-amringer-jose-chacha-02.html"href="https://tools.ietf.org/id/draft-amringer-jose-chacha-02.html" >XC20P</a> algorithm.</p>
 <table>
 <thead>
 <tr>
 <th>Algorithm(JWA)</th>
 <th>Description</th>
 <th>Authcrypt/Anoncrypt</th>
+<th>Requirements</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>XC20P</td>
-<td>XChaCha20Poly1305 with a 256 bit key</td>
-<td>Anoncrypt</td>
+<td>A256CBC-HS512</td>
+<td>AES256-CBC + HMAC-SHA512 with a 512 bit key</td>
+<td>Authcrypt/Anoncrypt</td>
+<td>Required</td>
 </tr>
 <tr>
 <td>A256GCM</td>
 <td>AES256-GCM with a 256 bit key</td>
 <td>Anoncrypt</td>
+<td>Recommended</td>
 </tr>
 <tr>
-<td>A256CBC-HS512</td>
-<td>AES256-CBC + HMAC-SHA512 with a 512 bit key</td>
-<td>Authcrypt/Anoncrypt</td>
+<td>XC20P</td>
+<td>XChaCha20Poly1305 with a 256 bit key</td>
+<td>Anoncrypt</td>
+<td>Optional</td>
 </tr>
 </tbody>
 </table>
@@ -553,7 +560,20 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <h4 id="timeouts"><a class="toc-anchor" href="#timeouts" >§</a> Timeouts</h4>
 <p>In many cases, a DIDComm message SHOULD use the <code>expires_time</code> header to announce when its sender will consider the message invalid. This allows for state to be reset in a predictable way. The <code>expires_time</code> header is so common that it is discussed in the general <a href="#message-headers" >Message Headers</a> section of the spec. Best practice with timeouts is <a path-0="guide-files"path-1="problems.md#timeouts"href="../guide-files/problems.md#timeouts" >discussed in the Implementers Guide</a>.</p>
 <h4 id="acks"><a class="toc-anchor" href="#acks" >§</a> ACKs</h4>
-<p>Any DIDComm message MAY use the <code>please_ack</code> header to request a read receipt from a recipient. Cooperative parties who wish to honor this request MUST include an <code>ack</code> header on a subsequent message, where the value of the header is an array that contains the <code>id</code> of one or more messages being acknowledged.</p>
+<p>DIDComm provides several tools that let one party acknowledge messages sent by another.</p>
+<p><a href="#threading" >Threading</a> has some implicit built-in ACK semantics. In a two-party protocol that consists of message types mapping unambiguously to progressive steps, each message that moves forward is an implicit ACK of the message that preceded it.</p>
+<p>When <a href="#problem-reports" >DIDComm <code>problem-report</code>s</a> constitute reactions to a preceding message (as opposed to when they signal problems in external circumstances), they also function as an ACK.</p>
+<p>However, more explicit and more powerful ACKs are sometimes needed. They can prove that parties have a shared view of state at a particular time, test the functioning of a transport, help debug surprising silence, fine-tune timeouts, and speed up remedial action.</p>
+<p>To facilitate this, any innermost DIDComm plaintext message MAY use the <code>please_ack</code> header to politely request a read receipt from a recipient. The header’s value is an array of strings that clarify when the ACK is requested. Only the following value is defined by this version of the spec: “receipt”. Future extensions may define additional values (e.g., to implement read receipts, or to request an ACK if no other response is forthcoming after a modest delay). If “receipt” is present, then the request is to ACK as soon as the message is received.</p>
+<p>The presence of the <code>please_ack</code> header does not create an obligation on the part of the recipient. However, cooperative parties who wish to honor such a request MUST include an <code>ack</code> header on a subsequent message, where the value of the header is an array that contains the <code>id</code> of one or more messages being acknowledged. Values in this array MUST appear in the order received, from oldest to most recent.</p>
+<blockquote>
+<p>Note: The <code>please_ack</code> header SHOULD NOT be included on <a href="#routing" ><code>forward</code> messages</a>, and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, which are defined to send only destward. It would also undermine the privacy of recipients.</p>
+</blockquote>
+<blockquote>
+<p>Note: Implementations MUST take reasonable steps to avoid an infinite circle of ACKs. Some good rules of thumb are: never honor more than one ACK request for a given message; never send a pure ACK that requests an ACK; never honor a pure ACK request that arrives in response to your own ACK request.</p>
+</blockquote>
+<p>A plaintext message that contains the <code>ack</code> header is said to be an explicit ACK, no matter what its internal structure or message type is. If an ACK needs to be sent with no other message content, <a href="#the-empty-message" >the empty message</a> with an <code>ack</code> header SHOULD be used.</p>
+<p>Particular protocols may wish to design their own message types that convey additional information in an ACK. Custom ACK messages SHOULD include the <code>ack</code> header if they can appear at more than one step in a protocol, so it’s clear what they are acknowledging. When the message type’s primary purpose is to acknowledge, the type name <code>ack</code> SHOULD be used, for the sake of consistency.</p>
 <h4 id="threads"><a class="toc-anchor" href="#threads" >§</a> Threads</h4>
 <p>Any DIDComm message that continues a previously begun application-level protocol MUST use a <code>thid</code> property that associates it with the prior context. This context is vital for error handling. See <a href="#threading" >Threading</a>.</p>
 <p>In addition, messages MAY use the <a path-0=".."path-1="extensions"path-2="advanced_sequencing"path-3="main.md"href="../../extensions/advanced_sequencing/main.md" >Advanced Sequencing</a> extension to detect gaps in delivery or messages arriving out of order.</p>
@@ -564,6 +584,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/report-problem/2.0/problem-report"</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"7c9de639-c51c-4d60-ab95-103fa613c805"</span><span class="token punctuation">,</span>
   <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"1e513ad4-48c9-444e-9e7e-5b8b45c5e325"</span><span class="token punctuation">,</span>
+  <span class="token property">"ack"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"1e513ad4-48c9-444e-9e7e-5b8b45c5e325"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"code"</span><span class="token operator">:</span> <span class="token string">"e.p.xfer.cant-use-endpoint"</span><span class="token punctuation">,</span>
     <span class="token property">"comment"</span><span class="token operator">:</span> <span class="token string">"Unable to use the {1} endpoint for {2}."</span><span class="token punctuation">,</span>
@@ -576,6 +597,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <span class="token punctuation">}</span>
 </code></pre>
 <p>The <code>pthid</code> header MUST be included with problem reports. Its value is the <code>thid</code> of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)</p>
+<p>The <code>ack</code> header SHOULD be included if the problem in question was triggered directly by a preceding message. (Contrast problems arising from a timeout or a user deciding to cancel a transaction, which can arise independent of a preceding message. In such cases, <code>ack</code> MAY still be used, but there is no strong recommendation.)</p>
 <p>The <code>code</code> field is worthy of its own section; <a href="#problem-codes" >see below</a>.</p>
 <p>The optional <code>comment</code> field contains human-friendly text describing the problem. The text MUST be statically associated with <code>code</code>, meaning that each time circumstances trigger a problem with the same <code>code</code>, the value of <code>comment</code> will be the same. This enables <a href="#i18n" >localization</a> and cached lookups, and it has some <a href="#cybersecurity-implications" >cybersecurity benefits</a>. The value of <code>comment</code> supports simple interpolation with <code>args</code> (see next), where args are referenced as <code>{1}</code>, <code>{2}</code>, and so forth.</p>
 <p>The optional <code>args</code> field contains situation-specific values that are interpolated into the value of <code>comment</code>, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, <code>e.p.xfer.cant-use-endpoint</code> apparently expects two values in <code>args</code>: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (<code>?</code>) during interpolation; extra args MUST be appended to the main text as comma-separated values.</p>
@@ -743,7 +765,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p>In this protocol, the sender and the receiver never interact directly; they only interact via the mediator.</p>
 <p>The sender can decorate the <code>forward</code> message in standard DIDComm ways: using <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="master"path-5="features"path-6="0032-message-timing"path-7="README.md#tutorial"href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0032-message-timing/README.md#tutorial" ><code>~timing.expires_time</code>, <code>~timing.delay_milli</code> and <code>~timing.wait_until_time</code></a> to introduce timeouts and delays, and so forth. However, the mediator is NOT required to support or implement any of these mixin semantics; only the core forwarding behavior is indispensable. If a mediator sees a decorator that requests behavior it doesn’t support, it MAY return a <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="master"path-5="features"path-6="0035-report-problem"path-7="README.md"href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0035-report-problem/README.md" ><code>problem-report</code></a> to the sender identifying the unsupported feature, but it is not required to do so, any more than other recipients of DIDComm messages would be required to complain about unsupported decorators in messages they receive.</p>
 <blockquote>
-<p>[[TODO: needs revision when we decide how ACKs will work and whether explicit requests for an ACK will be conveyed via headers.]] One particular decorator is worth special mention here: <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="master"path-5="features"path-6="0015-acks"path-7="README.md#requesting-an-ack-please_ack"href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0015-acks/README.md#requesting-an-ack-please_ack" ><code>~please_ack</code></a>. This decorator is intended to be processed by ultimate recipients, not mediators. If it were used with <code>forward</code> messages, it would impose a burden of backward-facing communication that mediators should not have. Furthermore, it could probe a delivery chain in a way that risks privacy for the receiver. Therefore, senders SHOULD NOT use this on <code>forward</code> messages, and mediators SHOULD NOT honor it if present. If a sender wishes to troubleshoot, the <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="master"path-5="features"path-6="0034-message-tracing"path-7="README.md"href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0034-message-tracing/README.md" >message tracing</a> mechanism is recommended.</p>
+<p>Note: The <a href="#acks" ><code>please_ack</code> header</a> SHOULD NOT be included on <a href="#routing" ><code>forward</code> messages</a>, and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, and undermine the privacy of recipients.</p>
 </blockquote>
 <h4 id="states"><a class="toc-anchor" href="#states" >§</a> States</h4>
 <p>Since data flow is normally one-way, and since the scope of the protocol is a single message delivery, a simplistic way to understand it might be as two instances of the stateless <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="master"path-5="concepts"path-6="0003-protocols"path-7="notification.png"href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/notification.png" >notification pattern</a>, unfolding in sequence.</p>
@@ -1248,7 +1270,7 @@ Knowledge is Good
 <li>A mobile application scanning QR code from sender and performing protocol execution. In this case the mobile application may choose to handle successful protocol execution in its own way and close the application.</li>
 </ul>
 <h5 id="reference-3"><a class="toc-anchor" href="#reference-3" >§</a> Reference</h5>
-<p>During the protocol execution sender can securely send <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="tree"path-4="main"path-5="concepts"path-6="0700-oob-through-redirect#web-redirect-decorator"href="https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator" ><code>web-redirect</code></a> info as part of messages concluding protocol executions like <a href="problems.md" >acknowledgement and problem report</a>.
+<p>During the protocol execution sender can securely send <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="tree"path-4="main"path-5="concepts"path-6="0700-oob-through-redirect#web-redirect-decorator"href="https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator" ><code>web-redirect</code></a> info as part of messages concluding protocol executions, like <a href="#acks" >a formal acknowledgement message</a> or a <a href="#problem-reports" >problem report</a>.
 Once protocol is ended then receiver can optionally choose to redirect by extracting the redirect information from the message.</p>
 <p>Example acknowledgement message from verifier to prover containing web redirect information.</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
@@ -2036,6 +2058,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <ul>
 <li><a href="#message-headers" >Message Headers</a>
 <ul>
+<li><a href="#the-empty-message" >The Empty Message</a></li>
 <li><a href="#simple-vs-structured" >Simple vs. Structured</a></li>
 </ul>
 </li>
