@@ -6,6 +6,17 @@ DIDComm Messaging is designed to be transport independent, including message enc
 
 DIDComm Transports serve only as message _delivery_. No information about the effects or results from a message is transmitted over the same connection.
 
+### Transport Requirements
+
+Transports are defined within this section. Additional transports may be defined as an extension.
+
+Each transport MUST define:
+
+- format of `serviceEndpoint`: Which URI schemes are used (if URI), or the properties of the object (if object).
+- how to actually send messages:  e.g., through HTTP POST, through dial protocol (libp2p), etc.
+- how mime-types of the content are provided, e.g., through Content-Type header, etc.
+- where additional context definition is hosted, e.g., in case the `serviceEndpoint` is an object.
+
 ### Reference
 #### HTTP(S)
 
@@ -26,10 +37,4 @@ Websockets are an efficient way to transmit multiple messages without the overhe
 - The trust of each message comes from the Encryption Envelope, not the socket connection itself.
 - Websockets are considered transmit only. Messages flow only from the agent that opened the socket.
 - Using Secure Websockets (wss://) with TLS 1.2 or greater with a forward secret cipher will provide Perfect Forward Secrecy (PFS) on the transmission leg.
-
-With STOMP over WebSocket, the content-type header is application/didcomm-enc-env as in the HTTP(S) message.
-
-TODO:
-
-* Quic
-* Transport binding
+- When using STOMP over WebSocket, the content-type header is application/didcomm-enc-env as in the HTTP(S) message.

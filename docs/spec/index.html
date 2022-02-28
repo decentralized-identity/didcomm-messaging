@@ -853,6 +853,15 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <p>DIDComm Messaging is designed to be transport independent, including message encryption and agent message format. The encryption envelope provides both encryption and authentication, providing trust as a feature of each message. Each transport does have unique features, and we need to standardize how the transport features are (or are not) applied.</p>
 <h3 id="delivery"><a class="toc-anchor" href="#delivery" >§</a> Delivery</h3>
 <p>DIDComm Transports serve only as message <em>delivery</em>. No information about the effects or results from a message is transmitted over the same connection.</p>
+<h3 id="transport-requirements"><a class="toc-anchor" href="#transport-requirements" >§</a> Transport Requirements</h3>
+<p>Transports are defined within this section. Additional transports may be defined as an extension.</p>
+<p>Each transport MUST define:</p>
+<ul>
+<li>format of <code>serviceEndpoint</code>: Which URI schemes are used (if URI), or the properties of the object (if object).</li>
+<li>how to actually send messages:  e.g., through HTTP POST, through dial protocol (libp2p), etc.</li>
+<li>how mime-types of the content are provided, e.g., through Content-Type header, etc.</li>
+<li>where additional context definition is hosted, e.g., in case the <code>serviceEndpoint</code> is an object.</li>
+</ul>
 <h3 id="reference"><a class="toc-anchor" href="#reference" >§</a> Reference</h3>
 <h4 id="https"><a class="toc-anchor" href="#https" >§</a> HTTP(S)</h4>
 <p>HTTP(S) transports are an effective way to send a message to another online agent.</p>
@@ -872,12 +881,7 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <li>The trust of each message comes from the Encryption Envelope, not the socket connection itself.</li>
 <li>Websockets are considered transmit only. Messages flow only from the agent that opened the socket.</li>
 <li>Using Secure Websockets (wss://) with TLS 1.2 or greater with a forward secret cipher will provide Perfect Forward Secrecy (PFS) on the transmission leg.</li>
-</ul>
-<p>With STOMP over WebSocket, the content-type header is application/didcomm-enc-env as in the HTTP(S) message.</p>
-<p>TODO:</p>
-<ul>
-<li>Quic</li>
-<li>Transport binding</li>
+<li>When using STOMP over WebSocket, the content-type header is application/didcomm-enc-env as in the HTTP(S) message.</li>
 </ul>
 <h3 id="internationalization-i18n"><a class="toc-anchor" href="#internationalization-i18n" >§</a> Internationalization (i18n)</h3>
 <p>Because automation makes life easier for humans, the data in DIDComm messages is usually assumed to have software as its audience. However, sometimes humans should see part of the data in a DIDComm message. For example, if the high-level application protocol running atop DIDComm is a kind of rich chat, humans may not see message headers and the details of threads – but they will want to read the text sent to them by a friend. Similarly, humans may need to read error messages or terms and conditions in their natural language.</p>
@@ -2133,6 +2137,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <ul>
 <li><a href="#summary" >Summary</a></li>
 <li><a href="#delivery" >Delivery</a></li>
+<li><a href="#transport-requirements" >Transport Requirements</a></li>
 <li><a href="#reference" >Reference</a>
 <ul>
 <li><a href="#https" >HTTP(S)</a></li>
