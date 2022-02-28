@@ -79,17 +79,15 @@ The following example shows common elements of a **DIDComm plaintext message**. 
 
 A **DIDComm plaintext message** conveys most of its application-level data inside a JSON `body` object that is a direct child of the message root. The structure inside `body` is predicted by the value of the message's `type` attribute, and varies according to the definition of the protocol-specific message in question. Each `type` of message will have its own `body`. 
 
-However, some attributes are common to many different message types. When metadata about a message means the same thing regardless of context, and when it is susceptible to generic rather than message-specific handling, that metadata can be placed in **headers**. Headers are siblings of `body` and may be added to any message type. They are encrypted and decrypted along with `body` and therefore have an identical audience.
+However, some attributes are common to many different message types. When metadata about a message means the same thing regardless of context, and when it is susceptible to generic rather than message-specific handling, that metadata can be placed in **headers**. Headers are siblings of `body` and may be added to any message type. They are encrypted and decrypted (and/or signed and verified) along with `body` and therefore have an identical audience.
 
 Headers in DIDComm Messaging are intended to be extensible in much the same way that headers in HTTP or SMTP are extensible. A few headers are predefined:
 
-- **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender.
+- **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender, across all messages they send.
 
-- **type** - REQUIRED. Plaintext message type, useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri), that when resolved gives human readable information about the message. The attribute's value SHOULD predict the content in the `body` of the message.
+- **type** - REQUIRED. A URI that associates the `body` of a plaintext message with a published and versioned schema. Useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri), that when resolved gives human readable information about the message category. The attribute's value SHOULD predict the structure and content conventions in the `body` of the message.
 
-- **typ** - OPTIONAL. Media type of the JWM content.
-
-The following table provides an overview of using the media type properties in supported DIDComm messages:
+- **typ** - OPTIONAL. Media type of the JWM content:
 
 | Envelope | `typ` |
 |-----------------|-------|
@@ -100,23 +98,23 @@ The following table provides an overview of using the media type properties in s
 
 - **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.
 
-When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to `BCC:` addresses).
+When Alice sends the same plaintext message to Bob and Carol, it is by inspecting this header that the recipients learn the message was sent to both of them. If the header is omitted, each recipient SHOULD assume they are the only recipient (much like an email sent only to `BCC:` addresses).
 
 For signed messages, there are specific requirements around properly defining the `to` header outlined in the **DIDComm Signed Message** definition above. The reason for this is to prevents certain kind of [forwarding attacks](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html), where a message that was not meant for a given recipient is forwarded along with its signature to a recipient which then could blindly trust it because of the signature.
 
 Upon reception of a message whose `to` header is defined, the recipient SHOULD verify that they are included in that field. Implementations MUST NOT fail when it is not the case and SHOULD give a warning to their user as it could indicate malicious intent from the sender.
 
-The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the `forward` message contains a `next` attribute in its body that specifies the target for the next routing operation.
+The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the [`forward` message](#routing) contains a `next` attribute in its body that specifies the target for the next routing operation.
 
 - **from** - OPTIONAL when the message is to be encrypted via anoncrypt. REQUIRED when the message is encrypted via authcrypt. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this [DID](https://w3c.github.io/did-core/). Authorization of the encryption key for this [DID](https://w3c.github.io/did-core/) MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new [DID](https://w3c.github.io/did-core/) created for the purpose to avoid correlation with any other behavior or identity. Peer [DIDs](https://w3c.github.io/did-core/) are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the [message authentication](#Message-Authentication) section for additional details.
 
-- **thid** - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the `id` property of the message MUST be treated as the value of the `thid`.
+- **thid** - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the `id` property of the message MUST be treated as the value of the `thid`. See [Threading](#threading) for details.
 
 - **pthid** - OPTIONAL. Parent thread identifier. If the message is a child of a thread the `pthid` will uniquely identify which thread is the parent.
 
-- **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.
+- **created_time** - OPTIONAL. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z). This attribute is informative to the recipient, and may be relied on by protocols.
 
-- **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is considered no longer valid by the sender. When omitted, the message is considered to have no expiration by the sender.
+- **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z). This attribute signals when the message is considered no longer valid by the sender. When omitted, the message is considered to have no expiration by the sender.
 
 - **body** - REQUIRED. The `body` attribute contains all the message type specific attributes of the message type indicated in the `type` attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to [RFC 7159](https://datatracker.ietf.org/doc/html/rfc7159).
 

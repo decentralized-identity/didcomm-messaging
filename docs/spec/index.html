@@ -152,20 +152,19 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </code></pre>
 <h3 id="message-headers"><a class="toc-anchor" href="#message-headers" >§</a> Message Headers</h3>
 <p>A <strong>DIDComm plaintext message</strong> conveys most of its application-level data inside a JSON <code>body</code> object that is a direct child of the message root. The structure inside <code>body</code> is predicted by the value of the message’s <code>type</code> attribute, and varies according to the definition of the protocol-specific message in question. Each <code>type</code> of message will have its own <code>body</code>.</p>
-<p>However, some attributes are common to many different message types. When metadata about a message means the same thing regardless of context, and when it is susceptible to generic rather than message-specific handling, that metadata can be placed in <strong>headers</strong>. Headers are siblings of <code>body</code> and may be added to any message type. They are encrypted and decrypted along with <code>body</code> and therefore have an identical audience.</p>
+<p>However, some attributes are common to many different message types. When metadata about a message means the same thing regardless of context, and when it is susceptible to generic rather than message-specific handling, that metadata can be placed in <strong>headers</strong>. Headers are siblings of <code>body</code> and may be added to any message type. They are encrypted and decrypted (and/or signed and verified) along with <code>body</code> and therefore have an identical audience.</p>
 <p>Headers in DIDComm Messaging are intended to be extensible in much the same way that headers in HTTP or SMTP are extensible. A few headers are predefined:</p>
 <ul>
 <li>
-<p><strong>id</strong> - REQUIRED. Message ID. The <code>id</code> attribute value MUST be unique to the sender.</p>
+<p><strong>id</strong> - REQUIRED. Message ID. The <code>id</code> attribute value MUST be unique to the sender, across all messages they send.</p>
 </li>
 <li>
-<p><strong>type</strong> - REQUIRED. Plaintext message type, useful for message handling in application-level protocols. The <code>type</code> attribute value MUST be a valid <a href="protocols.md#message-type-uri" >Message Type URI</a>, that when resolved gives human readable information about the message. The attribute’s value SHOULD predict the content in the <code>body</code> of the message.</p>
+<p><strong>type</strong> - REQUIRED. A URI that associates the <code>body</code> of a plaintext message with a published and versioned schema. Useful for message handling in application-level protocols. The <code>type</code> attribute value MUST be a valid <a href="protocols.md#message-type-uri" >Message Type URI</a>, that when resolved gives human readable information about the message category. The attribute’s value SHOULD predict the structure and content conventions in the <code>body</code> of the message.</p>
 </li>
 <li>
-<p><strong>typ</strong> - OPTIONAL. Media type of the JWM content.</p>
+<p><strong>typ</strong> - OPTIONAL. Media type of the JWM content:</p>
 </li>
 </ul>
-<p>The following table provides an overview of using the media type properties in supported DIDComm messages:</p>
 <table>
 <thead>
 <tr>
@@ -195,25 +194,25 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <ul>
 <li><strong>to</strong> - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) that identifies a member of the message’s intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.</li>
 </ul>
-<p>When Alice sends the same message to Bob and Carol, it is by inspecting this header that Bob and Carol learn that the message was sent to both of them. If the header is omitted, each recipient can only assume they are the only recipient (much like an email sent only to <code>BCC:</code> addresses).</p>
+<p>When Alice sends the same plaintext message to Bob and Carol, it is by inspecting this header that the recipients learn the message was sent to both of them. If the header is omitted, each recipient SHOULD assume they are the only recipient (much like an email sent only to <code>BCC:</code> addresses).</p>
 <p>For signed messages, there are specific requirements around properly defining the <code>to</code> header outlined in the <strong>DIDComm Signed Message</strong> definition above. The reason for this is to prevents certain kind of <a path-0="theworld.com"path-1="~dtd"path-2="sign_encrypt"path-3="sign_encrypt7.html"href="https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html" >forwarding attacks</a>, where a message that was not meant for a given recipient is forwarded along with its signature to a recipient which then could blindly trust it because of the signature.</p>
 <p>Upon reception of a message whose <code>to</code> header is defined, the recipient SHOULD verify that they are included in that field. Implementations MUST NOT fail when it is not the case and SHOULD give a warning to their user as it could indicate malicious intent from the sender.</p>
-<p>The <code>to</code> header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the <code>forward</code> message contains a <code>next</code> attribute in its body that specifies the target for the next routing operation.</p>
+<p>The <code>to</code> header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the <a href="#routing" ><code>forward</code> message</a> contains a <code>next</code> attribute in its body that specifies the target for the next routing operation.</p>
 <ul>
 <li>
 <p><strong>from</strong> - OPTIONAL when the message is to be encrypted via anoncrypt. REQUIRED when the message is encrypted via authcrypt. Sender identifier. The <code>from</code> attribute MUST be a string that is a valid <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a>. Authorization of the encryption key for this <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> created for the purpose to avoid correlation with any other behavior or identity. Peer <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DIDs</a> are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the <a href="#Message-Authentication" >message authentication</a> section for additional details.</p>
 </li>
 <li>
-<p><strong>thid</strong> - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code>.</p>
+<p><strong>thid</strong> - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code>. See <a href="#threading" >Threading</a> for details.</p>
 </li>
 <li>
 <p><strong>pthid</strong> - OPTIONAL. Parent thread identifier. If the message is a child of a thread the <code>pthid</code> will uniquely identify which thread is the parent.</p>
 </li>
 <li>
-<p><strong>created_time</strong> - OPTIONAL. Message Created Time. The <code>created_time</code> attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute is informative to the recipient, and may be relied on by protocols.</p>
+<p><strong>created_time</strong> - OPTIONAL. Message Created Time. The <code>created_time</code> attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z). This attribute is informative to the recipient, and may be relied on by protocols.</p>
 </li>
 <li>
-<p><strong>expires_time</strong> - OPTIONAL. Message Expired Time. The <code>expires_time</code> attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z UTC) [link](1970-01-01T00:00:00Z UTC). This attribute signals when the message is considered no longer valid by the sender. When omitted, the message is considered to have no expiration by the sender.</p>
+<p><strong>expires_time</strong> - OPTIONAL. Message Expired Time. The <code>expires_time</code> attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z). This attribute signals when the message is considered no longer valid by the sender. When omitted, the message is considered to have no expiration by the sender.</p>
 </li>
 <li>
 <p><strong>body</strong> - REQUIRED. The <code>body</code> attribute contains all the message type specific attributes of the message type indicated in the <code>type</code> attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc7159"href="https://datatracker.ietf.org/doc/html/rfc7159" >RFC 7159</a>.</p>
