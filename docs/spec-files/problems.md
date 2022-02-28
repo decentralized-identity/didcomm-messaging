@@ -14,7 +14,25 @@ In many cases, a DIDComm message SHOULD use the `expires_time` header to announc
 
 #### ACKs
 
-Any DIDComm message MAY use the `please_ack` header to request a read receipt from a recipient. Cooperative parties who wish to honor this request MUST include an `ack` header on a subsequent message, where the value of the header is an array that contains the `id` of one or more messages being acknowledged.
+DIDComm provides several tools that let one party acknowledge messages sent by another.
+
+[Threading](#threading) has some implicit built-in ACK semantics. In a two-party protocol that consists of message types mapping unambiguously to progressive steps, each message that moves forward is an implicit ACK of the message that preceded it. 
+
+When [DIDComm `problem-report`s](#problem-reports) constitute reactions to a preceding message (as opposed to when they signal problems in external circumstances), they also function as an ACK.
+
+However, more explicit and more powerful ACKs are sometimes needed. They can prove that parties have a shared view of state at a particular time, test the functioning of a transport, help debug surprising silence, fine-tune timeouts, and speed up remedial action.
+
+To facilitate this, any innermost DIDComm plaintext message MAY use the `please_ack` header to politely request a read receipt from a recipient. The header's value is an array of strings that clarify when the ACK is requested. Only the following value is defined by this version of the spec: "receipt". Future extensions may define additional values (e.g., to implement read receipts, or to request an ACK if no other response is forthcoming after a modest delay). If "receipt" is present, then the request is to ACK as soon as the message is received.
+
+The presence of the `please_ack` header does not create an obligation on the part of the recipient. However, cooperative parties who wish to honor such a request MUST include an `ack` header on a subsequent message, where the value of the header is an array that contains the `id` of one or more messages being acknowledged. Values in this array MUST appear in the order received, from oldest to most recent.
+
+>Note: The `please_ack` header SHOULD NOT be included on [`forward` messages](#routing), and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, which are defined to send only destward. It would also undermine the privacy of recipients.
+
+> Note: Implementations MUST take reasonable steps to avoid an infinite circle of ACKs. Some good rules of thumb are: never honor more than one ACK request for a given message; never send a pure ACK that requests an ACK; never honor a pure ACK request that arrives in response to your own ACK request.
+
+A plaintext message that contains the `ack` header is said to be an explicit ACK, no matter what its internal structure or message type is. If an ACK needs to be sent with no other message content, [the empty message](#the-empty-message) with an `ack` header SHOULD be used. 
+
+Particular protocols may wish to design their own message types that convey additional information in an ACK. Custom ACK messages SHOULD include the `ack` header if they can appear at more than one step in a protocol, so it's clear what they are acknowledging. When the message type's primary purpose is to acknowledge, the type name `ack` SHOULD be used, for the sake of consistency.
 
 #### Threads
 
@@ -33,6 +51,7 @@ Other entities are notified of problems by sending a simple message called a **p
   "type": "https://didcomm.org/report-problem/2.0/problem-report",
   "id": "7c9de639-c51c-4d60-ab95-103fa613c805",
   "pthid": "1e513ad4-48c9-444e-9e7e-5b8b45c5e325",
+  "ack": ["1e513ad4-48c9-444e-9e7e-5b8b45c5e325"],
   "body": {
     "code": "e.p.xfer.cant-use-endpoint",
     "comment": "Unable to use the {1} endpoint for {2}.",
@@ -46,6 +65,8 @@ Other entities are notified of problems by sending a simple message called a **p
 ```
 
 The `pthid` header MUST be included with problem reports. Its value is the `thid` of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)
+
+The `ack` header SHOULD be included if the problem in question was triggered directly by a preceding message. (Contrast problems arising from a timeout or a user deciding to cancel a transaction, which can arise independent of a preceding message. In such cases, `ack` MAY still be used, but there is no strong recommendation.) 
 
 The `code` field is worthy of its own section; [see below](#problem-codes).
 
