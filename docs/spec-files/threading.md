@@ -1,6 +1,6 @@
 ## Threading
 
-DIDComm provides threading as foundation for extremely powerful protocol features. For background on the intent and best practices for threading, please see the [Implementers Guide](http://example.com/TODO--find-right-way-to-link-to-section-in-guide).
+DIDComm provides threading as foundation for extremely powerful protocol features. For background on the intent and best practices for threading, please see the [Implementers Guide](https://identity.foundation/didcomm-messaging/guide/).
 
 ### Message IDs
 
@@ -39,4 +39,4 @@ The `id`, `thid`, and `pthid` properties of any DIDComm message may be combined 
 
 ### Gaps, Resends, and Sophisticated Ordering
 
-Message IDs and threads can be used to build very powerful features for detecting missing and out-of-order messages &mdash; and to recover from them. For more information, see the [Implementers Guide](http://example.com/TODO--find-right-way-to-link-to-section-in-guide). 
+Message IDs and threads can be used to build very powerful features for detecting missing and out-of-order messages &mdash; and to recover from them. For more information, see the [Implementers Guide](https://identity.foundation/didcomm-messaging/guide/). 
