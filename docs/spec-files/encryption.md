@@ -24,14 +24,13 @@ For the keys involved in key agreement, the following elliptic curves MUST be su
 | P-384  | NIST defined P-384 elliptic curve                            |
 | P-256  | NIST defined P-256 elliptic curve - deprecated in favor of P-384 |
 
-For content encryption of the message, DIDComm inherits the implementation definitions from [JSON Web Algorithms](https://datatracker.ietf.org/doc/html/rfc7518#section-5.1) for AES 256-bit keys.
-In addition, DIDComm defines optional implementation usage of the draft [XC20P](https://tools.ietf.org/id/draft-amringer-jose-chacha-02.html) algorithm.
+For content encryption of the message, the following algorithms MUST be supported.
 
-| Algorithm(JWA) | Description                | Authcrypt/Anoncrypt            | Requirements                   |
-| -------------- | -------------------------- |------------------------------- |------------------------------- |
-| A256CBC-HS512  | AES256-CBC + HMAC-SHA512 with a 512 bit key | Authcrypt/Anoncrypt | Required |
-| A256GCM        | AES256-GCM with a 256 bit key | Anoncrypt | Recommended |
-| XC20P          | XChaCha20Poly1305 with a 256 bit key | Anoncrypt | Optional |
+| Algorithm(JWA) | Description                | Authcrypt/Anoncrypt            |
+| -------------- | -------------------------- |------------------------------- |
+| XC20P          | XChaCha20Poly1305 with a 256 bit key | Anoncrypt |
+| A256GCM        | AES256-GCM with a 256 bit key | Anoncrypt |
+| A256CBC-HS512  | AES256-CBC + HMAC-SHA512 with a 512 bit key | Authcrypt/Anoncrypt |
 
 TODO: Include language about safe nonce considerations.
 

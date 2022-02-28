@@ -337,35 +337,30 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </tr>
 </tbody>
 </table>
-<p>For content encryption of the message, DIDComm inherits the implementation definitions from <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc7518#section-5.1"href="https://datatracker.ietf.org/doc/html/rfc7518#section-5.1" >JSON Web Algorithms</a> for AES 256-bit keys.
-In addition, DIDComm defines optional implementation usage of the draft <a path-0="tools.ietf.org"path-1="id"path-2="draft-amringer-jose-chacha-02.html"href="https://tools.ietf.org/id/draft-amringer-jose-chacha-02.html" >XC20P</a> algorithm.</p>
+<p>For content encryption of the message, the following algorithms MUST be supported.</p>
 <table>
 <thead>
 <tr>
 <th>Algorithm(JWA)</th>
 <th>Description</th>
 <th>Authcrypt/Anoncrypt</th>
-<th>Requirements</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>A256CBC-HS512</td>
-<td>AES256-CBC + HMAC-SHA512 with a 512 bit key</td>
-<td>Authcrypt/Anoncrypt</td>
-<td>Required</td>
+<td>XC20P</td>
+<td>XChaCha20Poly1305 with a 256 bit key</td>
+<td>Anoncrypt</td>
 </tr>
 <tr>
 <td>A256GCM</td>
 <td>AES256-GCM with a 256 bit key</td>
 <td>Anoncrypt</td>
-<td>Recommended</td>
 </tr>
 <tr>
-<td>XC20P</td>
-<td>XChaCha20Poly1305 with a 256 bit key</td>
-<td>Anoncrypt</td>
-<td>Optional</td>
+<td>A256CBC-HS512</td>
+<td>AES256-CBC + HMAC-SHA512 with a 512 bit key</td>
+<td>Authcrypt/Anoncrypt</td>
 </tr>
 </tbody>
 </table>
