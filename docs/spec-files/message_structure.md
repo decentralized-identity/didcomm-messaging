@@ -83,7 +83,7 @@ However, some attributes are common to many different message types. When metada
 
 Headers in DIDComm Messaging are intended to be extensible in much the same way that headers in HTTP or SMTP are extensible. A few headers are predefined:
 
-- **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender, across all conversations contextualized by the same relationship with recipient(s).
+- **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender, across all messages they send.
 
 - **type** - REQUIRED. A URI that associates the `body` of a plaintext message with a published and versioned schema. Useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri), that when resolved gives human readable information about the message category. The attribute's value SHOULD predict the structure and content conventions in the `body` of the message.
 
@@ -108,7 +108,7 @@ The `to` header cannot be used for routing, since it is encrypted at every inter
 
 - **from** - OPTIONAL when the message is to be encrypted via anoncrypt. REQUIRED when the message is encrypted via authcrypt. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this [DID](https://w3c.github.io/did-core/). Authorization of the encryption key for this [DID](https://w3c.github.io/did-core/) MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new [DID](https://w3c.github.io/did-core/) created for the purpose to avoid correlation with any other behavior or identity. Peer [DIDs](https://w3c.github.io/did-core/) are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the [message authentication](#Message-Authentication) section for additional details.
 
-- **thid** - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the `id` property of the message MUST be treated as the value of the `thid`.
+- **thid** - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the `id` property of the message MUST be treated as the value of the `thid`. See [Threading](#threading) for details.
 
 - **pthid** - OPTIONAL. Parent thread identifier. If the message is a child of a thread the `pthid` will uniquely identify which thread is the parent.
 
