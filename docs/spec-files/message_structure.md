@@ -40,7 +40,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ### DIDComm Encrypted Messages
 
-A **DIDComm encrypted message** is an encrypted [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) and hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.
+A **DIDComm encrypted message** is an encrypted [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) and hides its content from all but the authorized recipient, discloses and proves the sender to exactly and only that recipient, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.
 
 The [media type](https://tools.ietf.org/html/rfc6838) of a non-nested **DIDComm encrypted message** MUST be `application/didcomm-encrypted+json`.
 
@@ -96,9 +96,7 @@ Headers in DIDComm Messaging are intended to be extensible in much the same way 
 | Signed | `application/didcomm-signed+json` |
 | Plaintext | `application/didcomm-plain+json`|
 
-- **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.
-
-When Alice sends the same plaintext message to Bob and Carol, it is by inspecting this header that the recipients learn the message was sent to both of them. If the header is omitted, each recipient SHOULD assume they are the only recipient (much like an email sent only to `BCC:` addresses).
+- **to** - OPTIONAL. Identifier(s) for recipient. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies the message's intended audience. These values are useful for the recipient to know which of their keys can be used for decryption. 
 
 For signed messages, there are specific requirements around properly defining the `to` header outlined in the **DIDComm Signed Message** definition above. The reason for this is to prevents certain kind of [forwarding attacks](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html), where a message that was not meant for a given recipient is forwarded along with its signature to a recipient which then could blindly trust it because of the signature.
 
