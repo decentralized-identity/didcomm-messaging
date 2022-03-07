@@ -1,6 +1,6 @@
-### Protocols
+## Protocols
 
-DIDComm serves as a foundational layer for the development of protocols. This spec does not include protocols themselves, but describes the basic requirements and foundational elements.
+DIDComm serves as a foundational layer for the development of protocols. Protocols built on DIDComm benefit from the features it provides. This simplifies protocol development, and allows DIDComm to serve as a core piece of broad interopabiltiy.
 
 Each Protocol is uniquely identified by a Protocol Identifier URI, and contains one or more messages identified by a Message Type URI. In addition to serving as a unique identifier, the URIs may be used by a developer to locate documentation.
 
