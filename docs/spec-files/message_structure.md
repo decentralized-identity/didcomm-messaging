@@ -136,21 +136,23 @@ Headers can be simple (mapping a header name to an integer or a string) or struc
 
 ### DID Rotation
 
-DIDComm Messaging is based on [DIDs](https://www.w3.org/TR/did-core/) and their associated [DID Documents](https://www.w3.org/TR/did-core/#dfn-did-documents). Changes to keys and endpoints are the concern of each [DID](https://www.w3.org/TR/did-core/) method and are utilized but not managed by DIDComm Messaging. [DID Rotation](#did-rotation) serves a very specific and narrow need to switch from one [DID](https://www.w3.org/TR/did-core/) method to another. This is very common at the beginning of a new DIDComm Messaging relationship when a public [DID](https://www.w3.org/TR/did-core/) or a temporary [DID](https://www.w3.org/TR/did-core/) passed unencrypted is rotated out for a [DID](https://www.w3.org/TR/did-core/) chosen for the relationship. As rotation between one [DID](https://www.w3.org/TR/did-core/) and another is outside the scope of any [DID](https://www.w3.org/TR/did-core/) method, the details of [DID Rotation](#did-rotation) are handled within DIDComm Messaging itself.
+DIDComm Messaging is based on [DIDs](https://www.w3.org/TR/did-core/) and their associated [DID Documents](https://www.w3.org/TR/did-core/#dfn-did-documents). Changes to keys and endpoints are the concern of each [DID](https://www.w3.org/TR/did-core/) method and are utilized but not managed by DIDComm Messaging. DID Rotation serves a very specific and narrow need to switch from one DID method to another. This is very common at the beginning of a new DIDComm Messaging relationship when a public DID or a temporary DID passed unencrypted is rotated out for a DID chosen for the relationship. As rotation between one DID and another is outside the scope of any DID method, the details of DID Rotation are handled within DIDComm Messaging itself.
 
-When a [DID](https://www.w3.org/TR/did-core/) is rotated, the new [DID](https://www.w3.org/TR/did-core/) is put into immediate use encrypting the message, and one additional attribute MUST be included as a message header:
+A DID is rotated by sending a message of any type to the recipient to be notified of the rotation. The message MUST be encrypted, MUST use the new DID, and MUST include one additional attribute as a message header:
 
-- **from_prior**: REQUIRED. A JWT, with `sub`: new [DID](https://www.w3.org/TR/did-core/) and `iss`: prior [DID](https://www.w3.org/TR/did-core/), with a signature from a key authorized by prior [DID](https://www.w3.org/TR/did-core/).
+- **from_prior**: REQUIRED. A JWT, with `sub`: new DID and `iss`: prior DID, with a signature from a key authorized by prior DID. Standard [JWT](https://datatracker.ietf.org/doc/html/rfc7519) Practices for creating and signing the JWT MUST be followed.
 
-When a message is received from an unknown [DID](https://www.w3.org/TR/did-core/), the recipient SHOULD check for existence of the `from_prior` header. The JWT in the`from_prior` attribute is used to extract the prior [DID](https://www.w3.org/TR/did-core/) (`iss`) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new [DID](https://www.w3.org/TR/did-core/) and associated [DID](https://www.w3.org/TR/did-core/) Document information SHOULD be used for further communication.
+Care should be taken when choosing when to rotate from one DID to another. The timing of the rotation may cause some lost messages if messages are being rapidly received. Coordination must also be made with other agents representing the same DID. A rotation at the very beginning of a relationship is a good time, as well as a quiet period in communication. 
 
-The validity of the [DID Rotation](#did-rotation) is verified by checking the JWT signature against the key indicated in the `kid` header parameter. The indicated key MUST be authorized in the [DID Document](https://www.w3.org/TR/did-core/#dfn-did-documents) of the prior [DID](https://www.w3.org/TR/did-core/) (`iss`).
+When a message is received from an unknown DID, the recipient SHOULD check for existence of the `from_prior` header. The JWT in the`from_prior` attribute is used to extract the prior DID (`iss`) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information MUST be used for further communication. The Message Oriented nature of DIDComm MAY result in message sent prior to the rotation being received after the rotation. The message recipient MUST ignore those messages to lower security risk in the case of rotation from a potentially compromised key.
 
-The `from_prior` attribute MUST be included in messages sent until the party rotating receives a message sent to the new [DID](https://www.w3.org/TR/did-core/). If multiple messages are received to containing the rotation headers after being processed by the recipient, they MAY be ignored.
+The validity of the DID Rotation is verified by checking the JWT signature against the key indicated in the `kid` header parameter. The indicated key MUST be authorized in the DID Document of the prior DID (`iss`).
+
+The `from_prior` attribute MUST be included in messages sent until the party rotating receives a message sent to the new DID. After the first rotation header is processed, the `from` header no longer contains an unknown DID on subsequent messages. As such, no further processing of the `from_prior` header is necessary and may be ignored.
 
 #### JWT Details
 
-The JWT is constructed as follows, with appropriate values changed.
+The JWT used in the `from_prior` header is constructed as follows, with appropriate values changed.
 
 **Header**:
 
@@ -165,11 +167,13 @@ The JWT is constructed as follows, with appropriate values changed.
 
 **Payload**:
 
+The Issued At (`iat`) JWT property MUST be the datetime of the DID rotation, not of the message being sent.
+
 ```jsonc
 {
   "sub": "<new DID URI>",
   "iss": "<prior DID URI>",
-  "iat": 1516239022 //datetime of the rotation, not message
+  "iat": 1516239022 
 }
 ```
 
@@ -195,7 +199,7 @@ The JWT is constructed as follows, with appropriate values changed.
 
 - This rotation method does not cover cases where a multi-sig is required. Rotations with such requirements should use a more expressive protocol.
 
-- This rotation method only supports the case where a new [DID](https://www.w3.org/TR/did-core/) is used, replacing an old [DID](https://www.w3.org/TR/did-core/) which is no longer used. Adjustments to [DIDs](https://www.w3.org/TR/did-core/) used between different parties that does not fit this narrow use are expected to define a separate protocol to do so.
+- This rotation method only supports the case where a new [DID](https://www.w3.org/TR/did-core/) is used, replacing an old [DID](https://www.w3.org/TR/did-core/) which is no longer used within the relationship. Adjustments to [DIDs](https://www.w3.org/TR/did-core/) used between different parties that does not fit this narrow use are expected to define a separate protocol to do so. Updates to the already known DID SHOULD use an update to the associated DID Document to convey that information.
 
 #### Ending a Relationship
 
