@@ -88,7 +88,7 @@ These last two characteristics are the foundation of mix networking feature for 
 1. Sender Constructs Message.
 2. Sender Encrypts Message to recipient(s).
 3. Wrap Encrypted Message in Forward Message for each Routing Key.
-4. Transmit to `serviceEndpoint` in the manner specified in the [transports] section.
+4. Transmit to `serviceEndpoint` `uri` in the manner specified in the [transports] section.
 
 ### Mediator Process
 
@@ -116,12 +116,14 @@ DIDComm DID Document endpoints have the following format:
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
-    "serviceEndpoint": "http://example.com/path",
-    "accept": [
-       "didcomm/v2",
-       "didcomm/aip2;env=rfc587"
-     ],
-     "routingKeys": ["did:example:somemediator#somekey"]
+    "serviceEndpoint": {
+        "uri": ["http://example.com/path"],
+        "accept": [
+            "didcomm/v2",
+            "didcomm/aip2;env=rfc587"
+        ],
+        "routingKeys": ["did:example:somemediator#somekey"]
+    }
 }
 ```
 
@@ -129,7 +131,9 @@ DIDComm DID Document endpoints have the following format:
 
 **type**: MUST be `DIDCommMessaging`. 
 
-**serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
+**serviceEndpoint**: MUST contain an object with the following properties:
+
+**uri**: MUST contain an ordered array with one or more URIs for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
 **accept**: An optional array of media types in the order of preference for sending a message to the endpoint.
 If `accept` is not specified, the sender uses its preferred choice for sending a message to the endpoint.
@@ -147,7 +151,7 @@ In addition to the URIs for [transports], some alternative forms are available.
 
 ##### DID
 
-Using a DID for the `serviceEndpoint` is useful when using a mediator. The DID should be resolved, and services with type of "DIDComm" will contain valid `serviceEndpoints`. The keyAgreement keys of that DID Document should be implicitly appended at the end of the routingKeys section from the message recipient's DID Document as per the process in [Sender Forward Process]. The advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients` DID Documents.
+Using a DID for the `serviceEndpoint` `uri` is useful when using a mediator. The DID should be resolved, and services with type of "DIDComm" will contain valid `serviceEndpoints`. The keyAgreement keys of that DID Document should be implicitly appended at the end of the routingKeys section from the message recipient's DID Document as per the process in [Sender Forward Process]. The advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients' DID Documents.
 
 A DID representing a mediator SHOULD NOT use alternative endpoints in its own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [transports] will prevent such recursion.
 
@@ -157,7 +161,9 @@ Example 1: Mediator
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
-    "serviceEndpoint": "did:example:somemediator"
+    "serviceEndpoint": {
+        "uri": ["did:example:somemediator]
+    }
 }
 ```
 The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
@@ -167,9 +173,11 @@ Example 2: Mediator + Routing Keys
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
-    "serviceEndpoint": "did:example:somemediator",
-    "routingKeys": ["did:example:anothermediator#somekey"]
+    "serviceEndpoint": {
+        "uri": ["did:example:somemediator"],
+        "routingKeys": ["did:example:anothermediator#somekey"]
+    }
 }
 ```
 
-The message is encrypted to the recipient, then wrapped in a forward message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDComm`.
+The message is encrypted to the recipient, then wrapped in a forward message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
