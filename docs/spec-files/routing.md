@@ -110,20 +110,20 @@ TODO: include details about how DIDComm keys are represented/identified in the D
 
 ### DID Document Service Endpoint
 
-DIDComm DID Document endpoints have the following format:
+DID Documents for DIDComm capable DIDs have a single service block entry in the following format:
 
 ```json
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
-    "serviceEndpoint": {
-        "uri": ["http://example.com/path"],
+    "serviceEndpoint": [{
+        "uri": "https://example.com/path",
         "accept": [
             "didcomm/v2",
             "didcomm/aip2;env=rfc587"
         ],
         "routingKeys": ["did:example:somemediator#somekey"]
-    }
+    }]
 }
 ```
 
@@ -131,7 +131,9 @@ DIDComm DID Document endpoints have the following format:
 
 **type**: MUST be `DIDCommMessaging`. 
 
-**serviceEndpoint**: MUST contain an object with the following properties:
+**serviceEndpoint**: MUST contain an ordered list of objects, each represents a DIDComm Service Endpoint URI and it's associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
+
+Each object has the following properties:
 
 **uri**: MUST contain an ordered array with one or more URIs for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
@@ -141,9 +143,9 @@ Please see [Message Types](#message-types) for details about media types.
 
 **routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec. 
 
-#### Multiple Endpoints
+#### Failover
 
-A DID Document may contain multiple service entries of type `DIDCommMessaging`. Entries SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.
+Should the transmission of a message not receive a successful response as defined in the [Transports] section, the sender SHOULD try another endpoint or try delivery at a later time.
 
 #### Alternative Endpoints
 
@@ -161,9 +163,9 @@ Example 1: Mediator
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
-    "serviceEndpoint": {
-        "uri": ["did:example:somemediator]
-    }
+    "serviceEndpoint": [{
+        "uri": "did:example:somemediator"
+    }]
 }
 ```
 The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
@@ -173,10 +175,10 @@ Example 2: Mediator + Routing Keys
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
-    "serviceEndpoint": {
-        "uri": ["did:example:somemediator"],
+    "serviceEndpoint": [{
+        "uri": "did:example:somemediator",
         "routingKeys": ["did:example:anothermediator#somekey"]
-    }
+    }]
 }
 ```
 
