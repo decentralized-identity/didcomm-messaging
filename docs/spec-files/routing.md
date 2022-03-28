@@ -1,6 +1,6 @@
 ### Routing
 
-Using the primitives of plaintext messages, encryption, and attachments, countless application-level protocols can be constructed. Such protocols are generally out of scope here. However, a few protocols are also included in the spec, because they are so fundamental. Routing is one of these.  
+The routing protocol defines how a sender and a recipient cooperate, using a partly trusted mediator, to facilitate message delivery. No party is required to know the full route of a message.
 
 #### Name and Version
 
