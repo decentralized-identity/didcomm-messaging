@@ -1,7 +1,7 @@
 DIDComm Messaging
 ==================
 
-**Specification Status:** Editor's Draft
+**Specification Status:** Release Candidate
 
 **Latest published version:**
   [identity.foundation/didcomm-messaging/spec](https://identity.foundation/didcomm-messaging/spec)
