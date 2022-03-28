@@ -112,7 +112,7 @@ Disclosures do not have to contain exhaustive detail. For example, the following
 }
 ```
 
-Less detail probably suffices because agents do not need to know everything about one another's implementations in order to start an interaction--usually the flow will organically reveal what's needed. For example, the `outcome` message in the `tictactoe` protocol isn't needed until the end, and is optional anyway. Alice can start a tictactoe game with Bob and will eventually see whether he has the right idea about `outcome` messages.
+Less detail probably suffices because agents do not need to know everything about one another's implementations in order to start an interaction &mdash; usually the flow will organically reveal what's needed. For example, the `outcome` message in the `tictactoe` protocol isn't needed until the end, and is optional anyway. Alice can start a tictactoe game with Bob and will eventually see whether he has the right idea about `outcome` messages.
 
 The missing `roles` in this disclosure does not say, "I support no roles in this protocol." It says, "I support the protocol but I'm providing no detail about specific roles." Similar logic applies to any other omitted fields.
 

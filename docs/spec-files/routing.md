@@ -1,6 +1,6 @@
 ## Routing
 
-### Routing Protocol
+Using the primitives of plaintext messages, encryption, and attachments, countless application-level protocols can be constructed. Such protocols are generally out of scope here. However, a few protocols are also included in the spec, because they are so fundamental. Routing is one of these.  
 
 #### Name and Version
 
@@ -16,7 +16,7 @@ There are 3 roles in the protocol: `sender`, `mediator`, and `recipient`. The se
 
 >Note: the protocol is one-way; the return route for communication might not exist at all, or if it did, it could invert the roles of sender and receiver and use the same mediator, or it could use one or more different mediators, or it could use no mediator at all. This is a separate concern partly specified by the service endpoints in the DID docs of the sender and receiver, and partly explored in [RFC 0092: Transports Return Route](https://github.com/hyperledger/aries-rfcs/blob/master/features/0092-transport-return-route/README.md). 
 
->Note: When the mediator is the routing agent of a single identity subject like Alice, the logical receiver is Alice herself, but the physical receiver may manifest as multiple edge devices (a phone, a laptop, a tablet). From the perspective of this protocol, multiplexing the send from mediator to receiver is out of scope for interoperability--compatible and fully supported, but not required or specified in any way.
+>Note: When the mediator is the routing agent of a single identity subject like Alice, the logical receiver is Alice herself, but the physical receiver may manifest as multiple edge devices (a phone, a laptop, a tablet). From the perspective of this protocol, multiplexing the send from mediator to receiver is out of scope for interoperability &mdash; compatible and fully supported, but not required or specified in any way.
 
 In this protocol, the sender and the receiver never interact directly; they only interact via the mediator.
 

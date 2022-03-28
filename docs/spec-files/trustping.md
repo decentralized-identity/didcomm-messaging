@@ -17,7 +17,7 @@ connectivity, responsiveness, and security is vital.
 ### Reference
 
 This protocol is analogous to the familiar `ping`
-command in networking--but because it operates
+command in networking &mdash; but because it operates
 over DIDComm, it is transport
 agnostic and asynchronous, and it can produce insights
 into privacy and security that a regular ping

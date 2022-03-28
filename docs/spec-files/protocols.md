@@ -54,7 +54,7 @@ to look up the named and versioned protocol.
 
 A __Message Type URI__ identifies message types unambiguously.
 Standardizing its format is important because it is parsed by agents that
-will map messages to handlers--basically, code will look at this string and
+will map messages to handlers &mdash; basically, code will look at this string and
 say, "Do I have something that can handle this message type inside protocol
 *X* version *Y*?" When that analysis happens, it must do more than compare
 the string for exact equality; it may need to check for semver compatibility,
