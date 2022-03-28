@@ -33,7 +33,6 @@ Since data flow is normally one-way, and since the scope of the protocol is a si
 However, this doesn't quite work on close inspection, because the mediator is at least potentially stateful with respect to any particular message; it needs to be if it wants to implement delayed delivery or retry logic. (Or, as noted earlier, the possibility of sending to multiple physical receivers. Mediators are not required to implement any of these features, but the state machine needs to account for their possibility.) Plus, the notification terminology obscures the sender and receiver roles. So we use the following formalization:
 
 ![](../collateral/routing-state-machines.png)]
-Src: [state machine diagram on gdocs](https://docs.google.com/spreadsheets/d/1zxm3cPZ1UDQPDpYJjGmg_qY8451WMk105HBSARJkvDI/edit#gid=0)
 
 #### Messages
 
@@ -46,16 +45,16 @@ The only message in this protocol is the `forward` message. A simple and common 
     "to": ["did:example:mediator"],
     "expires_time": 1516385931,
     "body":{
-        "next": "did:foo:1234abcd",
+        "next": "did:foo:1234abcd"
     },
     "attachments": [
-        // One payload?
+        // The payload(s) to be forwarded
     ]
 }
 ```
 
 - **next** - REQUIRED. The DID of the party to send the attached message to. 
-- **attachments** - REQUIRED. The encrypted message to send to the party indicated in the `next` body attribute. 
+- **attachments** - REQUIRED. The DIDComm message(s) to send to the party indicated in the `next` body attribute. This content should be encrypted for the next recipient.
 
 When the internal message expires, it's a good idea to also include an expiration for forward message requests. Include the `expires_time` header with the appropriate value.
 
