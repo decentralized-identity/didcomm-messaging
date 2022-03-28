@@ -1,27 +1,12 @@
-## Trust Ping Protocol 2.0
+### Trust Ping Protocol 2.0
 
-A standard way for agents to test connectivity,
-responsiveness, and security of a DIDComm channel.
+This protocol is a standard way for agents to test connectivity,
+responsiveness, and security of a DIDComm channel. It is analogous to the familiar `ping` command in networking &mdash; but because it operates
+over DIDComm, it is transport agnostic and asynchronous, and it can produce insights into privacy and security that a regular ping cannot.
 
-### Motivation
+The [PIURI](#protocol-identifier-uri) for this protocol is:
 
-Agents are distributed. They are not guaranteed to be
-connected or running all the time. They support a
-variety of transports, speak a variety of protocols,
-and run software from many different vendors.
-
-This can make it very difficult to prove that two
-agents have a functional pairwise channel. Troubleshooting
-connectivity, responsiveness, and security is vital.
-
-### Reference
-
-This protocol is analogous to the familiar `ping`
-command in networking &mdash; but because it operates
-over DIDComm, it is transport
-agnostic and asynchronous, and it can produce insights
-into privacy and security that a regular ping
-cannot.
+    https://didcomm.org/trust-ping/2.0
 
 #### Roles
 
@@ -30,10 +15,6 @@ and the `receiver`. The sender initiates the trust
 ping. The receiver responds. If the receiver wants
 to do a ping of their own, they can, but this is a
 new interaction in which they become the sender.
-
-#### Protocol Type URI
-
-`https://didcomm.org/trust-ping/2.0`
 
 #### Messages
 
