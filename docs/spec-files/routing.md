@@ -20,13 +20,15 @@ There are 3 roles in the protocol: `sender`, `mediator`, and `recipient`. The se
 
 In this protocol, the sender and the receiver never interact directly; they only interact via the mediator.
 
-The sender can decorate the `forward` message in standard DIDComm ways: using [`~timing.expires_time`, `~timing.delay_milli` and `~timing.wait_until_time`](https://github.com/hyperledger/aries-rfcs/blob/master/features/0032-message-timing/README.md#tutorial) to introduce timeouts and delays, and so forth. However, the mediator is NOT required to support or implement any of these mixin semantics; only the core forwarding behavior is indispensable. If a mediator sees a decorator that requests behavior it doesn't support, it MAY return a [`problem-report`](https://github.com/hyperledger/aries-rfcs/blob/master/features/0035-report-problem/README.md) to the sender identifying the unsupported feature, but it is not required to do so, any more than other recipients of DIDComm messages would be required to complain about unsupported decorators in messages they receive.
+The sender can add the standard `expires_time` to a `forward` message. An additional header, `delay_milli` is also possible; this allows the sender to request that a mediator wait a specified number of milliseconds before delivering. Negative values mean that the mediator should randomize delay by picking a number of milliseconds between 0 and the absolute value of the number, with a uniform distribution.
+
+The mediator is NOT required to support or implement any of these semantics; only the core forwarding behavior is indispensable. If a mediator sees a header that requests behavior it doesn't support, it MAY return a [`problem-report`](#problem-reports) to the sender identifying the unsupported feature, but it is not required to do so.
 
 >Note: The [`please_ack` header](#acks) SHOULD NOT be included on [`forward` messages](#routing), and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, and undermine the privacy of recipients.
 
 #### States
 
-Since data flow is normally one-way, and since the scope of the protocol is a single message delivery, a simplistic way to understand it might be as two instances of the stateless [notification pattern](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/notification.png), unfolding in sequence.
+Since data flow is normally one-way, and since the scope of the protocol is a single message delivery, a simplistic way to understand it might be as two instances of a stateless notification pattern, unfolding in sequence.
 
 However, this doesn't quite work on close inspection, because the mediator is at least potentially stateful with respect to any particular message; it needs to be if it wants to implement delayed delivery or retry logic. (Or, as noted earlier, the possibility of sending to multiple physical receivers. Mediators are not required to implement any of these features, but the state machine needs to account for their possibility.) Plus, the notification terminology obscures the sender and receiver roles. So we use the following formalization:
 
@@ -40,6 +42,7 @@ The only message in this protocol is the `forward` message. A simple and common 
 ```json
 {
     "type": "https://didcomm.org/routing/2.0/forward",
+    "id": "abc123xyz456",
     "to": ["did:example:mediator"],
     "expires_time": 1516385931,
     "body":{
