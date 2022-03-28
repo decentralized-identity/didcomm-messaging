@@ -1,12 +1,12 @@
 ## Message Signing
 
-A DIDComm message can be signed, either in conjunction with encryption or independently if the message will remain unencrypted.
+A DIDComm message can be signed, either in conjunction with encryption, or independently (e.g., if the message will remain unencrypted).
 
 If a message is signed and encrypted to add non-repudiation, it must be signed prior to encryption. This is known as a [nested JWM](https://tools.ietf.org/html/draft-looker-jwm-01#section-1.2).
 
 ### Algorithms
 
-When a sender would like for a message to feature a non-repudiable digital signature the JWA's defined below can be used within the structure of a JWS.
+When a sender would like for a message to feature a non-repudiable digital signature, the JWAs defined below can be used within the structure of a JWS.
 
 Implementations MUST be able to verify all of the following algorithms and MUST support signing with at least one.
 
@@ -32,7 +32,7 @@ When transmitted in a normal JWM fashion, the JSON Serialization MUST be used.
 
 ### Verification
 
-When verifying the signature, an additional check must be performed after verifying the JWS. The key used in the signature must be authorized to do so in the Document resolved from the DID in the `from` attribute. If the key is not authorized for the signature, the signature is invalid.
+When verifying the signature, an additional check must be performed after verifying the JWS. The key used in the signature must be authorized to do so in the document resolved from the DID in the `from` attribute. If the key is not authorized for the signature, the signature is invalid.
 
 ### Application
 

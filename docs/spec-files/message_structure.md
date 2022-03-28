@@ -14,7 +14,7 @@ A DIDComm message in its plaintext form, not packaged into any protective envelo
 
 When higher-level protocols are built atop DIDComm Messaging, applications remove the protective envelope(s) and process the plaintext that's inside. Specifications for higher-level protocols typically document message structure and provide examples in this format; protective envelopes are assumed but ignored as a low-level detail.
 
-The media type for a generic **DIDComm plaintext message** MUST be `application/didcomm-plain+json`. **DIDComm plaintext messages** are also correctly understood as [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) content (see [Plaintext Message Structure](#plaintext-message-structure), below) and the media type MUST be set in the `typ` [property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the **DIDComm plaintext message** header.
+The media type for a generic **DIDComm plaintext message** MUST be `application/didcomm-plain+json`. **DIDComm plaintext messages** are also correctly understood as [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) content (see [Plaintext Message Structure](#plaintext-message-structure) below); to facilitate generic JWM handling, their media type SHOULD be set in the `typ` [property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the **DIDComm plaintext message** headers.
 
 When persisted as a file or attached as a payload in other contexts, the file extension for **DIDComm plaintext messages** SHOULD be `dcpm`, giving a globbing pattern of `*.dcpm`; this SHOULD be be read as "Star Dot D C P M" or as "D C P M" files. We imagine people will reference this media type by saying, "I am looking at a DIDComm Plaintext Message file", or "This database record is in DIDComm Plaintext format", or "Does my editor have a DIDComm Plaintext Message plugin?" A possible icon for this file format depicts green JSON text in a message bubble ([svg](../collateral/dcpm.svg) | [256x256](../collateral/dcpm-256.png) | [128x128](../collateral/dcpm-128.png) | [64x64](../collateral/dcpm-64.png)):
 
@@ -30,7 +30,7 @@ When a message is *both* signed and encrypted, we RECOMMEND following the [JOSE 
 
 The [media type](https://tools.ietf.org/html/rfc6838) of a **DIDComm signed message** MUST be `application/didcomm-signed+json`.
 
-The media type of the envelope MUST be set in the `typ` [property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the JWS.
+The media type of the envelope SHOULD be set in the `typ` [property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the JWS.
 
 In order to avoid [surreptitious forwarding or malicious usage](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html) of a signed message, a **DIDComm signed message** SHOULD contain a properly defined `to` header. In the case where a message is *both* signed and encrypted, the inner JWM being signed MUST contain a `to` header.
 
@@ -40,13 +40,13 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ### DIDComm Encrypted Messages
 
-A **DIDComm encrypted message** is an encrypted [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) and hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.
+A **DIDComm encrypted message** is an encrypted [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01). It hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.
 
 The [media type](https://tools.ietf.org/html/rfc6838) of a non-nested **DIDComm encrypted message** MUST be `application/didcomm-encrypted+json`.
 
 > Note: If future versions of this spec allow binary encodings, variations like `application/didcomm-encrypted+cbor` (see [CBOR RFC 7049, section 7.5](https://tools.ietf.org/html/rfc7049#section-7.5)), `application/didcomm-encrypted+msgpack`, or `application/didcomm-encrypted+protobuf` may become reasonable. In the future, specifications that encompass communications patterns other than messaging &mdash; DIDComm Multicast or DIDComm Streaming, for example &mdash; might use a suffix: `application/didcomm-encrypted-multicast` or similar.
 
-The media type of the envelope MUST be set in the `typ` [property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE.
+The media type of the envelope SHOULD be set in the `typ` [property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE.
 
 When persisted as a file or attached as a payload in other contexts, the file extension for **DIDComm encrypted messages** SHOULD be `dcem`, giving a globbing pattern of `*.dcem`; this SHOULD be read as "Star Dot D C E M" or as "D C E M" files. A possible icon for this file format depicts an envelope with binary overlay, protected by a lock ([svg](../collateral/dcem.svg) | [256x256](../collateral/dcem-256.png) | [128x128](../collateral/dcem-128.png) | [64x64](../collateral/dcem-64.png)):
 
@@ -54,9 +54,9 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ## Plaintext Message Structure
 
-**DIDComm plaintext messages** are based on [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01). A message has a basic structure that specifies the message type, id, and other attributes common to all messages. These common attributes appear at the top level of a **DIDComm plaintext message**, and are called headers. A **DIDComm plaintext message** also includes attributes specific to the message type. Type specific message attributes are contained within the `body` attribute of a **DIDComm plaintext message**.
+**DIDComm plaintext messages** are based on [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01). A message has an outermost structure that specifies the *application-level* message type. The message type is a specialized URI (MTURI) that matches conventions [defined since DIDComm v1](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0003-protocols#message-type-and-protocol-identifier-uris). It allows applications to categorize messages by function. The outermost structure also specifies the message's `id`, its media type (`typ` attribute, for generic JWM handling), and possibly other attributes common to many message types. Such attributes at the top level of a **DIDComm plaintext message** are called *headers*. A **DIDComm plaintext message** also includes attributes specific to the message type. Type-specific message attributes are contained within the `body` attribute of a **DIDComm plaintext message**.
 
-Prior to being sent to a recipient, the [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) is usually encrypted into a JWE according to the [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) specification.
+Prior to being sent to a recipient, the plaintext is usually encrypted into a JWE according to the [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) specification.
 
 The following example shows common elements of a **DIDComm plaintext message**. Further details and advanced usage are covered elsewhere in this spec.
 
@@ -70,20 +70,21 @@ The following example shows common elements of a **DIDComm plaintext message**. 
   "created_time": 1516269022,
   "expires_time": 1516385931,
   "body": {
-    "messagespecificattribute": "and its value"
+    "message_type_specific_attribute": "and its value",
+    "another_attribute": "and its value"
   }
 }
 ```
 
 ### Message Headers
 
-A **DIDComm plaintext message** conveys most of its application-level data inside a JSON `body` object that is a direct child of the message root. The structure inside `body` is predicted by the value of the message's `type` attribute, and varies according to the definition of the protocol-specific message in question. Each `type` of message will have its own `body`. 
+A **DIDComm plaintext message** conveys most of its application-level data inside a JSON `body` object that is a direct child of the message root. The structure inside `body` is predicted by the value of the message's `type` attribute, and varies according to the definition of the protocol-specific message in question. Each `type` of message will have its own schema for `body`. 
 
 However, some attributes are common to many different message types. When metadata about a message means the same thing regardless of context, and when it is susceptible to generic rather than message-specific handling, that metadata can be placed in **headers**. Headers are siblings of `body` and may be added to any message type. They are encrypted and decrypted (and/or signed and verified) along with `body` and therefore have an identical audience.
 
 Headers in DIDComm Messaging are intended to be extensible in much the same way that headers in HTTP or SMTP are extensible. A few headers are predefined:
 
-- **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender, across all messages they send.
+- **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender, across all messages they send. Because message IDs may be used in URIs, they must consist of only ASCII that does not need percent encoding, and they arecompared with an algorithm that ignores case and punctuation.
 
 - **type** - REQUIRED. A URI that associates the `body` of a plaintext message with a published and versioned schema. Useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [Message Type URI](protocols.md#message-type-uri), that when resolved gives human readable information about the message category. The attribute's value SHOULD predict the structure and content conventions in the `body` of the message.
 
@@ -98,15 +99,15 @@ Headers in DIDComm Messaging are intended to be extensible in much the same way 
 
 - **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.
 
-When Alice sends the same plaintext message to Bob and Carol, it is by inspecting this header that the recipients learn the message was sent to both of them. If the header is omitted, each recipient SHOULD assume they are the only recipient (much like an email sent only to `BCC:` addresses).
+    When Alice sends the same plaintext message to Bob and Carol, it is by inspecting this header that the recipients learn the message was sent to both of them. If the header is omitted, each recipient SHOULD assume they are the only recipient (much like an email sent only to `BCC:` addresses).
 
-For signed messages, there are specific requirements around properly defining the `to` header outlined in the **DIDComm Signed Message** definition above. The reason for this is to prevents certain kind of [forwarding attacks](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html), where a message that was not meant for a given recipient is forwarded along with its signature to a recipient which then could blindly trust it because of the signature.
+    For signed messages, there are specific requirements around properly defining the `to` header outlined in the **DIDComm Signed Message** definition above. This prevents certain kind of [forwarding attacks](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html), where a message that was not meant for a given recipient is forwarded along with its signature to a recipient which then might blindly trust it because of the signature.
 
-Upon reception of a message whose `to` header is defined, the recipient SHOULD verify that they are included in that field. Implementations MUST NOT fail when it is not the case and SHOULD give a warning to their user as it could indicate malicious intent from the sender.
+    Upon reception of a message have a defined `to` header, the recipient SHOULD verify that their own identifier appears in the list. Implementations MUST NOT fail to accept a message when this is not the case, but SHOULD give a warning to their user as it could indicate malicious intent from the sender.
 
-The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the [`forward` message](#routing) contains a `next` attribute in its body that specifies the target for the next routing operation.
+    The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the [`forward` message](#routing) contains a `next` attribute in its body that specifies the target for the next routing operation.
 
-- **from** - OPTIONAL when the message is to be encrypted via anoncrypt. REQUIRED when the message is encrypted via authcrypt. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this [DID](https://w3c.github.io/did-core/). Authorization of the encryption key for this [DID](https://w3c.github.io/did-core/) MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new [DID](https://w3c.github.io/did-core/) created for the purpose to avoid correlation with any other behavior or identity. Peer [DIDs](https://w3c.github.io/did-core/) are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the [message authentication](#Message-Authentication) section for additional details.
+- **from** - OPTIONAL when the message is to be encrypted via anoncrypt; REQUIRED when the message is encrypted via authcrypt. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the [message authentication](#Message-Authentication) section for additional details.
 
 - **thid** - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the `id` property of the message MUST be treated as the value of the `thid`. See [Threading](#threading) for details.
 
@@ -116,39 +117,39 @@ The `to` header cannot be used for routing, since it is encrypted at every inter
 
 - **expires_time** - OPTIONAL. Message Expired Time. The `expires_time` attribute is used for the sender to express when they consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z). This attribute signals when the message is considered no longer valid by the sender. When omitted, the message is considered to have no expiration by the sender.
 
-- **body** - REQUIRED. The `body` attribute contains all the message type specific attributes of the message type indicated in the `type` attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to [RFC 7159](https://datatracker.ietf.org/doc/html/rfc7159).
+- **body** - REQUIRED. The `body` attribute contains all the data and structure defined uniquely for the schema associated with the `type` attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to [RFC 7159](https://datatracker.ietf.org/doc/html/rfc7159).
 
-With respect to headers, DIDComm Messaging follows the extensibility pattern established by the JW* family of standards. A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields SHOULD ignore them and MUST NOT fail because of their inclusion in a message. This is appropriate for a simple, flat data model.
+With respect to headers, DIDComm Messaging follows the extensibility pattern established by the JW* family of standards. A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields SHOULD ignore them and MUST NOT fail because of their inclusion in a message.
 
 Aligning with [RFC 6648](https://tools.ietf.org/html/rfc6648.html), DIDComm Messaging explicitly rejects the `X-*` headers convention that creates divergent pseudo-standards; if a new header needs broad support, proper standardization is required. Since we expect header fields to be small in number and modest in complexity, we expect this sort of powerful extensibility to be unnecessary in most cases.
-
-#### The Empty Message
-
-Sometimes, only headers need to be communicated; there is no content for the body. DIDComm explicitly defines a message type with MIURI `https://didcomm.org/reserved/2.0/empty` for this purpose. This message may or may not include an actual `body` element; if present, its value MUST be `null` or an empty JSON object.
 
 #### Simple vs. Structured
 
 Headers can be simple (mapping a header name to an integer or a string) or structured (mapping a header name to JSON substructure -- an array or JSON object). When defining a new header type, the following guidelines apply:
 
 * Headers SHOULD NOT use more structure than necessary; simple headers are preferred.
-* However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP `Accept` header. ([HTTP Structured Headers](https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15) provide similar functionality but are unnecessary here, since **DIDComm plaintext messages** already has an easily parseable syntax.)
+* However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP `Accept` header. ([HTTP Structured Headers](https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15) provide similar functionality but are unnecessary here, since **DIDComm plaintext messages** already have an easily parseable syntax.)
 * Headers that are only meaningful together SHOULD be grouped into a JSON object.
+
+#### The Empty Message
+
+Sometimes, only headers need to be communicated; there is no content for the body. DIDComm explicitly defines a message `type` [MTURI](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0003-protocols#message-type-and-protocol-identifier-uris) `https://didcomm.org/reserved/2.0/empty` for this purpose. This message MUST include an actual `body` element; its value MUST be an empty JSON object.
 
 ### DID Rotation
 
-DIDComm Messaging is based on [DIDs](https://www.w3.org/TR/did-core/) and their associated [DID Documents](https://www.w3.org/TR/did-core/#dfn-did-documents). Changes to keys and endpoints are the concern of each [DID](https://www.w3.org/TR/did-core/) method and are utilized but not managed by DIDComm Messaging. DID Rotation serves a very specific and narrow need to switch from one DID method to another. This is very common at the beginning of a new DIDComm Messaging relationship when a public DID or a temporary DID passed unencrypted is rotated out for a DID chosen for the relationship. As rotation between one DID and another is outside the scope of any DID method, the details of DID Rotation are handled within DIDComm Messaging itself.
+DIDComm Messaging is based on [DIDs](https://www.w3.org/TR/did-core/) and their associated [DID Documents](https://www.w3.org/TR/did-core/#dfn-did-documents). Changes to keys and endpoints are the concern of each DID method and are utilized but not managed by DIDComm Messaging. DID Rotation serves a very specific and narrow need to switch from one DID method to another. This is very common at the beginning of a new DIDComm Messaging relationship when a public DID or a temporary DID passed unencrypted is rotated out for a DID chosen for the relationship. As rotation between one DID and another is outside the scope of any DID method, the details of DID Rotation are handled within DIDComm Messaging itself.
 
 A DID is rotated by sending a message of any type to the recipient to be notified of the rotation. The message MUST be encrypted, MUST use the new DID, and MUST include one additional attribute as a message header:
 
 - **from_prior**: REQUIRED. A JWT, with `sub`: new DID and `iss`: prior DID, with a signature from a key authorized by prior DID. Standard [JWT](https://datatracker.ietf.org/doc/html/rfc7519) Practices for creating and signing the JWT MUST be followed.
 
-Care should be taken when choosing when to rotate from one DID to another. The timing of the rotation may cause some lost messages if messages are being rapidly received. Coordination must also be made with other agents representing the same DID. A rotation at the very beginning of a relationship is a good time, as well as a quiet period in communication. 
+Care should be taken when choosing when to rotate from one DID to another. The timing of the rotation may cause some lost messages if messages are arriving rapidly. Coordination must also be made with other agents representing the same DID. Rotating at the very beginning of a relationship or during a quiet period in communication is optimal. 
 
-When a message is received from an unknown DID, the recipient SHOULD check for existence of the `from_prior` header. The JWT in the`from_prior` attribute is used to extract the prior DID (`iss`) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information MUST be used for further communication. The Message Oriented nature of DIDComm MAY result in message sent prior to the rotation being received after the rotation. The message recipient MUST ignore those messages to lower security risk in the case of rotation from a potentially compromised key.
+When a message is received from an unknown DID, the recipient SHOULD check for existence of the `from_prior` header. The JWT in the`from_prior` attribute is used to extract the prior DID (`iss`) and is checked to verify the validity of the rotation. The recipient then associates the message with context related to the known sender. The new DID and associated DID Document information MUST be used for further communication. The asynchronous and best-effort nature of DIDComm Messaging MAY result in a message sent prior to the rotation being received after the rotation. The message recipient MUST ignore those messages to lower security risk in the case of rotation from a potentially compromised key.
 
 The validity of the DID Rotation is verified by checking the JWT signature against the key indicated in the `kid` header parameter. The indicated key MUST be authorized in the DID Document of the prior DID (`iss`).
 
-The `from_prior` attribute MUST be included in messages sent until the party rotating receives a message sent to the new DID. After the first rotation header is processed, the `from` header no longer contains an unknown DID on subsequent messages. As such, no further processing of the `from_prior` header is necessary and may be ignored.
+The `from_prior` attribute MUST be included in messages sent until the party rotating receives a message sent to the new DID. After the first rotation header is processed, the `from` header no longer contains an unknown DID on subsequent messages. As such, no further processing of the `from_prior` header is necessary; the header may then be ignored.
 
 #### JWT Details
 
@@ -199,7 +200,7 @@ The Issued At (`iat`) JWT property MUST be the datetime of the DID rotation, not
 
 - This rotation method does not cover cases where a multi-sig is required. Rotations with such requirements should use a more expressive protocol.
 
-- This rotation method only supports the case where a new [DID](https://www.w3.org/TR/did-core/) is used, replacing an old [DID](https://www.w3.org/TR/did-core/) which is no longer used within the relationship. Adjustments to [DIDs](https://www.w3.org/TR/did-core/) used between different parties that does not fit this narrow use are expected to define a separate protocol to do so. Updates to the already known DID SHOULD use an update to the associated DID Document to convey that information.
+- This rotation method only supports the case where a new [DID](https://www.w3.org/TR/did-core/) is used, replacing an old DID which is no longer used within the relationship. Adjustments to DIDs used between different parties that does not fit this narrow use are expected to define a separate protocol to do so. Updates to the already known DID SHOULD use an update to the associated DID Document to convey that information.
 
 #### Ending a Relationship
 
