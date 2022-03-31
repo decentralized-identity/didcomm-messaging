@@ -62,9 +62,9 @@ DIDComm Messaging's guarantees with respect to man-in-the-middle attacks are eas
 
 Keys used by DIDComm envelopes MUST be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipient encryption keys MUST be retrieved from the respective DID document's `keyAgreement` verification section as per the [DID Document Keys](https://identity.foundation/didcomm-messaging/spec/#did-document-keys) definition.
 
-When Alice is preparing an envelope intended for Bob, the packing process should use a key from both hers and Bob's DID document's `KeyAgreement` section.
+When Alice is preparing an envelope intended for Bob, the packing process should use a key from both hers and Bob's DID document's `keyAgreement` section.
 
-Assuming Alice has a DID Doc with the following `KeyAgreement` definition (source: [DID V1 Example 17](https://www.w3.org/TR/did-core/#example-17-key-agreement-property-containing-two-verification-methods)):
+Assuming Alice has a DID Doc with the following `keyAgreement` definition (source: [DID V1 Example 17](https://www.w3.org/TR/did-core/#example-17-key-agreement-property-containing-two-verification-methods)):
 ```jsonc
 {
   "@context": "https://www.w3.org/ns/did/v1",
@@ -89,7 +89,7 @@ Assuming Alice has a DID Doc with the following `KeyAgreement` definition (sourc
 
 The envelope packing process MUST set the `skid` header with value `did:example:123456789abcdefghi#keys-1` in the envelope's protected headers and fetch the underlying key to execute ECDH-1PU key derivation for content key wrapping.
 
-Assuming she also has Bob's DID document which happens to include the following `KeyAgreement` section:
+Assuming she also has Bob's DID document which happens to include the following `keyAgreement` section:
 
 ```jsonc
 {
@@ -108,9 +108,9 @@ Assuming she also has Bob's DID document which happens to include the following 
 }
 ```
 
-Unless previously coordinated in a layer above DIDComm, the default recipients of the envelope MUST include all the `KeyAgreement` entries representing Bob. This allows Bob to decrypt his messages on any device he controls, without sharing keys. The corresponding `kid` header for this recipient MUST have a DID URL pointing to a corresponding verification method in the DID document. This verification method MUST be associated with the `KeyAgreement` verification relationship and the verification material MUST be retrieved from the DID document to execute the ECDH-1PU key derivation for content key wrapping.
+Unless previously coordinated in a layer above DIDComm, the default recipients of the envelope MUST include all the `keyAgreement` entries representing Bob. This allows Bob to decrypt his messages on any device he controls, without sharing keys. The corresponding `kid` header for this recipient MUST have a DID URL pointing to a corresponding verification method in the DID document. This verification method MUST be associated with the `keyAgreement` verification relationship and the verification material MUST be retrieved from the DID document to execute the ECDH-1PU key derivation for content key wrapping.
 
-When Bob receives the envelope, the unpacking process on his end MUST resolve the `skid` protected header value using Alice's DID doc's `KeyAgreement[0]` in order to extract her public key. In Alice's DID Doc example above, `KeyAgreement[0]` is a reference id. It MUST be resolved from the main `VerificationMethod[]` of Alice's DID document (not shown in the example).
+When Bob receives the envelope, the unpacking process on his end MUST resolve the `skid` protected header value using Alice's DID doc's `keyAgreement[0]` in order to extract her public key. In Alice's DID Doc example above, `keyAgreement[0]` is a reference id. It MUST be resolved from the main `verificationMethod[]` of Alice's DID document (not shown in the example).
 
 Once resolved, the unpacker will then execute ECDH-1PU key derivation using this key and Bob's own recipient key found in the envelope's `recipients[0]` to unwrap the content encryption key.
 
