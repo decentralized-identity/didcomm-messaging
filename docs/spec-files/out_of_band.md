@@ -1,4 +1,4 @@
-## Out Of Band Messages
+### Out Of Band Messages
 
 #### URL & QR Codes
 

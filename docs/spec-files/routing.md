@@ -1,6 +1,6 @@
-## Routing
+### Routing
 
-### Routing Protocol
+The routing protocol defines how a sender and a recipient cooperate, using a partly trusted mediator, to facilitate message delivery. No party is required to know the full route of a message.
 
 #### Name and Version
 
@@ -16,22 +16,23 @@ There are 3 roles in the protocol: `sender`, `mediator`, and `recipient`. The se
 
 >Note: the protocol is one-way; the return route for communication might not exist at all, or if it did, it could invert the roles of sender and receiver and use the same mediator, or it could use one or more different mediators, or it could use no mediator at all. This is a separate concern partly specified by the service endpoints in the DID docs of the sender and receiver, and partly explored in [RFC 0092: Transports Return Route](https://github.com/hyperledger/aries-rfcs/blob/master/features/0092-transport-return-route/README.md). 
 
->Note: When the mediator is the routing agent of a single identity subject like Alice, the logical receiver is Alice herself, but the physical receiver may manifest as multiple edge devices (a phone, a laptop, a tablet). From the perspective of this protocol, multiplexing the send from mediator to receiver is out of scope for interoperability--compatible and fully supported, but not required or specified in any way.
+>Note: When the mediator is the routing agent of a single identity subject like Alice, the logical receiver is Alice herself, but the physical receiver may manifest as multiple edge devices (a phone, a laptop, a tablet). From the perspective of this protocol, multiplexing the send from mediator to receiver is out of scope for interoperability &mdash; compatible and fully supported, but not required or specified in any way.
 
 In this protocol, the sender and the receiver never interact directly; they only interact via the mediator.
 
-The sender can decorate the `forward` message in standard DIDComm ways: using [`~timing.expires_time`, `~timing.delay_milli` and `~timing.wait_until_time`](https://github.com/hyperledger/aries-rfcs/blob/master/features/0032-message-timing/README.md#tutorial) to introduce timeouts and delays, and so forth. However, the mediator is NOT required to support or implement any of these mixin semantics; only the core forwarding behavior is indispensable. If a mediator sees a decorator that requests behavior it doesn't support, it MAY return a [`problem-report`](https://github.com/hyperledger/aries-rfcs/blob/master/features/0035-report-problem/README.md) to the sender identifying the unsupported feature, but it is not required to do so, any more than other recipients of DIDComm messages would be required to complain about unsupported decorators in messages they receive.
+The sender can add the standard `expires_time` to a `forward` message. An additional header, `delay_milli` is also possible; this allows the sender to request that a mediator wait a specified number of milliseconds before delivering. Negative values mean that the mediator should randomize delay by picking a number of milliseconds between 0 and the absolute value of the number, with a uniform distribution.
+
+The mediator is NOT required to support or implement any of these semantics; only the core forwarding behavior is indispensable. If a mediator sees a header that requests behavior it doesn't support, it MAY return a [`problem-report`](#problem-reports) to the sender identifying the unsupported feature, but it is not required to do so.
 
 >Note: The [`please_ack` header](#acks) SHOULD NOT be included on [`forward` messages](#routing), and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, and undermine the privacy of recipients.
 
 #### States
 
-Since data flow is normally one-way, and since the scope of the protocol is a single message delivery, a simplistic way to understand it might be as two instances of the stateless [notification pattern](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/notification.png), unfolding in sequence.
+Since data flow is normally one-way, and since the scope of the protocol is a single message delivery, a simplistic way to understand it might be as two instances of a stateless notification pattern, unfolding in sequence.
 
 However, this doesn't quite work on close inspection, because the mediator is at least potentially stateful with respect to any particular message; it needs to be if it wants to implement delayed delivery or retry logic. (Or, as noted earlier, the possibility of sending to multiple physical receivers. Mediators are not required to implement any of these features, but the state machine needs to account for their possibility.) Plus, the notification terminology obscures the sender and receiver roles. So we use the following formalization:
 
 ![](../collateral/routing-state-machines.png)]
-Src: [state machine diagram on gdocs](https://docs.google.com/spreadsheets/d/1zxm3cPZ1UDQPDpYJjGmg_qY8451WMk105HBSARJkvDI/edit#gid=0)
 
 #### Messages
 
@@ -40,19 +41,20 @@ The only message in this protocol is the `forward` message. A simple and common 
 ```json
 {
     "type": "https://didcomm.org/routing/2.0/forward",
+    "id": "abc123xyz456",
     "to": ["did:example:mediator"],
     "expires_time": 1516385931,
     "body":{
-        "next": "did:foo:1234abcd",
+        "next": "did:foo:1234abcd"
     },
     "attachments": [
-        // One payload?
+        // The payload(s) to be forwarded
     ]
 }
 ```
 
 - **next** - REQUIRED. The DID of the party to send the attached message to. 
-- **attachments** - REQUIRED. The encrypted message to send to the party indicated in the `next` body attribute. 
+- **attachments** - REQUIRED. The DIDComm message(s) to send to the party indicated in the `next` body attribute. This content should be encrypted for the next recipient.
 
 When the internal message expires, it's a good idea to also include an expiration for forward message requests. Include the `expires_time` header with the appropriate value.
 
@@ -88,7 +90,7 @@ These last two characteristics are the foundation of mix networking feature for 
 1. Sender Constructs Message.
 2. Sender Encrypts Message to recipient(s).
 3. Wrap Encrypted Message in Forward Message for each Routing Key.
-4. Transmit to `serviceEndpoint` in the manner specified in the [transports] section.
+4. Transmit to `serviceEndpoint` `uri` in the manner specified in the [transports] section.
 
 ### Mediator Process
 
@@ -110,18 +112,20 @@ TODO: include details about how DIDComm keys are represented/identified in the D
 
 ### DID Document Service Endpoint
 
-DIDComm DID Document endpoints have the following format:
+DID Documents for DIDComm capable DIDs have a single service block entry in the following format:
 
 ```json
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
-    "serviceEndpoint": "http://example.com/path",
-    "accept": [
-       "didcomm/v2",
-       "didcomm/aip2;env=rfc587"
-     ],
-     "routingKeys": ["did:example:somemediator#somekey"]
+    "serviceEndpoint": [{
+        "uri": "https://example.com/path",
+        "accept": [
+            "didcomm/v2",
+            "didcomm/aip2;env=rfc587"
+        ],
+        "routingKeys": ["did:example:somemediator#somekey"]
+    }]
 }
 ```
 
@@ -129,7 +133,11 @@ DIDComm DID Document endpoints have the following format:
 
 **type**: MUST be `DIDCommMessaging`. 
 
-**serviceEndpoint**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
+**serviceEndpoint**: MUST contain an ordered list of objects, each represents a DIDComm Service Endpoint URI and it's associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
+
+Each object has the following properties:
+
+**uri**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
 **accept**: An optional array of media types in the order of preference for sending a message to the endpoint.
 If `accept` is not specified, the sender uses its preferred choice for sending a message to the endpoint.
@@ -137,9 +145,9 @@ Please see [Message Types](#message-types) for details about media types.
 
 **routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec. 
 
-#### Multiple Endpoints
+#### Failover
 
-A DID Document may contain multiple service entries of type `DIDCommMessaging`. Entries SHOULD be specified in order of receiver preference, but any endpoint MAY be selected by the sender, typically by protocol availability or preference.
+Should the transmission of a message not receive a successful response as defined in the [Transports] section, the sender SHOULD try another endpoint or try delivery at a later time.
 
 #### Alternative Endpoints
 
@@ -147,7 +155,7 @@ In addition to the URIs for [transports], some alternative forms are available.
 
 ##### DID
 
-Using a DID for the `serviceEndpoint` is useful when using a mediator. The DID should be resolved, and services with type of "DIDComm" will contain valid `serviceEndpoints`. The keyAgreement keys of that DID Document should be implicitly appended at the end of the routingKeys section from the message recipient's DID Document as per the process in [Sender Forward Process]. The advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients` DID Documents.
+Using a DID for the `serviceEndpoint` `uri` is useful when using a mediator. The DID should be resolved, and services with type of "DIDComm" will contain valid `serviceEndpoints`. The keyAgreement keys of that DID Document should be implicitly appended at the end of the routingKeys section from the message recipient's DID Document as per the process in [Sender Forward Process]. The advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients' DID Documents.
 
 A DID representing a mediator SHOULD NOT use alternative endpoints in its own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [transports] will prevent such recursion.
 
@@ -157,7 +165,9 @@ Example 1: Mediator
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
-    "serviceEndpoint": "did:example:somemediator"
+    "serviceEndpoint": [{
+        "uri": "did:example:somemediator"
+    }]
 }
 ```
 The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
@@ -167,9 +177,11 @@ Example 2: Mediator + Routing Keys
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
-    "serviceEndpoint": "did:example:somemediator",
-    "routingKeys": ["did:example:anothermediator#somekey"]
+    "serviceEndpoint": [{
+        "uri": "did:example:somemediator",
+        "routingKeys": ["did:example:anothermediator#somekey"]
+    }]
 }
 ```
 
-The message is encrypted to the recipient, then wrapped in a forward message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDComm`.
+The message is encrypted to the recipient, then wrapped in a forward message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.

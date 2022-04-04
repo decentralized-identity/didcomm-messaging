@@ -1,20 +1,22 @@
-## Message Encryption
+## Security
 
-DIDComm supports two types of message encryption: Authenticated Sender Encryption and Anonymous Sender Encryption. Both forms are encrypted to the recipient, but only Authenticated Sender Encryption provides assurances of who the sender is.
+### Message Encryption
 
-The encrypted form of a JWM is a JWE. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs, rather it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed here.
+DIDComm supports two types of message encryption: Authenticated Sender Encryption ("authcrypt") and Anonymous Sender Encryption ("anoncrypt"). Both forms are encrypted to the recipient. Only authcrypt provides direct assurances of who the sender is.
 
-### Sender Authenticated Encryption
+The encrypted form of a JWM is a JWE. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed here.
 
-For an encrypted DIDComm message, the JWA of `ECDH-1PU` defined by [draft](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04) MUST be used within the structure of a JWE.
+#### Sender Authenticated Encryption
 
-### Anonymous Encryption
+For an encrypted DIDComm message, the JWA of [ECDH-1PU](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04) MUST be used within the structure of a JWE.
 
-When a sender would like to encrypt a message for a recipient or multiple recipients but not be authenticated by the recipients as the party who encrypted the message, the JWA of `ECDH-ES` defined by [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6) SHOULD be used within the structure of a JWE.
+#### Anonymous Encryption
 
-Anonymous Encryption removes authenticated encryption, a significant benefit of the DIDComm specification. Use of Anonymous Encryption SHOULD NOT be paired with a method of message authentication other than Authenticated Encryption as defined in this specification. Further discussion of message authentication can be found in the Implementation Guide.
+When a sender would like to encrypt a message for a recipient or multiple recipients but not be authenticated by the recipients, the JWA of `ECDH-ES` defined by [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6) SHOULD be used within the structure of a JWE.
 
-### Curves and Content Encryption Algorithms
+Anonymous encryption removes authentication of the sender, which is a significant benefit of DIDComm Messaging; it may make sense, but should only be done thoughtfully, when the context of the use case justifies it. Pairing anonymous encryption with a method of message authentication other than authcrypt as defined in this specification is not generally recommended, as it may have unintended side effects. In particular, a signed message that is anonymously encrypted accomplishes authentication, but loses the repudiability of authcrypt. Further discussion of message authentication can be found in the [DIDComm Guidebook](https://didcomm.org/book/v2).
+
+#### Curves and Content Encryption Algorithms
 
 For the keys involved in key agreement, the following elliptic curves MUST be supported.
 
@@ -33,36 +35,36 @@ In addition, DIDComm defines optional implementation usage of the draft [XC20P](
 | A256GCM        | AES256-GCM with a 256 bit key | Anoncrypt | Recommended |
 | XC20P          | XChaCha20Poly1305 with a 256 bit key | Anoncrypt | Optional |
 
-TODO: Include language about safe nonce considerations.
+Implementations MUST choose nonces securely.
 
-### Key Wrapping Algorithms
+#### Key Wrapping Algorithms
 
 | KW Algorithm    | Curve (epk crv) | key type (epk kty) | Description                                                  |
 | --------------- | --------------- | ------------------ | ------------------------------------------------------------ |
-| ECDH-ES+A256KW  | P-256           | EC                 | ECDH-ES key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in [7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
-| ECDH-ES+A256KW  | P-384           | EC                 | ECDH-ES key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in [7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
-| ECDH-ES+A256KW  | P-521           | EC                 | ECDH-ES key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in [7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
-| ECDH-ES+A256KW  | X25519          | OKP                | ECDH-ES with X25519 ([RFC7748 section 5](https://tools.ietf.org/html/rfc7748#section-5)) to create a 256 bits key. The underlying curve is actually `Curve25519`, however when used in the context of Diffie-Hellman the identifier of `X25519` is used |
+| ECDH-ES+A256KW  | P-256           | EC                 | ECDH-ES key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
+| ECDH-ES+A256KW  | P-384           | EC                 | ECDH-ES key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
+| ECDH-ES+A256KW  | P-521           | EC                 | ECDH-ES key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
+| ECDH-ES+A256KW  | X25519          | OKP                | ECDH-ES with X25519 ([RFC 7748 section 5](https://tools.ietf.org/html/rfc7748#section-5)) to create a 256 bits key. The underlying curve is actually `Curve25519`, however when used in the context of Diffie-Hellman the identifier of `X25519` is used |
 | ECDH-1PU+A256KW | P-256           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 | ECDH-1PU+A256KW | P-384           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 | ECDH-1PU+A256KW | P-521           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 | ECDH-1PU+A256KW | X25519          | OKP                | ECDH-1PU X25519 ([RFC7748 section 5](https://tools.ietf.org/html/rfc7748#section-5)) to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 
-### Perfect Forward Secrecy
+#### Perfect Forward Secrecy
 
-The mapping of the Perfect Forward Secrecy concepts to DIDComm requires some discussion. Please refer to the Implementers Guide for more details.
+The mapping of the Perfect Forward Secrecy concepts to DIDComm requires some discussion, due to the lack of a session construct. Please refer to the [DIDComm Guidebook](https://didcomm.org/book/v2/pfs) for details.
 
-### Man in the middle
+#### Man in the Middle
 
-DIDComm's profile with respect to man-in-the-middle attacks is easily misunderstood. Please refer to the Implementers Guide for more details.
+DIDComm Messaging's guarantees with respect to man-in-the-middle attacks are easily misunderstood, since DIDs rather than human identity are the concern of the algorithm. Please refer to the [DIDComm Guidebook](https://didcomm.org/book/v2/mitm) for details.
 
-### Key IDs `kid` and `skid` headers references in the DID document
+#### Key IDs `kid` and `skid` headers references in the DID document
 
-Keys used by DIDComm envelopes MUST be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipients keys MUST be retrieved from the DID document's `KeyAgreement` verification section as per the [DID Document Keys](https://identity.foundation/didcomm-messaging/spec/#did-document-keys) definition.
+Keys used by DIDComm envelopes MUST be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipient encryption keys MUST be retrieved from the respective DID document's `keyAgreement` verification section as per the [DID Document Keys](https://identity.foundation/didcomm-messaging/spec/#did-document-keys) definition.
 
-When Alice is preparing an envelope intended for Bob, the packing process should use a key from both hers and Bob's DID document's `KeyAgreement` section.
+When Alice is preparing an envelope intended for Bob, the packing process should use a key from both hers and Bob's DID document's `keyAgreement` section.
 
-Assuming Alice has a DID Doc with the following `KeyAgreement` definition (source: [DID V1 Example 17](https://www.w3.org/TR/did-core/#example-17-key-agreement-property-containing-two-verification-methods)):
+Assuming Alice has a DID Doc with the following `keyAgreement` definition (source: [DID V1 Example 17](https://www.w3.org/TR/did-core/#example-17-key-agreement-property-containing-two-verification-methods)):
 ```jsonc
 {
   "@context": "https://www.w3.org/ns/did/v1",
@@ -87,7 +89,7 @@ Assuming Alice has a DID Doc with the following `KeyAgreement` definition (sourc
 
 The envelope packing process MUST set the `skid` header with value `did:example:123456789abcdefghi#keys-1` in the envelope's protected headers and fetch the underlying key to execute ECDH-1PU key derivation for content key wrapping.
 
-Assuming she also has Bob's DID document which happens to include the following `KeyAgreement` section:
+Assuming she also has Bob's DID document which happens to include the following `keyAgreement` section:
 
 ```jsonc
 {
@@ -106,26 +108,27 @@ Assuming she also has Bob's DID document which happens to include the following 
 }
 ```
 
-Unless previously coordinated in a layer above DIDComm, the default recipients of the envelope MUST include all the `KeyAgreement` entries, representing Bob. The corresponding `kid` header for this recipient MUST have a DID URL pointing to a corresponding verification method in the DID document. This verification method MUST be associated with the `KeyAgreement` verification relationship and the verification material MUST be retrieved from the DID document to execute the ECDH-1PU key derivation for content key wrapping.
+Unless previously coordinated in a layer above DIDComm, the default recipients of the envelope MUST include all the `keyAgreement` entries representing Bob. This allows Bob to decrypt his messages on any device he controls, without sharing keys. The corresponding `kid` header for this recipient MUST have a DID URL pointing to a corresponding verification method in the DID document. This verification method MUST be associated with the `keyAgreement` verification relationship and the verification material MUST be retrieved from the DID document to execute the ECDH-1PU key derivation for content key wrapping.
 
-When Bob receives the envelope, the unpacking process on his end MUST resolve the `skid` protected header value using Alice's DID doc's `KeyAgreement[0]` in order to extract her public key. In Alice's DID Doc example above, `KeyAgreement[0]` is a reference id, it MUST be resolved from the main `VerificationMethod[]` of Alice's DID document (not shown in the example).
+When Bob receives the envelope, the unpacking process on his end MUST resolve the `skid` protected header value using Alice's DID doc's `keyAgreement[0]` in order to extract her public key. In Alice's DID Doc example above, `keyAgreement[0]` is a reference id. It MUST be resolved from the main `verificationMethod[]` of Alice's DID document (not shown in the example).
 
 Once resolved, the unpacker will then execute ECDH-1PU key derivation using this key and Bob's own recipient key found in the envelope's `recipients[0]` to unwrap the content encryption key.
 
-### Protecting the Sender Identity
+#### Protecting the Sender Identity
 
 When employing authenticated encryption, the header of the encrypted message envelope must necessarily reveal the key identifier used by the sender of the message (the `skid`). This is used by recipients to resolve the sender's public key material in order to decrypt the message. In the case of communication between two public DIDs, this may allow outside parties to directly correlate the sender of an encrypted message to a known identity.
 
-If two communicating parties establish single-purpose DIDs (peer DIDs) for secure communication, then the correlation to any publicly known identities may be limited, although multiple messages referencing the same DIDs will still provide an opportunity for correlation.
+If two communicating parties establish single-purpose DIDs (e.g., peer DIDs) for secure communication, then the correlation to any publicly known identities may be limited, although multiple messages referencing the same DIDs will still provide an opportunity for correlation.
 
 A layer of anonymous encryption (employing ECDH-ES) may be applied around an authenticated encryption envelope (employing ECDH-1PU), obscuring the sender's identity for all but the recipient of the inner envelope. In the case of a message forwarded via mediators, anonymous encryption is automatic.
 
-### ECDH-1PU key wrapping and common protected headers
+#### ECDH-1PU key wrapping and common protected headers
 When using authcrypt, the 1PU draft [mandates](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1) the use of the AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common `epk`, `apu`, `apv` and `alg` headers for all recipients. They MUST be set in the `protected` headers JWE section.
 
-As per this requirement, the JWE building must first encrypt the payload then use the resulting `tag` as part of the key derivation process when wrapping the `cek`.
+As per this requirement, the JWE building must first encrypt the payload, then use the resulting `tag` as part of the key derivation process when wrapping the `cek`.
 
-To meet this requirement, the above headers must be defined as follows:
+To meet this requirement, the above headers are defined as follows:
+
 * `epk`: generated once for all recipients. It MUST be of the same type and curve as all recipient keys since kdf with the sender key must be on the same curve.
   - Example: `"epk": {"kty": "EC","crv": "P-256","x": "BVDo69QfyXAdl6fbK6-QBYIsxv0CsNMtuDDVpMKgDYs","y": "G6bdoO2xblPHrKsAhef1dumrc0sChwyg7yTtTcfygHA"}`
 * `apu`: similar to `skid`, this is the producer (sender) identifier, it MUST contain the `skid` value base64 RawURL (no padding) encoded. Note: this is base64URL(`skid` value).
@@ -135,8 +138,6 @@ To meet this requirement, the above headers must be defined as follows:
 
 A final note about `skid` header: since the 1PU draft [does not require](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.2.1) this header, authcrypt implementations MUST be able to resolve the sender kid from the `APU` header if `skid` is not set.
 
-### Examples
+#### Examples
 
-While the details of encrypting a JWM into a JWE are included in the [JWM spec](https://tools.ietf.org/html/draft-looker-jwm-01), a few examples are included here for clarity.
-
-See section [Appendix C.3](#c3-didcomm-encrypted-messages) for examples.
+While the details of encrypting a JWM into a JWE are included in the [JWM spec](https://tools.ietf.org/html/draft-looker-jwm-01), a few examples are included here for clarity. See section [Appendix C.3](#c3-didcomm-encrypted-messages).

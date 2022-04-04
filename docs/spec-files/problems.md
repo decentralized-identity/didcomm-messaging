@@ -10,11 +10,11 @@ DIDComm offers several tools to deal with these issues. Individually they are ea
 
 #### Timeouts
 
-In many cases, a DIDComm message SHOULD use the `expires_time` header to announce when its sender will consider the message invalid. This allows for state to be reset in a predictable way. The `expires_time` header is so common that it is discussed in the general [Message Headers](#message-headers) section of the spec. Best practice with timeouts is [discussed in the Implementers Guide](../guide-files/problems.md#timeouts).
+In many cases, a DIDComm message SHOULD use the `expires_time` header to announce when its sender will consider the message invalid. This allows for state to be reset in a predictable way. The `expires_time` header is so common that it is discussed in the general [Message Headers](#message-headers) section of the spec. Best practice with timeouts is [discussed in the Guidebook](https://didcomm.org/book/v2/timeouts).
 
 #### ACKs
 
-DIDComm provides several tools that let one party acknowledge messages sent by another.
+DIDComm Messaging provides several tools that let one party acknowledge messages sent by another.
 
 [Threading](#threading) has some implicit built-in ACK semantics. In a two-party protocol that consists of message types mapping unambiguously to progressive steps, each message that moves forward is an implicit ACK of the message that preceded it. 
 
@@ -42,7 +42,7 @@ In addition, messages MAY use the [Advanced Sequencing](../../extensions/advance
 
 ### Problem reports
 
-DIDComm features a standard mechanism for reporting problems to other entities. These could be parties in the active protocol, or logging products, or internal health monitors, or human tech support staff. Reporting problems remotely is not always possible (e.g., when a sender lacks a route to the other party, or when a recipient's crypto is incompatible with a sender's). Using this mechanism is therefore not a general *requirement* of DIDComm, but it *is* a best practice because it improves robustness and human experience. (But be aware of some [cybersecurity considerations](../guide#cybersecurity-considerations-for-problem-reports).)
+DIDComm features a standard mechanism for reporting problems to other entities. These could be parties in the active protocol, or logging products, or internal health monitors, or human tech support staff. Reporting problems remotely is not always possible (e.g., when a sender lacks a route to the other party, or when a recipient's crypto is incompatible with a sender's). Using this mechanism is therefore not a general *requirement* of DIDComm, but it *is* a best practice because it improves robustness and human experience. (But be aware of some [cybersecurity considerations](https://didcomm.org/book/v2/problems-and-cybersecurity).)
 
 Other entities are notified of problems by sending a simple message called a **problem report** that looks like this:
 
@@ -70,7 +70,7 @@ The `ack` header SHOULD be included if the problem in question was triggered dir
 
 The `code` field is worthy of its own section; [see below](#problem-codes).
 
-The optional `comment` field contains human-friendly text describing the problem. The text MUST be statically associated with `code`, meaning that each time circumstances trigger a problem with the same `code`, the value of `comment` will be the same. This enables [localization](#i18n) and cached lookups, and it has some [cybersecurity benefits](#cybersecurity-implications). The value of `comment` supports simple interpolation with `args` (see next), where args are referenced as `{1}`, `{2}`, and so forth. 
+The optional `comment` field contains human-friendly text describing the problem. The text MUST be statically associated with `code`, meaning that each time circumstances trigger a problem with the same `code`, the value of `comment` will be the same. This enables [localization](#i18n) and cached lookups, and it has some [cybersecurity benefits](https://didcomm.org/book/v2/problems-and-cybersecurity). The value of `comment` supports simple interpolation with `args` (see next), where args are referenced as `{1}`, `{2}`, and so forth. 
 
 The optional `args` field contains situation-specific values that are interpolated into the value of `comment`, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, `e.p.xfer.cant-use-endpoint` apparently expects two values in `args`: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (`?`) during interpolation; extra args MUST be appended to the main text as comma-separated values. 
 
@@ -101,7 +101,7 @@ Reading left to right, the next token in a problem code is called the **scope**.
 
 The possible values of *scope* are:
 
-* **`p`**: The protocol within which the error occurs (and any [co-protocols](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0478-coprotocols/README.md) started by and depended on by the protocol) is abandoned or reset. In simple two-party request-response protocols, the `p` reset scope is common and appropriate. However, if a protocol is complex and long-lived, the `p` reset scope may be undesirable. Consider a situation where a protocol helps a person apply for college, and the problem code is `e.p.payment-failed`. With such a `p` reset scope, the entire apply-for-college workflow (collecting letters of recommendation, proving qualifications, filling out various forms) is abandoned when the payment fails.  
+* **`p`**: The protocol within which the error occurs (and any [co-protocols](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0478-coprotocols/README.md) started by and depended on by the protocol) is abandoned or reset. In simple two-party request-response protocols, the `p` reset scope is common and appropriate. However, if a protocol is complex and long-lived, the `p` reset scope may be undesirable. Consider a situation where a protocol helps a person apply for college, and the problem code is `e.p.payment-failed`. With such a `p` reset scope, the entire apply-for-college workflow (collecting letters of recommendation, proving qualifications, filling out various forms) is abandoned when the payment fails. The `p` scope is probably too aggressive for such a situation.
 
 * **`m`**: The error was triggered by the previous message on the thread; the scope is one message. The outcome is that the problematic message is rejected (has no effect). If the protocol is a chess game, and the problem code is `e.m.invalid-move`, then someone's invalid move is rejected, and it is still their turn.
 
@@ -120,7 +120,7 @@ Token | Value of `comment` string | Notes
 `xfer` | Unable to transport data. | The problem is with the mechanics of moving messages or associated data over a transport. For example, the sender failed to download an external attachment &mdash; or attempted to contact an endpoint, but found nobody listening on the specified port.
 `did` | DID is unusable. | A DID is unusable because its method is unsupported &mdash; or because its DID doc cannot be parsed &mdash; or because its DID doc lacks required data.
 `msg` | Bad message. | Something is wrong with content as seen by application-level protocols (i.e., in a plaintext message). For example, the message might lack a required field, use an unsupported version, or hold data with logical contradictions. Problems in this category resemble HTTP's `400` status code.
-`me` | Internal error. | The problem is with conditions inside the sender's system. For example, the sender is too busy to do the work entailed by the next step in the active protocol. Problems in this category resemble HTTP's `5xx` status codes.
+`me` | Internal error. | The problem is with conditions inside the problem sender's system. For example, the sender is too busy to do the work entailed by the next step in the active protocol. Problems in this category resemble HTTP's `5xx` status codes.
 `me.res` | A required resource is inadequate or unavailable. | The following subdescriptors are also defined: `me.res.net`, `me.res.memory`, `me.res.storage`, `me.res.compute`, `me.res.money`
 `req` | Circumstances don't satisfy requirements. | A behavior occurred out of order or without satisfying certain preconditions &mdash; or circumstances changed in a way that violates constraints. For example, a protocol that books plane tickets fails because, halfway through, it is discovered that all tickets on the flight have been sold.
 `req.time` | Failed to satisfy timing constraints. | A message has expired &mdash; or a protocol has timed out &mdash; or it is the wrong time of day/day of week.
@@ -144,11 +144,22 @@ Many problems may be experienced during a long-running or complex protocol. Impl
 
 ### Route Tracing
 
-To troubleshoot routing issues, DIDComm offers a header, `trace`. Any party that processes a DIDComm plaintext message containing this header MAY do an HTTP POST of a **route trace report** to the URI in the header's value.
+To troubleshoot routing issues, DIDComm offers a header, `trace`. Any party that processes a DIDComm plaintext message containing this header MAY do an HTTP POST of a **route trace report** to the URI in the header's value. A trace report is a message that looks like this:
 
->Note: This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as technologies like [OpenTracing](https://opentracing.io/). It also *spans* trust domains (paralleling a message's journey from Alice to a web service hosting Bob's endpoint, to Bob himself) -- and thus differs in scope from in-house logging and monitoring technolgies like Splunk and Kibana. Although DIDComm tracing could be integrated with these other technologies, doing so in a methodical way is probably an antipattern; it may indicate a misunderstanding about its purpose as a tool for ad hoc debugging or troubleshooting between unrelated parties.
+```json
+{
+  "@type": "https://didcomm.org/trace/1.0/trace_report",
+  "pthid": "98fd8d72-80f6-4419-abc2-c65ea39d0f38.1",
+  "handler": "did:example:1234abcd#3",
+  "traced_type": "https://didcomm.org/route/1.0/forward",
+}
+```
 
-[TODO: describe the trace report.] For example, in a message for Bob that is double-wrapped (once for his external mediator and once for his cloud agent), three plaintext messages might contain `trace` headers:
+The value of `pthid` is always the message ID that triggered the trace. The value of `handler` is an arbitrary string that identifies the agent, service, or piece of software responding to the trace.
+
+>Note: This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as technologies like [OpenTracing](https://opentracing.io/). It also *spans* trust domains (paralleling a message's journey from Alice to a web service hosting Bob's endpoint, to Bob himself) &mdash; and thus differs in scope from in-house logging and monitoring technolgies like Splunk and Kibana. Although DIDComm tracing could be integrated with these other technologies, doing so in a methodical way is probably an antipattern; it may indicate a misunderstanding about its purpose as a tool for ad hoc debugging or troubleshooting between unrelated parties.
+
+For example, in a message for Bob that is double-wrapped (once for his external mediator and once for his cloud agent), three plaintext messages might contain `trace` headers:
 
 1. The outermost message, decrypted by Bob's external mediator, containing forwarding instructions to Bob's cloud agent.
 2. The center message, decrypted by Bob's cloud agent, containing an inner encrypted payload and instructions to forward it to Bob's DID.
