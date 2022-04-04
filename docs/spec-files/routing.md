@@ -135,7 +135,7 @@ DID Documents for DIDComm capable DIDs have a single service block entry in the 
 
 Each object has the following properties:
 
-**uri**: MUST contain an ordered array with one or more URIs for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
+**uri**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
 **accept**: An optional array of media types in the order of preference for sending a message to the endpoint.
 If `accept` is not specified, the sender uses its preferred choice for sending a message to the endpoint.
