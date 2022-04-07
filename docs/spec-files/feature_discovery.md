@@ -1,12 +1,14 @@
-## Discover Features Protocol 2.0
+### Discover Features Protocol 2.0
 
+This protocol helps agents query one another to discover which features
+they support, and to what extent.
 
-### Summary
+The identifier for the message family used by this protocol is
+`discover-features`, and the fully qualified [PIURI](#protocol-identifier-uri) for its definition is:
 
-Describes how agents can query one another to discover which features
-it supports, and to what extent.
+    https://didcomm.org/discover-features/2.0
 
-### Motivation
+#### Motivation
 
 Though some agents will support just one protocol and will be
 statically configured to interact with just one other party, many
@@ -15,14 +17,6 @@ Alice and Bob meet, they won't know in advance which features are
 supported by one another's agents. They need a way to find out.
 
 Disclosing features in this manner has a significant privacy benefit over endpoint disclosures contained in a DID Document published to a Verifiable Data Registry (VDR). Using the single DIDComm endpoint published in the document and this protocol, features can be selectively disclosed to other parties at the owner's discretion. The problem of anonymous scanning and fingerprinting enabled with VDR disclosures is solved in a privacy preserving way.
-
-### Reference
-
-This RFC introduces a protocol for discussing the protocols an agent
-can handle. The identifier for the message family used by this protocol is
-`discover-features`, and the fully qualified URI for its definition is:
-
-    https://didcomm.org/discover-features/2.0
 
 #### Roles
 
@@ -62,7 +56,7 @@ Queries messages contain one or more **query objects** in the `queries` array. E
 
 Implementations of this protocol must recognize the following values for `feature-type`: `protocol`, `goal-code`,  and `header`.  Additional values of `feature-type` may be used, and unrecognized values MUST be ignored.
 
-Identifiers for feature types vary. For protocols, identifiers are PIURIs. For goal codes, identifiers are goal code values. For governance frameworks, identifiers are URIs where the framework is published (typically the [`data_uri` field if machine-readable](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0430-machine-readable-governance-frameworks/README.md#data_uri). For DIDComm versions, identifiers are the URIs where DIDComm versions are developed (`https://github.com/hyperledger/aries-rfcs` for V1 and `https://github.com/decentralized-identity/didcomm-messaging` for V2; see ["Detecting DIDComm Versions" in RFC 0044](https://github.com/hyperledger/aries-rfcs/blob/main/features/0044-didcomm-file-and-mime-types/README.md#detecting-didcomm-versions) for more details).
+Identifiers for feature types vary. For protocols, identifiers are PIURIs. For [goal codes](#goal-codes), identifiers are goal code values. For governance frameworks, identifiers are URIs where the framework is published (typically the [`data_uri` field if machine-readable](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0430-machine-readable-governance-frameworks/README.md#data_uri). For DIDComm versions, identifiers are the URIs where DIDComm versions are developed (`https://github.com/hyperledger/aries-rfcs` for V1 and `https://github.com/decentralized-identity/didcomm-messaging` for V2; see ["Detecting DIDComm Versions" in RFC 0044](https://github.com/hyperledger/aries-rfcs/blob/main/features/0044-didcomm-file-and-mime-types/README.md#detecting-didcomm-versions) for more details). TODO
 
 The `match` field of a query descriptor may use the * wildcard. By itself, a `match` with just the wildcard says, "I'm interested in anything you want to share with me." But usually, this wildcard will be to match a prefix that's a little more specific, as in the example that matches any 1.x version.
 
@@ -112,7 +106,7 @@ Disclosures do not have to contain exhaustive detail. For example, the following
 }
 ```
 
-Less detail probably suffices because agents do not need to know everything about one another's implementations in order to start an interaction--usually the flow will organically reveal what's needed. For example, the `outcome` message in the `tictactoe` protocol isn't needed until the end, and is optional anyway. Alice can start a tictactoe game with Bob and will eventually see whether he has the right idea about `outcome` messages.
+Less detail probably suffices because agents do not need to know everything about one another's implementations in order to start an interaction &mdash; usually the flow will organically reveal what's needed. For example, the `outcome` message in the `tictactoe` protocol isn't needed until the end, and is optional anyway. Alice can start a tictactoe game with Bob and will eventually see whether he has the right idea about `outcome` messages.
 
 The missing `roles` in this disclosure does not say, "I support no roles in this protocol." It says, "I support the protocol but I'm providing no detail about specific roles." Similar logic applies to any other omitted fields.
 
