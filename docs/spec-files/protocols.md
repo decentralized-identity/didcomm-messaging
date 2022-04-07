@@ -35,7 +35,7 @@ https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/
 The goals of the PIURI are, in descending priority:
 
 * Code can use the URI to route messages to protocol
-  handlers using [semver rules](semver.md). [TODO: ADD SEMVER]
+  handlers using [semver rules](semver.md).
 
 * The definition of a protocol is tied to the URI such
   that it is semantically stable. This means that once version 1.0

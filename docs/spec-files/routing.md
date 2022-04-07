@@ -53,18 +53,12 @@ The only message in this protocol is the `forward` message. A simple and common 
 }
 ```
 
-- **next** - REQUIRED. The DID of the party to send the attached message to. 
+- **next** - REQUIRED. The identifier of the party to send the attached message to.
 - **attachments** - REQUIRED. The DIDComm message(s) to send to the party indicated in the `next` body attribute. This content should be encrypted for the next recipient.
 
 When the internal message expires, it's a good idea to also include an expiration for forward message requests. Include the `expires_time` header with the appropriate value.
 
-
-
-[TODO: describe use of the `attn` field, and explain why it's an important construct that allows us to encrypt to all (cryptographic route) but deliver just to the agent most likely to be interested (network route).
-
-[TODO: further revise the following paragraph to clarify that either a key or a DID might be used. Each possibility makes certain tradeoffs, and may be appropriate in certain cases. Keys may be fragile in the face of rotation, and they require a lot of knowledge/maintenance cost for the external mediator. However, DID key references and DIDs may introduce some complications in how the recipient proves control of a DID (a requirement for security, but also a privacy eroder).]
-
-For most external mediators, the value of the `next` field is likely to be a DID, not a key. However... (see previous TODO note). This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn't need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see [RFC 0211: Route Coordination](https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md)), but that is outside the scope of concerns of this protocol. 
+The value of the `next` field is typically a DID. However, it may also be a key, for the last hop of a route. The `routingKeys` array in the `serviceEndpoint` portion of a DID doc allow a party to list keys that should receive inbound communication, with encryption multiplexed so any of the keys can decrypt. This supports a use case where Alice wants to process messages on any of several devices that she owns. Identifiers other than DIDs may also be used in internal routing implementations that are outside the scope of the standardization targeted by this spec. 
 
 The attachment(s) in the `attachments` field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.
 

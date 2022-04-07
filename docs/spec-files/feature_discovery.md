@@ -52,11 +52,11 @@ A `discover-features/query` message looks like this:
 }
 ```
 
-Queries messages contain one or more **query objects** in the `queries` array. Each query essentially says, "Please tell me what features of type X you support, where the feature identifiers match this (potentially wildcarded) string." This particular example asks an agent if it supports any 1.x versions of the [tictactoe protocol](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0003-protocols/tictactoe/README.md), and if it supports any [goal codes](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0519-goal-codes/README.md) that begin with "org.didcomm.".
+Queries messages contain one or more **query objects** in the `queries` array. Each query essentially says, "Please tell me what features of type X you support, where the feature identifiers match this (potentially wildcarded) string." This particular example asks an agent if it supports any 1.x versions of a tictactoe protocol, and if it supports any [goal codes](#goal-codes) that begin with "org.didcomm.".
 
 Implementations of this protocol must recognize the following values for `feature-type`: `protocol`, `goal-code`,  and `header`.  Additional values of `feature-type` may be used, and unrecognized values MUST be ignored.
 
-Identifiers for feature types vary. For protocols, identifiers are PIURIs. For [goal codes](#goal-codes), identifiers are goal code values. For governance frameworks, identifiers are URIs where the framework is published (typically the [`data_uri` field if machine-readable](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0430-machine-readable-governance-frameworks/README.md#data_uri). For DIDComm versions, identifiers are the URIs where DIDComm versions are developed (`https://github.com/hyperledger/aries-rfcs` for V1 and `https://github.com/decentralized-identity/didcomm-messaging` for V2; see ["Detecting DIDComm Versions" in RFC 0044](https://github.com/hyperledger/aries-rfcs/blob/main/features/0044-didcomm-file-and-mime-types/README.md#detecting-didcomm-versions) for more details). TODO
+Identifiers are used the value to match against a feature type. Their format varies. For protocols, identifiers are PIURIs. For [goal codes](#goal-codes), identifiers are goal code values. For governance frameworks, identifiers are URIs where the framework is published. For headers, identifiers are header names.
 
 The `match` field of a query descriptor may use the * wildcard. By itself, a `match` with just the wildcard says, "I'm interested in anything you want to share with me." But usually, this wildcard will be to match a prefix that's a little more specific, as in the example that matches any 1.x version.
 
