@@ -6,7 +6,7 @@ Only a few core protocols are defined within this spec. These serve to bootstrap
 
 Each protocol is uniquely identified by a Protocol Identifier URI, and contains one or more messages identified by a Message Type URI. In addition to serving as a unique identifier, these URIs may be used by a developer to locate documentation.
 
-#### Protocol Identifier URI
+### Protocol Identifier URI
 
 A Protocol Identifier URI (PIURI) identifies protocol versions unambiguously. 
 
@@ -45,7 +45,7 @@ The goals of the PIURI are, in descending priority:
 * Developers can discover information about novel protocols, using
   the URI to browse or search the web.
 
-#### Message Type URI
+### Message Type URI
 
 A __Message Type URI__ (MTURI) identifies message types unambiguously. Standardizing its format is important because it is parsed by agents that will map messages to handlers &mdash; basically, code will look at this string and say, "Do I have something that can handle this message type inside protocol *X* version *Y*?" When that analysis happens, it must do more than compare the string for exact equality. It may need to check for semver compatibility, and it has to compare the protocol name and message type name ignoring case and punctuation.
 

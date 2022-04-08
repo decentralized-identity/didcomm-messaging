@@ -1,4 +1,4 @@
-### Routing
+### Routing Protocol 2.0
 
 The routing protocol defines how a sender and a recipient cooperate, using a partly trusted mediator, to facilitate message delivery. No party is required to know the full route of a message.
 
@@ -85,14 +85,14 @@ Why is such indirection useful?
 
 These last two characteristics are the foundation of mix networking feature for DIDComm. That feature is the subject of a different RFC; here we only note the existence of the optional feature. 
 
-### Sender Forward Process
+#### Sender Forward Process
 
 1. Sender Constructs Message.
 2. Sender Encrypts Message to recipient(s).
 3. Wrap Encrypted Message in Forward Message for each Routing Key.
 4. Transmit to `serviceEndpoint` `uri` in the manner specified in the [transports] section.
 
-### Mediator Process
+#### Mediator Process
 
 _Prior to using a Mediator, it is the recipient's responsibility to coordinate with the mediator. Part of this coordination informs them of the `next` address(es) expected, the endpoint, and any Routing Keys to be used when forwarding messages. That coordination is out of the scope of this spec._
 
@@ -102,7 +102,7 @@ _Prior to using a Mediator, it is the recipient's responsibility to coordinate w
 
 The recipient (`next` attribute of Forward Message) may have pre-configured additional routing keys with the mediator that were not present in the DID Document and therefore unknown to the original sender. If this is the case, the mediator should wrap the attached `payload` message into an additional Forward message once per routing key. This step is performed between (2) and (3).
 
-### DID Document Keys
+#### DID Document Keys
 
 All keys declared in the DID Document's `keyAgreement` section should be used as recipients when encrypting a message. The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
 
@@ -110,7 +110,7 @@ Keys used in a signed JWM are declared in the DID Document's `authentication` se
 
 TODO: include details about how DIDComm keys are represented/identified in the DID Document. The DID Core Spec appears light on details and examples of `keyAgreement` keys. Clarifying language should be included here or there.
 
-### DID Document Service Endpoint
+#### DID Document Service Endpoint
 
 DID Documents for DIDComm capable DIDs have a single service block entry in the following format:
 
