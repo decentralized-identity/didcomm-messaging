@@ -56,7 +56,7 @@ Queries messages contain one or more **query objects** in the `queries` array. E
 
 Implementations of this protocol must recognize the following values for `feature-type`: `protocol`, `goal-code`,  and `header`.  Additional values of `feature-type` may be used, and unrecognized values MUST be ignored.
 
-Identifiers are used the value to match against a feature type. Their format varies. For protocols, identifiers are PIURIs. For [goal codes](#goal-codes), identifiers are goal code values. For governance frameworks, identifiers are URIs where the framework is published. For headers, identifiers are header names.
+Identifiers are used as the value to match against a feature type. Their format varies. For protocols, identifiers are PIURIs. For [goal codes](#goal-codes), identifiers are goal code values. For governance frameworks, identifiers are URIs where the framework is published. For headers, identifiers are header names.
 
 The `match` field of a query descriptor may use the * wildcard. By itself, a `match` with just the wildcard says, "I'm interested in anything you want to share with me." But usually, this wildcard will be to match a prefix that's a little more specific, as in the example that matches any 1.x version.
 
