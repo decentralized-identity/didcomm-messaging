@@ -2,7 +2,9 @@
 
 ### Message Encryption
 
-DIDComm supports two types of message encryption: Authenticated Sender Encryption ("authcrypt") and Anonymous Sender Encryption ("anoncrypt"). Both forms are encrypted to the recipient. Only authcrypt provides direct assurances of who the sender is.
+DIDComm Messages are encrypted with the keys of a single DID. A message being sent to multiple DIDs MUST be encrypted for each DID independently. If a single DID has multiple key types, the keys of each type must be used in a separate encryption of the message. 
+
+DIDComm supports two types of message encryption: Authenticated Sender Encryption ("authcrypt") and Anonymous Sender Encryption ("anoncrypt"). Both forms are encrypted to the recipient DID. Only authcrypt provides direct assurances of who the sender is.
 
 The encrypted form of a JWM is a JWE. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed here.
 
@@ -12,7 +14,7 @@ For an encrypted DIDComm message, the JWA of [ECDH-1PU](https://tools.ietf.org/h
 
 #### Anonymous Encryption
 
-When a sender would like to encrypt a message for a recipient or multiple recipients but not be authenticated by the recipients, the JWA of `ECDH-ES` defined by [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6) SHOULD be used within the structure of a JWE.
+When a sender would like to encrypt a message for a recipient DID or multiple recipient DIDs but not be authenticated by the recipients, the JWA of `ECDH-ES` defined by [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6) SHOULD be used within the structure of a JWE.
 
 Anonymous encryption removes authentication of the sender, which is a significant benefit of DIDComm Messaging; it may make sense, but should only be done thoughtfully, when the context of the use case justifies it. Pairing anonymous encryption with a method of message authentication other than authcrypt as defined in this specification is not generally recommended, as it may have unintended side effects. In particular, a signed message that is anonymously encrypted accomplishes authentication, but loses the repudiability of authcrypt. Further discussion of message authentication can be found in the [DIDComm Guidebook](https://didcomm.org/book/v2).
 
@@ -123,13 +125,13 @@ If two communicating parties establish single-purpose DIDs (e.g., peer DIDs) for
 A layer of anonymous encryption (employing ECDH-ES) may be applied around an authenticated encryption envelope (employing ECDH-1PU), obscuring the sender's identity for all but the recipient of the inner envelope. In the case of a message forwarded via mediators, anonymous encryption is automatic.
 
 #### ECDH-1PU key wrapping and common protected headers
-When using authcrypt, the 1PU draft [mandates](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1) the use of the AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common `epk`, `apu`, `apv` and `alg` headers for all recipients. They MUST be set in the `protected` headers JWE section.
+When using authcrypt, the 1PU draft [mandates](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1) the use of the AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common `epk`, `apu`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` headers JWE section.
 
 As per this requirement, the JWE building must first encrypt the payload, then use the resulting `tag` as part of the key derivation process when wrapping the `cek`.
 
 To meet this requirement, the above headers are defined as follows:
 
-* `epk`: generated once for all recipients. It MUST be of the same type and curve as all recipient keys since kdf with the sender key must be on the same curve.
+* `epk`: generated once for all recipient keys. It MUST be of the same type and curve as all recipient keys since kdf with the sender key must be on the same curve.
   - Example: `"epk": {"kty": "EC","crv": "P-256","x": "BVDo69QfyXAdl6fbK6-QBYIsxv0CsNMtuDDVpMKgDYs","y": "G6bdoO2xblPHrKsAhef1dumrc0sChwyg7yTtTcfygHA"}`
 * `apu`: similar to `skid`, this is the producer (sender) identifier, it MUST contain the `skid` value base64 RawURL (no padding) encoded. Note: this is base64URL(`skid` value).
   - Example for `skid` mentioned in an earlier [section](#key-ids-kid-and-skid-headers-references-in-the-did-document) above: `ZGlkOmV4YW1wbGU6MTIzNDU2Nzg5YWJjZGVmZ2hpI2tleXMtMQ`
