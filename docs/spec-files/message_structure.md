@@ -147,11 +147,11 @@ Headers can be simple (mapping a header name to an integer or a string) or struc
 * However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP `Accept` header. ([HTTP Structured Headers](https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15) provide similar functionality but are unnecessary here, since plaintext messages already have an easily parseable syntax.)
 * Headers that are only meaningful together SHOULD be grouped into a JSON object.
 
-#### The Empty Message
+### The Empty Message
 
 Sometimes, only headers need to be communicated; there is no content for the body. DIDComm explicitly defines a [message type](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0003-protocols#message-type-and-protocol-identifier-uris), `https://didcomm.org/reserved/2.0/empty` for this purpose. This message MUST include an actual `body` element; its value MUST be an empty JSON object.
 
-#### Attachments
+### Attachments
 
 It is common for DIDComm messages to supplement formalized structure with arbitrary data &mdash; images, documents, or types of media not yet invented. Such content is "attached" to DIDComm messages in much the same way that attachments work in email.
 
@@ -173,7 +173,7 @@ Each attachment is described with an instance of a JSON object that has the foll
     * `json`: [optional] Directly embedded JSON data, when representing content inline instead of via `links`, and when the content is natively conveyable as JSON.
 - `byte_count`: [optional] mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
 
-##### Attachment Example
+#### Attachment Example
 
 ```json
 {
@@ -215,7 +215,7 @@ Each attachment is described with an instance of a JSON object that has the foll
 }
 ```
 
-## Goal Codes
+### Goal Codes
 
 Goal codes are used to coordinate the purpose of an interaction. Some protocols are generic enough to be used for different purposes; goal codes communicate the purpose of the interaction unambiguously. The Out of Band protocol provides an example: A proposes to B that they connect, and supplies a goal code to clarify why the connection is desired. Goal codes may also be used to signal intent to engage in a sequence of protocols as a unit. This is useful for interoperability profiles.
 
