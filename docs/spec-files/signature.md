@@ -99,7 +99,6 @@ The Issued At (`iat`) JWT property MUST be the datetime of the DID rotation, not
 
 ```json
 {
-  "typ": "application/didcomm-plain+json",
   "id": "1234567890",
   "type": "<message-type-uri>",
   "from": "did:example:alice2",

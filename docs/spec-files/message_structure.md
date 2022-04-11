@@ -83,7 +83,6 @@ The following example shows common elements of a DIDComm plaintext message.
 
 ```json
 {
-  "typ": "application/didcomm-plain+json",
   "id": "1234567890",
   "type": "<message-type-uri>",
   "from": "did:example:alice",
@@ -108,8 +107,6 @@ Headers in DIDComm Messaging are intended to be extensible in much the same way 
 - **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender, across all messages they send. See [Threading &gt; Message IDs](#message-ids) for constraints on this value.
 
 - **type** - REQUIRED. A URI that associates the `body` of a plaintext message with a published and versioned schema. Useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [message type URI](#message-type-uri), that when resolved gives human readable information about the message category.
-
-- **typ** - OPTIONAL. [IANA media type of the JWM content](#iana-media-types); for plaintext messages, this is always "application/didcomm-plain+json".
 
 - **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.
 

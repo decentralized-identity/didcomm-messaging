@@ -173,7 +173,6 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p>Prior to being sent, plaintext is usually encrypted into a JWE according to the <a path-0="tools.ietf.org"path-1="html"path-2="draft-looker-jwm-01"href="https://tools.ietf.org/html/draft-looker-jwm-01" >JWM</a> specification.</p>
 <p>The following example shows common elements of a DIDComm plaintext message.</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"&lt;message-type-uri>"</span><span class="token punctuation">,</span>
   <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
@@ -196,9 +195,6 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </li>
 <li>
 <p><strong>type</strong> - REQUIRED. A URI that associates the <code>body</code> of a plaintext message with a published and versioned schema. Useful for message handling in application-level protocols. The <code>type</code> attribute value MUST be a valid <a href="#message-type-uri" >message type URI</a>, that when resolved gives human readable information about the message category.</p>
-</li>
-<li>
-<p><strong>typ</strong> - OPTIONAL. <a href="#iana-media-types" >IANA media type of the JWM content</a>; for plaintext messages, this is always “application/didcomm-plain+json”.</p>
 </li>
 <li>
 <p><strong>to</strong> - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) that identifies a member of the message’s intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.</p>
@@ -602,7 +598,6 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 </code></pre>
 <h4 id="example-message-rotating-did"><a class="toc-anchor" href="#example-message-rotating-did" >§</a> Example Message Rotating DID</h4>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"1234567890"</span><span class="token punctuation">,</span>
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"&lt;message-type-uri>"</span><span class="token punctuation">,</span>
   <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice2"</span><span class="token punctuation">,</span>
@@ -1077,7 +1072,6 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <p>The out-of-band protocol consists in a single message that is sent by the <em>sender</em>.</p>
 <h4 id="invitation-httpsdidcommorgout-of-band20invitation"><a class="toc-anchor" href="#invitation-httpsdidcommorgout-of-band20invitation" >§</a> Invitation: <code>https://didcomm.org/out-of-band/2.0/invitation</code></h4>
 <pre class="language-jsonc"><code class="language-jsonc">{
-  &quot;typ&quot;: &quot;application/didcomm-plain+json&quot;,
   &quot;type&quot;: &quot;https://didcomm.org/out-of-band/2.0/invitation&quot;,
   &quot;id&quot;: &quot;&lt;id used for context as pthid&gt;&quot;,
   &quot;from&quot;:&quot;&lt;sender's did&gt;&quot;,
@@ -1137,7 +1131,6 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <h5 id="example-out-of-band-message-encoding"><a class="toc-anchor" href="#example-out-of-band-message-encoding" >§</a> Example Out-of-Band Message Encoding</h5>
 <p>Invitation:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"typ"</span><span class="token operator">:</span> <span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span>
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/out-of-band/2.0/invitation"</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span>
   <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
@@ -1157,13 +1150,13 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <span class="token punctuation">}</span>
 </code></pre>
 <p>Whitespace removed:</p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><span class="token property">"typ"</span><span class="token operator">:</span><span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/out-of-band/2.0/invitation"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span><span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span><span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"goal_code"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"goal"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token property">"attachments"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"@id"</span><span class="token operator">:</span><span class="token string">"request-0"</span><span class="token punctuation">,</span><span class="token property">"mime-type"</span><span class="token operator">:</span><span class="token string">"application/json"</span><span class="token punctuation">,</span><span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"json"</span><span class="token operator">:</span><span class="token string">"&lt;json of protocol message>"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/out-of-band/2.0/invitation"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span><span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span><span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"goal-code"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"goal"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token property">"attachments"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"@id"</span><span class="token operator">:</span><span class="token string">"request-0"</span><span class="token punctuation">,</span><span class="token property">"mime-type"</span><span class="token operator">:</span><span class="token string">"application/json"</span><span class="token punctuation">,</span><span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"json"</span><span class="token operator">:</span><span class="token string">"&lt;json of protocol message>"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
 </code></pre>
 <p>Base 64 URL Encoded:</p>
-<pre class="language-text"><code class="language-text">eyJ0eXAiOiJhcHBsaWNhdGlvbi9kaWRjb21tLXBsYWluK2pzb24iLCJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ==
+<pre class="language-text"><code class="language-text">eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ
 </code></pre>
 <p>Example URL:</p>
-<pre class="language-text"><code class="language-text">http://example.com/path?_oob=eyJ0eXAiOiJhcHBsaWNhdGlvbi9kaWRjb21tLXBsYWluK2pzb24iLCJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ==
+<pre class="language-text"><code class="language-text">http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ
 </code></pre>
 <p>DIDComm message URLs can be transferred via any method that can send text, including an email, SMS, posting on a website, or QR Code.</p>
 <p>Example Email Message:</p>
@@ -1173,9 +1166,9 @@ Subject: Your request to connect and receive your graduate verifiable credential
 
 Dear Alice,
 
-To receive your Faber College graduation certificate, click here to [connect](http://example.com/path?_oob=eyJ0eXAiOiJhcHBsaWNhdGlvbi9kaWRjb21tLXBsYWluK2pzb24iLCJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ== with us, or paste the following into your browser:
+To receive your Faber College graduation certificate, click here to [connect](http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ with us, or paste the following into your browser:
 
-http://example.com/path?_oob=eyJ0eXAiOiJhcHBsaWNhdGlvbi9kaWRjb21tLXBsYWluK2pzb24iLCJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ==
+http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ
 
 If you don't have an identity agent for holding credentials, you will be given instructions on how you can get one.
 
@@ -1770,7 +1763,6 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <p>The following example defines DIDComm Plaintext message. The message is used for DIDComm Signed Messages and DIDComm Encrypted Messages.</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
    <span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"1234567890"</span><span class="token punctuation">,</span>
-   <span class="token property">"typ"</span><span class="token operator">:</span><span class="token string">"application/didcomm-plain+json"</span><span class="token punctuation">,</span>
    <span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"http://example.com/protocols/lets_do_lunch/1.0/proposal"</span><span class="token punctuation">,</span>
    <span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
    <span class="token property">"to"</span><span class="token operator">:</span><span class="token punctuation">[</span>
