@@ -346,7 +346,6 @@ The following example defines DIDComm Plaintext message. The message is used for
 ```json
 {
    "id":"1234567890",
-   "typ":"application/didcomm-plain+json",
    "type":"http://example.com/protocols/lets_do_lunch/1.0/proposal",
    "from":"did:example:alice",
    "to":[
