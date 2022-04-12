@@ -139,7 +139,7 @@ as their transport. Let's see how relays and mediators apply there.
 #### Scenario 5 (traditional base)
 
 Alice's cloud agent wants to talk to Bob's cloud agent. Bob's cloud agent is
-listening at http://bob.com/agent. Alice encrypts a message for Bob and posts it
+listening at https://bob.com/agent. Alice encrypts a message for Bob and posts it
 to that URL.
 
 ![scenario5.png](scenario5.png)
@@ -161,7 +161,7 @@ that virtually the same diagram could be used for a Bluetooth agent conversation
 #### Scenario 6: herd hosting
 
 Let's tweak Scenario 5 slightly by saying that Bob's agent is one of thousands that
-are hosted at the same URL. Maybe the URL is now http://agents-r-us.com/inbox. Now
+are hosted at the same URL. Maybe the URL is now https://agents-r-us.com/inbox. Now
 if Alice wants to talk to Bob's cloud agent, she has to cope with a mediator. She
 wraps the encrypted message for Bob's cloud agent inside a `forward` message that's
 addressed to and encrypted for the agent of agents-r-us that functions as a gatekeeper.
@@ -174,7 +174,7 @@ mediator lives outside the sovereign domain of the final recipient.
 #### Scenario 7: intra-domain dispatch
 
 Now let's subtract agents-r-us. We're back to Bob's cloud agent listening directly at
-http://bob.com/agent. However, let's say that Alice has a different goal--now she wants
+https://bob.com/agent. However, let's say that Alice has a different goal--now she wants
 to talk to the edge agent running on Bob's mobile device. This agent doesn't have a
 permanent IP address, so Bob uses his own cloud agent as a mediator. He tells Alice
 that his mobile device agent can only be reached via his cloud agent.

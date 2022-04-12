@@ -3,7 +3,7 @@ This spec is according [JSON Schema v0.7](https://json-schema.org/specification.
 ```json
 {
     "id": "https://github.com/hyperledger/indy-agent/wiremessage.json",
-    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$schema": "https://json-schema.org/draft-07/schema#",
     "title": "Json Web Message format",
     "type": "object",
     "required": ["ciphertext", "iv", "protected", "tag"],

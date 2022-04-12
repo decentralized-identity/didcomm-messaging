@@ -150,7 +150,7 @@ This section defines the sender DIDDoc.
 {
    "@context":[
       "https://www.w3.org/ns/did/v1",
-      "http://w3id.org/security/suites/jws-2020/v1"
+      "https://w3id.org/security/suites/jws-2020/v1"
    ],
    "id":"did:example:alice",
    "authentication":[
@@ -346,7 +346,7 @@ The following example defines DIDComm Plaintext message. The message is used for
 ```json
 {
    "id":"1234567890",
-   "type":"http://example.com/protocols/lets_do_lunch/1.0/proposal",
+   "type":"https://example.com/protocols/lets_do_lunch/1.0/proposal",
    "from":"did:example:alice",
    "to":[
       "did:example:bob"
