@@ -282,7 +282,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
             <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"example linked attachment"</span><span class="token punctuation">,</span>
             <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
             	<span class="token property">"hash"</span><span class="token operator">:</span> <span class="token string">"&lt;multi-hash>"</span><span class="token punctuation">,</span>
-                <span class="token property">"links"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"http://path/to/resource"</span><span class="token punctuation">]</span>
+                <span class="token property">"links"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://path/to/resource"</span><span class="token punctuation">]</span>
         	<span class="token punctuation">}</span>
         <span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">{</span>
 			<span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"x"</span><span class="token punctuation">,</span>
@@ -878,7 +878,7 @@ delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &q
 </code></pre>
 <p>Example PIURIs might be:</p>
 <pre><code>https://didcomm.org/lets_do_lunch/1.0
-http://example.com/protocols?which=lets_do_lunch/1.0
+https://example.com/protocols?which=lets_do_lunch/1.0
 https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1
 </code></pre>
 <p>The goals of the PIURI are, in descending priority:</p>
@@ -923,8 +923,8 @@ identifier        = alpha *(*(alphanum / &quot;_&quot; / &quot;-&quot; / &quot;.
 <li>Optionally and preferably, the full URI may produce a page of documentation about the specific message type, with no human mediation involved.</li>
 </ul>
 <p>Example Message Type URIs:</p>
-<pre><code>http://example.com/protocols?which=lets_do_lunch/1.0/proposal
-http://example.com/protocols/lets_do_lunch/1.0/proposal
+<pre><code>https://example.com/protocols?which=lets_do_lunch/1.0/proposal
+https://example.com/protocols/lets_do_lunch/1.0/proposal
 did:example:1234567890;spec/trust_ping/1.0/ping
 https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1/create-invitation
 </code></pre>
@@ -1156,7 +1156,7 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <pre class="language-text"><code class="language-text">eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ
 </code></pre>
 <p>Example URL:</p>
-<pre class="language-text"><code class="language-text">http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ
+<pre class="language-text"><code class="language-text">https://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ
 </code></pre>
 <p>DIDComm message URLs can be transferred via any method that can send text, including an email, SMS, posting on a website, or QR Code.</p>
 <p>Example Email Message:</p>
@@ -1166,9 +1166,9 @@ Subject: Your request to connect and receive your graduate verifiable credential
 
 Dear Alice,
 
-To receive your Faber College graduation certificate, click here to [connect](http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ with us, or paste the following into your browser:
+To receive your Faber College graduation certificate, click here to [connect](https://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ with us, or paste the following into your browser:
 
-http://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ
+https://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ
 
 If you don't have an identity agent for holding credentials, you will be given instructions on how you can get one.
 
@@ -1577,7 +1577,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
    <span class="token property">"@context"</span><span class="token operator">:</span><span class="token punctuation">[</span>
       <span class="token string">"https://www.w3.org/ns/did/v1"</span><span class="token punctuation">,</span>
-      <span class="token string">"http://w3id.org/security/suites/jws-2020/v1"</span>
+      <span class="token string">"https://w3id.org/security/suites/jws-2020/v1"</span>
    <span class="token punctuation">]</span><span class="token punctuation">,</span>
    <span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
    <span class="token property">"authentication"</span><span class="token operator">:</span><span class="token punctuation">[</span>
@@ -1763,7 +1763,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <p>The following example defines DIDComm Plaintext message. The message is used for DIDComm Signed Messages and DIDComm Encrypted Messages.</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
    <span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"1234567890"</span><span class="token punctuation">,</span>
-   <span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"http://example.com/protocols/lets_do_lunch/1.0/proposal"</span><span class="token punctuation">,</span>
+   <span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://example.com/protocols/lets_do_lunch/1.0/proposal"</span><span class="token punctuation">,</span>
    <span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
    <span class="token property">"to"</span><span class="token operator">:</span><span class="token punctuation">[</span>
       <span class="token string">"did:example:bob"</span>

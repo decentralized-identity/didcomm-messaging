@@ -196,7 +196,7 @@ Each attachment is described with an instance of a JSON object that has the foll
             "description": "example linked attachment",
             "data": {
             	"hash": "<multi-hash>",
-                "links": ["http://path/to/resource"]
+                "links": ["https://path/to/resource"]
         	}
         },{
 			"id": "x",
