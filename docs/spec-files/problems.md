@@ -22,9 +22,25 @@ When [DIDComm `problem-report`s](#problem-reports) constitute reactions to a pre
 
 However, more explicit and more powerful ACKs are sometimes needed. They can prove that parties have a shared view of state at a particular time, test the functioning of a transport, help debug surprising silence, fine-tune timeouts, and speed up remedial action.
 
-To facilitate this, any innermost DIDComm plaintext message MAY use the `please_ack` header to politely request a read receipt from a recipient. The header's value is an array of strings that clarify when the ACK is requested. Only the following value is defined by this version of the spec: "receipt". Future extensions may define additional values (e.g., to implement read receipts, or to request an ACK if no other response is forthcoming after a modest delay). If "receipt" is present, then the request is to ACK as soon as the message is received.
+To facilitate this, any innermost DIDComm plaintext message MAY use the `please_ack` header to politely request acknowledgment from a recipient. The header's value is an array of strings that clarify when the ACK is requested, and what should be ACKed. In this version of the spec, the request is always to ACK as soon as the message is received, and each string in the array is the ID of a message that needs acknowledgment. For terseness, the empty string may be used in the array to mean "the current message."
 
-The presence of the `please_ack` header does not create an obligation on the part of the recipient. However, cooperative parties who wish to honor such a request MUST include an `ack` header on a subsequent message, where the value of the header is an array that contains the `id` of one or more messages being acknowledged. Values in this array MUST appear in the order received, from oldest to most recent.
+For example, suppose Alice is running a rich chat protocol, has previously sent two messages with IDs `abc` and `def`, and now wants to send a new message with ID `xyz`, plus request an acknowledgement of the old ones. Her new message might include this header:
+
+```json
+"please_ack": ["abc", "def"]
+```
+
+There is no need to include the empty string (or `xyz`) in this array, since any response that honors this request is an implicit ACK of `xyz`.
+
+The appropriate response to an ACK request for the *current* message is the next natural message in the protocol, with an `ack` header added. The appropriate response to an ACK request for an *old* message ID is whatever response it triggered, if any &ndash; with an `ack` header added. Thus, if Bob had already sent message `ghi` after receiving Alice's `abc` and `def`, he could resend `ghi` with the following `ack` header:
+
+```json
+"ack": ["abc", "def", "xyz"]
+```
+
+This allows agents to collaborate to recover from a response that was emitted but lost. Future extensions may define additional values (e.g., to implement read receipts, or to request an ACK if no other response is forthcoming after a modest delay).
+
+The presence of the `please_ack` header does not create an obligation on the part of the recipient. However, cooperative parties who wish to honor such a request MUST include an `ack` header on a subsequent message, where the value of the header is an array that contains the `id` of one or more messages being acknowledged. Values in this array MUST appear in the order *received* by whoever is acknowledging, from oldest to most recent.
 
 >Note: The `please_ack` header SHOULD NOT be included on [`forward` messages](#routing), and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, which are defined to send only destward. It would also undermine the privacy of recipients.
 
