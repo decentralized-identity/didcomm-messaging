@@ -835,19 +835,19 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <p>Each transport MUST define:</p>
 <ul>
 <li>format of <code>serviceEndpoint</code> <code>uri</code>: Which URI schemes are used (if URI), or the properties of the object (if object).</li>
-<li>how to actually send messages:  e.g., through HTTP POST, through dial protocol (libp2p), etc.</li>
+<li>how to actually send messages:  e.g., through HTTPS POST, through dial protocol (libp2p), etc.</li>
 <li>how mime-types of the content are provided, e.g., through Content-Type header, etc.</li>
 <li>where additional context definition is hosted, e.g., in case the <code>serviceEndpoint</code>  object has extra properties specific to the transport.</li>
 </ul>
 <h3 id="reference"><a class="toc-anchor" href="#reference" >§</a> Reference</h3>
-<h4 id="https"><a class="toc-anchor" href="#https" >§</a> HTTP(S)</h4>
-<p>HTTP(S) transports are an effective way to send a message to another online agent.</p>
+<h4 id="https"><a class="toc-anchor" href="#https" >§</a> HTTPS</h4>
+<p>HTTPS transports are an effective way to send a message to another online agent.</p>
 <ul>
-<li>Messages are transported via HTTP POST.</li>
+<li>Messages are transported via HTTPS POST.</li>
 <li>The MIME Type for the POST request is set to the corresponding media type defined in <a href="#media-types" >Media Types</a>, e.g., <code>application/didcomm-encrypted+json</code>.</li>
-<li>A successful message receipt MUST return a code in the 2xx HTTP Status Code range. It is recommended that a HTTP POST should return a 202 Accepted status code.</li>
+<li>A successful message receipt MUST return a code in the 2xx HTTPS Status Code range. It is recommended that a HTTPS POST should return a 202 Accepted status code.</li>
 <li>POST requests are transmit only. Messages are only sent from the code that submitted the POST request.</li>
-<li>HTTP Redirects SHOULD be followed. Only Temporary Redirects (307) are acceptable. Permanent endpoint relocation should be managed with a DID Document update.</li>
+<li>HTTPS Redirects SHOULD be followed. Only Temporary Redirects (307) are acceptable. Permanent endpoint relocation should be managed with a DID Document update.</li>
 <li>Using HTTPS with TLS 1.2 or greater with a forward secret cipher will provide Perfect Forward Secrecy (PFS) on the transmission leg.</li>
 </ul>
 <h4 id="websocket"><a class="toc-anchor" href="#websocket" >§</a> WebSocket</h4>
@@ -858,7 +858,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <li>The trust of each message comes from the Encryption Envelope, not the socket connection itself.</li>
 <li>Websockets are considered transmit only. Messages flow only from the agent that opened the socket.</li>
 <li>Using Secure Websockets (wss://) with TLS 1.2 or greater with a forward secret cipher will provide Perfect Forward Secrecy (PFS) on the transmission leg.</li>
-<li>When using STOMP over WebSocket, the content-type header is application/didcomm-enc-env as in the HTTP(S) message.</li>
+<li>When using STOMP over WebSocket, the content-type header is application/didcomm-enc-env as in the HTTPS message.</li>
 </ul>
 <h2 id="protocols"><a class="toc-anchor" href="#protocols" >§</a> Protocols</h2>
 <p>DIDComm serves as a foundational layer for the development of application-level protocols that benefit from the features it provides. This simplifies the development of high-trust protocols for dedicated purposes, and allows them to be composed into higher-level workflows in arbitrary, powerful ways, regardless of whether institutions, humans, or IoT devices are playing a given role.</p>
@@ -2100,7 +2100,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#transport-requirements" >Transport Requirements</a></li>
 <li><a href="#reference" >Reference</a>
 <ul>
-<li><a href="#https" >HTTP(S)</a></li>
+<li><a href="#https" >HTTPS</a></li>
 <li><a href="#websocket" >WebSocket</a></li>
 </ul>
 </li>
