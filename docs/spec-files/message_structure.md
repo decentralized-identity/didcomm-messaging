@@ -102,6 +102,8 @@ A DIDComm plaintext message conveys most of its application-level data inside a 
 
 However, some attributes are common to many different message types. When metadata about a message means the same thing regardless of context, and when it is susceptible to generic rather than message-specific handling, that metadata can be placed in **headers**. Headers are siblings of `body` and may be added to any message type. They are encrypted and decrypted (and/or signed and verified) along with `body` and therefore have an identical audience.
 
+If headers need to be sent and there is no message to attach them to, an [empty message](#the-empty-message) may be sent.
+
 Headers in DIDComm Messaging are intended to be extensible in much the same way that headers in HTTP or SMTP are extensible. A few headers are predefined:
 
 - **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender, across all messages they send. See [Threading &gt; Message IDs](#message-ids) for constraints on this value.
@@ -143,10 +145,6 @@ Headers can be simple (mapping a header name to an integer or a string) or struc
 * Headers SHOULD NOT use more structure than necessary; simple headers are preferred.
 * However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP `Accept` header. ([HTTP Structured Headers](https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15) provide similar functionality but are unnecessary here, since plaintext messages already have an easily parseable syntax.)
 * Headers that are only meaningful together SHOULD be grouped into a JSON object.
-
-### The Empty Message
-
-Sometimes, only headers need to be communicated; there is no content for the body. DIDComm explicitly defines a [message type](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0003-protocols#message-type-and-protocol-identifier-uris), `https://didcomm.org/reserved/2.0/empty` for this purpose. This message MUST include an actual `body` element; its value MUST be an empty JSON object.
 
 ### Attachments
 

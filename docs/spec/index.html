@@ -188,6 +188,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <h3 id="message-headers"><a class="toc-anchor" href="#message-headers" >§</a> Message Headers</h3>
 <p>A DIDComm plaintext message conveys most of its application-level data inside a JSON <code>body</code> object that is a direct child of the message root. The structure inside <code>body</code> is predicted by the value of the message’s <code>type</code> attribute, and varies according to the definition of the protocol-specific message in question. Each <code>type</code> of message has its own schema for <code>body</code>.</p>
 <p>However, some attributes are common to many different message types. When metadata about a message means the same thing regardless of context, and when it is susceptible to generic rather than message-specific handling, that metadata can be placed in <strong>headers</strong>. Headers are siblings of <code>body</code> and may be added to any message type. They are encrypted and decrypted (and/or signed and verified) along with <code>body</code> and therefore have an identical audience.</p>
+<p>If headers need to be sent and there is no message to attach them to, an <a href="#the-empty-message" >empty message</a> may be sent.</p>
 <p>Headers in DIDComm Messaging are intended to be extensible in much the same way that headers in HTTP or SMTP are extensible. A few headers are predefined:</p>
 <ul>
 <li>
@@ -234,8 +235,6 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <li>However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP <code>Accept</code> header. (<a path-0="tools.ietf.org"path-1="html"path-2="draft-ietf-httpbis-header-structure-15"href="https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15" >HTTP Structured Headers</a> provide similar functionality but are unnecessary here, since plaintext messages already have an easily parseable syntax.)</li>
 <li>Headers that are only meaningful together SHOULD be grouped into a JSON object.</li>
 </ul>
-<h3 id="the-empty-message"><a class="toc-anchor" href="#the-empty-message" >§</a> The Empty Message</h3>
-<p>Sometimes, only headers need to be communicated; there is no content for the body. DIDComm explicitly defines a <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="tree"path-4="main"path-5="concepts"path-6="0003-protocols#message-type-and-protocol-identifier-uris"href="https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0003-protocols#message-type-and-protocol-identifier-uris" >message type</a>, <code>https://didcomm.org/reserved/2.0/empty</code> for this purpose. This message MUST include an actual <code>body</code> element; its value MUST be an empty JSON object.</p>
 <h3 id="attachments"><a class="toc-anchor" href="#attachments" >§</a> Attachments</h3>
 <p>It is common for DIDComm messages to supplement formalized structure with arbitrary data — images, documents, or types of media not yet invented. Such content is “attached” to DIDComm messages in much the same way that attachments work in email.</p>
 <p>Attachments are contained within a list in the <code>attachments</code> header.</p>
@@ -2016,7 +2015,6 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#simple-vs-structured" >Simple vs. Structured</a></li>
 </ul>
 </li>
-<li><a href="#the-empty-message" >The Empty Message</a></li>
 <li><a href="#attachments" >Attachments</a>
 <ul>
 <li><a href="#attachment-example" >Attachment Example</a></li>
