@@ -1076,7 +1076,7 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
   &quot;id&quot;: &quot;&lt;id used for context as pthid&gt;&quot;,
   &quot;from&quot;:&quot;&lt;sender's did&gt;&quot;,
   &quot;body&quot;: {
-    &quot;goal-code&quot;: &quot;issue-vc&quot;,
+    &quot;goal_code&quot;: &quot;issue-vc&quot;,
     &quot;goal&quot;: &quot;To issue a Faber College Graduate credential&quot;,
     &quot;accept&quot;: [
       &quot;didcomm/v2&quot;,
@@ -1086,7 +1086,7 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
   &quot;attachments&quot;: [
     {
         &quot;@id&quot;: &quot;request-0&quot;,
-        &quot;mime-type&quot;: &quot;application/json&quot;,
+        &quot;mime_type&quot;: &quot;application/json&quot;,
         &quot;data&quot;: {
             &quot;json&quot;: &quot;&lt;json of protocol message&gt;&quot;
         }
@@ -1099,12 +1099,12 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <li><code>type</code> - the DIDComm message type</li>
 <li><code>id</code> - the unique ID of the message. The ID should be used as the <strong>parent</strong> thread ID (<code>pthid</code>) for the response message, rather than the more common thread ID (<code>thid</code>) of the response message. This enables multiple uses of a single out-of-band message.</li>
 <li><code>from</code> - the DID representing the sender to be used by recipients for future interactions.</li>
-<li><code>goal-code</code> - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.</li>
+<li><code>goal_code</code> - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.</li>
 <li><code>goal</code> - [optional] a self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.</li>
 <li><code>accept</code> - [optional] an array of media (aka mime) types in the order of preference of the sender that the receiver can use in responding to the message.
 If <code>accept</code> is not specified, the receiver uses its preferred choice to respond to the message.
 Please see <a href="#message-types" >Message Types</a> for details about media types.</li>
-<li><code>attachments</code> - an array of attachments that will contain the invitation messages in order of preference that the receiver can use in responding to the message. Each message in the array is a rough equivalent of the others, and all are in pursuit of the stated <code>goal</code> and <code>goal-code</code>. Only one of the messages should be chosen and acted upon.
+<li><code>attachments</code> - an array of attachments that will contain the invitation messages in order of preference that the receiver can use in responding to the message. Each message in the array is a rough equivalent of the others, and all are in pursuit of the stated <code>goal</code> and <code>goal_code</code>. Only one of the messages should be chosen and acted upon.
 <ul>
 <li>While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.</li>
 </ul>
@@ -1135,13 +1135,13 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span>
   <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
   <span class="token property">"body"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">"goal-code"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+      <span class="token property">"goal_code"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
       <span class="token property">"goal"</span><span class="token operator">:</span> <span class="token string">""</span>
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token property">"attachments"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
       <span class="token punctuation">{</span>
           <span class="token property">"@id"</span><span class="token operator">:</span> <span class="token string">"request-0"</span><span class="token punctuation">,</span>
-          <span class="token property">"mime-type"</span><span class="token operator">:</span> <span class="token string">"application/json"</span><span class="token punctuation">,</span>
+          <span class="token property">"media_type"</span><span class="token operator">:</span> <span class="token string">"application/json"</span><span class="token punctuation">,</span>
           <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
               <span class="token property">"json"</span><span class="token operator">:</span> <span class="token string">"&lt;json of protocol message>"</span>
           <span class="token punctuation">}</span>
@@ -1150,10 +1150,10 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <span class="token punctuation">}</span>
 </code></pre>
 <p>Whitespace removed:</p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/out-of-band/2.0/invitation"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span><span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span><span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"goal-code"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"goal"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token property">"attachments"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"@id"</span><span class="token operator">:</span><span class="token string">"request-0"</span><span class="token punctuation">,</span><span class="token property">"mime-type"</span><span class="token operator">:</span><span class="token string">"application/json"</span><span class="token punctuation">,</span><span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"json"</span><span class="token operator">:</span><span class="token string">"&lt;json of protocol message>"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/out-of-band/2.0/invitation"</span><span class="token punctuation">,</span><span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"69212a3a-d068-4f9d-a2dd-4741bca89af3"</span><span class="token punctuation">,</span><span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:alice"</span><span class="token punctuation">,</span><span class="token property">"body"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"goal_code"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token property">"goal"</span><span class="token operator">:</span><span class="token string">""</span><span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token property">"attachments"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"@id"</span><span class="token operator">:</span><span class="token string">"request-0"</span><span class="token punctuation">,</span><span class="token property">"media_type"</span><span class="token operator">:</span><span class="token string">"application/json"</span><span class="token punctuation">,</span><span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token property">"json"</span><span class="token operator">:</span><span class="token string">"&lt;json of protocol message>"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
 </code></pre>
 <p>Base 64 URL Encoded:</p>
-<pre class="language-text"><code class="language-text">eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ
+<pre class="language-text"><code class="language-text">eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsX2NvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtZWRpYV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsImRhdGEiOnsianNvbiI6Ijxqc29uIG9mIHByb3RvY29sIG1lc3NhZ2U-In19XX0
 </code></pre>
 <p>Example URL:</p>
 <pre class="language-text"><code class="language-text">https://example.com/path?_oob=eyJ0eXBlIjoiaHR0cHM6Ly9kaWRjb21tLm9yZy9vdXQtb2YtYmFuZC8yLjAvaW52aXRhdGlvbiIsImlkIjoiNjkyMTJhM2EtZDA2OC00ZjlkLWEyZGQtNDc0MWJjYTg5YWYzIiwiZnJvbSI6ImRpZDpleGFtcGxlOmFsaWNlIiwiYm9keSI6eyJnb2FsLWNvZGUiOiIiLCJnb2FsIjoiIn0sImF0dGFjaG1lbnRzIjpbeyJAaWQiOiJyZXF1ZXN0LTAiLCJtaW1lLXR5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiZGF0YSI6eyJqc29uIjoiPGpzb24gb2YgcHJvdG9jb2wgbWVzc2FnZT4ifX1dfQ
@@ -1212,7 +1212,7 @@ Knowledge is Good
 <li>A mobile application scanning QR code from sender and performing protocol execution. In this case the mobile application may choose to handle successful protocol execution in its own way and close the application.</li>
 </ul>
 <h5 id="reference-2"><a class="toc-anchor" href="#reference-2" >§</a> Reference</h5>
-<p>During the protocol execution sender can securely send <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="tree"path-4="main"path-5="concepts"path-6="0700-oob-through-redirect#web-redirect-decorator"href="https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator" ><code>web-redirect</code></a> info as part of messages concluding protocol executions, like <a href="#acks" >a formal acknowledgement message</a> or a <a href="#problem-reports" >problem report</a>.
+<p>During the protocol execution sender can securely send <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="tree"path-4="main"path-5="concepts"path-6="0700-oob-through-redirect#web-redirect-decorator"href="https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator" ><code>web_redirect</code></a> info as part of messages concluding protocol executions, like <a href="#acks" >a formal acknowledgement message</a> or a <a href="#problem-reports" >problem report</a>.
 Once protocol is ended then receiver can optionally choose to redirect by extracting the redirect information from the message.</p>
 <p>Example acknowledgement message from verifier to prover containing web redirect information.</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
@@ -1221,7 +1221,7 @@ Once protocol is ended then receiver can optionally choose to redirect by extrac
   <span class="token property">"pthid"</span><span class="token operator">:</span><span class="token string">"95e63a5f-73e1-46ac-b269-48bb22591bfa"</span><span class="token punctuation">,</span>
   <span class="token property">"from"</span><span class="token operator">:</span><span class="token string">"did:example:verifier"</span><span class="token punctuation">,</span>
   <span class="token property">"to"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"did:example:prover"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"web-redirect"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+  <span class="token property">"web_redirect"</span><span class="token operator">:</span><span class="token punctuation">{</span>
     <span class="token property">"status"</span><span class="token operator">:</span><span class="token string">"OK"</span><span class="token punctuation">,</span>
     <span class="token property">"redirectUrl"</span><span class="token operator">:</span><span class="token string">"https://example.com/handle-success/51e63a5f-93e1-46ac-b269-66bb22591bfa"</span>
   <span class="token punctuation">}</span>
@@ -1232,7 +1232,7 @@ Once protocol is ended then receiver can optionally choose to redirect by extrac
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/report-problem/2.0/problem-report"</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"7c9de639-c51c-4d60-ab95-103fa613c805"</span><span class="token punctuation">,</span>
   <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"1e513ad4-48c9-444e-9e7e-5b8b45c5e325"</span><span class="token punctuation">,</span>
-  <span class="token property">"web-redirect"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+  <span class="token property">"web_redirect"</span><span class="token operator">:</span><span class="token punctuation">{</span>
       <span class="token property">"status"</span><span class="token operator">:</span><span class="token string">"FAIL"</span><span class="token punctuation">,</span>
       <span class="token property">"redirectUrl"</span><span class="token operator">:</span><span class="token string">"https://example.com/handle-error/99e80a9f-34e1-41ac-b277-91bb64481bxb"</span>
    <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -1246,7 +1246,7 @@ Once protocol is ended then receiver can optionally choose to redirect by extrac
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>A sender MUST use <code>web-redirect</code> headers to request redirect from receiver. A <code>web-redirect</code> header MUST contain <code>status</code> and <code>redirectUrl</code> properties.
+<p>A sender MUST use <code>web_redirect</code> headers to request redirect from receiver. A <code>web_redirect</code> header MUST contain <code>status</code> and <code>redirectUrl</code> properties.
 The value of <code>status</code> property MUST be one of the Acknowledgement statuses defined <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="main"path-5="features"path-6="0015-acks"path-7="README.md#ack-status"href="https://github.com/hyperledger/aries-rfcs/blob/main/features/0015-acks/README.md#ack-status" >here</a> which indicates protocol execution outcome.</p>
 <h3 id="discover-features-protocol-20"><a class="toc-anchor" href="#discover-features-protocol-20" >§</a> Discover Features Protocol 2.0</h3>
 <p>This protocol helps agents query one another to discover which features
