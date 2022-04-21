@@ -26,6 +26,4 @@ This extension adds a new header in DIDComm messages: `return_route`. When a mes
   - `all`: Send all messages for this DID over the connection.
   - `thread`: Send all messages matching the DID and thread specified in the `return_route_thread` attribute.
 
-  TODO: Should we eliminate thread for simplicity?
-
 For HTTP transports, the presence of this message decorator indicates that the receiving agent MAY hold onto the connection and use it to return messages as designated. HTTP transports will only be able to receive at most one message at a time. Websocket transports are capable of receiving multiple messages over a single connection.

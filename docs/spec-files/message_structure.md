@@ -83,7 +83,6 @@ The following example shows common elements of a DIDComm plaintext message.
 
 ```json
 {
-  "typ": "application/didcomm-plain+json",
   "id": "1234567890",
   "type": "<message-type-uri>",
   "from": "did:example:alice",
@@ -103,13 +102,13 @@ A DIDComm plaintext message conveys most of its application-level data inside a 
 
 However, some attributes are common to many different message types. When metadata about a message means the same thing regardless of context, and when it is susceptible to generic rather than message-specific handling, that metadata can be placed in **headers**. Headers are siblings of `body` and may be added to any message type. They are encrypted and decrypted (and/or signed and verified) along with `body` and therefore have an identical audience.
 
+If headers need to be sent and there is no message to attach them to, an [empty message](#the-empty-message) may be sent.
+
 Headers in DIDComm Messaging are intended to be extensible in much the same way that headers in HTTP or SMTP are extensible. A few headers are predefined:
 
 - **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender, across all messages they send. See [Threading &gt; Message IDs](#message-ids) for constraints on this value.
 
 - **type** - REQUIRED. A URI that associates the `body` of a plaintext message with a published and versioned schema. Useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [message type URI](#message-type-uri), that when resolved gives human readable information about the message category.
-
-- **typ** - OPTIONAL. [IANA media type of the JWM content](#iana-media-types); for plaintext messages, this is always "application/didcomm-plain+json".
 
 - **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.
 
@@ -147,11 +146,7 @@ Headers can be simple (mapping a header name to an integer or a string) or struc
 * However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP `Accept` header. ([HTTP Structured Headers](https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15) provide similar functionality but are unnecessary here, since plaintext messages already have an easily parseable syntax.)
 * Headers that are only meaningful together SHOULD be grouped into a JSON object.
 
-#### The Empty Message
-
-Sometimes, only headers need to be communicated; there is no content for the body. DIDComm explicitly defines a [message type](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0003-protocols#message-type-and-protocol-identifier-uris), `https://didcomm.org/reserved/2.0/empty` for this purpose. This message MUST include an actual `body` element; its value MUST be an empty JSON object.
-
-#### Attachments
+### Attachments
 
 It is common for DIDComm messages to supplement formalized structure with arbitrary data &mdash; images, documents, or types of media not yet invented. Such content is "attached" to DIDComm messages in much the same way that attachments work in email.
 
@@ -173,7 +168,7 @@ Each attachment is described with an instance of a JSON object that has the foll
     * `json`: [optional] Directly embedded JSON data, when representing content inline instead of via `links`, and when the content is natively conveyable as JSON.
 - `byte_count`: [optional] mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
 
-##### Attachment Example
+#### Attachment Example
 
 ```json
 {
@@ -199,7 +194,7 @@ Each attachment is described with an instance of a JSON object that has the foll
             "description": "example linked attachment",
             "data": {
             	"hash": "<multi-hash>",
-                "links": ["http://path/to/resource"]
+                "links": ["https://path/to/resource"]
         	}
         },{
 			"id": "x",
@@ -215,7 +210,7 @@ Each attachment is described with an instance of a JSON object that has the foll
 }
 ```
 
-## Goal Codes
+### Goal Codes
 
 Goal codes are used to coordinate the purpose of an interaction. Some protocols are generic enough to be used for different purposes; goal codes communicate the purpose of the interaction unambiguously. The Out of Band protocol provides an example: A proposes to B that they connect, and supplies a goal code to clarify why the connection is desired. Goal codes may also be used to signal intent to engage in a sequence of protocols as a unit. This is useful for interoperability profiles.
 

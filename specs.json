@@ -25,37 +25,15 @@
         "problems.md",
         "threading.md",
         "transports.md",
-        "i18n.md",
         "protocols.md",
         "routing.md",
         "out_of_band.md",
         "feature_discovery.md",
         "trustping.md",
-        "reference_implementation.md",
+        "i18n.md",
         "future_proofing.md",
         "references.md",
         "appendix.md"
-      ]
-    },{
-      "title": "DIDComm Messaging - Implementers Guide",
-      "logo": "https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg",
-      "logo_link": "https://identity.foundation",
-      "source": {
-        "host": "github",
-        "account": "decentralized-identity",
-        "repo": "didcomm-messaging"
-      },
-      "output_path": "./docs/guide",
-      "spec_directory": "./docs/guide-files",
-      "markdown_paths": [
-        "intro.md",
-	      "privacy.md",
-        "routing.md",
-        "problems.md",
-        "pfs.md",
-		"authentication.md",
-        "mitm.md",
-        "whatsnew.md"
       ]
     }
   ]

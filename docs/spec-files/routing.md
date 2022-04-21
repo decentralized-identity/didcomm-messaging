@@ -1,4 +1,4 @@
-### Routing
+### Routing Protocol 2.0
 
 The routing protocol defines how a sender and a recipient cooperate, using a partly trusted mediator, to facilitate message delivery. No party is required to know the full route of a message.
 
@@ -53,18 +53,12 @@ The only message in this protocol is the `forward` message. A simple and common 
 }
 ```
 
-- **next** - REQUIRED. The DID of the party to send the attached message to. 
+- **next** - REQUIRED. The identifier of the party to send the attached message to.
 - **attachments** - REQUIRED. The DIDComm message(s) to send to the party indicated in the `next` body attribute. This content should be encrypted for the next recipient.
 
 When the internal message expires, it's a good idea to also include an expiration for forward message requests. Include the `expires_time` header with the appropriate value.
 
-
-
-[TODO: describe use of the `attn` field, and explain why it's an important construct that allows us to encrypt to all (cryptographic route) but deliver just to the agent most likely to be interested (network route).
-
-[TODO: further revise the following paragraph to clarify that either a key or a DID might be used. Each possibility makes certain tradeoffs, and may be appropriate in certain cases. Keys may be fragile in the face of rotation, and they require a lot of knowledge/maintenance cost for the external mediator. However, DID key references and DIDs may introduce some complications in how the recipient proves control of a DID (a requirement for security, but also a privacy eroder).]
-
-For most external mediators, the value of the `next` field is likely to be a DID, not a key. However... (see previous TODO note). This hides details about the internals of a sovereign domain from external parties. The sender will have had to multiplex encrypt for all relevant recipient keys, but doesn't need to know how routing happens to those keys. The mediator and the receiver may have coordinated about how distribution to individual keys takes place (see [RFC 0211: Route Coordination](https://github.com/hyperledger/aries-rfcs/blob/master/features/0211-route-coordination/README.md)), but that is outside the scope of concerns of this protocol. 
+The value of the `next` field is typically a DID. However, it may also be a key, for the last hop of a route. The `routingKeys` array in the `serviceEndpoint` portion of a DID doc allow a party to list keys that should receive inbound communication, with encryption multiplexed so any of the keys can decrypt. This supports a use case where Alice wants to process messages on any of several devices that she owns.
 
 The attachment(s) in the `attachments` field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.
 
@@ -85,14 +79,14 @@ Why is such indirection useful?
 
 These last two characteristics are the foundation of mix networking feature for DIDComm. That feature is the subject of a different RFC; here we only note the existence of the optional feature. 
 
-### Sender Forward Process
+#### Sender Forward Process
 
 1. Sender Constructs Message.
 2. Sender Encrypts Message to recipient(s).
 3. Wrap Encrypted Message in Forward Message for each Routing Key.
 4. Transmit to `serviceEndpoint` `uri` in the manner specified in the [transports] section.
 
-### Mediator Process
+#### Mediator Process
 
 _Prior to using a Mediator, it is the recipient's responsibility to coordinate with the mediator. Part of this coordination informs them of the `next` address(es) expected, the endpoint, and any Routing Keys to be used when forwarding messages. That coordination is out of the scope of this spec._
 
@@ -102,7 +96,7 @@ _Prior to using a Mediator, it is the recipient's responsibility to coordinate w
 
 The recipient (`next` attribute of Forward Message) may have pre-configured additional routing keys with the mediator that were not present in the DID Document and therefore unknown to the original sender. If this is the case, the mediator should wrap the attached `payload` message into an additional Forward message once per routing key. This step is performed between (2) and (3).
 
-### DID Document Keys
+#### DID Document Keys
 
 All keys declared in the DID Document's `keyAgreement` section should be used as recipients when encrypting a message. The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
 
@@ -110,7 +104,7 @@ Keys used in a signed JWM are declared in the DID Document's `authentication` se
 
 TODO: include details about how DIDComm keys are represented/identified in the DID Document. The DID Core Spec appears light on details and examples of `keyAgreement` keys. Clarifying language should be included here or there.
 
-### DID Document Service Endpoint
+#### DID Document Service Endpoint
 
 DID Documents for DIDComm capable DIDs have a single service block entry in the following format:
 

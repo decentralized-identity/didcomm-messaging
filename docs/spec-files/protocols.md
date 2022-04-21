@@ -6,7 +6,7 @@ Only a few core protocols are defined within this spec. These serve to bootstrap
 
 Each protocol is uniquely identified by a Protocol Identifier URI, and contains one or more messages identified by a Message Type URI. In addition to serving as a unique identifier, these URIs may be used by a developer to locate documentation.
 
-#### Protocol Identifier URI
+### Protocol Identifier URI
 
 A Protocol Identifier URI (PIURI) identifies protocol versions unambiguously. 
 
@@ -28,14 +28,14 @@ Example PIURIs might be:
 
 ```
 https://didcomm.org/lets_do_lunch/1.0
-http://example.com/protocols?which=lets_do_lunch/1.0
+https://example.com/protocols?which=lets_do_lunch/1.0
 https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1
 ```
 
 The goals of the PIURI are, in descending priority:
 
 * Code can use the URI to route messages to protocol
-  handlers using [semver rules](semver.md). [TODO: ADD SEMVER]
+  handlers using [semver rules](semver.md).
 
 * The definition of a protocol is tied to the URI such
   that it is semantically stable. This means that once version 1.0
@@ -45,7 +45,7 @@ The goals of the PIURI are, in descending priority:
 * Developers can discover information about novel protocols, using
   the URI to browse or search the web.
 
-#### Message Type URI
+### Message Type URI
 
 A __Message Type URI__ (MTURI) identifies message types unambiguously. Standardizing its format is important because it is parsed by agents that will map messages to handlers &mdash; basically, code will look at this string and say, "Do I have something that can handle this message type inside protocol *X* version *Y*?" When that analysis happens, it must do more than compare the string for exact equality. It may need to check for semver compatibility, and it has to compare the protocol name and message type name ignoring case and punctuation.
 
@@ -84,8 +84,8 @@ The goals of the MTURI are, in descending priority:
 Example Message Type URIs:
 
 ```
-http://example.com/protocols?which=lets_do_lunch/1.0/proposal
-http://example.com/protocols/lets_do_lunch/1.0/proposal
+https://example.com/protocols?which=lets_do_lunch/1.0/proposal
+https://example.com/protocols/lets_do_lunch/1.0/proposal
 did:example:1234567890;spec/trust_ping/1.0/ping
 https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1/create-invitation
 ```
