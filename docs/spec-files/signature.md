@@ -26,7 +26,7 @@ Construct a JWS with a header like the following (substituting an appropriate `k
     "alg":"ES256"}
 ```
 
-The JWS payload is the Base64url encoded JWM.
+The JWS `payload` (not shown above) is the base64url-encoded JWM.
 
 When transmitted in a normal JWM fashion, the JSON Serialization MUST be used.
 
@@ -36,19 +36,11 @@ When verifying the signature, an additional check must be performed (ideally, be
 
 #### Uses of Signatures
 
-##### Non-Repudiation
+* Non-Repudiation: DIDComm Encrypted messages are repudiable. If non-repudiation is required for a particular protocol message, the message MUST be signed before encryption. 
 
-DIDComm Encrypted messages are repudiable. If non-repudiation is required for a particular protocol message, the message MUST be signed before encryption. 
+* Tamper Resistance: Messages that are shared without encrypting (e.g., [Out of Band Invitations](#invitation) may be signed to provide tamper resistance.
 
-##### Tamper Resistant OOB Messages
-
-Out of Band Messages may be signed to provide tamper resistance.
-
-##### DID Anchoring
-
-Signing can allow DIDs to be anchored via keys not usable for encrypting DIDComm messages.
-
-#### Examples
+* DID Anchoring: Some types of cryptographic keys support signing but not encrypting. Signed DIDComm messages allow the use of DIDs that are controlled with such keys.
 
 See section [Appendix C.2.](#c2-didcomm-signed-messages) for examples.
 

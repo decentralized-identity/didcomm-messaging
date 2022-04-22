@@ -40,7 +40,7 @@ The appropriate response to an ACK request for the *current* message is the next
 
 This allows agents to collaborate to recover from a response that was emitted but lost. Future extensions may define additional values (e.g., to implement read receipts, or to request an ACK if no other response is forthcoming after a modest delay).
 
-The presence of the `please_ack` header does not create an obligation on the part of the recipient. However, cooperative parties who wish to honor such a request MUST include an `ack` header on a subsequent message, where the value of the header is an array that contains the `id` of one or more messages being acknowledged. Values in this array MUST appear in the order *received* by whoever is acknowledging, from oldest to most recent.
+The presence of the `please_ack` header does not create an obligation on the part of the recipient. However, cooperative parties who wish to honor such a request SHOULD include an `ack` header on a subsequent message, where the value of the header is an array that contains the `id` of one or more messages being acknowledged. Values in this array MUST appear in the order *received* by whoever is acknowledging, from oldest to most recent.
 
 >Note: The `please_ack` header SHOULD NOT be included on [`forward` messages](#routing), and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, which are defined to send only destward. It would also undermine the privacy of recipients.
 
@@ -54,7 +54,7 @@ Particular protocols may wish to design their own message types that convey addi
 
 Any DIDComm message that continues a previously begun application-level protocol MUST use a `thid` property that associates it with the prior context. This context is vital for error handling. See [Threading](#threading).
 
-In addition, messages MAY use the [Advanced Sequencing](../../extensions/advanced_sequencing/main.md) extension to detect gaps in delivery or messages arriving out of order.
+In addition, messages MAY use the [Advanced Sequencing](https://github.com/decentralized-identity/didcomm-messaging/blob/master/extensions/advanced_sequencing/main.md) extension to detect gaps in delivery or messages arriving out of order.
 
 ### Problem reports
 
