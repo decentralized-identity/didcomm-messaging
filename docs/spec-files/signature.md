@@ -2,7 +2,7 @@
 
 A DIDComm message can be signed, either in conjunction with encryption, or independently (e.g., if the message will remain unencrypted).
 
-If a message is signed and encrypted to add non-repudiation, it must be signed prior to encryption. This is known as a [nested JWM](https://tools.ietf.org/html/draft-looker-jwm-01#section-1.2).
+If a message is both signed and encrypted (adding non-repudiation to confidentiality and integrity guarantees), it must be signed prior to encryption. This is known as a [nested JWM](https://tools.ietf.org/html/draft-looker-jwm-01#section-1.2).
 
 #### Algorithms
 
@@ -18,7 +18,7 @@ Implementations MUST be able to verify all of the following algorithms and MUST 
 
 #### Construction
 
-Construct a JWS with the following header:
+Construct a JWS with a header like the following (substituting an appropriate `kid` value that encodes a key from the [`authentication` section of the signer's DID document](https://www.w3.org/TR/did-core/#authentication)):
 
 ```json
    {"typ":"JWM",
@@ -32,7 +32,7 @@ When transmitted in a normal JWM fashion, the JSON Serialization MUST be used.
 
 #### Verification
 
-When verifying the signature, an additional check must be performed after verifying the JWS. The key used in the signature must be authorized to do so in the document resolved from the DID in the `from` attribute. If the key is not authorized for the signature, the signature is invalid.
+When verifying the signature, an additional check must be performed (ideally, before verifying the JWS). The key used in the signature must be authorized to authenticate the sender by appearing in the `authentication` section of the document resolved from the DID in the `from` attribute. If this check fails, the signature is inappropriate and MUST be rejected, regardless of its cryptographic correctness.
 
 #### Uses of Signatures
 
