@@ -111,7 +111,7 @@ The leftmost component of a problem code is its **sorter**. This is a single cha
 
 ##### Scope
 
-Reading left to right, the next token in a problem code is called the **scope**. This gives the sender's opinion about how much context should be undone if the problem is deemed an error.
+Reading left to right, the second token in a problem code is called the **scope**. This gives the sender's opinion about how much context should be undone if the problem is deemed an error.
 
 >Note: A problem always sorts according to the most pessimistic view that is taken by participants in the protocol. If the sender of a problem report deems it an error, then it is. If the sender deems it a warning, but a recipient with greater context decides that it clearly frustrates their goals, then it becomes an error; see [Replying to Warnings](#replying-to-warnings). Thus, *scope* is relevant even if the sender chooses a problem code that starts with `w`.)
 
@@ -154,7 +154,7 @@ When Alice sends a `w.*` problem report to Bob, and Bob decides that the warning
 
 Many problems may be experienced during a long-running or complex protocol. Implementers must have the option of tolerating and recovering from them, if we want robustness; perhaps several network retries will be followed by eventual success. However, care must be exercised to prevent situations where malformed or careless problem reports trigger infinite recursion or vicious cycles: 
 
-1. Implementations SHOULD consider implementing a [circuit breaker design pattern](https://codecraft.co/2013/01/11/dont-forget-the-circuit-breakers/) to prevent this problem.
+1. Implementations SHOULD consider implementing a [circuit breaker design pattern](https://en.wikipedia.org/wiki/Circuit_breaker_design_pattern) to prevent this problem.
 1. [Timeouts](#timeouts) SHOULD be used judiciously.
 1. Implementations SHOULD use their own configuration or judgment to establish some type of max error count as they begin a protocol instance. This limit could be protocol-specific, and could be evaluated per unit time (e.g., in a human chat protocol of infinite duration, perhaps the limit is max errors per hour rather than max errors across all time). If implementations establish such a limit, they SHOULD check to see whether this count has been exceeded, both when they receive and when they emit errors. If the limit is crossed as a result of a problem report they *receive*, they SHOULD send back a problem report with `"code": "e.p.req.max-errors-exceeded"` to abort the protocol. If the limit is crossed as a result of an error they are emitting, they MUST NOT emit the problem report for the triggering error; instead, they MUST emit a problem report with `"code": "e.p.req.max-errors-exceeded"` to abort the protocol. In either case, they MUST cease responding to messages that use the `thid` of that protocol instance, once this limit has been crossed.
 
