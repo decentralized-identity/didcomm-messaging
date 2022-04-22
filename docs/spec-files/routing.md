@@ -4,17 +4,17 @@ The routing protocol defines how a sender and a recipient cooperate, using a par
 
 #### Name and Version
 
-The name of this protocol is "Routing Protocol", and its [version](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/semver.md) is "2.0". It is uniquely identified by the [PIURI](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/uris.md#piuri):
+The name of this protocol is "Routing Protocol", and its [version](#semver-rules) is "2.0". It is uniquely identified by the [PIURI](#protocol-identifier-iuri):
 
     https://didcomm.org/routing/2.0
 
 #### Roles
 
-There are 3 roles in the protocol: `sender`, `mediator`, and `recipient`. The sender emits messages of type `forward` to the `mediator`. The mediator unpacks (decrypts) the payload of an encrypted `forward` message and passes on the result (an opaque blob that probably contains a differently encrypted payload) to the `recipient`.
+There are 3 roles in the protocol: `sender`, `mediator`, and `recipient`. The sender emits messages of type `forward` to the `mediator`. The mediator unpacks (decrypts) the payload of an encrypted `forward` message and passes on the result (a blob that probably contains a differently encrypted payload) to the `recipient`.
 
 ![ordinary sequence](../collateral/routing-roles.png)
 
->Note: the protocol is one-way; the return route for communication might not exist at all, or if it did, it could invert the roles of sender and receiver and use the same mediator, or it could use one or more different mediators, or it could use no mediator at all. This is a separate concern partly specified by the service endpoints in the DID docs of the sender and receiver, and partly explored in [RFC 0092: Transports Return Route](https://github.com/hyperledger/aries-rfcs/blob/master/features/0092-transport-return-route/README.md). 
+>Note: the protocol is one-way; the return route for communication might not exist at all, or if it did, it could invert the roles of sender and receiver and use the same mediator, or it could use one or more different mediators, or it could use no mediator at all. This is a separate concern partly specified by the service endpoints in the DID docs of the sender and receiver, and partly explored in other protocols.
 
 >Note: When the mediator is the routing agent of a single identity subject like Alice, the logical receiver is Alice herself, but the physical receiver may manifest as multiple edge devices (a phone, a laptop, a tablet). From the perspective of this protocol, multiplexing the send from mediator to receiver is out of scope for interoperability &mdash; compatible and fully supported, but not required or specified in any way.
 
@@ -101,8 +101,6 @@ The recipient (`next` attribute of Forward Message) may have pre-configured addi
 All keys declared in the DID Document's `keyAgreement` section should be used as recipients when encrypting a message. The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
 
 Keys used in a signed JWM are declared in the DID Document's `authentication` section.
-
-TODO: include details about how DIDComm keys are represented/identified in the DID Document. The DID Core Spec appears light on details and examples of `keyAgreement` keys. Clarifying language should be included here or there.
 
 #### DID Document Service Endpoint
 
