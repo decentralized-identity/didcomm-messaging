@@ -64,7 +64,7 @@ The attachment(s) in the `attachments` field are able to use the full power of D
 
 #### Rewrapping
 
-Normally, the payload attached to the `forward` message received by the mediator is transmitted directly to the receiver with no further packaging. However, optionally, the mediator can attach the opaque payload to a new `forward` message (appropriately anoncrypted), which then acts as a fresh outer envelope for the second half of the delivery. This [rewrapping](#rewrapping) means that the "onion" of packed messages stays the same size rather than getting smaller as a result of the forward operation:
+Normally, the payload attached to the `forward` message received by the mediator is transmitted directly to the receiver with no further packaging. However, optionally, the mediator can attach the opaque payload to a new `forward` message (appropriately anoncrypted), which then acts as a fresh outer envelope for the second half of the delivery. This rewrapping means that the "onion" of packed messages stays the same size rather than getting smaller as a result of the forward operation:
 
 ![re-wrapped sequence](../collateral/routing-roles-2.png)
 
@@ -77,14 +77,15 @@ Why is such indirection useful?
 * It lets the mediator change the size of the message by adding or subtracting noise from the content. 
 * It allows for dynamic routing late in the delivery chain.
 
-These last two characteristics are the foundation of mix networking feature for DIDComm. That feature is the subject of a different RFC; here we only note the existence of the optional feature. 
+These last two characteristics could provide the foundation of mixnet features for DIDComm; however, such functionality is out of scope in this spec. 
 
-#### Sender Forward Process
+#### Sender Process to Enable Forwarding
 
-1. Sender Constructs Message.
-2. Sender Encrypts Message to recipient(s).
-3. Wrap Encrypted Message in Forward Message for each Routing Key.
-4. Transmit to `serviceEndpoint` `uri` in the manner specified in the [transports] section.
+1. Sender constructs a plaintext message, M.
+2. If appropriate, Sender signs M.
+3. Sender encrypts M for each party that is an intended recipient. Assuming each recipient has several keys, corresponding to several devices, but that all the keys are of the same type, this produces a single message, N, for each recipient &mdash; and N is decryptable on any device the recipient is using. If Alice is sending to Bob and Carol, this step produces N<sub>Bob</sub> and N<sub>Carol</sub>, which have identical plaintext but different encrypted embodiments.
+4. The Sender now performs a wrapping process that loops *in reverse order* over all items in the `routingKeys` array of the [service endpoint](#service-endpoint) for the DID document that corresponds to the intended recipient of N. For each item X in that array, *beginning at the end of the array and working to its beginning*, Sender creates a new plaintext `forward` message, attaches the current N, and encrypts it for X. The output is a new encrypted message, N', that is treated as N in the next round of wrapping.
+5. Transmit the fully wrapped version of N to the `uri` given in the associated `serviceEndpoint` of the recipient's DID document. The party that receives it will have the ability to decrypt, producing a `forward` message with an encrypted attachment that is then forwarded to the next hop in `routingKeys`. This unwrapping and forwarding is repeated until the message reaches its final destination.
 
 #### Mediator Process
 
@@ -104,7 +105,7 @@ Keys used in a signed JWM are declared in the DID Document's `authentication` se
 
 TODO: include details about how DIDComm keys are represented/identified in the DID Document. The DID Core Spec appears light on details and examples of `keyAgreement` keys. Clarifying language should be included here or there.
 
-#### DID Document Service Endpoint
+#### Service Endpoint
 
 DID Documents for DIDComm capable DIDs have a single service block entry in the following format:
 
