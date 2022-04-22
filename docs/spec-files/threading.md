@@ -4,7 +4,7 @@ DIDComm provides threading as foundation for extremely powerful protocol feature
 
 ### Message IDs
 
-All plaintext DIDComm messages MUST have an `id` property, declared in the JWM header. A message without an `id` property SHOULD be considered invalid and SHOULD be rejected; it MUST NOT be interpreted as part of a multi-message interaction.
+All plaintext DIDComm messages MUST have an `id` property, declared in the [JWM headers](#message-headers). A message without an `id` property SHOULD be considered invalid and SHOULD be rejected; it MUST NOT be interpreted as part of a multi-message interaction.
 
 The value of `id` is a short (&lt;=32 bytes) string consisting entirely of [unreserved URI characters](https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3) &mdash; meaning that it is not necessary to [percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the value to incorporate it in a URI. Beyond this requirement, its format is not strongly constrained, but use of [UUIDs (RFC 4122)](https://datatracker.ietf.org/doc/html/rfc4122) is recommended. Because of the affinity for UUIDs, this field inherits UUID case-sensitivity semantics: it SHOULD be written in lower case but MUST be compared case-insensitively.
 
@@ -12,7 +12,7 @@ The value of an `id` property SHOULD be globally, universally unique; at the ver
 
 ### Threads
 
-A thread is uniquely identified by a thread ID. The thread ID is communicated by including a `thid` header in the JWM plaintext of the message. The value of `thid` MUST conform to the same constraints as the value of `id`. The DIDComm plaintext message that begins a thread MAY declare this property for the new thread. If no `thid` property is declared in the first message of an interaction, the `id` property of the message MUST be treated as the value of the `thid` as well; that is, the message is interpreted as if both `id` and `thid` were present, containing the same value.
+A thread is uniquely identified by a thread ID. The thread ID is communicated by including a [`thid` header in the JWM plaintext](#message-headers). The value of `thid` MUST conform to the same constraints as the value of `id`. The DIDComm plaintext message that begins a thread MAY declare this property for the new thread. If no `thid` property is declared in the first message of an interaction, the `id` property of the message MUST be treated as the value of the `thid` as well; that is, the message is interpreted as if both `id` and `thid` were present, containing the same value.
 
 All subsequent messages in a thread MUST include a `thid` header that contains the same value as the `thid` set in the first message of the thread. Messages that do not share the same `thid` MUST NOT be considered a part of the same thread.
 
