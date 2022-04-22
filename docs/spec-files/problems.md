@@ -80,17 +80,17 @@ Other entities are notified of problems by sending a simple message called a **p
 }
 ```
 
-The `pthid` header MUST be included with problem reports. Its value is the `thid` of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)
+- **pthid** - REQUIRED. The value is the `thid` of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)
 
-The `ack` header SHOULD be included if the problem in question was triggered directly by a preceding message. (Contrast problems arising from a timeout or a user deciding to cancel a transaction, which can arise independent of a preceding message. In such cases, `ack` MAY still be used, but there is no strong recommendation.) 
+- **ack** - OPTIONAL. It SHOULD be included if the problem in question was triggered directly by a preceding message. (Contrast problems arising from a timeout or a user deciding to cancel a transaction, which can arise independent of a preceding message. In such cases, `ack` MAY still be used, but there is no strong recommendation.) 
 
-The `code` field is worthy of its own section; [see below](#problem-codes).
+- **code** - REQUIRED. Deserves a rich explanation; see [Problem Codes](#problem-codes) below.
 
-The optional `comment` field contains human-friendly text describing the problem. The text MUST be statically associated with `code`, meaning that each time circumstances trigger a problem with the same `code`, the value of `comment` will be the same. This enables [localization](#i18n) and cached lookups, and it has some [cybersecurity benefits](https://didcomm.org/book/v2/problems-and-cybersecurity). The value of `comment` supports simple interpolation with `args` (see next), where args are referenced as `{1}`, `{2}`, and so forth. 
+- **comment** - OPTIONAL but recommended. Contains human-friendly text describing the problem. If the field is present, the text MUST be statically associated with `code`, meaning that each time circumstances trigger a problem with the same `code`, the value of `comment` will be the same. This enables [localization](#i18n) and cached lookups, and it has some [cybersecurity benefits](https://didcomm.org/book/v2/problems-and-cybersecurity). The value of `comment` supports simple interpolation with `args` (see next), where args are referenced as `{1}`, `{2}`, and so forth. 
 
-The optional `args` field contains situation-specific values that are interpolated into the value of `comment`, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, `e.p.xfer.cant-use-endpoint` apparently expects two values in `args`: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (`?`) during interpolation; extra args MUST be appended to the main text as comma-separated values. 
+- **args** - OPTIONAL. Contains situation-specific values that are interpolated into the value of `comment`, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, `e.p.xfer.cant-use-endpoint` apparently expects two values in `args`: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (`?`) during interpolation; extra args MUST be appended to the main text as comma-separated values. 
 
-The optional `escalate_to` field provides a URI where additional help on the issue can be received.
+- **escalate_to** - OPTIONAL. Provides a URI where additional help on the issue can be received.
 
 #### Problem Codes
 
