@@ -81,11 +81,13 @@ These last two characteristics could provide the foundation of mixnet features f
 
 #### Sender Process to Enable Forwarding
 
-1. Sender constructs a plaintext message, M.
-2. If appropriate, Sender signs M.
-3. Sender encrypts M for each party that is an intended recipient. Assuming each recipient has several keys, corresponding to several devices, but that all the keys are of the same type, this produces a single message, N, for each recipient &mdash; and N is decryptable on any device the recipient is using. If Alice is sending to Bob and Carol, this step produces N<sub>Bob</sub> and N<sub>Carol</sub>, which have identical plaintext but different encrypted embodiments.
-4. The Sender now performs a wrapping process that loops *in reverse order* over all items in the `routingKeys` array of the [service endpoint](#service-endpoint) for the DID document that corresponds to the intended recipient of N. For each item X in that array, *beginning at the end of the array and working to its beginning*, Sender creates a new plaintext `forward` message, attaches the current N, and encrypts it for X. The output is a new encrypted message, N', that is treated as N in the next round of wrapping.
-5. Transmit the fully wrapped version of N to the `uri` given in the associated `serviceEndpoint` of the recipient's DID document. The party that receives it will have the ability to decrypt, producing a `forward` message with an encrypted attachment that is then forwarded to the next hop in `routingKeys`. This unwrapping and forwarding is repeated until the message reaches its final destination.
+1. Construct a plaintext message, M.
+2. If appropriate, sign M.
+3. Encrypt M for each party that is an intended recipient. Assuming each recipient has several keys, corresponding to several devices, but that all the keys are of the same type, this produces a single message, N, for each recipient &mdash; and N is decryptable on any device the recipient is using. If Alice is sending to Bob and Carol, this step produces N<sub>Bob</sub> and N<sub>Carol</sub>, which have identical plaintext but different encrypted embodiments.
+4. Perform a wrapping process that loops *in reverse order* over all items in the `routingKeys` array of the [service endpoint](#service-endpoint) for the DID document that corresponds to the intended recipient of N. For each item X in that array, *beginning at the end of the array and working to its beginning*, Sender creates a new plaintext `forward` message, attaches the current N, and encrypts it for X. The output is a new encrypted message, N', that is treated as N in the next round of wrapping.
+5. Transmit the fully wrapped version of N to the `uri` given in the associated `serviceEndpoint` of the recipient's DID document.
+
+The party that receives it will have the ability to decrypt, producing a `forward` message with an encrypted attachment that is then forwarded to the next hop in `routingKeys`. This unwrapping and forwarding is repeated until the message reaches its final destination.
 
 #### Mediator Process
 
