@@ -96,7 +96,7 @@ Other entities are notified of problems by sending a simple message called a **p
 
 Perhaps the most important feature of each problem report message is its `code` field. This required value is the main piece of data that recipient software uses to automate reactions. It categorizes what went wrong.
 
-Problem codes are lower kabob-case. They are structured as a sequence of tokens delimited by the dot character `.`, with the tokens being more general to the left, and more specific to the right. Because recipients can do matching by prefix instead of full string, a recipient can recognize and handle broad semantics even if the trailing tokens of the string contain unfamiliar details. In the example below, for example, relatively sophisticated handling is possible even if a recipient only recognizes the `e.p.xfer.` portion of the code.
+Problem codes are lower kebab-case. They are structured as a sequence of tokens delimited by the dot character `.`, with the tokens being more general to the left, and more specific to the right. Because recipients can do matching by prefix instead of full string, a recipient can recognize and handle broad semantics even if the trailing tokens of the string contain unfamiliar details. In the example below, for example, relatively sophisticated handling is possible even if a recipient only recognizes the `e.p.xfer.` portion of the code.
 
 ![problem code structure](../collateral/problem-code-structure.png)
 
@@ -125,7 +125,7 @@ The possible values of *scope* are:
 
 ##### Descriptors
 
-After the *sorter* and the *scope*, problem codes consist of one or more **descriptors**. These are kabob-case tokens separated by the `.` character, where the semantics get progressively more detailed reading left to right. Senders of problem reports SHOULD include at least one descriptor in their problem code, and SHOULD use the most specific descriptor they can. Recipients MAY specialize their reactions to problems in a very granular way, or MAY examine only a prefix of a problem code.
+After the *sorter* and the *scope*, problem codes consist of one or more **descriptors**. These are kebab-case tokens separated by the `.` character, where the semantics get progressively more detailed reading left to right. Senders of problem reports SHOULD include at least one descriptor in their problem code, and SHOULD use the most specific descriptor they can. Recipients MAY specialize their reactions to problems in a very granular way, or MAY examine only a prefix of a problem code.
 
 The following descriptor tokens are defined. They can be used by themselves, or as prefixes to more specific descriptors. Additional descriptors &mdash; particularly more granular ones &mdash; may be defined in individual protocols.
 
