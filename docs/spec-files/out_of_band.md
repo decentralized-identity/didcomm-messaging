@@ -4,7 +4,7 @@
 
 When passing a DIDComm message between two parties, it is often useful to present a message in the form of a URL or encoded into the form of a QR code for scanning with a smartphone or other camera. The format for a QR code is simply the encoded URL form of a message.
 
-##### Privacy Considerations
+#### Privacy Considerations
 
 Any information passed via a URL or QR code is unencrypted, and may be observed by another party. This lack of privacy must be minded in two different ways.
 
@@ -12,17 +12,15 @@ First, no private information may be passed in the message. Private information 
 
 Second, any identifiers passed in a message sent via URL or QR code must no longer be considered private. Any DID used or other identifier no longer considered private MUST be rotated over a secure connection if privacy is required.
 
-##### Message Correlation
+#### Message Correlation
 
 The `id` of the message passed in a URL or a QR code is used to as the `pthid` on a response sent by the recipient of this message. The response recipient can use the `pthid` to correlate it with the original message.
 
-##### Messages
+#### Invitation
 
 Each message passed this way must be contained within an `out-of-band` message, as described below.
 
 The out-of-band protocol consists in a single message that is sent by the *sender*.
-
-#### Invitation: `https://didcomm.org/out-of-band/2.0/invitation`
 
 ```jsonc
 {
@@ -64,7 +62,7 @@ The items in the message are:
 
 When encoding a message in a URL or QR code, the _sender_ does not know which protocols are supported by the _recipient_ of the message. Encoding multiple alternative messages is a form of optimistic protocol negotiation that allows multiple supported protocols without coordination
 
-##### Standard Message Encoding
+#### Standard Message Encoding
 
 Using a standard message encoding allows for easier interoperability between multiple projects and software platforms. Using a URL for that standard encoding provides a built in fallback flow for users who are unable to automatically process the message. Those new users will load the URL in a browser as a default behavior, and may be presented with instructions on how to install software capable of processing the message. Already onboarded users will be able to process the message without loading in a browser via mobile app URL capture, or via capability detection after being loaded in a browser.
 
@@ -160,7 +158,7 @@ Example URL encoded as a QR Code:
 
 ![Example QR Code](.//collateral/out_of_band_exampleqr.png)
 
-##### Short URL Message Retrieval
+#### Short URL Message Retrieval
 
 It seems inevitable that the length of some DIDComm messages will be too long to produce a useable QR code. Techniques to avoid unusable QR codes have been presented above, including using attachment links for requests, minimizing the routing of the response and eliminating unnecessary whitespace in the JSON. However, at some point a _sender_ may need generate a very long URL. In that case, a short URL message retrieval redirection should be implemented by the sender as follows:
 
@@ -177,10 +175,6 @@ Note: Due to the privacy implications, a standard URL shortening service SHOULD 
 
 #### Redirecting Back to Sender
 
-##### Summary
-Describes how receiving party of out-of-band invitation can redirect back to sender application once protocol execution is over.
-
-##### Motivation
 In some cases, interaction between sender and receiver of out-of-band invitation would require receiver application to redirect back to sender.
 
 For example,
@@ -192,10 +186,11 @@ These redirects may not be required in many cases, for example,
 
 
 ##### Reference
-During the protocol execution sender can securely send [`web_redirect`](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator) info as part of messages concluding protocol executions, like [a formal acknowledgement message](#acks) or a [problem report](#problem-reports).
+During the protocol execution sender can securely send [`web_redirect`](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator) information as part of messages concluding protocol executions, like [a formal acknowledgement message](#acks) or a [problem report](#problem-reports).
 Once protocol is ended then receiver can optionally choose to redirect by extracting the redirect information from the message.
 
-Example acknowledgement message from verifier to prover containing web redirect information.
+Example acknowledgement message from verifier to prover containing web redirect information:
+
 ```json
 {
   "type":"https://didcomm.org/present-proof/3.0/ack",
@@ -210,7 +205,7 @@ Example acknowledgement message from verifier to prover containing web redirect 
 }
 ```
 
-Problem report with web redirect header from [Problem Reports Example](#problem-reports) will look like,
+Problem report with web redirect header from [problem report example](#problem-reports) will look like:
 ```json
 {
   "type": "https://didcomm.org/report-problem/2.0/problem-report",
@@ -233,8 +228,3 @@ Problem report with web redirect header from [Problem Reports Example](#problem-
 
 A sender MUST use ``web_redirect`` headers to request redirect from receiver. A ``web_redirect`` header MUST contain ``status`` and ``redirectUrl`` properties. 
 The value of ``status`` property MUST be one of the Acknowledgement statuses defined [here](https://github.com/hyperledger/aries-rfcs/blob/main/features/0015-acks/README.md#ack-status) which indicates protocol execution outcome.
-
-
-
-
-
