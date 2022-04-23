@@ -101,11 +101,17 @@ The recipient (`next` attribute of Forward Message) may have pre-configured addi
 
 #### DID Document Keys
 
-All keys declared in the DID Document's `keyAgreement` section should be used as recipients when encrypting a message. The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
+Ideally, all keys declared in the `keyAgreement` section of a given recipient's DID document are used as target keys when encrypting a message. To encourage this, DIDComm encrypts the main message content only once, using an ephemeral content encryption key, and then encrypts the relatively tiny ephemeral key once per recipient key. This "multiplexed ecnryption" is efficient, and it allows a recipient to change devices over the course of a conversation without prior arrangement.
+
+However, practical considerations can frustrate this ideal. If a recipient's DID document declares keys of different types, a sender has to prepare more than one encryption envelope &mdash; and if not all of a recipient's key types are supported by the sender, the goal is simply unachievable.
+
+In addition, if a sender is routing the same message to more than one recipient (not just more than one key of the same recipient), the sender has to wrap the message differently because it will flow through different mediators.
+
+This leads to a rule of thumb rather than a strong normative requirement: a sender SHOULD encrypt for as many of a recipient's keys as is practical.
+
+The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
 
 Keys used in a signed JWM are declared in the DID Document's `authentication` section.
-
-TODO: include details about how DIDComm keys are represented/identified in the DID Document. The DID Core Spec appears light on details and examples of `keyAgreement` keys. Clarifying language should be included here or there.
 
 #### Service Endpoint
 
