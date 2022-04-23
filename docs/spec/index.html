@@ -1256,28 +1256,19 @@ Once protocol is ended then receiver can optionally choose to redirect by extrac
 <p>A sender MUST use <code>web_redirect</code> headers to request redirect from receiver. A <code>web_redirect</code> header MUST contain <code>status</code> and <code>redirectUrl</code> properties.
 The value of <code>status</code> property MUST be one of the Acknowledgement statuses defined <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="main"path-5="features"path-6="0015-acks"path-7="README.md#ack-status"href="https://github.com/hyperledger/aries-rfcs/blob/main/features/0015-acks/README.md#ack-status" >here</a> which indicates protocol execution outcome.</p>
 <h3 id="discover-features-protocol-20"><a class="toc-anchor" href="#discover-features-protocol-20" >§</a> Discover Features Protocol 2.0</h3>
-<p>This protocol helps agents query one another to discover which features
-they support, and to what extent.</p>
-<p>The identifier for the message family used by this protocol is
-<code>discover-features</code>, and the fully qualified <a href="#protocol-identifier-uri" >PIURI</a> for its definition is:</p>
+<p>This protocol helps agents query one another to discover which features they support, and to what extent.</p>
+<p>The identifier for the message family used by this protocol is <code>discover-features</code>, and the fully qualified <a href="#protocol-identifier-uri" >PIURI</a> for its definition is:</p>
 <pre><code>https://didcomm.org/discover-features/2.0
 </code></pre>
 <h4 id="motivation-2"><a class="toc-anchor" href="#motivation-2" >§</a> Motivation</h4>
-<p>Though some agents will support just one protocol and will be
-statically configured to interact with just one other party, many
-exciting uses of agents are more dynamic and unpredictable. When
-Alice and Bob meet, they won’t know in advance which features are
-supported by one another’s agents. They need a way to find out.</p>
+<p>Though some agents will support just one protocol and will be statically configured to interact with just one other party, many exciting uses of agents are more dynamic and unpredictable. When Alice and Bob meet, they won’t know in advance which features are supported by one another’s agents. They need a way to find out.</p>
 <p>Disclosing features in this manner has a significant privacy benefit over endpoint disclosures contained in a DID Document published to a Verifiable Data Registry (VDR). Using the single DIDComm endpoint published in the document and this protocol, features can be selectively disclosed to other parties at the owner’s discretion. The problem of anonymous scanning and fingerprinting enabled with VDR disclosures is solved in a privacy preserving way.</p>
 <h4 id="roles-2"><a class="toc-anchor" href="#roles-2" >§</a> Roles</h4>
-<p>There are two roles in the <code>discover-features</code> protocol: <code>requester</code> and
-<code>responder</code>. The requester asks the responder about the protocols it
-supports, and the responder answers. Each role uses a single message type.</p>
+<p>There are two roles in the <code>discover-features</code> protocol: <code>requester</code> and <code>responder</code>. The requester asks the responder about the protocols it supports, and the responder answers. Each role uses a single message type.</p>
 <p>It is also possible to proactively disclose features; in this case a requester receives a disclosure without asking for it. This may eliminate some chattiness in certain use cases (e.g., where two-way connectivity is limited).</p>
 <h4 id="states-2"><a class="toc-anchor" href="#states-2" >§</a> States</h4>
-<p>This is a classic two-step request~response interaction, so it uses the
-predefined state machines for any <code>requester</code> and <code>responder</code>:</p>
-<p><a path-0="docs.google.com"path-1="spreadsheets"path-2="d"path-3="1smY8qhG1qqGs0NH9g2hV4b7mDqrM6MIsmNI93tor2qk"path-4="edit"href="https://docs.google.com/spreadsheets/d/1smY8qhG1qqGs0NH9g2hV4b7mDqrM6MIsmNI93tor2qk/edit" ><img src="../collateral/routing-state-machines.png" alt="state machines"></a></p>
+<p>This is a classic two-step request~response interaction, so it uses the predefined state machines for any <code>requester</code> and <code>responder</code>:</p>
+<p><img src="../collateral/routing-state-machines.png" alt="state machines">]</p>
 <h4 id="messages-3"><a class="toc-anchor" href="#messages-3" >§</a> Messages</h4>
 <h6 id="query-message-type"><a class="toc-anchor" href="#query-message-type" >§</a> <code>query</code> Message Type</h6>
 <p>A <code>discover-features/query</code> message looks like this:</p>
@@ -1317,7 +1308,7 @@ predefined state machines for any <code>requester</code> and <code>responder</co
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>The <code>disclosures</code> field is a JSON array of zero or more <strong>disclosure objects</strong> that describe a feature. Each descriptor has a <code>feature-type</code> field that contains data corresponding to <code>feature-type</code> in a query object, and an <code>id</code> field that unambiguously identifies a single item of that feature type. When the item is a protocol, the disclosure object may also contain a <code>roles</code> array that enumerates the roles the responding agent can play in the associated protocol. Future feature types may add additional optional fields, though no other fields are being standardized with this version of the RFC.</p>
+<p>The <code>disclosures</code> field is a JSON array of zero or more <strong>disclosure objects</strong> that describe a feature. Each descriptor has a <code>feature-type</code> field that contains data corresponding to <code>feature-type</code> in a query object, and an <code>id</code> field that unambiguously identifies a single item of that feature type. When the item is a protocol, the disclosure object may also contain a <code>roles</code> array that enumerates the roles the responding agent can play in the associated protocol. Future feature types may add additional optional fields, though no other fields are being standardized with this version of the spec.</p>
 <p>Disclosures messages say, “Here are some features I support (that matched your queries).”</p>
 <h6 id="sparse-responses"><a class="toc-anchor" href="#sparse-responses" >§</a> Sparse Responses</h6>
 <p>Disclosures do not have to contain exhaustive detail. For example, the following response omits the optional <code>roles</code> field but may be just as useful as one that includes it:</p>
