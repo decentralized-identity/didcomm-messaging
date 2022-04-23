@@ -34,4 +34,4 @@ Websockets are an efficient way to transmit multiple messages without the overhe
 - The trust of each message MUST be associated with DIDComm encryption or signing, not from the socket connection itself.
 - Websockets are used only for one-way transmission from sender to receiver; responses don't flow back the other way on the socket.
 - Using Secure Websockets (wss://) with TLS 1.2 or greater with a cipher suite providing Perfect Forward Secrecy (PFS) allows a transmission to benefit from PFS that's already available at the transport level.
-- When using STOMP over WebSocket, the `content-type` header is `application/didcomm-enc-env` as in the HTTPS message.
+- When using STOMP over WebSocket, the `content-type` header is `application/didcomm-encrypted+json` as in the HTTPS message.
