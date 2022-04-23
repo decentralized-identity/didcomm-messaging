@@ -152,11 +152,11 @@ Please see [Message Types](#message-types) for details about media types.
 
 #### Failover
 
-Should the transmission of a message not receive a successful response as defined in the [Transports] section, the sender SHOULD try another endpoint or try delivery at a later time.
+If the transmission of a message fails, the sender SHOULD try another endpoint or try delivery at a later time.
 
 #### Alternative Endpoints
 
-In addition to the URIs for [transports], some alternative forms are available.
+In addition to self-explanatory URIs, some alternative forms are available.
 
 ##### DID
 
