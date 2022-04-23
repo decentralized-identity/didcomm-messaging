@@ -110,7 +110,7 @@ Assuming she also has Bob's DID document which happens to include the following 
 }
 ```
 
-Unless previously coordinated in a layer above DIDComm, the default recipients of the envelope MUST include all the `keyAgreement` entries representing Bob. This allows Bob to decrypt his messages on any device he controls, without sharing keys. The corresponding `kid` header for this recipient MUST have a DID URL pointing to a corresponding verification method in the DID document. This verification method MUST be associated with the `keyAgreement` verification relationship and the verification material MUST be retrieved from the DID document to execute the ECDH-1PU key derivation for content key wrapping.
+Unless previously coordinated in a layer above DIDComm, the default recipients of the envelope SHOULD include all the `keyAgreement` entries representing Bob. This allows Bob to decrypt his messages on any device he controls, without sharing keys across his devices. The corresponding `kid` header for this recipient MUST have a DID URL pointing to a corresponding verification method in the DID document. This verification method MUST be associated with the `keyAgreement` verification relationship and the verification material MUST be retrieved from the DID document to execute the ECDH-1PU key derivation for content key wrapping.
 
 When Bob receives the envelope, the unpacking process on his end MUST resolve the `skid` protected header value using Alice's DID doc's `keyAgreement[0]` in order to extract her public key. In Alice's DID Doc example above, `keyAgreement[0]` is a reference id. It MUST be resolved from the main `verificationMethod[]` of Alice's DID document (not shown in the example).
 
