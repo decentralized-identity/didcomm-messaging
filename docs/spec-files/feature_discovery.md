@@ -1,37 +1,28 @@
 ### Discover Features Protocol 2.0
 
-This protocol helps agents query one another to discover which features
-they support, and to what extent.
+This protocol helps agents query one another to discover which features they support, and to what extent.
 
-The identifier for the message family used by this protocol is
-`discover-features`, and the fully qualified [PIURI](#protocol-identifier-uri) for its definition is:
+The identifier for the message family used by this protocol is `discover-features`, and the fully qualified [PIURI](#protocol-identifier-uri) for its definition is:
 
     https://didcomm.org/discover-features/2.0
 
 #### Motivation
 
-Though some agents will support just one protocol and will be
-statically configured to interact with just one other party, many
-exciting uses of agents are more dynamic and unpredictable. When
-Alice and Bob meet, they won't know in advance which features are
-supported by one another's agents. They need a way to find out.
+Though some agents will support just one protocol and will be statically configured to interact with just one other party, many exciting uses of agents are more dynamic and unpredictable. When Alice and Bob meet, they won't know in advance which features are supported by one another's agents. They need a way to find out.
 
 Disclosing features in this manner has a significant privacy benefit over endpoint disclosures contained in a DID Document published to a Verifiable Data Registry (VDR). Using the single DIDComm endpoint published in the document and this protocol, features can be selectively disclosed to other parties at the owner's discretion. The problem of anonymous scanning and fingerprinting enabled with VDR disclosures is solved in a privacy preserving way.
 
 #### Roles
 
-There are two roles in the `discover-features` protocol: `requester` and
-`responder`. The requester asks the responder about the protocols it
-supports, and the responder answers. Each role uses a single message type.
+There are two roles in the `discover-features` protocol: `requester` and `responder`. The requester asks the responder about the protocols it supports, and the responder answers. Each role uses a single message type.
 
 It is also possible to proactively disclose features; in this case a requester receives a disclosure without asking for it. This may eliminate some chattiness in certain use cases (e.g., where two-way connectivity is limited).
 
 #### States
 
-This is a classic two-step request~response interaction, so it uses the
-predefined state machines for any `requester` and `responder`:
+This is a classic two-step request~response interaction, so it uses the predefined state machines for any `requester` and `responder`:
 
-[![state machines](../collateral/routing-state-machines.png)](https://docs.google.com/spreadsheets/d/1smY8qhG1qqGs0NH9g2hV4b7mDqrM6MIsmNI93tor2qk/edit)
+![state machines](../collateral/routing-state-machines.png)]
 
 #### Messages
 
@@ -86,7 +77,7 @@ A `discover-features/disclose` message looks like this:
 }
 ```
 
-The `disclosures` field is a JSON array of zero or more **disclosure objects** that describe a feature. Each descriptor has a `feature-type` field that contains data corresponding to `feature-type` in a query object, and an `id` field that unambiguously identifies a single item of that feature type. When the item is a protocol, the disclosure object may also contain a `roles` array that enumerates the roles the responding agent can play in the associated protocol. Future feature types may add additional optional fields, though no other fields are being standardized with this version of the RFC.
+The `disclosures` field is a JSON array of zero or more **disclosure objects** that describe a feature. Each descriptor has a `feature-type` field that contains data corresponding to `feature-type` in a query object, and an `id` field that unambiguously identifies a single item of that feature type. When the item is a protocol, the disclosure object may also contain a `roles` array that enumerates the roles the responding agent can play in the associated protocol. Future feature types may add additional optional fields, though no other fields are being standardized with this version of the spec.
 
 Disclosures messages say, "Here are some features I support (that matched your queries)."
 
