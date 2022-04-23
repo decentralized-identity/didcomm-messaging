@@ -12,7 +12,7 @@ Each transport MUST define:
 
 - format of `serviceEndpoint` `uri`: Which URI schemes are used (if URI), or the properties of the object (if object).
 - how to actually send messages:  e.g., through HTTPS POST, through dial protocol (libp2p), etc.
-- how mime-types of the content are provided, e.g., through Content-Type header, etc.
+- how [IANA media types](#iana-media-types) of the content are provided, e.g., through `Content-Type` header, etc.
 - where additional context definition is hosted, e.g., in case the `serviceEndpoint`  object has extra properties specific to the transport.
 
 ### Reference

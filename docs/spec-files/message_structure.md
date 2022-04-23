@@ -160,7 +160,7 @@ Each attachment is described with an instance of a JSON object that has the foll
 - `media_type`: [optional] Describes the media type of the attached content.
 - `format`: [optional] Further describes the format of the attachment if the `media_type` is not sufficient.
 - `lastmod_time`: [optional] A hint about when the content in this attachment was last modified.
-- `data`: A JSON object that gives access to the actual content of the attachment. Contains enough of the following subfields to allow access to the data:
+- `data`: A JSON object that gives access to the actual content of the attachment. This MUST contain at least one of the following subfields and enough of them to allow access to the data:
     * `jws`: [optional] A [JWS](https://tools.ietf.org/html/rfc7515) in [detached content mode](https://tools.ietf.org/html/rfc7515#appendix-F), where the `payload` field of the JWS maps to `base64` or to something fetchable via `links`. This allows attachments to be signed. The signature need not come from the author of the message.
     * `hash`: [optional] The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the `links` data attribute.
     * `links`: [optional] A list of zero or more locations at which the content may be fetched. This allows content to be attached by reference instead of by value.
@@ -172,41 +172,47 @@ Each attachment is described with an instance of a JSON object that has the foll
 
 ```json
 {
-    "type": "<sometype>",
-    "to": ["did:example:mediator"],
-    "body":{
-        "attachment_id": "1",
-        "encrypted_details": {
-            "id": "x",
-            "encrypted_to": "",
-            "other_details": "about attachment"
-        }
+  "type": "<sometype>",
+  "to": [
+    "did:example:mediator"
+  ],
+  "body": {
+    "attachment_id": "1",
+    "encrypted_details": {
+      "id": "x",
+      "encrypted_to": "",
+      "other_details": "about attachment"
+    }
+  },
+  "attachments": [
+    {
+      "id": "1",
+      "description": "example b64 encoded attachment",
+      "data": {
+        "base64": "WW91ciBob3ZlcmNyYWZ0IGlzIGZ1bGwgb2YgZWVscw=="
+      }
     },
-    "attachments": [
-        {
-			"id": "1",
-            "description": "example b64 encoded attachment",
-            "data": {
-            	"base64": "WW91ciBob3ZlcmNyYWZ0IGlzIGZ1bGwgb2YgZWVscw=="
-        	}
-        },{
-			"id": "2",
-            "description": "example linked attachment",
-            "data": {
-            	"hash": "<multi-hash>",
-                "links": ["https://path/to/resource"]
-        	}
-        },{
-			"id": "x",
-            "description": "example encrypted DIDComm message as attachment",
-            "media_type": "application/didcomm-encrypted+json",
-            "data": {
-            	"json": {
-                    //jwe json structure
-                }
-        	}
+    {
+      "id": "2",
+      "description": "example linked attachment",
+      "data": {
+        "hash": "<multi-hash>",
+        "links": [
+          "https://path/to/resource"
+        ]
+      }
+    },
+    {
+      "id": "x",
+      "description": "example encrypted DIDComm message as attachment",
+      "media_type": "application/didcomm-encrypted+json",
+      "data": {
+        "json": {
+          //jwe json structure
         }
-    ]
+      }
+    }
+  ]
 }
 ```
 
