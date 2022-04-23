@@ -115,7 +115,9 @@ Keys used in a signed JWM are declared in the DID Document's `authentication` se
 
 #### Service Endpoint
 
-DID Documents for DIDComm capable DIDs have a single service block entry in the following format:
+Parties who wish to communicate via DIDComm Messaging MAY tell other parties how to reach them by declaring a `serviceEndpoint` block in their DID document. (It is also possible to convey this information in other ways, but they are out of scope for this spec.)
+
+The relevant entry in the DID document matches this format:
 
 ```json
 {
@@ -136,7 +138,7 @@ DID Documents for DIDComm capable DIDs have a single service block entry in the 
 
 **type**: MUST be `DIDCommMessaging`. 
 
-**serviceEndpoint**: MUST contain an ordered list of objects, each represents a DIDComm Service Endpoint URI and it's associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
+**serviceEndpoint**: MUST contain an ordered list of objects. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
 
 Each object has the following properties:
 
