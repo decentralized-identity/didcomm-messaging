@@ -80,7 +80,7 @@ https://<domain>/<path>?_oob=<encodedplaintextjwm>
 
 > `_oob` is a shortened form of Out of Band, and was chosen to not conflict with query parameter names in use at a particular domain. When the query parameter is detected, it may be assumed to be an Out Of Band message with a reasonably high confidence.
 
-> To do: We need to rationalize this approach `https://` approach with the use of a special protocol (e.g. `didcomm://`) that will enable handling of the URL on mobile devices to automatically invoke an installed app on both Android and iOS. A user must be able to process the out-of-band message on the device of the agent (e.g. when the mobile device can't scan the QR code because it is on a web page on device).
+> When this spec was written, the `didcomm://` URL scheme was in active use for deep linking in mobile apps, and had features that intersect with the OOB protocol described here. That scheme is defined elsewhere; we only note it here to advise against its overloading for other purposes.
 
 The `<encodedplaintextjwm>` is a JWM plaintext message that has been base64-url encoded.
 
