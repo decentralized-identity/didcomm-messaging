@@ -148,21 +148,17 @@ Each object has the following properties:
 If `accept` is not specified, the sender uses its preferred choice for sending a message to the endpoint.
 Please see [Message Types](#message-types) for details about media types.
 
-**routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec. 
+**routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in [Sender Process to Enable Forwarding](#sender-process-to-enable-forwarding), above. 
 
 #### Failover
 
 If the transmission of a message fails, the sender SHOULD try another endpoint or try delivery at a later time.
 
-#### Alternative Endpoints
+#### Using a DID as an endpoint
 
-In addition to self-explanatory URIs, some alternative forms are available.
+In addition to the sorts of URIs familiar to all web developers, it is possible to use a DID as the `uri` value in a `serviceEndpoint`. This is useful when a recipient sits behind a mediator, because it allows the mediator to rotate its keys or update its own service endpoints without disrupting communication between sender and recipient. In such cases, the DID (which belongs to the mediator) is resolved. Inside the resulting DID document, a `serviceEndpoint` with type `DIDCommMessaging` MUST exist. The `keyAgreement` keys of the mediator are implicitly prepended to the `routingKeys` section from the message recipient's DID Document as per the process in [Sender Process to Enable Forwarding](#sender-process-to-enable-forwarding).
 
-##### DID
-
-Using a DID for the `serviceEndpoint` `uri` is useful when using a mediator. The DID should be resolved, and services with type of "DIDComm" will contain valid `serviceEndpoints`. The keyAgreement keys of that DID Document should be implicitly appended at the end of the routingKeys section from the message recipient's DID Document as per the process in [Sender Forward Process]. The advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients' DID Documents.
-
-A DID representing a mediator SHOULD NOT use alternative endpoints in its own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [transports] will prevent such recursion.
+A DID representing a mediator SHOULD NOT use alternative endpoints in its own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [Transports](#transports) will prevent such recursion.
 
 Example 1: Mediator
 
@@ -189,4 +185,4 @@ Example 2: Mediator + Routing Keys
 }
 ```
 
-The message is encrypted to the recipient, then wrapped in a forward message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
+The message is encrypted to the recipient, then wrapped in a `forward` message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
