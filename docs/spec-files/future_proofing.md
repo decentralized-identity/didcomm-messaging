@@ -26,10 +26,10 @@ This is a DIDComm _messaging_ spec. Security, privacy, routing, and metadata con
 
 ### Post-Quantum Crypto
 
-The designers of DIDComm are aware that DIDComm's cryptographic methods will need to be upgraded when quantum computing matures. This is because DIDComm makes heavy use of asymmetric elliptic curve mechanisms that depend on the discrete logarithm problem; this computational hardness is likely to be vulnerable to quantum cracking. Similar risks will drive upgrades to TLS, Ethereum, Bitcoin, and many other systems that are considered highly secure today.
+The designers of DIDComm are aware that DIDComm's cryptographic methods will need to be upgraded when quantum computing matures. This is because DIDComm makes heavy use of asymmetric elliptic curve mechanisms that depend on the discrete logarithm problem; this computational hardness is known to be vulnerable to a quantum computer that can run Shor’s algorithm. Similar risks will drive upgrades to TLS, Ethereum, Bitcoin, and many other systems that are considered highly secure today.
 
 Some modest preparations for quantum-resistant DIDComm have already begun. DIDComm is able to use arbitrary DID methods, which should allow approaches that are quantum-secure without changing the general pattern of DIDComm's interaction with key management technology.
 
-Libraries that provide quantum-resistant algorithms for signing and encryption are now available, but research is needed to determine which approaches are worthy of broad adoption. This is the subject of [an ongoing project sponsored by NIST](https://csrc.nist.gov/projects/post-quantum-cryptography), and of [a similar project in the EU](https://ec.europa.eu/digital-single-market/en/news/future-quantum-eu-countries-plan-ultra-secure-communication-network).
+Libraries that provide quantum-resistant algorithms for signing and encryption are now available, but research is needed to determine which approaches are worthy of broad adoption. This is the subject of [an ongoing project sponsored by NIST](https://csrc.nist.gov/projects/post-quantum-cryptography), and of [a similar project in the EU](https://www.tno.nl/en/about-tno/news/2021/2/quantum-flagship-silicon-spin-qubits-platform/).
 
-We expect to update the DIDComm Messaging spec as these projects release mature recommendations and the cryptographic libraries they vet achieve adoption. It is not yet clear whether this will require a breaking change to DIDComm's encryption envelope or signing formats.
+We expect to update the DIDComm Messaging spec as these projects release mature recommendations and the cryptographic libraries they vet achieve adoption.

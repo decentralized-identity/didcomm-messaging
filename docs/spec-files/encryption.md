@@ -4,7 +4,7 @@
 
 DIDComm Messages are encrypted with the keys of a single DID. A message being sent to multiple DIDs MUST be encrypted for each DID independently. If a single DID has multiple key types, the keys of each type must be used in a separate encryption of the message. 
 
-DIDComm supports two types of message encryption: Authenticated Sender Encryption ("authcrypt") and Anonymous Sender Encryption ("anoncrypt"). Both forms are encrypted to the recipient DID. Only authcrypt provides direct assurances of who the sender is.
+DIDComm supports two types of message encryption: Authenticated Sender Encryption ("authcrypt") and Anonymous Sender Encryption ("anoncrypt"). Both forms are encrypted to the recipient DID. Only authcrypt provides direct assurances of who the sender is. Each encrypted message MUST use either authcrypt or anoncrypt.
 
 The encrypted form of a JWM is a JWE. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed here.
 
@@ -20,13 +20,14 @@ Anonymous encryption removes authentication of the sender, which is a significan
 
 #### Curves and Content Encryption Algorithms
 
-For the keys involved in key agreement, the following elliptic curves MUST be supported.
+For the keys involved in key agreement, the first three elliptic curves in this table MUST be supported, and P-521 is optional.
 
 | Curve  | Description                                                  |
 | ------ | ------------------------------------------------------------ |
 | X25519 | The underlying curve is actually `Curve25519`, however when used in the context of Diffie-Hellman the identifier of `X25519` is used |
 | P-384  | NIST defined P-384 elliptic curve                            |
 | P-256  | NIST defined P-256 elliptic curve - deprecated in favor of P-384 |
+| P-521  | NIST defined P-521 elliptic curve. Optional. |
 
 For content encryption of the message, DIDComm inherits the implementation definitions from [JSON Web Algorithms](https://datatracker.ietf.org/doc/html/rfc7518#section-5.1) for AES 256-bit keys.
 In addition, DIDComm defines optional implementation usage of the draft [XC20P](https://tools.ietf.org/id/draft-amringer-jose-chacha-02.html) algorithm.
@@ -45,11 +46,11 @@ Implementations MUST choose nonces securely.
 | --------------- | --------------- | ------------------ | ------------------------------------------------------------ |
 | ECDH-ES+A256KW  | P-256           | EC                 | ECDH-ES key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
 | ECDH-ES+A256KW  | P-384           | EC                 | ECDH-ES key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
-| ECDH-ES+A256KW  | P-521           | EC                 | ECDH-ES key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
+| ECDH-ES+A256KW  | P-521           | EC                 | ECDH-ES key wrapping using key with NIST defined P-521 elliptic curve to create a 512 bits key as defined in [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
 | ECDH-ES+A256KW  | X25519          | OKP                | ECDH-ES with X25519 ([RFC 7748 section 5](https://tools.ietf.org/html/rfc7748#section-5)) to create a 256 bits key. The underlying curve is actually `Curve25519`, however when used in the context of Diffie-Hellman the identifier of `X25519` is used |
 | ECDH-1PU+A256KW | P-256           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 | ECDH-1PU+A256KW | P-384           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
-| ECDH-1PU+A256KW | P-521           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
+| ECDH-1PU+A256KW | P-521           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-521 elliptic curve to create a 512 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 | ECDH-1PU+A256KW | X25519          | OKP                | ECDH-1PU X25519 ([RFC7748 section 5](https://tools.ietf.org/html/rfc7748#section-5)) to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 
 #### Perfect Forward Secrecy
@@ -62,7 +63,7 @@ DIDComm Messaging's guarantees with respect to man-in-the-middle attacks are eas
 
 #### Key IDs
 
-Keys used by DIDComm envelopes MUST be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipient encryption keys MUST be retrieved from the respective DID document's `keyAgreement` verification section as per the [DID Document Keys](https://identity.foundation/didcomm-messaging/spec/#did-document-keys) definition.
+Keys used by DIDComm envelopes will probably be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipient encryption keys are usually  retrieved from the respective DID document's `keyAgreement` verification section as per the [DID Document Keys](https://identity.foundation/didcomm-messaging/spec/#did-document-keys) definition.
 
 When Alice is preparing an envelope intended for Bob, the packing process should use a key from both hers and Bob's DID document's `keyAgreement` section.
 
@@ -89,7 +90,7 @@ Assuming Alice has a DID Doc with the following `keyAgreement` definition (sourc
 }
 ```
 
-The envelope packing process MUST set the `skid` header with value `did:example:123456789abcdefghi#keys-1` in the envelope's protected headers and fetch the underlying key to execute ECDH-1PU key derivation for content key wrapping.
+The envelope packing process would set the `skid` header with value `did:example:123456789abcdefghi#keys-1` in the envelope's protected headers and fetch the underlying key to execute ECDH-1PU key derivation for content key wrapping.
 
 Assuming she also has Bob's DID document which happens to include the following `keyAgreement` section:
 
@@ -110,9 +111,9 @@ Assuming she also has Bob's DID document which happens to include the following 
 }
 ```
 
-Unless previously coordinated in a layer above DIDComm, the default recipients of the envelope MUST include all the `keyAgreement` entries representing Bob. This allows Bob to decrypt his messages on any device he controls, without sharing keys. The corresponding `kid` header for this recipient MUST have a DID URL pointing to a corresponding verification method in the DID document. This verification method MUST be associated with the `keyAgreement` verification relationship and the verification material MUST be retrieved from the DID document to execute the ECDH-1PU key derivation for content key wrapping.
+Unless previously coordinated in a layer above DIDComm, the default recipients of the envelope SHOULD include all the `keyAgreement` entries representing Bob. This allows Bob to decrypt his messages on any device he controls, without sharing keys across his devices. The corresponding `kid` header for this recipient MUST have a DID URL pointing to a corresponding verification method in the DID document. This verification method MUST be associated with the `keyAgreement` verification relationship and the verification material MUST be retrieved from the DID document to execute the ECDH-1PU key derivation for content key wrapping.
 
-When Bob receives the envelope, the unpacking process on his end MUST resolve the `skid` protected header value using Alice's DID doc's `keyAgreement[0]` in order to extract her public key. In Alice's DID Doc example above, `keyAgreement[0]` is a reference id. It MUST be resolved from the main `verificationMethod[]` of Alice's DID document (not shown in the example).
+When Bob receives the envelope, the unpacking process on his end resolves the `skid` protected header value using Alice's DID doc's `keyAgreement[0]` in order to extract her public key. In Alice's DID Doc example above, `keyAgreement[0]` is a reference id. It would be resolved from the main `verificationMethod[]` of Alice's DID document (not shown in the example).
 
 Once resolved, the unpacker will then execute ECDH-1PU key derivation using this key and Bob's own recipient key found in the envelope's `recipients[0]` to unwrap the content encryption key.
 

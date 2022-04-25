@@ -164,7 +164,7 @@ To troubleshoot routing issues, DIDComm offers a header, `trace`. Any party that
 
 ```json
 {
-  "@type": "https://didcomm.org/trace/1.0/trace_report",
+  "type": "https://didcomm.org/trace/1.0/trace_report",
   "pthid": "98fd8d72-80f6-4419-abc2-c65ea39d0f38.1",
   "handler": "did:example:1234abcd#3",
   "traced_type": "https://didcomm.org/route/1.0/forward",
@@ -173,7 +173,9 @@ To troubleshoot routing issues, DIDComm offers a header, `trace`. Any party that
 
 The value of `pthid` is always the message ID that triggered the trace. The value of `handler` is an arbitrary string that identifies the agent, service, or piece of software responding to the trace.
 
->Note: This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as technologies like [OpenTracing](https://opentracing.io/). It also *spans* trust domains (paralleling a message's journey from Alice to a web service hosting Bob's endpoint, to Bob himself) &mdash; and thus differs in scope from in-house logging and monitoring technolgies like Splunk and Kibana. Although DIDComm tracing could be integrated with these other technologies, doing so in a methodical way is probably an antipattern; it may indicate a misunderstanding about its purpose as a tool for ad hoc debugging or troubleshooting between unrelated parties.
+For the sake of consistency, this message uses some structural conventions that match a DIDComm plaintext message. However, it need not be understood as a message in a DIDComm protocol. It can be parsed by any consumer of generic JSON, it can be transmitted using any channel that suits the sender and receiver, and it is not associated with any interaction state. 
+
+>Note: This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as technologies like [OpenTracing](https://opentracing.io/). It also *spans* trust domains (paralleling a message's journey from Alice to a web service hosting Bob's endpoint, to Bob himself) &mdash; and thus differs in scope from in-house logging and monitoring technolgies like Splunk and Logstash/Kibana. Although DIDComm tracing could be integrated with these other technologies, doing so in a methodical way is probably an antipattern; it may indicate a misunderstanding about its purpose as a tool for ad hoc debugging or troubleshooting between unrelated parties.
 
 For example, in a message for Bob that is double-wrapped (once for his external mediator and once for his cloud agent), three plaintext messages might contain `trace` headers:
 
