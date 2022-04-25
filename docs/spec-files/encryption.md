@@ -4,7 +4,7 @@
 
 DIDComm Messages are encrypted with the keys of a single DID. A message being sent to multiple DIDs MUST be encrypted for each DID independently. If a single DID has multiple key types, the keys of each type must be used in a separate encryption of the message. 
 
-DIDComm supports two types of message encryption: Authenticated Sender Encryption ("authcrypt") and Anonymous Sender Encryption ("anoncrypt"). Both forms are encrypted to the recipient DID. Only authcrypt provides direct assurances of who the sender is.
+DIDComm supports two types of message encryption: Authenticated Sender Encryption ("authcrypt") and Anonymous Sender Encryption ("anoncrypt"). Both forms are encrypted to the recipient DID. Only authcrypt provides direct assurances of who the sender is. Each encrypted message MUST use either authcrypt or anoncrypt.
 
 The encrypted form of a JWM is a JWE. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed here.
 
