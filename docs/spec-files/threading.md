@@ -32,7 +32,7 @@ When a child protocol is a simple two-party interaction, mentioning the `pthid` 
 
 ### Message URIs
 
-The `id`, `thid`, and `pthid` properties of any DIDComm message may be combined to form a URI that uniquely identifies the message (e.g., in debuggers, in log files, in archives). Such a scheme is out of scope for this spec, and support for it is OPTIONAL for implementers. This spec reserves the `didcomm://` URI prefix for future work with semantics like these; it MUST NOT be used for other purposes.
+The `id`, `thid`, and `pthid` properties of any DIDComm message may be combined to form a URI that uniquely identifies the message (e.g., in debuggers, in log files, in archives). Such a scheme is out of scope for this spec, and support for it is OPTIONAL for implementers. 
 
 ### Gaps, Resends, and Sophisticated Ordering
 
