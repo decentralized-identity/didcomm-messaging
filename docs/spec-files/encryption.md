@@ -20,13 +20,14 @@ Anonymous encryption removes authentication of the sender, which is a significan
 
 #### Curves and Content Encryption Algorithms
 
-For the keys involved in key agreement, the following elliptic curves MUST be supported.
+For the keys involved in key agreement, the first three elliptic curves in this table MUST be supported, and P-521 is optional.
 
 | Curve  | Description                                                  |
 | ------ | ------------------------------------------------------------ |
 | X25519 | The underlying curve is actually `Curve25519`, however when used in the context of Diffie-Hellman the identifier of `X25519` is used |
 | P-384  | NIST defined P-384 elliptic curve                            |
 | P-256  | NIST defined P-256 elliptic curve - deprecated in favor of P-384 |
+| P-521  | NIST defined P-521 elliptic curve. Optional. |
 
 For content encryption of the message, DIDComm inherits the implementation definitions from [JSON Web Algorithms](https://datatracker.ietf.org/doc/html/rfc7518#section-5.1) for AES 256-bit keys.
 In addition, DIDComm defines optional implementation usage of the draft [XC20P](https://tools.ietf.org/id/draft-amringer-jose-chacha-02.html) algorithm.
@@ -45,11 +46,11 @@ Implementations MUST choose nonces securely.
 | --------------- | --------------- | ------------------ | ------------------------------------------------------------ |
 | ECDH-ES+A256KW  | P-256           | EC                 | ECDH-ES key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
 | ECDH-ES+A256KW  | P-384           | EC                 | ECDH-ES key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
-| ECDH-ES+A256KW  | P-521           | EC                 | ECDH-ES key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
+| ECDH-ES+A256KW  | P-521           | EC                 | ECDH-ES key wrapping using key with NIST defined P-521 elliptic curve to create a 512 bits key as defined in [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6.2)                                                                                  |
 | ECDH-ES+A256KW  | X25519          | OKP                | ECDH-ES with X25519 ([RFC 7748 section 5](https://tools.ietf.org/html/rfc7748#section-5)) to create a 256 bits key. The underlying curve is actually `Curve25519`, however when used in the context of Diffie-Hellman the identifier of `X25519` is used |
 | ECDH-1PU+A256KW | P-256           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 | ECDH-1PU+A256KW | P-384           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
-| ECDH-1PU+A256KW | P-521           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
+| ECDH-1PU+A256KW | P-521           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-521 elliptic curve to create a 512 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 | ECDH-1PU+A256KW | X25519          | OKP                | ECDH-1PU X25519 ([RFC7748 section 5](https://tools.ietf.org/html/rfc7748#section-5)) to create a 256 bits key as defined in [ecdh-1pu](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 
 #### Perfect Forward Secrecy
