@@ -208,10 +208,10 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p><strong>from</strong> - OPTIONAL when the message is to be encrypted via anoncrypt; REQUIRED when the message is encrypted via authcrypt. Sender identifier. The <code>from</code> attribute MUST be a string that is a valid <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the <a href="#Message-Authentication" >message authentication</a> section for additional details.</p>
 </li>
 <li>
-<p><strong>thid</strong> - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code>. See <a href="#threading" >Threading</a> for details.</p>
+<p><strong>thid</strong> - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code>. See <a href="#threads" >Threads</a> for details.</p>
 </li>
 <li>
-<p><strong>pthid</strong> - OPTIONAL. Parent thread identifier. If the message is a child of a thread the <code>pthid</code> will uniquely identify which thread is the parent.</p>
+<p><strong>pthid</strong> - OPTIONAL. Parent thread identifier. If the message is a child of a thread the <code>pthid</code> will uniquely identify which thread is the parent. See <a href="#parent-threads" >Parent Threads</a> for details.</p>
 </li>
 <li>
 <p><strong>created_time</strong> - OPTIONAL but recommended. Message Created Time. The <code>created_time</code> attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. This allows the recipient to guess about transport latency and clock divergence. The difference between when a message is created and when it is sent is assumed to be negligible; this lets timeout logic start from this value.</p>
@@ -463,7 +463,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <p>The mapping of the Perfect Forward Secrecy concepts to DIDComm requires some discussion, due to the lack of a session construct. Please refer to the <a path-0="didcomm.org"path-1="book"path-2="v2"path-3="pfs"href="https://didcomm.org/book/v2/pfs" >DIDComm Guidebook</a> for details.</p>
 <h4 id="man-in-the-middle"><a class="toc-anchor" href="#man-in-the-middle" >§</a> Man in the Middle</h4>
 <p>DIDComm Messaging’s guarantees with respect to man-in-the-middle attacks are easily misunderstood, since DIDs rather than human identity are the concern of the algorithm. Please refer to the <a path-0="didcomm.org"path-1="book"path-2="v2"path-3="mitm"href="https://didcomm.org/book/v2/mitm" >DIDComm Guidebook</a> for details.</p>
-<h4 id="key-ids-kid-and-skid-headers-references-in-the-did-document"><a class="toc-anchor" href="#key-ids-kid-and-skid-headers-references-in-the-did-document" >§</a> Key IDs <code>kid</code> and <code>skid</code> headers references in the DID document</h4>
+<h4 id="key-ids"><a class="toc-anchor" href="#key-ids" >§</a> Key IDs</h4>
 <p>Keys used by DIDComm envelopes will probably be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipient encryption keys are usually  retrieved from the respective DID document’s <code>keyAgreement</code> verification section as per the <a path-0="identity.foundation"path-1="didcomm-messaging"path-2="spec"path-3="#did-document-keys"href="https://identity.foundation/didcomm-messaging/spec/#did-document-keys" >DID Document Keys</a> definition.</p>
 <p>When Alice is preparing an envelope intended for Bob, the packing process should use a key from both hers and Bob’s DID document’s <code>keyAgreement</code> section.</p>
 <p>Assuming Alice has a DID Doc with the following <code>keyAgreement</code> definition (source: <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3="#example-17-key-agreement-property-containing-two-verification-methods"href="https://www.w3.org/TR/did-core/#example-17-key-agreement-property-containing-two-verification-methods" >DID V1 Example 17</a>):</p>
@@ -561,24 +561,28 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 </tbody>
 </table>
 <h4 id="construction"><a class="toc-anchor" href="#construction" >§</a> Construction</h4>
-<p>Construct a JWS with the following header:</p>
+<p>Construct a JWS with a header like the following (substituting an appropriate <code>kid</code> value that encodes a key from the <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3="#authentication"href="https://www.w3.org/TR/did-core/#authentication" ><code>authentication</code> section of the signer’s DID document</a>):</p>
 <pre class="language-json"><code class="language-json">   <span class="token punctuation">{</span><span class="token property">"typ"</span><span class="token operator">:</span><span class="token string">"JWM"</span><span class="token punctuation">,</span>
     <span class="token property">"kid"</span><span class="token operator">:</span><span class="token string">"did:example:123#DhPHHNNMSHPcaSgNpjjsBYpMMjsTdSzC9ByQ8aJs8vrNXy"</span><span class="token punctuation">,</span>
     <span class="token property">"alg"</span><span class="token operator">:</span><span class="token string">"ES256"</span><span class="token punctuation">}</span>
 </code></pre>
 <p>The <code>kid</code> MUST be a DID URI that refers to a key specified as an authorization key.</p>
-<p>The JWS payload is the Base64url encoded JWM.</p>
+<p>The JWS payload (not shown above) is the Base64url encoded JWM.</p>
 <p>When transmitted in a normal JWM fashion, the JSON Serialization MUST be used.</p>
 <h4 id="verification"><a class="toc-anchor" href="#verification" >§</a> Verification</h4>
-<p>When verifying the signature, an additional check must be performed after verifying the JWS. The key used in the signature must be authorized to do so in the document resolved from the DID in the <code>from</code> attribute. If the key is not authorized for the signature, the signature is invalid.</p>
+<p>When verifying the signature, an additional check must be performed (ideally, before verifying the JWS). The key used in the signature must be authorized to authenticate the sender by appearing in the <code>authentication</code> section of the document resolved from the DID in the <code>from</code> attribute. If this check fails, the signature is inappropriate and MUST be rejected, regardless of its cryptographic correctness.</p>
 <h4 id="uses-of-signatures"><a class="toc-anchor" href="#uses-of-signatures" >§</a> Uses of Signatures</h4>
-<h5 id="non-repudiation"><a class="toc-anchor" href="#non-repudiation" >§</a> Non-Repudiation</h5>
-<p>DIDComm Encrypted messages are repudiable. If non-repudiation is required for a particular protocol message, the message MUST be signed before encryption.</p>
-<h5 id="tamper-resistant-oob-messages"><a class="toc-anchor" href="#tamper-resistant-oob-messages" >§</a> Tamper Resistant OOB Messages</h5>
-<p>Out of Band Messages may be signed to provide tamper resistance.</p>
-<h5 id="did-anchoring"><a class="toc-anchor" href="#did-anchoring" >§</a> DID Anchoring</h5>
-<p>Signing can allow DIDs to be anchored via keys not usable for encrypting DIDComm messages.</p>
-<h4 id="examples-2"><a class="toc-anchor" href="#examples-2" >§</a> Examples</h4>
+<ul>
+<li>
+<p>Non-Repudiation: DIDComm Encrypted messages are repudiable. If non-repudiation is required for a particular protocol message, the message MUST be signed before encryption.</p>
+</li>
+<li>
+<p>Tamper Resistance: Messages that are shared without encrypting (e.g., <a href="#invitation" >Out of Band Invitations</a> may be signed to provide tamper resistance.</p>
+</li>
+<li>
+<p>DID Anchoring: Some types of cryptographic keys support signing but not encrypting. Signed DIDComm messages allow the use of DIDs that are controlled with such keys.</p>
+</li>
+</ul>
 <p>See section <a href="#c2-didcomm-signed-messages" >Appendix C.2.</a> for examples.</p>
 <h3 id="did-rotation"><a class="toc-anchor" href="#did-rotation" >§</a> DID Rotation</h3>
 <p>DIDComm Messaging is based on <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DIDs</a> and their associated <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3="#dfn-did-documents"href="https://www.w3.org/TR/did-core/#dfn-did-documents" >DID Documents</a>. Changes to keys and endpoints are the concern of each DID method and are utilized but not managed by DIDComm Messaging. DID Rotation serves a very specific and narrow need to switch from one DID method to another. This is very common at the beginning of a new DIDComm Messaging relationship when a public DID or a temporary DID passed unencrypted is rotated out for a DID chosen for the relationship. As rotation between one DID and another is outside the scope of any DID method, the details of DID Rotation are handled within DIDComm Messaging itself.</p>
@@ -658,7 +662,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <pre class="language-json"><code class="language-json"><span class="token property">"ack"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"abc"</span><span class="token punctuation">,</span> <span class="token string">"def"</span><span class="token punctuation">,</span> <span class="token string">"xyz"</span><span class="token punctuation">]</span>
 </code></pre>
 <p>This allows agents to collaborate to recover from a response that was emitted but lost. Future extensions may define additional values (e.g., to implement read receipts, or to request an ACK if no other response is forthcoming after a modest delay).</p>
-<p>The presence of the <code>please_ack</code> header does not create an obligation on the part of the recipient. However, cooperative parties who wish to honor such a request MUST include an <code>ack</code> header on a subsequent message, where the value of the header is an array that contains the <code>id</code> of one or more messages being acknowledged. Values in this array MUST appear in the order <em>received</em> by whoever is acknowledging, from oldest to most recent.</p>
+<p>The presence of the <code>please_ack</code> header does not create an obligation on the part of the recipient. However, cooperative parties who wish to honor such a request SHOULD include an <code>ack</code> header on a subsequent message, where the value of the header is an array that contains the <code>id</code> of one or more messages being acknowledged. Values in this array MUST appear in the order <em>received</em> by whoever is acknowledging, from oldest to most recent.</p>
 <blockquote>
 <p>Note: The <code>please_ack</code> header SHOULD NOT be included on <a href="#routing" ><code>forward</code> messages</a>, and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, which are defined to send only destward. It would also undermine the privacy of recipients.</p>
 </blockquote>
@@ -669,7 +673,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <p>Particular protocols may wish to design their own message types that convey additional information in an ACK. Custom ACK messages SHOULD include the <code>ack</code> header if they can appear at more than one step in a protocol, so it’s clear what they are acknowledging. When the message type’s primary purpose is to acknowledge, the type name <code>ack</code> SHOULD be used, for the sake of consistency.</p>
 <h4 id="threads"><a class="toc-anchor" href="#threads" >§</a> Threads</h4>
 <p>Any DIDComm message that continues a previously begun application-level protocol MUST use a <code>thid</code> property that associates it with the prior context. This context is vital for error handling. See <a href="#threading" >Threading</a>.</p>
-<p>In addition, messages MAY use the <a path-0=".."path-1="extensions"path-2="advanced_sequencing"path-3="main.md"href="../../extensions/advanced_sequencing/main.md" >Advanced Sequencing</a> extension to detect gaps in delivery or messages arriving out of order.</p>
+<p>In addition, messages MAY use the <a path-0="github.com"path-1="decentralized-identity"path-2="didcomm-messaging"path-3="blob"path-4="master"path-5="extensions"path-6="advanced_sequencing"path-7="main.md"href="https://github.com/decentralized-identity/didcomm-messaging/blob/master/extensions/advanced_sequencing/main.md" >Advanced Sequencing</a> extension to detect gaps in delivery or messages arriving out of order.</p>
 <h3 id="problem-reports"><a class="toc-anchor" href="#problem-reports" >§</a> Problem reports</h3>
 <p>DIDComm features a standard mechanism for reporting problems to other entities. These could be parties in the active protocol, or logging products, or internal health monitors, or human tech support staff. Reporting problems remotely is not always possible (e.g., when a sender lacks a route to the other party, or when a recipient’s crypto is incompatible with a sender’s). Using this mechanism is therefore not a general <em>requirement</em> of DIDComm, but it <em>is</em> a best practice because it improves robustness and human experience. (But be aware of some <a path-0="didcomm.org"path-1="book"path-2="v2"path-3="problems-and-cybersecurity"href="https://didcomm.org/book/v2/problems-and-cybersecurity" >cybersecurity considerations</a>.)</p>
 <p>Other entities are notified of problems by sending a simple message called a <strong>problem report</strong> that looks like this:</p>
@@ -689,15 +693,29 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>The <code>pthid</code> header MUST be included with problem reports. Its value is the <code>thid</code> of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)</p>
-<p>The <code>ack</code> header SHOULD be included if the problem in question was triggered directly by a preceding message. (Contrast problems arising from a timeout or a user deciding to cancel a transaction, which can arise independent of a preceding message. In such cases, <code>ack</code> MAY still be used, but there is no strong recommendation.)</p>
-<p>The <code>code</code> field is worthy of its own section; <a href="#problem-codes" >see below</a>.</p>
-<p>The optional <code>comment</code> field contains human-friendly text describing the problem. The text MUST be statically associated with <code>code</code>, meaning that each time circumstances trigger a problem with the same <code>code</code>, the value of <code>comment</code> will be the same. This enables <a href="#i18n" >localization</a> and cached lookups, and it has some <a path-0="didcomm.org"path-1="book"path-2="v2"path-3="problems-and-cybersecurity"href="https://didcomm.org/book/v2/problems-and-cybersecurity" >cybersecurity benefits</a>. The value of <code>comment</code> supports simple interpolation with <code>args</code> (see next), where args are referenced as <code>{1}</code>, <code>{2}</code>, and so forth.</p>
-<p>The optional <code>args</code> field contains situation-specific values that are interpolated into the value of <code>comment</code>, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, <code>e.p.xfer.cant-use-endpoint</code> apparently expects two values in <code>args</code>: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (<code>?</code>) during interpolation; extra args MUST be appended to the main text as comma-separated values.</p>
-<p>The optional <code>escalate_to</code> field provides a URI where additional help on the issue can be received.</p>
+<ul>
+<li>
+<p><strong>pthid</strong> - REQUIRED. The value is the <code>thid</code> of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)</p>
+</li>
+<li>
+<p><strong>ack</strong> - OPTIONAL. It SHOULD be included if the problem in question was triggered directly by a preceding message. (Contrast problems arising from a timeout or a user deciding to cancel a transaction, which can arise independent of a preceding message. In such cases, <code>ack</code> MAY still be used, but there is no strong recommendation.)</p>
+</li>
+<li>
+<p><strong>code</strong> - REQUIRED. Deserves a rich explanation; see <a href="#problem-codes" >Problem Codes</a> below.</p>
+</li>
+<li>
+<p><strong>comment</strong> - OPTIONAL but recommended. Contains human-friendly text describing the problem. If the field is present, the text MUST be statically associated with <code>code</code>, meaning that each time circumstances trigger a problem with the same <code>code</code>, the value of <code>comment</code> will be the same. This enables <a href="#i18n" >localization</a> and cached lookups, and it has some <a path-0="didcomm.org"path-1="book"path-2="v2"path-3="problems-and-cybersecurity"href="https://didcomm.org/book/v2/problems-and-cybersecurity" >cybersecurity benefits</a>. The value of <code>comment</code> supports simple interpolation with <code>args</code> (see next), where args are referenced as <code>{1}</code>, <code>{2}</code>, and so forth.</p>
+</li>
+<li>
+<p><strong>args</strong> - OPTIONAL. Contains situation-specific values that are interpolated into the value of <code>comment</code>, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, <code>e.p.xfer.cant-use-endpoint</code> apparently expects two values in <code>args</code>: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (<code>?</code>) during interpolation; extra args MUST be appended to the main text as comma-separated values.</p>
+</li>
+<li>
+<p><strong>escalate_to</strong> - OPTIONAL. Provides a URI where additional help on the issue can be received.</p>
+</li>
+</ul>
 <h4 id="problem-codes"><a class="toc-anchor" href="#problem-codes" >§</a> Problem Codes</h4>
 <p>Perhaps the most important feature of each problem report message is its <code>code</code> field. This required value is the main piece of data that recipient software uses to automate reactions. It categorizes what went wrong.</p>
-<p>Problem codes are lower kabob-case. They are structured as a sequence of tokens delimited by the dot character <code>.</code>, with the tokens being more general to the left, and more specific to the right. Because recipients can do matching by prefix instead of full string, a recipient can recognize and handle broad semantics even if the trailing tokens of the string contain unfamiliar details. In the example below, for example, relatively sophisticated handling is possible even if a recipient only recognizes the <code>e.p.xfer.</code> portion of the code.</p>
+<p>Problem codes are lower kebab-case. They are structured as a sequence of tokens delimited by the dot character <code>.</code>, with the tokens being more general to the left, and more specific to the right. Because recipients can do matching by prefix instead of full string, a recipient can recognize and handle broad semantics even if the trailing tokens of the string contain unfamiliar details. In the example below, for example, relatively sophisticated handling is possible even if a recipient only recognizes the <code>e.p.xfer.</code> portion of the code.</p>
 <p><img src="../collateral/problem-code-structure.png" alt="problem code structure"></p>
 <h5 id="sorter"><a class="toc-anchor" href="#sorter" >§</a> Sorter</h5>
 <p>The leftmost component of a problem code is its <strong>sorter</strong>. This is a single character that tells whether the consequence of the problem are fully understood. Two values are defined:</p>
@@ -709,7 +727,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <p>Note:  What distinguishes an error from a warning is <em>clarity about its consequences</em>, not its <em>severity</em>. This clarity is inherently contextual. A warning might prove to be just as problematic as an error, once it’s fully evaluated. This implies that the same problem can be an error in some contexts, and a warning in others. In our example above, we imagined a payment failure as an error. But if this problem occurs in a context where retries are expected, and there’s a good chance of future success, perhaps the problem is a warning the first three times it’s reported — then becomes an error when all hope is lost.</p>
 </blockquote>
 <h5 id="scope"><a class="toc-anchor" href="#scope" >§</a> Scope</h5>
-<p>Reading left to right, the next token in a problem code is called the <strong>scope</strong>. This gives the sender’s opinion about how much context should be undone if the problem is deemed an error.</p>
+<p>Reading left to right, the second token in a problem code is called the <strong>scope</strong>. This gives the sender’s opinion about how much context should be undone if the problem is deemed an error.</p>
 <blockquote>
 <p>Note: A problem always sorts according to the most pessimistic view that is taken by participants in the protocol. If the sender of a problem report deems it an error, then it is. If the sender deems it a warning, but a recipient with greater context decides that it clearly frustrates their goals, then it becomes an error; see <a href="#replying-to-warnings" >Replying to Warnings</a>. Thus, <em>scope</em> is relevant even if the sender chooses a problem code that starts with <code>w</code>.)</p>
 </blockquote>
@@ -726,7 +744,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 </li>
 </ul>
 <h5 id="descriptors"><a class="toc-anchor" href="#descriptors" >§</a> Descriptors</h5>
-<p>After the <em>sorter</em> and the <em>scope</em>, problem codes consist of one or more <strong>descriptors</strong>. These are kabob-case tokens separated by the <code>.</code> character, where the semantics get progressively more detailed reading left to right. Senders of problem reports SHOULD include at least one descriptor in their problem code, and SHOULD use the most specific descriptor they can. Recipients MAY specialize their reactions to problems in a very granular way, or MAY examine only a prefix of a problem code.</p>
+<p>After the <em>sorter</em> and the <em>scope</em>, problem codes consist of one or more <strong>descriptors</strong>. These are kebab-case tokens separated by the <code>.</code> character, where the semantics get progressively more detailed reading left to right. Senders of problem reports SHOULD include at least one descriptor in their problem code, and SHOULD use the most specific descriptor they can. Recipients MAY specialize their reactions to problems in a very granular way, or MAY examine only a prefix of a problem code.</p>
 <p>The following descriptor tokens are defined. They can be used by themselves, or as prefixes to more specific descriptors. Additional descriptors — particularly more granular ones — may be defined in individual protocols.</p>
 <table>
 <thead>
@@ -799,7 +817,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <h4 id="cascading-problems"><a class="toc-anchor" href="#cascading-problems" >§</a> Cascading Problems</h4>
 <p>Many problems may be experienced during a long-running or complex protocol. Implementers must have the option of tolerating and recovering from them, if we want robustness; perhaps several network retries will be followed by eventual success. However, care must be exercised to prevent situations where malformed or careless problem reports trigger infinite recursion or vicious cycles:</p>
 <ol>
-<li>Implementations SHOULD consider implementing a <a path-0="codecraft.co"path-1="2013"path-2="01"path-3="11"path-4="dont-forget-the-circuit-breakers"path-5=""href="https://codecraft.co/2013/01/11/dont-forget-the-circuit-breakers/" >circuit breaker design pattern</a> to prevent this problem.</li>
+<li>Implementations SHOULD consider implementing a <a path-0="en.wikipedia.org"path-1="wiki"path-2="Circuit_breaker_design_pattern"href="https://en.wikipedia.org/wiki/Circuit_breaker_design_pattern" >circuit breaker design pattern</a> to prevent this problem.</li>
 <li><a href="#timeouts" >Timeouts</a> SHOULD be used judiciously.</li>
 <li>Implementations SHOULD use their own configuration or judgment to establish some type of max error count as they begin a protocol instance. This limit could be protocol-specific, and could be evaluated per unit time (e.g., in a human chat protocol of infinite duration, perhaps the limit is max errors per hour rather than max errors across all time). If implementations establish such a limit, they SHOULD check to see whether this count has been exceeded, both when they receive and when they emit errors. If the limit is crossed as a result of a problem report they <em>receive</em>, they SHOULD send back a problem report with <code>&quot;code&quot;: &quot;e.p.req.max-errors-exceeded&quot;</code> to abort the protocol. If the limit is crossed as a result of an error they are emitting, they MUST NOT emit the problem report for the triggering error; instead, they MUST emit a problem report with <code>&quot;code&quot;: &quot;e.p.req.max-errors-exceeded&quot;</code> to abort the protocol. In either case, they MUST cease responding to messages that use the <code>thid</code> of that protocol instance, once this limit has been crossed.</li>
 </ol>
@@ -828,11 +846,11 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <h2 id="threading"><a class="toc-anchor" href="#threading" >§</a> Threading</h2>
 <p>DIDComm provides threading as foundation for extremely powerful protocol features. For background on the intent and best practices for threading, please see the <a path-0="didcomm.org"path-1="book"path-2="v2"path-3="threading"href="https://didcomm.org/book/v2/threading" >DIDComm Guidebook</a>.</p>
 <h3 id="message-ids"><a class="toc-anchor" href="#message-ids" >§</a> Message IDs</h3>
-<p>All plaintext DIDComm messages MUST have an <code>id</code> property, declared in the JWM header. A message without an <code>id</code> property SHOULD be considered invalid and SHOULD be rejected; it MUST NOT be interpreted as part of a multi-message interaction.</p>
+<p>All plaintext DIDComm messages MUST have an <code>id</code> property, declared in the <a href="#message-headers" >JWM headers</a>. A message without an <code>id</code> property SHOULD be considered invalid and SHOULD be rejected; it MUST NOT be interpreted as part of a multi-message interaction.</p>
 <p>The value of <code>id</code> is a short (&lt;=32 bytes) string consisting entirely of <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc3986"path-4="#section-2.3"href="https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3" >unreserved URI characters</a> — meaning that it is not necessary to <a path-0="en.wikipedia.org"path-1="wiki"path-2="Percent-encoding"href="https://en.wikipedia.org/wiki/Percent-encoding" >percent encode</a> the value to incorporate it in a URI. Beyond this requirement, its format is not strongly constrained, but use of <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc4122"href="https://datatracker.ietf.org/doc/html/rfc4122" >UUIDs (RFC 4122)</a> is recommended. Because of the affinity for UUIDs, this field inherits UUID case-sensitivity semantics: it SHOULD be written in lower case but MUST be compared case-insensitively.</p>
 <p>The value of an <code>id</code> property SHOULD be globally, universally unique; at the very least, it MUST be unique across all interactions visible to the set of parties that see a given set of interactions.</p>
 <h3 id="threads-2"><a class="toc-anchor" href="#threads-2" >§</a> Threads</h3>
-<p>A thread is uniquely identified by a thread ID. The thread ID is communicated by including a <code>thid</code> header in the JWM plaintext of the message. The value of <code>thid</code> MUST conform to the same constraints as the value of <code>id</code>. The DIDComm plaintext message that begins a thread MAY declare this property for the new thread. If no <code>thid</code> property is declared in the first message of an interaction, the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code> as well; that is, the message is interpreted as if both <code>id</code> and <code>thid</code> were present, containing the same value.</p>
+<p>A thread is uniquely identified by a thread ID. The thread ID is communicated by including a <a href="#message-headers" ><code>thid</code> header in the JWM plaintext</a>. The value of <code>thid</code> MUST conform to the same constraints as the value of <code>id</code>. The DIDComm plaintext message that begins a thread MAY declare this property for the new thread. If no <code>thid</code> property is declared in the first message of an interaction, the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code> as well; that is, the message is interpreted as if both <code>id</code> and <code>thid</code> were present, containing the same value.</p>
 <p>All subsequent messages in a thread MUST include a <code>thid</code> header that contains the same value as the <code>thid</code> set in the first message of the thread. Messages that do not share the same <code>thid</code> MUST NOT be considered a part of the same thread.</p>
 <h3 id="parent-threads"><a class="toc-anchor" href="#parent-threads" >§</a> Parent Threads</h3>
 <p>When one interaction triggers another, the first interaction is called the <strong>parent</strong> of the second. This MAY be modeled by incorporating a <code>pthid</code> header in the JWM plaintext of the child. The value of the child’s <code>pthid</code> header MUST obey the same constraints as <code>thid</code> and <code>id</code> values.</p>
@@ -880,11 +898,10 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <li>When using STOMP over WebSocket, the <code>content-type</code> header is <code>application/didcomm-encrypted+json</code> as in the HTTPS message.</li>
 </ul>
 <h2 id="protocols"><a class="toc-anchor" href="#protocols" >§</a> Protocols</h2>
-<p>DIDComm serves as a foundational layer for the development of application-level protocols that benefit from the features it provides. This simplifies the development of high-trust protocols for dedicated purposes, and allows them to be composed into higher-level workflows in arbitrary, powerful ways, regardless of whether institutions, humans, or IoT devices are playing a given role.</p>
-<p>Only a few core protocols are defined within this spec. These serve to bootstrap communication and discovery. Protocols for any purpose may be defined by anyone, following the details in this section. Many such protocols are registered on <a path-0="didcomm.org"href="https://didcomm.org" >didcomm.org</a>.</p>
-<p>Each protocol is uniquely identified by a Protocol Identifier URI, and contains one or more messages identified by a Message Type URI. In addition to serving as a unique identifier, these URIs may be used by a developer to locate documentation.</p>
+<p>The primitives described earlier in this spec standardize basic behaviors in peer-to-peer secure communication: signing, encryption, plaintext structure, passing metadata in headers, reporting problems, attaching content, etc. Developers can use these primitives to design any number of high-trust, application-level protocols for dedicated purposes, and then compose them into ever broader workflows in arbitrary, powerful ways. Community efforts to design and share protocols can happen anywhere; one locus of that work is <a path-0="didcomm.org"href="https://didcomm.org" >didcomm.org</a>.</p>
+<p>A few higher-level protocols are especially fundamental, in that they bootstrap communication and discovery. Those protocols and their underlying principles are described below.</p>
 <h3 id="protocol-identifier-uri"><a class="toc-anchor" href="#protocol-identifier-uri" >§</a> Protocol Identifier URI</h3>
-<p>A Protocol Identifier URI (PIURI) identifies protocol versions unambiguously.</p>
+<p>Each protocol constructed atop DIDComm Messaging is uniquely identified and versioned by a <strong>Protocol Identifier URI</strong> (<strong>PIURI</strong>).</p>
 <p>The PIURI MUST be structured as follows:</p>
 <pre><code>[doc-uri][delim][protocol-name]/[semver]
 </code></pre>
@@ -895,30 +912,16 @@ delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &q
 <p>It can be loosely matched and parsed with the following regex:</p>
 <pre><code>(.*?)([a-z0-9._-]+)/(\d[^/]*)/?$
 </code></pre>
-<p>Example PIURIs might be:</p>
+<p>The PIURI for an imaginary protocol to schedule lunch appointments might resemble one of the following:</p>
 <pre><code>https://didcomm.org/lets_do_lunch/1.0
 https://example.com/protocols?which=lets_do_lunch/1.0
-https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1
+did:example:1234567890;spec/lets_do_lunch/1.0/ping
+https://github.com/myorg/myproject/tree/master/docs/lets_do_lunch/1.0
 </code></pre>
-<p>The goals of the PIURI are, in descending priority:</p>
-<ul>
-<li>
-<p>Code can use the URI to route messages to protocol
-handlers using <a href="semver.md" >semver rules</a>.</p>
-</li>
-<li>
-<p>The definition of a protocol is tied to the URI such
-that it is semantically stable. This means that once version 1.0
-of a protocol is defined, its definition <a href="semver.md" >should not change in
-ways that would break implementations</a>.</p>
-</li>
-<li>
-<p>Developers can discover information about novel protocols, using
-the URI to browse or search the web.</p>
-</li>
-</ul>
+<p>The PIURI for a given protocol SHOULD resolve to human-friendly documentation about the protocol.</p>
 <h3 id="message-type-uri"><a class="toc-anchor" href="#message-type-uri" >§</a> Message Type URI</h3>
-<p>A <strong>Message Type URI</strong> (MTURI) identifies message types unambiguously. Standardizing its format is important because it is parsed by agents that will map messages to handlers — basically, code will look at this string and say, “Do I have something that can handle this message type inside protocol <em>X</em> version <em>Y</em>?” When that analysis happens, it must do more than compare the string for exact equality. It may need to check for semver compatibility, and it has to compare the protocol name and message type name ignoring case and punctuation.</p>
+<p>A <strong>Message Type URI</strong> (MTURI) identifies plaintext message types unambiguously. Since the names of message types are only unique within the context of the protocol they embody, an MTURI begins with a prefix that is a PIURI, and then adds a message name token as a suffix.</p>
+<p>Standardizing MTURI format is important because MTURIs are parsed by agents and used to map messages to handlers. Code will look at this string and say, “Do I have something that can handle this message type inside protocol <em>X</em> version <em>Y</em>?” When that analysis happens, it must do more than compare the string for exact equality. It may need to check for semver compatibility, and it has to compare the protocol name and message type name ignoring case and punctuation.</p>
 <p>The MTURI MUST be composed as follows:</p>
 <pre><code>[protocol-identifier-uri] / [message-type-name]
 </code></pre>
@@ -936,28 +939,32 @@ identifier        = alpha *(*(alphanum / &quot;_&quot; / &quot;-&quot; / &quot;.
 </code></pre>
 <p>A match will have capturing groups of (1) = <code>doc-uri</code>, (2) = <code>protocol-name</code>,
 (3) = <code>protocol-version</code>, and (4) = <code>message-type-name</code>.</p>
-<p>The goals of the MTURI are, in descending priority:</p>
-<ul>
-<li>Use the <code>protocol-identifier-uri</code> portion as described above.</li>
-<li>Optionally and preferably, the full URI may produce a page of documentation about the specific message type, with no human mediation involved.</li>
-</ul>
-<p>Example Message Type URIs:</p>
-<pre><code>https://example.com/protocols?which=lets_do_lunch/1.0/proposal
-https://example.com/protocols/lets_do_lunch/1.0/proposal
-did:example:1234567890;spec/trust_ping/1.0/ping
-https://github.com/hyperledger/aries-toolbox/tree/master/docs/admin-invitations/0.1/create-invitation
+<p>Building on our previous examples of <code>lets_do_lunch</code> PIURIs, the MTURI of a <code>proposal</code> message in that protocol might be something like:</p>
+<pre><code>https://didcomm.org/lets_do_lunch/1.0/proposal
+https://example.com/protocols?which=lets_do_lunch/1.0/proposal
+did:example:1234567890;spec/lets_do_lunch/1.0/proposal
+https://github.com/myorg/myproject/tree/master/docs/lets_do_lunch/1.0/proposal
 </code></pre>
+<h3 id="semver-rules"><a class="toc-anchor" href="#semver-rules" >§</a> Semver Rules</h3>
+<p>The version numbers embedded in PIURIs and MTURIs MUST follow familiar <a path-0="semver.org"path-1=""href="https://semver.org/" >semver</a> rules, such that two parties that support the same protocol at the same major version but different minor versions could theoretically interoperate with a feature profile that matches the older of their two versions. (Of course, this does not guarantee interoperability; the party supporting a newer version still chooses whether they want to support the older version or not. Semver rules simply define how a version mismatch must be interpreted.)</p>
+<p>The major component of a protocol’s semver value MUST be updated under either of the following conditions:</p>
+<ul>
+<li>A change breaks important assumptions about the intent, preconditions, postconditions, or state machine of a protocol.</li>
+<li>A change adds or removes required fields or required messages.</li>
+</ul>
+<p>The minor component of a protocol’s semver value MUST be updated when a change does not justify a major number update, but it is more than a trivial update to documentation. Examples of minor version changes include adding new, optional fields or deprecating existing fields.</p>
+<p>The patch component of a protocol’s semver value is not used in MTURIs and PIURIs.</p>
 <h3 id="routing-protocol-20"><a class="toc-anchor" href="#routing-protocol-20" >§</a> Routing Protocol 2.0</h3>
 <p>The routing protocol defines how a sender and a recipient cooperate, using a partly trusted mediator, to facilitate message delivery. No party is required to know the full route of a message.</p>
 <h4 id="name-and-version"><a class="toc-anchor" href="#name-and-version" >§</a> Name and Version</h4>
-<p>The name of this protocol is “Routing Protocol”, and its <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="master"path-5="concepts"path-6="0003-protocols"path-7="semver.md"href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/semver.md" >version</a> is “2.0”. It is uniquely identified by the <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="master"path-5="concepts"path-6="0003-protocols"path-7="uris.md#piuri"href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0003-protocols/uris.md#piuri" >PIURI</a>:</p>
+<p>The name of this protocol is “Routing Protocol”, and its <a href="#semver-rules" >version</a> is “2.0”. It is uniquely identified by the <a href="#protocol-identifier-iuri" >PIURI</a>:</p>
 <pre><code>https://didcomm.org/routing/2.0
 </code></pre>
 <h4 id="roles"><a class="toc-anchor" href="#roles" >§</a> Roles</h4>
-<p>There are 3 roles in the protocol: <code>sender</code>, <code>mediator</code>, and <code>recipient</code>. The sender emits messages of type <code>forward</code> to the <code>mediator</code>. The mediator unpacks (decrypts) the payload of an encrypted <code>forward</code> message and passes on the result (an opaque blob that probably contains a differently encrypted payload) to the <code>recipient</code>.</p>
+<p>There are 3 roles in the protocol: <code>sender</code>, <code>mediator</code>, and <code>recipient</code>. The sender emits messages of type <code>forward</code> to the <code>mediator</code>. The mediator unpacks (decrypts) the payload of an encrypted <code>forward</code> message and passes on the result (a blob that probably contains a differently encrypted payload) to the <code>recipient</code>.</p>
 <p><img src="../collateral/routing-roles.png" alt="ordinary sequence"></p>
 <blockquote>
-<p>Note: the protocol is one-way; the return route for communication might not exist at all, or if it did, it could invert the roles of sender and receiver and use the same mediator, or it could use one or more different mediators, or it could use no mediator at all. This is a separate concern partly specified by the service endpoints in the DID docs of the sender and receiver, and partly explored in <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="master"path-5="features"path-6="0092-transport-return-route"path-7="README.md"href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0092-transport-return-route/README.md" >RFC 0092: Transports Return Route</a>.</p>
+<p>Note: the protocol is one-way; the return route for communication might not exist at all, or if it did, it could invert the roles of sender and receiver and use the same mediator, or it could use one or more different mediators, or it could use no mediator at all. This is a separate concern partly specified by the service endpoints in the DID docs of the sender and receiver, and partly explored in other protocols.</p>
 </blockquote>
 <blockquote>
 <p>Note: When the mediator is the routing agent of a single identity subject like Alice, the logical receiver is Alice herself, but the physical receiver may manifest as multiple edge devices (a phone, a laptop, a tablet). From the perspective of this protocol, multiplexing the send from mediator to receiver is out of scope for interoperability — compatible and fully supported, but not required or specified in any way.</p>
@@ -1084,16 +1091,15 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 <h3 id="out-of-band-messages"><a class="toc-anchor" href="#out-of-band-messages" >§</a> Out Of Band Messages</h3>
 <h4 id="url-qr-codes"><a class="toc-anchor" href="#url-qr-codes" >§</a> URL &amp; QR Codes</h4>
 <p>When passing a DIDComm message between two parties, it is often useful to present a message in the form of a URL or encoded into the form of a QR code for scanning with a smartphone or other camera. The format for a QR code is simply the encoded URL form of a message.</p>
-<h5 id="privacy-considerations"><a class="toc-anchor" href="#privacy-considerations" >§</a> Privacy Considerations</h5>
+<h4 id="privacy-considerations"><a class="toc-anchor" href="#privacy-considerations" >§</a> Privacy Considerations</h4>
 <p>Any information passed via a URL or QR code is unencrypted, and may be observed by another party. This lack of privacy must be minded in two different ways.</p>
 <p>First, no private information may be passed in the message. Private information should be passed between parties in encrypted messages only. Any protocol message that contains private information should not be passed via URL or QR code.</p>
 <p>Second, any identifiers passed in a message sent via URL or QR code must no longer be considered private. Any DID used or other identifier no longer considered private MUST be rotated over a secure connection if privacy is required.</p>
-<h5 id="message-correlation"><a class="toc-anchor" href="#message-correlation" >§</a> Message Correlation</h5>
+<h4 id="message-correlation"><a class="toc-anchor" href="#message-correlation" >§</a> Message Correlation</h4>
 <p>The <code>id</code> of the message passed in a URL or a QR code is used as the <code>pthid</code> on a response sent by the recipient of this message. The response recipient can use the <code>pthid</code> to correlate it with the original message.</p>
-<h5 id="messages-2"><a class="toc-anchor" href="#messages-2" >§</a> Messages</h5>
+<h4 id="invitation"><a class="toc-anchor" href="#invitation" >§</a> Invitation</h4>
 <p>Each message passed this way must be contained within an <code>out-of-band</code> message, as described below.</p>
 <p>The out-of-band protocol consists in a single message that is sent by the <em>sender</em>.</p>
-<h4 id="invitation-httpsdidcommorgout-of-band20invitation"><a class="toc-anchor" href="#invitation-httpsdidcommorgout-of-band20invitation" >§</a> Invitation: <code>https://didcomm.org/out-of-band/2.0/invitation</code></h4>
 <pre class="language-jsonc"><code class="language-jsonc">{
   &quot;type&quot;: &quot;https://didcomm.org/out-of-band/2.0/invitation&quot;,
   &quot;id&quot;: &quot;&lt;id used for context as pthid&gt;&quot;,
@@ -1134,7 +1140,7 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 </li>
 </ul>
 <p>When encoding a message in a URL or QR code, the <em>sender</em> does not know which protocols are supported by the <em>recipient</em> of the message. Encoding multiple alternative messages is a form of optimistic protocol negotiation that allows multiple supported protocols without coordination</p>
-<h5 id="standard-message-encoding"><a class="toc-anchor" href="#standard-message-encoding" >§</a> Standard Message Encoding</h5>
+<h4 id="standard-message-encoding"><a class="toc-anchor" href="#standard-message-encoding" >§</a> Standard Message Encoding</h4>
 <p>Using a standard message encoding allows for easier interoperability between multiple projects and software platforms. Using a URL for that standard encoding provides a built in fallback flow for users who are unable to automatically process the message. Those new users will load the URL in a browser as a default behavior, and may be presented with instructions on how to install software capable of processing the message. Already onboarded users will be able to process the message without loading in a browser via mobile app URL capture, or via capability detection after being loaded in a browser.</p>
 <p>The standard message format is a URL with a Base64URLEncoded plaintext JWM json object as a query parameter.</p>
 <p>The URL format is as follows, with some elements described below:</p>
@@ -1202,7 +1208,7 @@ Knowledge is Good
 </code></pre>
 <p>Example URL encoded as a QR Code:</p>
 <p><img src=".//collateral/out_of_band_exampleqr.png" alt="Example QR Code"></p>
-<h5 id="short-url-message-retrieval"><a class="toc-anchor" href="#short-url-message-retrieval" >§</a> Short URL Message Retrieval</h5>
+<h4 id="short-url-message-retrieval"><a class="toc-anchor" href="#short-url-message-retrieval" >§</a> Short URL Message Retrieval</h4>
 <p>It seems inevitable that the length of some DIDComm messages will be too long to produce a useable QR code. Techniques to avoid unusable QR codes have been presented above, including using attachment links for requests, minimizing the routing of the response and eliminating unnecessary whitespace in the JSON. However, at some point a <em>sender</em> may need generate a very long URL. In that case, a short URL message retrieval redirection should be implemented by the sender as follows:</p>
 <ul>
 <li>The sender should generate and track a GUID for the out-of-band message URL.</li>
@@ -1221,9 +1227,6 @@ Knowledge is Good
 <p>A usable QR code will always be able to be generated from the shortened form of the URL.</p>
 <p>Note: Due to the privacy implications, a standard URL shortening service SHOULD NOT be used.</p>
 <h4 id="redirecting-back-to-sender"><a class="toc-anchor" href="#redirecting-back-to-sender" >§</a> Redirecting Back to Sender</h4>
-<h5 id="summary-2"><a class="toc-anchor" href="#summary-2" >§</a> Summary</h5>
-<p>Describes how receiving party of out-of-band invitation can redirect back to sender application once protocol execution is over.</p>
-<h5 id="motivation"><a class="toc-anchor" href="#motivation" >§</a> Motivation</h5>
 <p>In some cases, interaction between sender and receiver of out-of-band invitation would require receiver application to redirect back to sender.</p>
 <p>For example,</p>
 <ul>
@@ -1235,9 +1238,9 @@ Knowledge is Good
 <li>A mobile application scanning QR code from sender and performing protocol execution. In this case the mobile application may choose to handle successful protocol execution in its own way and close the application.</li>
 </ul>
 <h5 id="reference-2"><a class="toc-anchor" href="#reference-2" >§</a> Reference</h5>
-<p>During the protocol execution sender can securely send <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="tree"path-4="main"path-5="concepts"path-6="0700-oob-through-redirect#web-redirect-decorator"href="https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator" ><code>web_redirect</code></a> info as part of messages concluding protocol executions, like <a href="#acks" >a formal acknowledgement message</a> or a <a href="#problem-reports" >problem report</a>.
+<p>During the protocol execution sender can securely send <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="tree"path-4="main"path-5="concepts"path-6="0700-oob-through-redirect#web-redirect-decorator"href="https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0700-oob-through-redirect#web-redirect-decorator" ><code>web_redirect</code></a> information as part of messages concluding protocol executions, like <a href="#acks" >a formal acknowledgement message</a> or a <a href="#problem-reports" >problem report</a>.
 Once protocol is ended then receiver can optionally choose to redirect by extracting the redirect information from the message.</p>
-<p>Example acknowledgement message from verifier to prover containing web redirect information.</p>
+<p>Example acknowledgement message from verifier to prover containing web redirect information:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"https://didcomm.org/present-proof/3.0/ack"</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"e2f3747b-41e8-4e46-abab-ba51472ab1c3"</span><span class="token punctuation">,</span>
@@ -1250,7 +1253,7 @@ Once protocol is ended then receiver can optionally choose to redirect by extrac
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>Problem report with web redirect header from <a href="#problem-reports" >Problem Reports Example</a> will look like,</p>
+<p>Problem report with web redirect header from <a href="#problem-reports" >problem report example</a> will look like:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/report-problem/2.0/problem-report"</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"7c9de639-c51c-4d60-ab95-103fa613c805"</span><span class="token punctuation">,</span>
@@ -1276,7 +1279,7 @@ The value of <code>status</code> property MUST be one of the Acknowledgement sta
 <p>The identifier for the message family used by this protocol is <code>discover-features</code>, and the fully qualified <a href="#protocol-identifier-uri" >PIURI</a> for its definition is:</p>
 <pre><code>https://didcomm.org/discover-features/2.0
 </code></pre>
-<h4 id="motivation-2"><a class="toc-anchor" href="#motivation-2" >§</a> Motivation</h4>
+<h4 id="motivation"><a class="toc-anchor" href="#motivation" >§</a> Motivation</h4>
 <p>Though some agents will support just one protocol and will be statically configured to interact with just one other party, many exciting uses of agents are more dynamic and unpredictable. When Alice and Bob meet, they won’t know in advance which features are supported by one another’s agents. They need a way to find out.</p>
 <p>Disclosing features in this manner has a significant privacy benefit over endpoint disclosures contained in a DID Document published to a Verifiable Data Registry (VDR). Using the single DIDComm endpoint published in the document and this protocol, features can be selectively disclosed to other parties at the owner’s discretion. The problem of anonymous scanning and fingerprinting enabled with VDR disclosures is solved in a privacy preserving way.</p>
 <h4 id="roles-2"><a class="toc-anchor" href="#roles-2" >§</a> Roles</h4>
@@ -1285,7 +1288,7 @@ The value of <code>status</code> property MUST be one of the Acknowledgement sta
 <h4 id="states-2"><a class="toc-anchor" href="#states-2" >§</a> States</h4>
 <p>This is a classic two-step request~response interaction, so it uses the predefined state machines for any <code>requester</code> and <code>responder</code>:</p>
 <p><img src="../collateral/routing-state-machines.png" alt="state machines">]</p>
-<h4 id="messages-3"><a class="toc-anchor" href="#messages-3" >§</a> Messages</h4>
+<h4 id="messages-2"><a class="toc-anchor" href="#messages-2" >§</a> Messages</h4>
 <h6 id="query-message-type"><a class="toc-anchor" href="#query-message-type" >§</a> <code>query</code> Message Type</h6>
 <p>A <code>discover-features/query</code> message looks like this:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
@@ -1368,7 +1371,7 @@ and the <code>receiver</code>. The sender initiates the trust
 ping. The receiver responds. If the receiver wants
 to do a ping of their own, they can, but this is a
 new interaction in which they become the sender.</p>
-<h4 id="messages-4"><a class="toc-anchor" href="#messages-4" >§</a> Messages</h4>
+<h4 id="messages-3"><a class="toc-anchor" href="#messages-3" >§</a> Messages</h4>
 <h5 id="ping"><a class="toc-anchor" href="#ping" >§</a> ping</h5>
 <p>The trust ping interaction begins when <code>sender</code>
 creates a <code>ping</code> message like this:</p>
@@ -2048,7 +2051,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#key-wrapping-algorithms" >Key Wrapping Algorithms</a></li>
 <li><a href="#perfect-forward-secrecy" >Perfect Forward Secrecy</a></li>
 <li><a href="#man-in-the-middle" >Man in the Middle</a></li>
-<li><a href="#key-ids-kid-and-skid-headers-references-in-the-did-document" >Key IDs <code>kid</code> and <code>skid</code> headers references in the DID document</a></li>
+<li><a href="#key-ids" >Key IDs</a></li>
 <li><a href="#protecting-the-sender-identity" >Protecting the Sender Identity</a></li>
 <li><a href="#ecdh-1pu-key-wrapping-and-common-protected-headers" >ECDH-1PU key wrapping and common protected headers</a></li>
 <li><a href="#examples" >Examples</a></li>
@@ -2060,7 +2063,6 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#construction" >Construction</a></li>
 <li><a href="#verification" >Verification</a></li>
 <li><a href="#uses-of-signatures" >Uses of Signatures</a></li>
-<li><a href="#examples-2" >Examples</a></li>
 </ul>
 </li>
 <li><a href="#did-rotation" >DID Rotation</a>
@@ -2118,6 +2120,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <ul>
 <li><a href="#protocol-identifier-uri" >Protocol Identifier URI</a></li>
 <li><a href="#message-type-uri" >Message Type URI</a></li>
+<li><a href="#semver-rules" >Semver Rules</a></li>
 <li><a href="#routing-protocol-20" >Routing Protocol 2.0</a>
 <ul>
 <li><a href="#name-and-version" >Name and Version</a></li>
@@ -2136,23 +2139,27 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <li><a href="#out-of-band-messages" >Out Of Band Messages</a>
 <ul>
 <li><a href="#url-qr-codes" >URL &amp; QR Codes</a></li>
-<li><a href="#invitation-httpsdidcommorgout-of-band20invitation" >Invitation: <code>https://didcomm.org/out-of-band/2.0/invitation</code></a></li>
+<li><a href="#privacy-considerations" >Privacy Considerations</a></li>
+<li><a href="#message-correlation" >Message Correlation</a></li>
+<li><a href="#invitation" >Invitation</a></li>
+<li><a href="#standard-message-encoding" >Standard Message Encoding</a></li>
+<li><a href="#short-url-message-retrieval" >Short URL Message Retrieval</a></li>
 <li><a href="#redirecting-back-to-sender" >Redirecting Back to Sender</a></li>
 </ul>
 </li>
 <li><a href="#discover-features-protocol-20" >Discover Features Protocol 2.0</a>
 <ul>
-<li><a href="#motivation-2" >Motivation</a></li>
+<li><a href="#motivation" >Motivation</a></li>
 <li><a href="#roles-2" >Roles</a></li>
 <li><a href="#states-2" >States</a></li>
-<li><a href="#messages-3" >Messages</a></li>
+<li><a href="#messages-2" >Messages</a></li>
 <li><a href="#privacy-considerations-2" >Privacy Considerations</a></li>
 </ul>
 </li>
 <li><a href="#trust-ping-protocol-20" >Trust Ping Protocol 2.0</a>
 <ul>
 <li><a href="#roles-3" >Roles</a></li>
-<li><a href="#messages-4" >Messages</a></li>
+<li><a href="#messages-3" >Messages</a></li>
 <li><a href="#trust" >Trust</a></li>
 </ul>
 </li>
