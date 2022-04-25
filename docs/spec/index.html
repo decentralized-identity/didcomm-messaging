@@ -338,7 +338,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p>When a sender would like to encrypt a message for a recipient DID or multiple recipient DIDs but not be authenticated by the recipients, the JWA of <code>ECDH-ES</code> defined by <a path-0="tools.ietf.org"path-1="html"path-2="rfc7518#section-4.6"href="https://tools.ietf.org/html/rfc7518#section-4.6" >RFC 7518</a> SHOULD be used within the structure of a JWE.</p>
 <p>Anonymous encryption removes authentication of the sender, which is a significant benefit of DIDComm Messaging; it may make sense, but should only be done thoughtfully, when the context of the use case justifies it. Pairing anonymous encryption with a method of message authentication other than authcrypt as defined in this specification is not generally recommended, as it may have unintended side effects. In particular, a signed message that is anonymously encrypted accomplishes authentication, but loses the repudiability of authcrypt. Further discussion of message authentication can be found in the <a path-0="didcomm.org"path-1="book"path-2="v2"href="https://didcomm.org/book/v2" >DIDComm Guidebook</a>.</p>
 <h4 id="curves-and-content-encryption-algorithms"><a class="toc-anchor" href="#curves-and-content-encryption-algorithms" >§</a> Curves and Content Encryption Algorithms</h4>
-<p>For the keys involved in key agreement, the following elliptic curves MUST be supported.</p>
+<p>For the keys involved in key agreement, the first three elliptic curves in this table MUST be supported, and P-521 is optional.</p>
 <table>
 <thead>
 <tr>
@@ -358,6 +358,10 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <tr>
 <td>P-256</td>
 <td>NIST defined P-256 elliptic curve - deprecated in favor of P-384</td>
+</tr>
+<tr>
+<td>P-521</td>
+<td>NIST defined P-521 elliptic curve. Optional.</td>
 </tr>
 </tbody>
 </table>
@@ -421,7 +425,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <td>ECDH-ES+A256KW</td>
 <td>P-521</td>
 <td>EC</td>
-<td>ECDH-ES key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in <a path-0="tools.ietf.org"path-1="html"path-2="rfc7518#section-4.6.2"href="https://tools.ietf.org/html/rfc7518#section-4.6.2" >RFC 7518</a></td>
+<td>ECDH-ES key wrapping using key with NIST defined P-521 elliptic curve to create a 512 bits key as defined in <a path-0="tools.ietf.org"path-1="html"path-2="rfc7518#section-4.6.2"href="https://tools.ietf.org/html/rfc7518#section-4.6.2" >RFC 7518</a></td>
 </tr>
 <tr>
 <td>ECDH-ES+A256KW</td>
@@ -445,7 +449,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <td>ECDH-1PU+A256KW</td>
 <td>P-521</td>
 <td>EC</td>
-<td>ECDH-1PU key wrapping using key with NIST defined P-521 elliptic curve to create a 256 bits key as defined in <a path-0="tools.ietf.org"path-1="html"path-2="draft-madden-jose-ecdh-1pu-04#section-2"href="https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2" >ecdh-1pu</a></td>
+<td>ECDH-1PU key wrapping using key with NIST defined P-521 elliptic curve to create a 512 bits key as defined in <a path-0="tools.ietf.org"path-1="html"path-2="draft-madden-jose-ecdh-1pu-04#section-2"href="https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2" >ecdh-1pu</a></td>
 </tr>
 <tr>
 <td>ECDH-1PU+A256KW</td>
@@ -460,7 +464,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <h4 id="man-in-the-middle"><a class="toc-anchor" href="#man-in-the-middle" >§</a> Man in the Middle</h4>
 <p>DIDComm Messaging’s guarantees with respect to man-in-the-middle attacks are easily misunderstood, since DIDs rather than human identity are the concern of the algorithm. Please refer to the <a path-0="didcomm.org"path-1="book"path-2="v2"path-3="mitm"href="https://didcomm.org/book/v2/mitm" >DIDComm Guidebook</a> for details.</p>
 <h4 id="key-ids-kid-and-skid-headers-references-in-the-did-document"><a class="toc-anchor" href="#key-ids-kid-and-skid-headers-references-in-the-did-document" >§</a> Key IDs <code>kid</code> and <code>skid</code> headers references in the DID document</h4>
-<p>Keys used by DIDComm envelopes MUST be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipient encryption keys MUST be retrieved from the respective DID document’s <code>keyAgreement</code> verification section as per the <a path-0="identity.foundation"path-1="didcomm-messaging"path-2="spec"path-3="#did-document-keys"href="https://identity.foundation/didcomm-messaging/spec/#did-document-keys" >DID Document Keys</a> definition.</p>
+<p>Keys used by DIDComm envelopes will probably be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipient encryption keys are usually  retrieved from the respective DID document’s <code>keyAgreement</code> verification section as per the <a path-0="identity.foundation"path-1="didcomm-messaging"path-2="spec"path-3="#did-document-keys"href="https://identity.foundation/didcomm-messaging/spec/#did-document-keys" >DID Document Keys</a> definition.</p>
 <p>When Alice is preparing an envelope intended for Bob, the packing process should use a key from both hers and Bob’s DID document’s <code>keyAgreement</code> section.</p>
 <p>Assuming Alice has a DID Doc with the following <code>keyAgreement</code> definition (source: <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3="#example-17-key-agreement-property-containing-two-verification-methods"href="https://www.w3.org/TR/did-core/#example-17-key-agreement-property-containing-two-verification-methods" >DID V1 Example 17</a>):</p>
 <pre class="language-jsonc"><code class="language-jsonc">{
@@ -483,7 +487,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
   ...
 }
 </code></pre>
-<p>The envelope packing process MUST set the <code>skid</code> header with value <code>did:example:123456789abcdefghi#keys-1</code> in the envelope’s protected headers and fetch the underlying key to execute ECDH-1PU key derivation for content key wrapping.</p>
+<p>The envelope packing process would set the <code>skid</code> header with value <code>did:example:123456789abcdefghi#keys-1</code> in the envelope’s protected headers and fetch the underlying key to execute ECDH-1PU key derivation for content key wrapping.</p>
 <p>Assuming she also has Bob’s DID document which happens to include the following <code>keyAgreement</code> section:</p>
 <pre class="language-jsonc"><code class="language-jsonc">{
   &quot;@context&quot;: &quot;https://www.w3.org/ns/did/v1&quot;,
@@ -501,7 +505,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 }
 </code></pre>
 <p>Unless previously coordinated in a layer above DIDComm, the default recipients of the envelope SHOULD include all the <code>keyAgreement</code> entries representing Bob. This allows Bob to decrypt his messages on any device he controls, without sharing keys across his devices. The corresponding <code>kid</code> header for this recipient MUST have a DID URL pointing to a corresponding verification method in the DID document. This verification method MUST be associated with the <code>keyAgreement</code> verification relationship and the verification material MUST be retrieved from the DID document to execute the ECDH-1PU key derivation for content key wrapping.</p>
-<p>When Bob receives the envelope, the unpacking process on his end MUST resolve the <code>skid</code> protected header value using Alice’s DID doc’s <code>keyAgreement[0]</code> in order to extract her public key. In Alice’s DID Doc example above, <code>keyAgreement[0]</code> is a reference id. It MUST be resolved from the main <code>verificationMethod[]</code> of Alice’s DID document (not shown in the example).</p>
+<p>When Bob receives the envelope, the unpacking process on his end resolves the <code>skid</code> protected header value using Alice’s DID doc’s <code>keyAgreement[0]</code> in order to extract her public key. In Alice’s DID Doc example above, <code>keyAgreement[0]</code> is a reference id. It would be resolved from the main <code>verificationMethod[]</code> of Alice’s DID document (not shown in the example).</p>
 <p>Once resolved, the unpacker will then execute ECDH-1PU key derivation using this key and Bob’s own recipient key found in the envelope’s <code>recipients[0]</code> to unwrap the content encryption key.</p>
 <h4 id="protecting-the-sender-identity"><a class="toc-anchor" href="#protecting-the-sender-identity" >§</a> Protecting the Sender Identity</h4>
 <p>When employing authenticated encryption, the header of the encrypted message envelope must necessarily reveal the key identifier used by the sender of the message (the <code>skid</code>). This is used by recipients to resolve the sender’s public key material in order to decrypt the message. In the case of communication between two public DIDs, this may allow outside parties to directly correlate the sender of an encrypted message to a known identity.</p>
