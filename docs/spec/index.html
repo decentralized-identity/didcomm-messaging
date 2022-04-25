@@ -563,9 +563,10 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <h4 id="construction"><a class="toc-anchor" href="#construction" >§</a> Construction</h4>
 <p>Construct a JWS with the following header:</p>
 <pre class="language-json"><code class="language-json">   <span class="token punctuation">{</span><span class="token property">"typ"</span><span class="token operator">:</span><span class="token string">"JWM"</span><span class="token punctuation">,</span>
-    <span class="token property">"kid"</span><span class="token operator">:</span><span class="token string">"Ef1sFuyOozYm3CEY4iCdwqxiSyXZ5Br-eUDdQXk6jaQ"</span><span class="token punctuation">,</span>
+    <span class="token property">"kid"</span><span class="token operator">:</span><span class="token string">"did:example:123#DhPHHNNMSHPcaSgNpjjsBYpMMjsTdSzC9ByQ8aJs8vrNXy"</span><span class="token punctuation">,</span>
     <span class="token property">"alg"</span><span class="token operator">:</span><span class="token string">"ES256"</span><span class="token punctuation">}</span>
 </code></pre>
+<p>The <code>kid</code> MUST be a DID URI that refers to a key specified as an authorization key.</p>
 <p>The JWS payload is the Base64url encoded JWM.</p>
 <p>When transmitted in a normal JWM fashion, the JSON Serialization MUST be used.</p>
 <h4 id="verification"><a class="toc-anchor" href="#verification" >§</a> Verification</h4>
