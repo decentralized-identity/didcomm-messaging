@@ -156,11 +156,11 @@ Each attachment is described with an instance of a JSON object that has the foll
 
 - `id`: [optional but recommended] Identifies attached content within the scope of a given message, so it can be referenced. For example, in a message documenting items for sale on an auction website, there might be a field named `front_view` that contains the value `#attachment1`; this would reference an attachment to the message with `id` equal to `attachment1`. If omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because the `id` of an attachment is used to compose URIs, this value should be brief and MUST consist entirely of [unreserved URI characters](https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3) – meaning that it is not necessary to [percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the value to incorporate it in a URI.
 - `description`: [optional] A human-readable description of the content.
-- `filename`: A hint about the name that might be used if this attachment is persisted as a file. It is not required, and need not be unique. If this field is present and `media_type` is not, the extension on the filename may be used to infer a MIME type.
+- `filename`: A optional hint about the name that might be used if this attachment is persisted as a file. It is not required, and need not be unique. If this field is present and `media_type` is not, the extension on the filename may be used to infer a MIME type.
 - `media_type`: [optional] Describes the media type of the attached content.
 - `format`: [optional] Further describes the format of the attachment if the `media_type` is not sufficient.
 - `lastmod_time`: [optional] A hint about when the content in this attachment was last modified.
-- `data`: A JSON object that gives access to the actual content of the attachment. Contains enough of the following subfields to allow access to the data:
+- `data`: A JSON object that gives access to the actual content of the attachment. This MUST contain at least one of the following subfields and enough of them to allow access to the data:
     * `jws`: [optional] A [JWS](https://tools.ietf.org/html/rfc7515) in [detached content mode](https://tools.ietf.org/html/rfc7515#appendix-F), where the `payload` field of the JWS maps to `base64` or to something fetchable via `links`. This allows attachments to be signed. The signature need not come from the author of the message.
     * `hash`: [optional] The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the `links` data attribute.
     * `links`: [optional] A list of zero or more locations at which the content may be fetched. This allows content to be attached by reference instead of by value.
@@ -172,48 +172,54 @@ Each attachment is described with an instance of a JSON object that has the foll
 
 ```json
 {
-    "type": "<sometype>",
-    "to": ["did:example:mediator"],
-    "body":{
-        "attachment_id": "1",
-        "encrypted_details": {
-            "id": "x",
-            "encrypted_to": "",
-            "other_details": "about attachment"
-        }
+  "type": "<sometype>",
+  "to": [
+    "did:example:mediator"
+  ],
+  "body": {
+    "attachment_id": "1",
+    "encrypted_details": {
+      "id": "x",
+      "encrypted_to": "",
+      "other_details": "about attachment"
+    }
+  },
+  "attachments": [
+    {
+      "id": "1",
+      "description": "example b64 encoded attachment",
+      "data": {
+        "base64": "WW91ciBob3ZlcmNyYWZ0IGlzIGZ1bGwgb2YgZWVscw=="
+      }
     },
-    "attachments": [
-        {
-			"id": "1",
-            "description": "example b64 encoded attachment",
-            "data": {
-            	"base64": "WW91ciBob3ZlcmNyYWZ0IGlzIGZ1bGwgb2YgZWVscw=="
-        	}
-        },{
-			"id": "2",
-            "description": "example linked attachment",
-            "data": {
-            	"hash": "<multi-hash>",
-                "links": ["https://path/to/resource"]
-        	}
-        },{
-			"id": "x",
-            "description": "example encrypted DIDComm message as attachment",
-            "media_type": "application/didcomm-encrypted+json",
-            "data": {
-            	"json": {
-                    //jwe json structure
-                }
-        	}
+    {
+      "id": "2",
+      "description": "example linked attachment",
+      "data": {
+        "hash": "<multi-hash>",
+        "links": [
+          "https://path/to/resource"
+        ]
+      }
+    },
+    {
+      "id": "x",
+      "description": "example encrypted DIDComm message as attachment",
+      "media_type": "application/didcomm-encrypted+json",
+      "data": {
+        "json": {
+          //jwe json structure
         }
-    ]
+      }
+    }
+  ]
 }
 ```
 
 ### Goal Codes
 
-Goal codes are used to coordinate the purpose of an interaction. Some protocols are generic enough to be used for different purposes; goal codes communicate the purpose of the interaction unambiguously. The Out of Band protocol provides an example: A proposes to B that they connect, and supplies a goal code to clarify why the connection is desired. Goal codes may also be used to signal intent to engage in a sequence of protocols as a unit. This is useful for interoperability profiles.
+Goal codes are used to coordinate the purpose of an interaction. Some protocols are generic enough to be used for different purposes; goal codes communicate the purpose of the interaction unambiguously. [Out of Band messages](#out-of-band-messages) provide an example: A proposes to B that they connect, and supplies a goal code to clarify why the connection is desired. Goal codes may also be used to signal intent to engage in a sequence of protocols as a unit. This is useful for interoperability profiles.
 
-Goal codes are a structured string datatype that is used in plaintext message content. This spec defines their meaning but not their place or field name in a message; the latter questions are for specific protocols to decide.
+Goal codes are a structured string datatype that is used in plaintext message content. This spec defines their meaning but not their location or name in a message's structure; the latter questions are for specific protocols to decide.
 
-Reading left to right, goal codes strings convey meaning that gets more specific as the string progresses. In order to avoid collision between different efforts and goal codes, goal codes defined outside of this spec MUST use Reverse Domain Notation with the associated effort's domain as a prefix: `com.example.category.specific`. Any structure after the domain name portion is acceptable; [DIDComm v1 proposed some conventions](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0519-goal-codes/README.md) that may be useful.
+Reading left to right, goal codes strings convey meaning that gets more specific as the string progresses. In order to avoid collision between different efforts and goal codes, goal codes defined outside of this spec MUST use [Reverse Domain Name Notation](https://en.wikipedia.org/wiki/Reverse_domain_name_notation) with the associated effort's domain as a prefix: `com.example.category.specific`. Any structure after the domain name portion is acceptable; [DIDComm v1 proposed some conventions](https://github.com/hyperledger/aries-rfcs/blob/main/concepts/0519-goal-codes/README.md) that may be useful.

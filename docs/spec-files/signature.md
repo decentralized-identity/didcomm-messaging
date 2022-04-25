@@ -2,7 +2,7 @@
 
 A DIDComm message can be signed, either in conjunction with encryption, or independently (e.g., if the message will remain unencrypted).
 
-If a message is signed and encrypted to add non-repudiation, it must be signed prior to encryption. This is known as a [nested JWM](https://tools.ietf.org/html/draft-looker-jwm-01#section-1.2).
+If a message is signed and encrypted to add non-repudiation, it MUST be signed prior to encryption. This is known as a [nested JWM](https://tools.ietf.org/html/draft-looker-jwm-01#section-1.2).
 
 #### Algorithms
 
@@ -13,7 +13,7 @@ Implementations MUST be able to verify all of the following algorithms and MUST 
 | Algorithm(JWA)           | Description                                                  |
 | ------------------------ | ------------------------------------------------------------ |
 | EdDSA (with crv=Ed25519) | Elliptic curve digital signature with Edwards curves and SHA-512 |
-| ES256                    | Elliptic curve digital signature with NIST p-256 curve and SHA-256 |
+| ES256                    | Elliptic curve digital signature with NIST p-256 curve and SHA-256 (deprecated) |
 | ES256K                   | Elliptic curve digital signature with Secp256k1 keys.        |
 
 #### Construction
