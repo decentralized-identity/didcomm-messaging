@@ -22,9 +22,11 @@ Construct a JWS with the following header:
 
 ```json
    {"typ":"JWM",
-    "kid":"Ef1sFuyOozYm3CEY4iCdwqxiSyXZ5Br-eUDdQXk6jaQ",
+    "kid":"did:example:123#DhPHHNNMSHPcaSgNpjjsBYpMMjsTdSzC9ByQ8aJs8vrNXy",
     "alg":"ES256"}
 ```
+
+The `kid` MUST be a DID URI that refers to a key specified as an authorization key.
 
 The JWS payload is the Base64url encoded JWM.
 
