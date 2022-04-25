@@ -64,7 +64,7 @@ The attachment(s) in the `attachments` field are able to use the full power of D
 
 #### Rewrapping
 
-Normally, the payload attached to the `forward` message received by the mediator is transmitted directly to the receiver with no further packaging. However, optionally, the mediator can attach the opaque payload to a new `forward` message (appropriately anoncrypted), which then acts as a fresh outer envelope for the second half of the delivery. This [rewrapping](#rewrapping) means that the "onion" of packed messages stays the same size rather than getting smaller as a result of the forward operation:
+Normally, the payload attached to the `forward` message received by the mediator is transmitted directly to the receiver with no further packaging. However, optionally, the mediator can attach the opaque payload to a new `forward` message (appropriately anoncrypted), which then acts as a fresh outer envelope for the second half of the delivery. This rewrapping means that the "onion" of packed messages stays the same size rather than getting smaller as a result of the forward operation:
 
 ![re-wrapped sequence](../collateral/routing-roles-2.png)
 
@@ -77,14 +77,17 @@ Why is such indirection useful?
 * It lets the mediator change the size of the message by adding or subtracting noise from the content. 
 * It allows for dynamic routing late in the delivery chain.
 
-These last two characteristics are the foundation of mix networking feature for DIDComm. That feature is the subject of a different RFC; here we only note the existence of the optional feature. 
+These last two characteristics could provide the foundation of mixnet features for DIDComm; however, such functionality is out of scope in this spec. 
 
-#### Sender Forward Process
+#### Sender Process to Enable Forwarding
 
-1. Sender Constructs Message.
-2. Sender Encrypts Message to recipient(s).
-3. Wrap Encrypted Message in Forward Message for each Routing Key.
-4. Transmit to `serviceEndpoint` `uri` in the manner specified in the [transports] section.
+1. Construct a plaintext message, M.
+2. If appropriate, sign M.
+3. Encrypt M for each party that is an intended recipient. Assuming each recipient has several keys, corresponding to several devices, but that all the keys are of the same type, this produces a single message, N, for each recipient &mdash; and N is decryptable on any device the recipient is using. If Alice is sending to Bob and Carol, this step produces N<sub>Bob</sub> and N<sub>Carol</sub>, which have identical plaintext but different encrypted embodiments.
+4. Perform a wrapping process that loops *in reverse order* over all items in the `routingKeys` array of the [service endpoint](#service-endpoint) for the DID document that corresponds to the intended recipient of N. For each item X in that array, *beginning at the end of the array and working to its beginning*, Sender creates a new plaintext `forward` message, attaches the current N, and encrypts it for X. The output is a new encrypted message, N', that is treated as N in the next round of wrapping.
+5. Transmit the fully wrapped version of N to the `uri` given in the associated `serviceEndpoint` of the recipient's DID document.
+
+The party that receives it will have the ability to decrypt, producing a `forward` message with an encrypted attachment that is then forwarded to the next hop in `routingKeys`. This unwrapping and forwarding is repeated until the message reaches its final destination.
 
 #### Mediator Process
 
@@ -98,15 +101,23 @@ The recipient (`next` attribute of Forward Message) may have pre-configured addi
 
 #### DID Document Keys
 
-All keys declared in the DID Document's `keyAgreement` section should be used as recipients when encrypting a message. The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
+Ideally, all keys declared in the `keyAgreement` section of a given recipient's DID document are used as target keys when encrypting a message. To encourage this, DIDComm encrypts the main message content only once, using an ephemeral content encryption key, and then encrypts the relatively tiny ephemeral key once per recipient key. This "multiplexed ecnryption" is efficient, and it allows a recipient to change devices over the course of a conversation without prior arrangement.
+
+However, practical considerations can frustrate this ideal. If a recipient's DID document declares keys of different types, a sender has to prepare more than one encryption envelope &mdash; and if not all of a recipient's key types are supported by the sender, the goal is simply unachievable.
+
+In addition, if a sender is routing the same message to more than one recipient (not just more than one key of the same recipient), the sender has to wrap the message differently because it will flow through different mediators.
+
+This leads to a rule of thumb rather than a strong normative requirement: a sender SHOULD encrypt for as many of a recipient's keys as is practical.
+
+The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
 
 Keys used in a signed JWM are declared in the DID Document's `authentication` section.
 
-TODO: include details about how DIDComm keys are represented/identified in the DID Document. The DID Core Spec appears light on details and examples of `keyAgreement` keys. Clarifying language should be included here or there.
+#### Service Endpoint
 
-#### DID Document Service Endpoint
+Parties who wish to communicate via DIDComm Messaging MAY tell other parties how to reach them by declaring a `serviceEndpoint` block in their DID document. (It is also possible to convey this information in other ways, but they are out of scope for this spec.)
 
-DID Documents for DIDComm capable DIDs have a single service block entry in the following format:
+The relevant entry in the DID document matches this format:
 
 ```json
 {
@@ -127,7 +138,7 @@ DID Documents for DIDComm capable DIDs have a single service block entry in the 
 
 **type**: MUST be `DIDCommMessaging`. 
 
-**serviceEndpoint**: MUST contain an ordered list of objects, each represents a DIDComm Service Endpoint URI and it's associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
+**serviceEndpoint**: MUST contain an ordered list of objects. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
 
 Each object has the following properties:
 
@@ -137,21 +148,17 @@ Each object has the following properties:
 If `accept` is not specified, the sender uses its preferred choice for sending a message to the endpoint.
 Please see [Message Types](#message-types) for details about media types.
 
-**routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in the [Routing] section of this spec. 
+**routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in [Sender Process to Enable Forwarding](#sender-process-to-enable-forwarding), above. 
 
 #### Failover
 
-Should the transmission of a message not receive a successful response as defined in the [Transports] section, the sender SHOULD try another endpoint or try delivery at a later time.
+If the transmission of a message fails, the sender SHOULD try another endpoint or try delivery at a later time.
 
-#### Alternative Endpoints
+#### Using a DID as an endpoint
 
-In addition to the URIs for [transports], some alternative forms are available.
+In addition to the sorts of URIs familiar to all web developers, it is possible to use a DID as the `uri` value in a `serviceEndpoint`. This is useful when a recipient sits behind a mediator, because it allows the mediator to rotate its keys or update its own service endpoints without disrupting communication between sender and recipient. In such cases, the DID (which belongs to the mediator) is resolved. Inside the resulting DID document, a `serviceEndpoint` with type `DIDCommMessaging` MUST exist. The `keyAgreement` keys of the mediator are implicitly prepended to the `routingKeys` section from the message recipient's DID Document as per the process in [Sender Process to Enable Forwarding](#sender-process-to-enable-forwarding).
 
-##### DID
-
-Using a DID for the `serviceEndpoint` `uri` is useful when using a mediator. The DID should be resolved, and services with type of "DIDComm" will contain valid `serviceEndpoints`. The keyAgreement keys of that DID Document should be implicitly appended at the end of the routingKeys section from the message recipient's DID Document as per the process in [Sender Forward Process]. The advantage with this approach is that a mediator can rotate keys and update serviceEndpoints without any updates needed to dependent recipients' DID Documents.
-
-A DID representing a mediator SHOULD NOT use alternative endpoints in its own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [transports] will prevent such recursion.
+A DID representing a mediator SHOULD NOT use alternative endpoints in its own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [Transports](#transports) will prevent such recursion.
 
 Example 1: Mediator
 
@@ -178,4 +185,4 @@ Example 2: Mediator + Routing Keys
 }
 ```
 
-The message is encrypted to the recipient, then wrapped in a forward message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
+The message is encrypted to the recipient, then wrapped in a `forward` message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
