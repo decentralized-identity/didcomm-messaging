@@ -61,7 +61,7 @@ The mapping of the Perfect Forward Secrecy concepts to DIDComm requires some dis
 
 DIDComm Messaging's guarantees with respect to man-in-the-middle attacks are easily misunderstood, since DIDs rather than human identity are the concern of the algorithm. Please refer to the [DIDComm Guidebook](https://didcomm.org/book/v2/mitm) for details.
 
-#### Key IDs `kid` and `skid` headers references in the DID document
+#### Key IDs
 
 Keys used by DIDComm envelopes will probably be sourced from the DIDs exchanged between two agents. Specifically, both sender and recipient encryption keys are usually  retrieved from the respective DID document's `keyAgreement` verification section as per the [DID Document Keys](https://identity.foundation/didcomm-messaging/spec/#did-document-keys) definition.
 
