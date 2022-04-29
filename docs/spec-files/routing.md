@@ -93,8 +93,8 @@ The party that receives it will have the ability to decrypt, producing a `forwar
 
 _Prior to using a Mediator, it is the recipient's responsibility to coordinate with the mediator. Part of this coordination informs them of the `next` address(es) expected, the endpoint, and any Routing Keys to be used when forwarding messages. That coordination is out of the scope of this spec._
 
-1. Receives Forward Message.
-2. Retrieves Service Endpoint pre-configured by recipient (`next` attribute).
+1. Receive Forward Message.
+2. Retrieve Service Endpoint pre-configured by recipient (`next` attribute).
 3. Transmit `payload` message to Service Endpoint in the manner specified in the [transports] section.
 
 The recipient (`next` attribute of Forward Message) may have pre-configured additional routing keys with the mediator that were not present in the DID Document and therefore unknown to the original sender. If this is the case, the mediator should wrap the attached `payload` message into an additional Forward message once per routing key. This step is performed between (2) and (3).
