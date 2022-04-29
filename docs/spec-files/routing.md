@@ -10,7 +10,7 @@ The name of this protocol is "Routing Protocol", and its [version](#semver-rules
 
 #### Roles
 
-There are 3 roles in the protocol: `sender`, `mediator`, and `recipient`. The sender emits messages of type `forward` to the `mediator`. The mediator unpacks (decrypts) the payload of an encrypted `forward` message and passes on the result (a blob that probably contains a differently encrypted payload) to the `recipient`.
+There are 3 roles in the protocol: sender, mediator, and recipient. The sender emits messages of type `forward` to the mediator. The mediator unpacks (decrypts) the payload of an encrypted `forward` message and passes on the result (a blob that probably contains a differently encrypted payload) to the recipient.
 
 ![ordinary sequence](../collateral/routing-roles.png)
 
@@ -56,7 +56,7 @@ The only message in this protocol is the `forward` message. A simple and common 
 - `next` - REQUIRED. The identifier of the party to send the attached message to.
 - `attachments` - REQUIRED. The DIDComm message(s) to send to the party indicated in the `next` body attribute. This content should be encrypted for the next recipient.
 
-When the internal message expires, it's a good idea to also include an expiration for forward message requests. Include the `expires_time` header with the appropriate value.
+When the internal message expires, it's a good idea to also include an expiration for forward requests. Include the `expires_time` header with the appropriate value.
 
 The value of the `next` field is typically a DID. However, it may also be a key, for the last hop of a route. The `routingKeys` array in the `serviceEndpoint` portion of a DID doc allow a party to list keys that should receive inbound communication, with encryption multiplexed so any of the keys can decrypt. This supports a use case where Alice wants to process messages on any of several devices that she owns.
 
@@ -91,13 +91,13 @@ The party that receives it will have the ability to decrypt, producing a `forwar
 
 #### Mediator Process
 
-_Prior to using a Mediator, it is the recipient's responsibility to coordinate with the mediator. Part of this coordination informs them of the `next` address(es) expected, the endpoint, and any Routing Keys to be used when forwarding messages. That coordination is out of the scope of this spec._
+_Prior to using a Mediator, it is the recipient's responsibility to coordinate with the mediator. Part of this coordination informs them of the `next` address(es) expected, the endpoint, and any routing keys to be used when forwarding messages. That coordination is out of the scope of this spec._
 
-1. Receive Forward Message.
-2. Retrieve Service Endpoint pre-configured by recipient (`next` attribute).
-3. Transmit `payload` message to Service Endpoint in the manner specified in the [transports] section.
+1. Receive 'forward' message.
+2. Retrieve service endpoint pre-configured by recipient (`next` attribute).
+3. Transmit `payload` message to service endpoint in the manner specified in the [transports] section.
 
-The recipient (`next` attribute of Forward Message) may have pre-configured additional routing keys with the mediator that were not present in the DID Document and therefore unknown to the original sender. If this is the case, the mediator should wrap the attached `payload` message into an additional Forward message once per routing key. This step is performed between (2) and (3).
+The recipient (`next` attribute of 'forward' message) may have pre-configured additional routing keys with the mediator that were not present in the DID Document and therefore unknown to the original sender. If this is the case, the mediator should wrap the attached `payload` message into an additional Forward message once per routing key. This step is performed between (2) and (3).
 
 #### DID Document Keys
 
@@ -171,7 +171,7 @@ Example 1: Mediator
     }]
 }
 ```
-The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
+The message is encrypted to the recipient, then wrapped in a 'forward' message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
 
 Example 2: Mediator + Routing Keys
 ```json
@@ -185,4 +185,4 @@ Example 2: Mediator + Routing Keys
 }
 ```
 
-The message is encrypted to the recipient, then wrapped in a `forward` message encrypted to `did:example:anothermediator#somekey`. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
+The message is encrypted to the recipient, then wrapped in a `forward` message encrypted to `did:example:anothermediator#somekey`. That message is wrapped in a 'forward' message encrypted to 'keyAgreement' keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
