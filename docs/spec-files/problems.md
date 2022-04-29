@@ -144,7 +144,7 @@ Token | Value of `comment` string | Notes
 
 #### Replying to Warnings
 
-When Alice sends a `w.*` problem report to Bob, and Bob decides that the warning is actually an error, he SHOULD reply to Alice to let her know about the consequences of his evaluation. Bob's reply is another `problem-report` message. It looks very similar to Alice's original, except:
+When Alice sends a `w.*` problem report to Bob, and Bob decides that the warning is actually an error, he SHOULD reply to Alice to let her know about the consequences of his evaluation. Bob's reply is another [problem report](#problem-reports). It looks very similar to Alice's original message, except:
 
 * The `code` in Bob's message now begins with `e.`. The remainder of the code MAY (often will be) identical, but this is not required; if Bob knows more details than Alice did, he SHOULD provide them. The *scope* in Bob's code MUST be at least as broad as the scope in Alice's original message. (For example, Bob MUST NOT use scope `m` to say the protocol continues with only a bad message ignored, if Alice's original warning said she considered the scope to be `p`.)
 * The `args` property may or may not match.  

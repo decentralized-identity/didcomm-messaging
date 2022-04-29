@@ -201,7 +201,7 @@ Example acknowledgement message from verifier to prover containing web redirect 
 }
 ```
 
-Problem report with web redirect header from [problem report example](#problem-reports) will look like:
+A problem report with a web redirect header from the [problem report example](#problem-reports) will look like:
 ```json
 {
   "type": "https://didcomm.org/report-problem/2.0/problem-report",

@@ -22,7 +22,7 @@ In this protocol, the sender and the receiver never interact directly; they only
 
 The sender can add the standard `expires_time` to a `forward` message. An additional header, `delay_milli` is also possible; this allows the sender to request that a mediator wait a specified number of milliseconds before delivering. Negative values mean that the mediator should randomize delay by picking a number of milliseconds between 0 and the absolute value of the number, with a uniform distribution.
 
-The mediator is NOT required to support or implement any of these semantics; only the core forwarding behavior is indispensable. If a mediator sees a header that requests behavior it doesn't support, it MAY return a [`problem-report`](#problem-reports) to the sender identifying the unsupported feature, but it is not required to do so.
+The mediator is NOT required to support or implement any of these semantics; only the core forwarding behavior is indispensable. If a mediator sees a header that requests behavior it doesn't support, it MAY return a [problem-report](#problem-reports) to the sender identifying the unsupported feature, but it is not required to do so.
 
 >Note: The [`please_ack` header](#acks) SHOULD NOT be included on [`forward` messages](#routing), and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, and undermine the privacy of recipients.
 
