@@ -154,19 +154,19 @@ Attachments are contained within a list in the `attachments` header.
 
 Each attachment is described with an instance of a JSON object that has the following structure.
 
-- `id`: [optional but recommended] Identifies attached content within the scope of a given message, so it can be referenced. For example, in a message documenting items for sale on an auction website, there might be a field named `front_view` that contains the value `#attachment1`; this would reference an attachment to the message with `id` equal to `attachment1`. If omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because the `id` of an attachment is used to compose URIs, this value should be brief and MUST consist entirely of [unreserved URI characters](https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3) – meaning that it is not necessary to [percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the value to incorporate it in a URI.
-- `description`: [optional] A human-readable description of the content.
-- `filename`: A optional hint about the name that might be used if this attachment is persisted as a file. It is not required, and need not be unique. If this field is present and `media_type` is not, the extension on the filename may be used to infer a MIME type.
-- `media_type`: [optional] Describes the media type of the attached content.
-- `format`: [optional] Further describes the format of the attachment if the `media_type` is not sufficient.
-- `lastmod_time`: [optional] A hint about when the content in this attachment was last modified.
-- `data`: A JSON object that gives access to the actual content of the attachment. This MUST contain at least one of the following subfields and enough of them to allow access to the data:
-    * `jws`: [optional] A [JWS](https://tools.ietf.org/html/rfc7515) in [detached content mode](https://tools.ietf.org/html/rfc7515#appendix-F), where the `payload` field of the JWS maps to `base64` or to something fetchable via `links`. This allows attachments to be signed. The signature need not come from the author of the message.
-    * `hash`: [optional] The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the `links` data attribute.
-    * `links`: [optional] A list of zero or more locations at which the content may be fetched. This allows content to be attached by reference instead of by value.
-    * `base64`: [optional] [Base64url](https://tools.ietf.org/html/rfc4648#section-5)-encoded data, when representing arbitrary content inline instead of via `links`.
-    * `json`: [optional] Directly embedded JSON data, when representing content inline instead of via `links`, and when the content is natively conveyable as JSON.
-- `byte_count`: [optional] mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
+- `id` - OPTIONAL but recommended. Identifies attached content within the scope of a given message, so it can be referenced. For example, in a message documenting items for sale on an auction website, there might be a field named `front_view` that contains the value `#attachment1`; this would reference an attachment to the message with `id` equal to `attachment1`. If omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because the `id` of an attachment is used to compose URIs, this value should be brief and MUST consist entirely of [unreserved URI characters](https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3) – meaning that it is not necessary to [percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the value to incorporate it in a URI.
+- `description` - OPTIONAL. A human-readable description of the content.
+- `filename` - OPTIONAL. A hint about the name that might be used if this attachment is persisted as a file. It need not be unique. If this field is present and `media_type` is not, the extension on the filename may be used to infer a MIME type.
+- `media_type` - OPTIONAL. Describes the media type of the attached content.
+- `format` - OPTIONAL. Further describes the format of the attachment if the `media_type` is not sufficient.
+- `lastmod_time` - OPTIONAL. A hint about when the content in this attachment was last modified.
+- `data`: A JSON object that gives access to the actual content of the attachment. This MUST contain at least one of the following subfields, and enough of them to allow access to the data:
+    * `jws` - OPTIONAL. A [JWS](https://tools.ietf.org/html/rfc7515) in [detached content mode](https://tools.ietf.org/html/rfc7515#appendix-F), where the `payload` field of the JWS maps to `base64` or to something fetchable via `links`. This allows attachments to be signed. The signature need not come from the author of the message.
+    * `hash` - OPTIONAL. The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the `links` data attribute.
+    * `links` - OPTIONAL. A list of zero or more locations at which the content may be fetched. This allows content to be attached by reference instead of by value.
+    * `base64` - OPTIONAL. [Base64url](https://tools.ietf.org/html/rfc4648#section-5)-encoded data, when representing arbitrary content inline instead of via `links`.
+    * `json` - OPTIONAL. Directly embedded JSON data, when representing content inline instead of via `links`, and when the content is natively conveyable as JSON.
+- `byte_count` - OPTIONAL. mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
 
 #### Attachment Example
 
