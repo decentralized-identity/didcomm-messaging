@@ -155,18 +155,15 @@ Knowledge is Good
 
 Example URL encoded as a QR Code:
 
-![Example QR Code](.//collateral/out_of_band_exampleqr.png)
+![Example QR Code](./collateral/out_of_band_exampleqr.png)
 
 #### Short URL Message Retrieval
 
 It seems inevitable that the length of some DIDComm messages will be too long to produce a useable QR code. Techniques to avoid unusable QR codes have been presented above, including using attachment links for requests, minimizing the routing of the response and eliminating unnecessary whitespace in the JSON. However, at some point a _sender_ may need generate a very long URL. In that case, a short URL message retrieval redirection should be implemented by the sender as follows:
 
 - The sender should generate and track a GUID for the out-of-band message URL.
-- The shortened version should be:
-  - `https://example.com/path?_oobid=5f0e3ffb-3f92-4648-9868-0d6f8889e6f3`
-  - Note the replacement of the query parameter `_oob` with `_oobid` when using shortened URL.
-- On receipt of this form of message, the agent must do an HTTP GET to retrieve the associated encoded  message.
-  - A sender may want to wait to generate the full invitation until the redirection event of the shortened URL to the full length form dynamic, so a single QR code can be used for distinct messages.
+- The shortened version should be: `https://example.com/path?_oobid=5f0e3ffb-3f92-4648-9868-0d6f8889e6f3`. Note the replacement of the query parameter `_oob` with `_oobid` when using shortened URL.
+- On receipt of this form of message, the agent must do an HTTP GET to retrieve the associated encoded message. A sender may want to wait to generate the full invitation until the redirection event of the shortened URL to the full length form dynamic, so a single QR code can be used for distinct messages.
 
 A usable QR code will always be able to be generated from the shortened form of the URL.
 
