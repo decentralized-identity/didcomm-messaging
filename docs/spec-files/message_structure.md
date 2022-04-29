@@ -8,7 +8,7 @@ This specification discusses messages in three different formats. The casual phr
 
 Circumstances sometimes require communication about the format of DIDComm messages. The canonical way to do this is with IANA media types, based on the conventions of [RFC6838](https://tools.ietf.org/html/rfc6838).
 
-All three DIDComm message formats &mdash; plaintext, signed, and encrypted &mdash; can be correctly understood as more generic [JWMs](https://tools.ietf.org/html/draft-looker-jwm-01) or even as arbitrary JOSE content. Since code that expects JOSE conventions but not DIDComm may matter in some implementations, this spec recommends the JOSE convention of [using `typ` to make JOSE structure formats self-describing](https://tools.ietf.org/html/rfc7515#section-4.1.9). This is particularly helpful in the outermost envelope of any DIDComm message, before unwrapping begins. (As RFC 7515 notes, `typ` "will typically not be used by applications when the kind of object is already known.")
+All three DIDComm message formats &mdash; plaintext, signed, and encrypted &mdash; can be correctly understood as more generic [JWMs (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) or even as arbitrary JOSE content. Since code that expects JOSE conventions but not DIDComm may matter in some implementations, this spec recommends the JOSE convention of [using `typ` to make JOSE structure formats self-describing](https://tools.ietf.org/html/rfc7515#section-4.1.9). This is particularly helpful in the outermost envelope of any DIDComm message, before unwrapping begins. (As RFC 7515 notes, `typ` "will typically not be used by applications when the kind of object is already known.")
 
 The relevant media types are:
 
@@ -39,7 +39,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ### DIDComm Signed Messages
 
-A **DIDComm signed message** is a signed [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) envelope that associates a non-repudiable signature with the plaintext message inside it.
+A **DIDComm signed message** is a signed [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) envelope that associates a non-repudiable signature with the plaintext message inside it.
 
 Signed messages are not necessary to provide message integrity (tamper evidence), or to prove the sender to the recipient. Both of these guarantees automatically occur with the authenticated encryption in DIDComm encrypted messages. Signed messages are only necessary when the origin of plaintext has to be provable to third parties, or when the sender can't be proven to the recipient by authenticated encryption because the recipient is not known in advance (e.g., in a broadcast scenario). Adding a signature when one is not needed [can degrade rather than enhance security because it relinquishes the sender's ability to speak off the record](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0049-repudiation/README.md#summary). We therefore expect signed messages to be used in a few cases, but not as a matter of course.
 
@@ -57,7 +57,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ### DIDComm Encrypted Messages
 
-A **DIDComm encrypted message** is an encrypted [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01). It hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.
+A **DIDComm encrypted message** is an encrypted [JWM](https://tools.ietf.org/html/draft-looker-jwm-01). It hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.
 
 The [media type](https://tools.ietf.org/html/rfc6838) of a non-nested DIDComm encrypted message MUST be `application/didcomm-encrypted+json`.
 
@@ -71,7 +71,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ## Plaintext Message Structure
 
-As mentioned above, **DIDComm plaintext messages** are based on [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01). JWMs follow the same general pattern as other JOSE containers, but are optimized for larger and more arbitrary structure than simple tokens.
+As mentioned above, **DIDComm plaintext messages** are based on [JWM](https://tools.ietf.org/html/draft-looker-jwm-01). JWMs follow the same general pattern as other JOSE containers, but are optimized for larger and more arbitrary structure than simple tokens.
 
 A plaintext message has an outermost attribute, `type`, that identifies the *application-level* message category to which it belongs. This value of `type` is a [specialized URI](#message-type-uri); it allows messages to be mapped to specific handler code. Other outermost attributes include a message's `id` and its media type (`typ` attribute, for generic JWM handling, as described above). In addition, plaintext messages may have other other attributes that have meaning across many message types. Such attributes at the top level of a message are called *[headers](#message-headers)*.
 
