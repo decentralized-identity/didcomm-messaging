@@ -53,8 +53,8 @@ The only message in this protocol is the `forward` message. A simple and common 
 }
 ```
 
-- **next** - REQUIRED. The identifier of the party to send the attached message to.
-- **attachments** - REQUIRED. The DIDComm message(s) to send to the party indicated in the `next` body attribute. This content should be encrypted for the next recipient.
+- `next` - REQUIRED. The identifier of the party to send the attached message to.
+- `attachments` - REQUIRED. The DIDComm message(s) to send to the party indicated in the `next` body attribute. This content should be encrypted for the next recipient.
 
 When the internal message expires, it's a good idea to also include an expiration for forward message requests. Include the `expires_time` header with the appropriate value.
 
