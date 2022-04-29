@@ -134,21 +134,21 @@ The relevant entry in the DID document matches this format:
 }
 ```
 
-**id**: must be unique, as required in [DID Core](https://www.w3.org/TR/did-core/#service-endpoints). No special meaning should be inferred from the `id` chosen.
+`id` - REQUIRED. Must be unique, as required in [DID Core](https://www.w3.org/TR/did-core/#service-endpoints). No special meaning should be inferred from the `id` chosen.
 
-**type**: MUST be `DIDCommMessaging`. 
+`type` - REQUIRED. MUST be `DIDCommMessaging`. 
 
-**serviceEndpoint**: MUST contain an ordered list of objects. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
+`serviceEndpoint` - REQUIRED. MUST contain an ordered list of objects. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
 
 Each object has the following properties:
 
-**uri**: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
+`uri` - REQUIRED. MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
-**accept**: An optional array of media types in the order of preference for sending a message to the endpoint.
+`accept` - OPTIONAL. An array of media types in the order of preference for sending a message to the endpoint.
 If `accept` is not specified, the sender uses its preferred choice for sending a message to the endpoint.
 Please see [Message Types](#message-types) for details about media types.
 
-**routingKeys**: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in [Sender Process to Enable Forwarding](#sender-process-to-enable-forwarding), above. 
+`routingKeys` - OPTIONAL. An ordered array of strings referencing keys to be used when preparing the message for transmission as specified in [Sender Process to Enable Forwarding](#sender-process-to-enable-forwarding), above. 
 
 #### Failover
 
