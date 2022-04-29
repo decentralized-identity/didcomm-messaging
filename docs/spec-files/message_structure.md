@@ -47,7 +47,7 @@ When a message is *both* signed and encrypted, this spec echoes the [JOSE recomm
 
 The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm signed message MUST be `application/didcomm-signed+json`.
 
-The media type of the envelope SHOULD be set in the `typ` [property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the JWS.
+The media type of the envelope SHOULD be set in the [`typ` property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the JWS.
 
 In order to avoid [surreptitious forwarding or malicious usage](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html) of a signed message, a signed message SHOULD contain a properly defined `to` header. In the case where a message is *both* signed and encrypted, the inner (signed) JWM being signed MUST contain a `to` header.
 
@@ -63,7 +63,7 @@ The [media type](https://tools.ietf.org/html/rfc6838) of a non-nested DIDComm en
 
 > Note: If future versions of this spec allow binary encodings, variations like `application/didcomm-encrypted+cbor` (see [CBOR RFC 7049, section 7.5](https://tools.ietf.org/html/rfc7049#section-7.5)), `application/didcomm-encrypted+msgpack`, or `application/didcomm-encrypted+protobuf` may become reasonable. In the future, specifications that encompass communications patterns other than messaging &mdash; DIDComm Multicast or DIDComm Streaming, for example &mdash; might use a suffix: `application/didcomm-encrypted-multicast` or similar.
 
-The media type of the envelope SHOULD be set in the `typ` [property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE.
+The media type of the envelope SHOULD be set in the [`typ` property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE.
 
 When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm encrypted messages SHOULD be `dcem`, giving a globbing pattern of `*.dcem`; this SHOULD be read as "Star Dot D C E M" or as "D C E M" files. A possible icon for this file format depicts an envelope with binary overlay, protected by a lock ([svg](../collateral/dcem.svg) | [256x256](../collateral/dcem-256.png) | [128x128](../collateral/dcem-128.png) | [64x64](../collateral/dcem-64.png)):
 
