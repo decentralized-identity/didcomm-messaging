@@ -37,7 +37,7 @@ The out-of-band protocol consists in a single message that is sent by the *sende
   },
   "attachments": [
     {
-        "@id": "request-0",
+        "id": "request-0",
         "mime_type": "application/json",
         "data": {
             "json": "<json of protocol message>"
@@ -49,16 +49,15 @@ The out-of-band protocol consists in a single message that is sent by the *sende
 
 The items in the message are:
 
-- `type` - the DIDComm message type
-- `id` - the unique ID of the message. The ID should be used as the **parent** thread ID (`pthid`) for the response message, rather than the more common thread ID (`thid`) of the response message. This enables multiple uses of a single out-of-band message.
-- `from` - the DID representing the sender to be used by recipients for future interactions.
-- `goal_code` - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.
-- `goal` - [optional] a self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.
-- `accept` - [optional] an array of media (aka mime) types in the order of preference of the sender that the receiver can use in responding to the message.
+- `type` - REQUIRED. The header conveying the DIDComm [MTURI](#message-type-uri).
+- `id` - REQUIRED. This value MUST be used as the **parent** thread ID (`pthid`) for the response message that follows. This may feel counter-intuitive &mdash; why not it in the `thid` of the response instead? The answer is that putting it in `pthid` enables multiple, independent interactions (threads) to be triggered from a single out-of-band invitation.
+- `from` - REQUIRED for OOB usage. The DID representing the sender to be used by recipients for future interactions.
+- `goal_code` - OPTIONAL. A self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.
+- `goal` - OPTIONAL. A self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.
+- `accept` - OPTIONAL. An array of media types in the order of preference of the sender that the receiver can use in responding to the message.
  If `accept` is not specified, the receiver uses its preferred choice to respond to the message.
   Please see [Message Types](#message-types) for details about media types.
-- `attachments` - an array of attachments that will contain the invitation messages in order of preference that the receiver can use in responding to the message. Each message in the array is a rough equivalent of the others, and all are in pursuit of the stated `goal` and `goal_code`. Only one of the messages should be chosen and acted upon.
-  - While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.
+- `attachments` - REQUIRED for OOB usage. An array of attachments that will contain the invitation messages in order of preference that the receiver can use in responding to the message. Each message in the array is a rough equivalent of the others, and all are in pursuit of the stated `goal` and `goal_code`. Only one of the messages should be chosen and acted upon. (While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.)
 
 When encoding a message in a URL or QR code, the _sender_ does not know which protocols are supported by the _recipient_ of the message. Encoding multiple alternative messages is a form of optimistic protocol negotiation that allows multiple supported protocols without coordination
 
@@ -103,7 +102,7 @@ Invitation:
   },
   "attachments": [
       {
-          "@id": "request-0",
+          "id": "request-0",
           "media_type": "application/json",
           "data": {
               "json": "<json of protocol message>"
@@ -116,7 +115,7 @@ Invitation:
 Whitespace removed:
 
 ```json
-{"type":"https://didcomm.org/out-of-band/2.0/invitation","id":"69212a3a-d068-4f9d-a2dd-4741bca89af3","from":"did:example:alice","body":{"goal_code":"","goal":""},"attachments":[{"@id":"request-0","media_type":"application/json","data":{"json":"<json of protocol message>"}}]}
+{"type":"https://didcomm.org/out-of-band/2.0/invitation","id":"69212a3a-d068-4f9d-a2dd-4741bca89af3","from":"did:example:alice","body":{"goal_code":"","goal":""},"attachments":[{"id":"request-0","media_type":"application/json","data":{"json":"<json of protocol message>"}}]}
 ```
 
 Base 64 URL Encoded:
@@ -156,18 +155,15 @@ Knowledge is Good
 
 Example URL encoded as a QR Code:
 
-![Example QR Code](.//collateral/out_of_band_exampleqr.png)
+![Example QR Code](./collateral/out_of_band_exampleqr.png)
 
 #### Short URL Message Retrieval
 
 It seems inevitable that the length of some DIDComm messages will be too long to produce a useable QR code. Techniques to avoid unusable QR codes have been presented above, including using attachment links for requests, minimizing the routing of the response and eliminating unnecessary whitespace in the JSON. However, at some point a _sender_ may need generate a very long URL. In that case, a short URL message retrieval redirection should be implemented by the sender as follows:
 
 - The sender should generate and track a GUID for the out-of-band message URL.
-- The shortened version should be:
-  - `https://example.com/path?_oobid=5f0e3ffb-3f92-4648-9868-0d6f8889e6f3`
-  - Note the replacement of the query parameter `_oob` with `_oobid` when using shortened URL.
-- On receipt of this form of message, the agent must do an HTTP GET to retrieve the associated encoded  message.
-  - A sender may want to wait to generate the full invitation until the redirection event of the shortened URL to the full length form dynamic, so a single QR code can be used for distinct messages.
+- The shortened version should be: `https://example.com/path?_oobid=5f0e3ffb-3f92-4648-9868-0d6f8889e6f3`. Note the replacement of the query parameter `_oob` with `_oobid` when using shortened URL.
+- On receipt of this form of message, the agent must do an HTTP GET to retrieve the associated encoded message. A sender may want to wait to generate the full invitation until the redirection event of the shortened URL to the full length form dynamic, so a single QR code can be used for distinct messages.
 
 A usable QR code will always be able to be generated from the shortened form of the URL.
 
@@ -205,7 +201,7 @@ Example acknowledgement message from verifier to prover containing web redirect 
 }
 ```
 
-Problem report with web redirect header from [problem report example](#problem-reports) will look like:
+A problem report with a web redirect header from the [problem report example](#problem-reports) will look like:
 ```json
 {
   "type": "https://didcomm.org/report-problem/2.0/problem-report",

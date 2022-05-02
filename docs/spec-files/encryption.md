@@ -67,7 +67,7 @@ Keys used by DIDComm envelopes will probably be sourced from the DIDs exchanged 
 
 When Alice is preparing an envelope intended for Bob, the packing process should use a key from both hers and Bob's DID document's `keyAgreement` section.
 
-Assuming Alice has a DID Doc with the following `keyAgreement` definition (source: [DID V1 Example 17](https://www.w3.org/TR/did-core/#example-17-key-agreement-property-containing-two-verification-methods)):
+Assuming Alice has a DID document with the following `keyAgreement` definition (source: [DID V1 Example 17](https://www.w3.org/TR/did-core/#example-17-key-agreement-property-containing-two-verification-methods)):
 ```jsonc
 {
   "@context": "https://www.w3.org/ns/did/v1",
@@ -113,7 +113,7 @@ Assuming she also has Bob's DID document which happens to include the following 
 
 Unless previously coordinated in a layer above DIDComm, the default recipients of the envelope SHOULD include all the `keyAgreement` entries representing Bob. This allows Bob to decrypt his messages on any device he controls, without sharing keys across his devices. The corresponding `kid` header for this recipient MUST have a DID URL pointing to a corresponding verification method in the DID document. This verification method MUST be associated with the `keyAgreement` verification relationship and the verification material MUST be retrieved from the DID document to execute the ECDH-1PU key derivation for content key wrapping.
 
-When Bob receives the envelope, the unpacking process on his end resolves the `skid` protected header value using Alice's DID doc's `keyAgreement[0]` in order to extract her public key. In Alice's DID Doc example above, `keyAgreement[0]` is a reference id. It would be resolved from the main `verificationMethod[]` of Alice's DID document (not shown in the example).
+When Bob receives the envelope, the unpacking process on his end resolves the `skid` protected header value using Alice's DID document's `keyAgreement[0]` in order to extract her public key. In Alice's DID document example above, `keyAgreement[0]` is a reference id. It would be resolved from the main `verificationMethod[]` of Alice's DID document (not shown in the example).
 
 Once resolved, the unpacker will then execute ECDH-1PU key derivation using this key and Bob's own recipient key found in the envelope's `recipients[0]` to unwrap the content encryption key.
 
@@ -139,7 +139,9 @@ To meet this requirement, the above headers are defined as follows:
 * `apv`: this represents the recipients' `kid` list. The list must be alphanumerically sorted, `kid` values will then be concatenated with a `.` and the final result MUST be base64 URL (no padding) encoding of the SHA256 hash of concatenated list.
 * `alg`: this is the key wrapping algorithm, ie: `ECDH-1PU+A256KW`.
 
-A final note about `skid` header: since the 1PU draft [does not require](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.2.1) this header, authcrypt implementations MUST be able to resolve the sender kid from the `APU` header if `skid` is not set.
+Even though `apu`/`apv` are not mandatory JWE recipients headers, they are required in this specification to authenticate the sender via the ECDH-1PU key wrapping algorithm.
+
+A final note about `skid` header: since the 1PU draft [does not require](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.2.1) this header, authcrypt implementations MUST be able to resolve the sender kid from the `apu` header if `skid` is not set.
 
 #### Examples
 

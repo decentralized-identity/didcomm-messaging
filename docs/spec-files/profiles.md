@@ -2,7 +2,7 @@
 
 When parties want to communicate via DIDComm, a number of mechanisms must align. These include:
 
-1. The type of service endpoint used by each party
+1. The type of [service endpoint](#service-endpoint) used by each party
 2. The key types used for encryption and/or signing
 3. The format of the encryption and/or signing envelopes
 4. The encoding of plaintext messages

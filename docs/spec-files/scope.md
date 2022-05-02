@@ -1,6 +1,6 @@
 ## Purpose and Scope
 
-The purpose of DIDComm Messaging is to provide a secure, private communication methodology built atop the decentralized design of <a href="https://www.w3.org/TR/did-core/">DIDs</a>.
+The purpose of DIDComm Messaging is to provide a secure, private communication methodology built atop the decentralized design of <u><a href="https://www.w3.org/TR/did-core/">DIDs</a></u>.
 
 It is the second half of this sentence, not the first, that makes DIDComm interesting. "Methodology" implies more than just a mechanism for individual messages, or even for a sequence of them. DIDComm Messaging defines how messages compose into the larger primitive of [application-level protocols](#protocols) and workflows, while seamlessly retaining trust. "Built atop ... DIDs" emphasizes DIDComm's connection to the larger decentralized identity movement, with its many attendent virtues.
 
