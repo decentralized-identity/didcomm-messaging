@@ -21,7 +21,7 @@ Alice may just press a button and be unaware of details, but underneath, her age
 - An endpoint (web, email, etc) where messages can be delivered to Bob.
 - The public key that Bob's agent is using in the Alice:Bob relationship.
 
-Now Alice's agent uses Bob's public key to [encrypt the plaintext](#message-encryption) so that only Bob's agent can read it, adding authentication with its own private key. The agent arranges delivery to Bob. This "arranging" can involve various hops and intermediaries. It can be complex. (See [Routing in the DIDComm Guidebook](https://didcomm.org/book/v2/).)
+Now Alice's agent uses Bob's public key to [encrypt the plaintext](#message-encryption) so that only Bob's agent can read it, adding authentication with its own private key. The agent arranges delivery to Bob. This "arranging" can involve various hops and intermediaries. It can be complex. (See [Routing in the DIDComm Guidebook](https://didcomm.org/book/v2/routing).)
 
 Bob's agent eventually receives and decrypts the message, authenticating its sender as Alice using her public key. It looks up this key in Alice's DID doc, and captures an endpoint for her at the same time. Bob's agent then prepares its response and routes it back using a reciprocal process (plaintext &rarr; encrypt with authentication &rarr; arrange delivery).
 

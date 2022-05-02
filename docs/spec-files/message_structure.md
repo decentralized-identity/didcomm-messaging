@@ -31,7 +31,7 @@ In isolation, plaintext messages lack confidentiality and integrity guarantees, 
 
 The media type for a generic DIDComm plaintext message MUST be reported as `application/didcomm-plain+json` by conformant implementations.
 
-The media type of the envelope MAY be set in the `typ` [property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the plaintext; it SHOULD be set if the message is intended for use without a signature or encryption.
+The media type of the envelope MAY be set in the [`typ` property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the plaintext; it SHOULD be set if the message is intended for use without a signature or encryption.
 
 When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm plaintext messages SHOULD be `dcpm`, giving a globbing pattern of `*.dcpm`; this SHOULD be be read as "Star Dot D C P M" or as "D C P M" files. We imagine people will reference this media type by saying, "I am looking at a DIDComm Plaintext Message file", or "This database record is in DIDComm Plaintext format", or "Does my editor have a DIDComm Plaintext Message plugin?" A possible icon for this file format depicts green JSON text in a message bubble ([svg](../collateral/dcpm.svg) | [256x256](../collateral/dcpm-256.png) | [128x128](../collateral/dcpm-128.png) | [64x64](../collateral/dcpm-64.png)):
 
@@ -41,13 +41,13 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 A **DIDComm signed message** is a signed [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) envelope that associates a non-repudiable signature with the plaintext message inside it.
 
-Signed messages are not necessary to provide message integrity (tamper evidence), or to prove the sender to the recipient. Both of these guarantees automatically occur with the authenticated encryption in DIDComm encrypted messages. Signed messages are only necessary when the origin of plaintext has to be provable to third parties, or when the sender can't be proven to the recipient by authenticated encryption because the recipient is not known in advance (e.g., in a broadcast scenario). Adding a signature when one is not needed [can degrade rather than enhance security because it relinquishes the sender's ability to speak off the record](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0049-repudiation/README.md#summary). We therefore expect signed messages to be used in a few cases, but not as a matter of course.
+Signed messages are not necessary to provide message integrity (tamper evidence), or to prove the sender to the recipient. Both of these guarantees automatically occur with the authenticated encryption in DIDComm encrypted messages. Signed messages are only necessary when the origin of plaintext has to be provable to third parties, or when the sender can't be proven to the recipient by authenticated encryption because the recipient is not known in advance (e.g., in a broadcast scenario). Adding a signature when one is not needed can degrade rather than enhance security because it [relinquishes the sender's ability to speak off the record](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0049-repudiation/README.md#summary). We therefore expect signed messages to be used in a few cases, but not as a matter of course.
 
 When a message is *both* signed and encrypted, this spec echoes the [JOSE recommendation about how to combine](https://datatracker.ietf.org/doc/html/rfc7519#section-11.2): sign the plaintext first, and then encrypt. (The opposite order would imply that the signer committed to opaque data. This would be less safe, and would undermine non-repudiation.)
 
 The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm signed message MUST be `application/didcomm-signed+json`.
 
-The media type of the envelope SHOULD be set in the `typ` [property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the JWS.
+The media type of the envelope SHOULD be set in the [`typ` property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the JWS.
 
 In order to avoid [surreptitious forwarding or malicious usage](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html) of a signed message, a signed message SHOULD contain a properly defined `to` header. In the case where a message is *both* signed and encrypted, the inner (signed) JWM being signed MUST contain a `to` header.
 
@@ -63,7 +63,7 @@ The [media type](https://tools.ietf.org/html/rfc6838) of a non-nested DIDComm en
 
 > Note: If future versions of this spec allow binary encodings, variations like `application/didcomm-encrypted+cbor` (see [CBOR RFC 7049, section 7.5](https://tools.ietf.org/html/rfc7049#section-7.5)), `application/didcomm-encrypted+msgpack`, or `application/didcomm-encrypted+protobuf` may become reasonable. In the future, specifications that encompass communications patterns other than messaging &mdash; DIDComm Multicast or DIDComm Streaming, for example &mdash; might use a suffix: `application/didcomm-encrypted-multicast` or similar.
 
-The media type of the envelope SHOULD be set in the `typ` [property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE.
+The media type of the envelope SHOULD be set in the [`typ` property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE.
 
 When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm encrypted messages SHOULD be `dcem`, giving a globbing pattern of `*.dcem`; this SHOULD be read as "Star Dot D C E M" or as "D C E M" files. A possible icon for this file format depicts an envelope with binary overlay, protected by a lock ([svg](../collateral/dcem.svg) | [256x256](../collateral/dcem-256.png) | [128x128](../collateral/dcem-128.png) | [64x64](../collateral/dcem-64.png)):
 
