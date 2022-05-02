@@ -8,11 +8,11 @@ A few higher-level protocols are especially fundamental, in that they bootstrap 
 
 Each protocol constructed atop DIDComm Messaging is uniquely identified and versioned by a __Protocol Identifier URI__ (__PIURI__).
 
-The PIURI MUST be structured as follows:
+The PIURI MUST be composed of a sequence of tokens as follows:
 ```
-[doc-uri][delim][protocol-name]/[semver]
+doc-uri delim protocol-name/semver
 ```
-With ABNF:
+As ABNF:
 ```ABNF
 protocol-identifier-uri = doc-uri delim protocol-name "/" semver
 delim                   = "?" / "/" / "&" / ":" / ";" / "="
@@ -39,13 +39,13 @@ A __Message Type URI__ (MTURI) identifies plaintext message types unambiguously.
 
 Standardizing MTURI format is important because MTURIs are parsed by agents and used to map messages to handlers. Code will look at this string and say, "Do I have something that can handle this message type inside protocol *X* version *Y*?" When that analysis happens, it must do more than compare the string for exact equality. It may need to check for semver compatibility, and it has to compare the protocol name and message type name ignoring case and punctuation.
 
-The MTURI MUST be composed as follows:
+The MTURI MUST be composed of a sequence of tokens as follows:
 
 ```
-[protocol-identifier-uri] / [message-type-name]
+protocol-identifier-uri/message-type-name
 ```
 
-With ABNF:
+As ABNF:
 
 ```ABNF
 message-type-uri  = protocol-identifier-uri "/" message-type-name
