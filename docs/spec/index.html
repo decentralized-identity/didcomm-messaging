@@ -48,7 +48,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
       
                     <article id="content">
                       <h1 id="didcomm-messaging"><a class="toc-anchor" href="#didcomm-messaging" >§</a> DIDComm Messaging</h1>
-<p><strong>Specification Status:</strong> Editor’s Draft</p>
+<p><strong>Specification Status:</strong> Working Group Approved</p>
 <p><strong>Latest published version:</strong>
 <a path-0="identity.foundation"path-1="didcomm-messaging"path-2="spec"href="https://identity.foundation/didcomm-messaging/spec" >identity.foundation/didcomm-messaging/spec</a></p>
 <p><strong>Editors:</strong> Sam Curren (Indicio), Tobias Looker (Mattr), Oliver Terbu (ConsenSys)</p>
@@ -111,7 +111,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p><img src="../collateral/didcomm-envelopes.png" alt="DIDComm envelopes"></p>
 <h3 id="iana-media-types"><a class="toc-anchor" href="#iana-media-types" >§</a> IANA Media Types</h3>
 <p>Circumstances sometimes require communication about the format of DIDComm messages. The canonical way to do this is with IANA media types, based on the conventions of <a path-0="tools.ietf.org"path-1="html"path-2="rfc6838"href="https://tools.ietf.org/html/rfc6838" >RFC6838</a>.</p>
-<p>All three DIDComm message formats — plaintext, signed, and encrypted — can be correctly understood as more generic <a path-0="tools.ietf.org"path-1="html"path-2="draft-looker-jwm-01"href="https://tools.ietf.org/html/draft-looker-jwm-01" >JWMs</a> or even as arbitrary JOSE content. Since code that expects JOSE conventions but not DIDComm may matter in some implementations, this spec recommends the JOSE convention of <a path-0="tools.ietf.org"path-1="html"path-2="rfc7515#section-4.1.9"href="https://tools.ietf.org/html/rfc7515#section-4.1.9" >using <code>typ</code> to make JOSE structure formats self-describing</a>. This is particularly helpful in the outermost envelope of any DIDComm message, before unwrapping begins. (As RFC 7515 notes, <code>typ</code> “will typically not be used by applications when the kind of object is already known.”)</p>
+<p>All three DIDComm message formats — plaintext, signed, and encrypted — can be correctly understood as more generic <a path-0="tools.ietf.org"path-1="html"path-2="draft-looker-jwm-01"href="https://tools.ietf.org/html/draft-looker-jwm-01" >JWMs (JSON Web Messages)</a> or even as arbitrary JOSE content. Since code that expects JOSE conventions but not DIDComm may matter in some implementations, this spec recommends the JOSE convention of <a path-0="tools.ietf.org"path-1="html"path-2="rfc7515#section-4.1.9"href="https://tools.ietf.org/html/rfc7515#section-4.1.9" >using <code>typ</code> to make JOSE structure formats self-describing</a>. This is particularly helpful in the outermost envelope of any DIDComm message, before unwrapping begins. (As RFC 7515 notes, <code>typ</code> “will typically not be used by applications when the kind of object is already known.”)</p>
 <p>The relevant media types are:</p>
 <table>
 <thead>
@@ -149,7 +149,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p>When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm plaintext messages SHOULD be <code>dcpm</code>, giving a globbing pattern of <code>*.dcpm</code>; this SHOULD be be read as “Star Dot D C P M” or as “D C P M” files. We imagine people will reference this media type by saying, “I am looking at a DIDComm Plaintext Message file”, or “This database record is in DIDComm Plaintext format”, or “Does my editor have a DIDComm Plaintext Message plugin?” A possible icon for this file format depicts green JSON text in a message bubble (<a path-0="collateral"path-1="dcpm.svg"href="../collateral/dcpm.svg" >svg</a> | <a path-0="collateral"path-1="dcpm-256.png"href="../collateral/dcpm-256.png" >256x256</a> | <a path-0="collateral"path-1="dcpm-128.png"href="../collateral/dcpm-128.png" >128x128</a> | <a path-0="collateral"path-1="dcpm-64.png"href="../collateral/dcpm-64.png" >64x64</a>):</p>
 <p><img src="../collateral/dcpm-128.png" alt="DIDComm Plaintext Message Icon"></p>
 <h3 id="didcomm-signed-messages"><a class="toc-anchor" href="#didcomm-signed-messages" >§</a> DIDComm Signed Messages</h3>
-<p>A <strong>DIDComm signed message</strong> is a signed <a path-0="tools.ietf.org"path-1="html"path-2="draft-looker-jwm-01"href="https://tools.ietf.org/html/draft-looker-jwm-01" >JWM (JSON Web Messages)</a> envelope that associates a non-repudiable signature with the plaintext message inside it.</p>
+<p>A <strong>DIDComm signed message</strong> is a signed <a path-0="tools.ietf.org"path-1="html"path-2="draft-looker-jwm-01"href="https://tools.ietf.org/html/draft-looker-jwm-01" >JWM</a> envelope that associates a non-repudiable signature with the plaintext message inside it.</p>
 <p>Signed messages are not necessary to provide message integrity (tamper evidence), or to prove the sender to the recipient. Both of these guarantees automatically occur with the authenticated encryption in DIDComm encrypted messages. Signed messages are only necessary when the origin of plaintext has to be provable to third parties, or when the sender can’t be proven to the recipient by authenticated encryption because the recipient is not known in advance (e.g., in a broadcast scenario). Adding a signature when one is not needed <a path-0="github.com"path-1="hyperledger"path-2="aries-rfcs"path-3="blob"path-4="master"path-5="concepts"path-6="0049-repudiation"path-7="README.md#summary"href="https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0049-repudiation/README.md#summary" >can degrade rather than enhance security because it relinquishes the sender’s ability to speak off the record</a>. We therefore expect signed messages to be used in a few cases, but not as a matter of course.</p>
 <p>When a message is <em>both</em> signed and encrypted, this spec echoes the <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc7519#section-11.2"href="https://datatracker.ietf.org/doc/html/rfc7519#section-11.2" >JOSE recommendation about how to combine</a>: sign the plaintext first, and then encrypt. (The opposite order would imply that the signer committed to opaque data. This would be less safe, and would undermine non-repudiation.)</p>
 <p>The <a path-0="tools.ietf.org"path-1="html"path-2="rfc6838"href="https://tools.ietf.org/html/rfc6838" >media type</a> of a DIDComm signed message MUST be <code>application/didcomm-signed+json</code>.</p>
@@ -158,7 +158,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p>When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm signed messages SHOULD be <code>dcsm</code>, giving a globbing pattern of <code>*.dcsm</code>; this SHOULD be be read as “Star Dot D C S M” or as “D C S M” files. A possible icon for this media type depicts a signed envelope (<a path-0="collateral"path-1="dcsm.svg"href="../collateral/dcsm.svg" >svg</a> | <a path-0="collateral"path-1="dcsm-256.png"href="../collateral/dcsm-256.png" >256x256</a> | <a path-0="collateral"path-1="dcsm-128.png"href="../collateral/dcsm-128.png" >128x128</a> | <a path-0="collateral"path-1="dcsm-64.png"href="../collateral/dcsm-64.png" >64x64</a>):</p>
 <p><img src="../collateral/dcsm-128.png" alt="DIDComm Signed Message Icon"></p>
 <h3 id="didcomm-encrypted-messages"><a class="toc-anchor" href="#didcomm-encrypted-messages" >§</a> DIDComm Encrypted Messages</h3>
-<p>A <strong>DIDComm encrypted message</strong> is an encrypted <a path-0="tools.ietf.org"path-1="html"path-2="draft-looker-jwm-01"href="https://tools.ietf.org/html/draft-looker-jwm-01" >JWM (JSON Web Messages)</a>. It hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.</p>
+<p>A <strong>DIDComm encrypted message</strong> is an encrypted <a path-0="tools.ietf.org"path-1="html"path-2="draft-looker-jwm-01"href="https://tools.ietf.org/html/draft-looker-jwm-01" >JWM</a>. It hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.</p>
 <p>The <a path-0="tools.ietf.org"path-1="html"path-2="rfc6838"href="https://tools.ietf.org/html/rfc6838" >media type</a> of a non-nested DIDComm encrypted message MUST be <code>application/didcomm-encrypted+json</code>.</p>
 <blockquote>
 <p>Note: If future versions of this spec allow binary encodings, variations like <code>application/didcomm-encrypted+cbor</code> (see <a path-0="tools.ietf.org"path-1="html"path-2="rfc7049#section-7.5"href="https://tools.ietf.org/html/rfc7049#section-7.5" >CBOR RFC 7049, section 7.5</a>), <code>application/didcomm-encrypted+msgpack</code>, or <code>application/didcomm-encrypted+protobuf</code> may become reasonable. In the future, specifications that encompass communications patterns other than messaging — DIDComm Multicast or DIDComm Streaming, for example — might use a suffix: <code>application/didcomm-encrypted-multicast</code> or similar.</p>
@@ -167,7 +167,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p>When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm encrypted messages SHOULD be <code>dcem</code>, giving a globbing pattern of <code>*.dcem</code>; this SHOULD be read as “Star Dot D C E M” or as “D C E M” files. A possible icon for this file format depicts an envelope with binary overlay, protected by a lock (<a path-0="collateral"path-1="dcem.svg"href="../collateral/dcem.svg" >svg</a> | <a path-0="collateral"path-1="dcem-256.png"href="../collateral/dcem-256.png" >256x256</a> | <a path-0="collateral"path-1="dcem-128.png"href="../collateral/dcem-128.png" >128x128</a> | <a path-0="collateral"path-1="dcem-64.png"href="../collateral/dcem-64.png" >64x64</a>):</p>
 <p><img src="../collateral/dcem-128.png" alt="DIDComm Encrypted Message Icon"></p>
 <h2 id="plaintext-message-structure"><a class="toc-anchor" href="#plaintext-message-structure" >§</a> Plaintext Message Structure</h2>
-<p>As mentioned above, <strong>DIDComm plaintext messages</strong> are based on <a path-0="tools.ietf.org"path-1="html"path-2="draft-looker-jwm-01"href="https://tools.ietf.org/html/draft-looker-jwm-01" >JWM (JSON Web Messages)</a>. JWMs follow the same general pattern as other JOSE containers, but are optimized for larger and more arbitrary structure than simple tokens.</p>
+<p>As mentioned above, <strong>DIDComm plaintext messages</strong> are based on <a path-0="tools.ietf.org"path-1="html"path-2="draft-looker-jwm-01"href="https://tools.ietf.org/html/draft-looker-jwm-01" >JWM</a>. JWMs follow the same general pattern as other JOSE containers, but are optimized for larger and more arbitrary structure than simple tokens.</p>
 <p>A plaintext message has an outermost attribute, <code>type</code>, that identifies the <em>application-level</em> message category to which it belongs. This value of <code>type</code> is a <a href="#message-type-uri" >specialized URI</a>; it allows messages to be mapped to specific handler code. Other outermost attributes include a message’s <code>id</code> and its media type (<code>typ</code> attribute, for generic JWM handling, as described above). In addition, plaintext messages may have other other attributes that have meaning across many message types. Such attributes at the top level of a message are called <em><a href="#message-headers" >headers</a></em>.</p>
 <p>A plaintext message also includes attributes and data specific to its message type. These are contained within its <code>body</code> attribute.</p>
 <p>Prior to being sent, plaintext is usually encrypted into a JWE according to the <a path-0="tools.ietf.org"path-1="html"path-2="draft-looker-jwm-01"href="https://tools.ietf.org/html/draft-looker-jwm-01" >JWM</a> specification.</p>
@@ -192,38 +192,38 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p>Headers in DIDComm Messaging are intended to be extensible in much the same way that headers in HTTP or SMTP are extensible. A few headers are predefined:</p>
 <ul>
 <li>
-<p><strong>id</strong> - REQUIRED. Message ID. The <code>id</code> attribute value MUST be unique to the sender, across all messages they send. See <a href="#message-ids" >Threading &gt; Message IDs</a> for constraints on this value.</p>
+<p><code>id</code> - REQUIRED. Message ID. The <code>id</code> attribute value MUST be unique to the sender, across all messages they send. See <a href="#message-ids" >Threading &gt; Message IDs</a> for constraints on this value.</p>
 </li>
 <li>
-<p><strong>type</strong> - REQUIRED. A URI that associates the <code>body</code> of a plaintext message with a published and versioned schema. Useful for message handling in application-level protocols. The <code>type</code> attribute value MUST be a valid <a href="#message-type-uri" >message type URI</a>, that when resolved gives human readable information about the message category.</p>
+<p><code>type</code> - REQUIRED. A URI that associates the <code>body</code> of a plaintext message with a published and versioned schema. Useful for message handling in application-level protocols. The <code>type</code> attribute value MUST be a valid <a href="#message-type-uri" >message type URI</a>, that when resolved gives human readable information about the message category.</p>
 </li>
 <li>
-<p><strong>to</strong> - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) that identifies a member of the message’s intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.</p>
+<p><code>to</code> - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3=""href="https://www.w3.org/TR/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) that identifies a member of the message’s intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.</p>
 <p>When Alice sends the same plaintext message to Bob and Carol, it is by inspecting this header that the recipients learn the message was sent to both of them. If the header is omitted, each recipient SHOULD assume they are the only recipient (much like an email sent only to <code>BCC:</code> addresses).</p>
 <p>For signed messages, there are specific requirements around properly defining the <code>to</code> header outlined in the <strong>DIDComm Signed Message</strong> definition above. This prevents certain kind of <a path-0="theworld.com"path-1="~dtd"path-2="sign_encrypt"path-3="sign_encrypt7.html"href="https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html" >forwarding attacks</a>, where a message that was not meant for a given recipient is forwarded along with its signature to a recipient which then might blindly trust it because of the signature.</p>
 <p>Upon reception of a message have a defined <code>to</code> header, the recipient SHOULD verify that their own identifier appears in the list. Implementations MUST NOT fail to accept a message when this is not the case, but SHOULD give a warning to their user as it could indicate malicious intent from the sender.</p>
 <p>The <code>to</code> header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the <a href="#routing" ><code>forward</code> message</a> contains a <code>next</code> attribute in its body that specifies the target for the next routing operation.</p>
 </li>
 <li>
-<p><strong>from</strong> - OPTIONAL when the message is to be encrypted via anoncrypt; REQUIRED when the message is encrypted via authcrypt. Sender identifier. The <code>from</code> attribute MUST be a string that is a valid <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the <a href="#Message-Authentication" >message authentication</a> section for additional details.</p>
+<p><code>from</code> - OPTIONAL when the message is to be encrypted via anoncrypt; REQUIRED when the message is encrypted via authcrypt. Sender identifier. The <code>from</code> attribute MUST be a string that is a valid <a path-0="w3c.github.io"path-1="did-core"path-2=""href="https://w3c.github.io/did-core/" >DID</a> or <a path-0="w3c.github.io"path-1="did-core"path-2="#did-url-syntax"href="https://w3c.github.io/did-core/#did-url-syntax" >DID URL</a> (without the <a path-0="w3c.github.io"path-1="did-core"path-2="#fragment"href="https://w3c.github.io/did-core/#fragment" >fragment component</a>) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the <a href="#Message-Authentication" >message authentication</a> section for additional details.</p>
 </li>
 <li>
-<p><strong>thid</strong> - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code>. See <a href="#threads" >Threads</a> for details.</p>
+<p><code>thid</code> - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the <code>id</code> property of the message MUST be treated as the value of the <code>thid</code>. See <a href="#threads" >Threads</a> for details.</p>
 </li>
 <li>
-<p><strong>pthid</strong> - OPTIONAL. Parent thread identifier. If the message is a child of a thread the <code>pthid</code> will uniquely identify which thread is the parent. See <a href="#parent-threads" >Parent Threads</a> for details.</p>
+<p><code>pthid</code> - OPTIONAL. Parent thread identifier. If the message is a child of a thread the <code>pthid</code> will uniquely identify which thread is the parent. See <a href="#parent-threads" >Parent Threads</a> for details.</p>
 </li>
 <li>
-<p><strong>created_time</strong> - OPTIONAL but recommended. Message Created Time. The <code>created_time</code> attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. This allows the recipient to guess about transport latency and clock divergence. The difference between when a message is created and when it is sent is assumed to be negligible; this lets timeout logic start from this value.</p>
+<p><code>created_time</code> - OPTIONAL but recommended. Message Created Time. This attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. This allows the recipient to guess about transport latency and clock divergence. The difference between when a message is created and when it is sent is assumed to be negligible; this lets timeout logic start from this value.</p>
 </li>
 <li>
-<p><strong>expires_time</strong> - OPTIONAL. Message Expires Time. The <code>expires_time</code> attribute is used for the sender to express when they will consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. By default, the meaning of “expired” is that the sender will abort the protocol if it doesn’t get a response by this time. However, protocols can nuance this in their formal spec. For example, an online auction protocol might specify that timed out bids must be ignored instead of triggering a cancellation of the whole auction. When omitted from any given message, the message is considered to have no expiration by the sender.</p>
+<p><code>expires_time</code> - OPTIONAL. Message Expires Time. This attribute is used for the sender to express when they will consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. By default, the meaning of “expired” is that the sender will abort the protocol if it doesn’t get a response by this time. However, protocols can nuance this in their formal spec. For example, an online auction protocol might specify that timed out bids must be ignored instead of triggering a cancellation of the whole auction. When omitted from any given message, the message is considered to have no expiration by the sender.</p>
 </li>
 <li>
-<p><strong>body</strong> - REQUIRED. The <code>body</code> attribute contains all the data and structure defined uniquely for the schema associated with the <code>type</code> attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc7159"href="https://datatracker.ietf.org/doc/html/rfc7159" >RFC 7159</a>.</p>
+<p><code>body</code> - REQUIRED. The <code>body</code> attribute contains all the data and structure defined uniquely for the schema associated with the <code>type</code> attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc7159"href="https://datatracker.ietf.org/doc/html/rfc7159" >RFC 7159</a>.</p>
 </li>
 <li>
-<p><strong>attachments</strong> - OPTIONAL. See <a href="#attachments" >Attachments</a> for detail.</p>
+<p><code>attachments</code> - OPTIONAL. See <a href="#attachments" >Attachments</a> for detail.</p>
 </li>
 </ul>
 <p>With respect to headers, DIDComm Messaging follows the extensibility pattern established by the JW* family of standards. A modest inventory of predefined “header” fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn’t understand such fields SHOULD ignore them and MUST NOT fail because of their inclusion in a message.</p>
@@ -240,22 +240,22 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p>Attachments are contained within a list in the <code>attachments</code> header.</p>
 <p>Each attachment is described with an instance of a JSON object that has the following structure.</p>
 <ul>
-<li><code>id</code>: [optional but recommended] Identifies attached content within the scope of a given message, so it can be referenced. For example, in a message documenting items for sale on an auction website, there might be a field named <code>front_view</code> that contains the value <code>#attachment1</code>; this would reference an attachment to the message with <code>id</code> equal to <code>attachment1</code>. If omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because the <code>id</code> of an attachment is used to compose URIs, this value should be brief and MUST consist entirely of <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc3986"path-4="#section-2.3"href="https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3" >unreserved URI characters</a> – meaning that it is not necessary to <a path-0="en.wikipedia.org"path-1="wiki"path-2="Percent-encoding"href="https://en.wikipedia.org/wiki/Percent-encoding" >percent encode</a> the value to incorporate it in a URI.</li>
-<li><code>description</code>: [optional] A human-readable description of the content.</li>
-<li><code>filename</code>: A optional hint about the name that might be used if this attachment is persisted as a file. It is not required, and need not be unique. If this field is present and <code>media_type</code> is not, the extension on the filename may be used to infer a MIME type.</li>
-<li><code>media_type</code>: [optional] Describes the media type of the attached content.</li>
-<li><code>format</code>: [optional] Further describes the format of the attachment if the <code>media_type</code> is not sufficient.</li>
-<li><code>lastmod_time</code>: [optional] A hint about when the content in this attachment was last modified.</li>
-<li><code>data</code>: A JSON object that gives access to the actual content of the attachment. This MUST contain at least one of the following subfields and enough of them to allow access to the data:
+<li><code>id</code> - OPTIONAL but recommended. Identifies attached content within the scope of a given message, so it can be referenced. For example, in a message documenting items for sale on an auction website, there might be a field named <code>front_view</code> that contains the value <code>#attachment1</code>; this would reference an attachment to the message with <code>id</code> equal to <code>attachment1</code>. If omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because the <code>id</code> of an attachment is used to compose URIs, this value should be brief and MUST consist entirely of <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc3986"path-4="#section-2.3"href="https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3" >unreserved URI characters</a> – meaning that it is not necessary to <a path-0="en.wikipedia.org"path-1="wiki"path-2="Percent-encoding"href="https://en.wikipedia.org/wiki/Percent-encoding" >percent encode</a> the value to incorporate it in a URI.</li>
+<li><code>description</code> - OPTIONAL. A human-readable description of the content.</li>
+<li><code>filename</code> - OPTIONAL. A hint about the name that might be used if this attachment is persisted as a file. It need not be unique. If this field is present and <code>media_type</code> is not, the extension on the filename may be used to infer a MIME type.</li>
+<li><code>media_type</code> - OPTIONAL. Describes the media type of the attached content.</li>
+<li><code>format</code> - OPTIONAL. Further describes the format of the attachment if the <code>media_type</code> is not sufficient.</li>
+<li><code>lastmod_time</code> - OPTIONAL. A hint about when the content in this attachment was last modified.</li>
+<li><code>data</code>: A JSON object that gives access to the actual content of the attachment. This MUST contain at least one of the following subfields, and enough of them to allow access to the data:
 <ul>
-<li><code>jws</code>: [optional] A <a path-0="tools.ietf.org"path-1="html"path-2="rfc7515"href="https://tools.ietf.org/html/rfc7515" >JWS</a> in <a path-0="tools.ietf.org"path-1="html"path-2="rfc7515#appendix-F"href="https://tools.ietf.org/html/rfc7515#appendix-F" >detached content mode</a>, where the <code>payload</code> field of the JWS maps to <code>base64</code> or to something fetchable via <code>links</code>. This allows attachments to be signed. The signature need not come from the author of the message.</li>
-<li><code>hash</code>: [optional] The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the <code>links</code> data attribute.</li>
-<li><code>links</code>: [optional] A list of zero or more locations at which the content may be fetched. This allows content to be attached by reference instead of by value.</li>
-<li><code>base64</code>: [optional] <a path-0="tools.ietf.org"path-1="html"path-2="rfc4648#section-5"href="https://tools.ietf.org/html/rfc4648#section-5" >Base64url</a>-encoded data, when representing arbitrary content inline instead of via <code>links</code>.</li>
-<li><code>json</code>: [optional] Directly embedded JSON data, when representing content inline instead of via <code>links</code>, and when the content is natively conveyable as JSON.</li>
+<li><code>jws</code> - OPTIONAL. A <a path-0="tools.ietf.org"path-1="html"path-2="rfc7515"href="https://tools.ietf.org/html/rfc7515" >JWS</a> in <a path-0="tools.ietf.org"path-1="html"path-2="rfc7515#appendix-F"href="https://tools.ietf.org/html/rfc7515#appendix-F" >detached content mode</a>, where the <code>payload</code> field of the JWS maps to <code>base64</code> or to something fetchable via <code>links</code>. This allows attachments to be signed. The signature need not come from the author of the message.</li>
+<li><code>hash</code> - OPTIONAL. The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the <code>links</code> data attribute.</li>
+<li><code>links</code> - OPTIONAL. A list of zero or more locations at which the content may be fetched. This allows content to be attached by reference instead of by value.</li>
+<li><code>base64</code> - OPTIONAL. <a path-0="tools.ietf.org"path-1="html"path-2="rfc4648#section-5"href="https://tools.ietf.org/html/rfc4648#section-5" >Base64url</a>-encoded data, when representing arbitrary content inline instead of via <code>links</code>.</li>
+<li><code>json</code> - OPTIONAL. Directly embedded JSON data, when representing content inline instead of via <code>links</code>, and when the content is natively conveyable as JSON.</li>
 </ul>
 </li>
-<li><code>byte_count</code>: [optional] mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.</li>
+<li><code>byte_count</code> - OPTIONAL. mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.</li>
 </ul>
 <h4 id="attachment-example"><a class="toc-anchor" href="#attachment-example" >§</a> Attachment Example</h4>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
@@ -309,7 +309,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <h2 id="negotiating-compatibility"><a class="toc-anchor" href="#negotiating-compatibility" >§</a> Negotiating Compatibility</h2>
 <p>When parties want to communicate via DIDComm, a number of mechanisms must align. These include:</p>
 <ol>
-<li>The type of service endpoint used by each party</li>
+<li>The type of <a href="#service-endpoint" >service endpoint</a> used by each party</li>
 <li>The key types used for encryption and/or signing</li>
 <li>The format of the encryption and/or signing envelopes</li>
 <li>The encoding of plaintext messages</li>
@@ -652,7 +652,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <h4 id="acks"><a class="toc-anchor" href="#acks" >§</a> ACKs</h4>
 <p>DIDComm Messaging provides several tools that let one party acknowledge messages sent by another.</p>
 <p><a href="#threading" >Threading</a> has some implicit built-in ACK semantics. In a two-party protocol that consists of message types mapping unambiguously to progressive steps, each message that moves forward is an implicit ACK of the message that preceded it.</p>
-<p>When <a href="#problem-reports" >DIDComm <code>problem-report</code>s</a> constitute reactions to a preceding message (as opposed to when they signal problems in external circumstances), they also function as an ACK.</p>
+<p>When <a href="#problem-reports" >DIDComm problem reports</a> constitute reactions to a preceding message (as opposed to when they signal problems in external circumstances), they also function as an ACK.</p>
 <p>However, more explicit and more powerful ACKs are sometimes needed. They can prove that parties have a shared view of state at a particular time, test the functioning of a transport, help debug surprising silence, fine-tune timeouts, and speed up remedial action.</p>
 <p>To facilitate this, any innermost DIDComm plaintext message MAY use the <code>please_ack</code> header to politely request acknowledgment from a recipient. The header’s value is an array of strings that clarify when the ACK is requested, and what should be ACKed. In this version of the spec, the request is always to ACK as soon as the message is received, and each string in the array is the ID of a message that needs acknowledgment. For terseness, the empty string may be used in the array to mean “the current message.”</p>
 <p>For example, suppose Alice is running a rich chat protocol, has previously sent two messages with IDs <code>abc</code> and <code>def</code>, and now wants to send a new message with ID <code>xyz</code>, plus request an acknowledgement of the old ones. Her new message might include this header:</p>
@@ -696,22 +696,22 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 </code></pre>
 <ul>
 <li>
-<p><strong>pthid</strong> - REQUIRED. The value is the <code>thid</code> of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)</p>
+<p><code>pthid</code> - REQUIRED. The value is the <code>thid</code> of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)</p>
 </li>
 <li>
-<p><strong>ack</strong> - OPTIONAL. It SHOULD be included if the problem in question was triggered directly by a preceding message. (Contrast problems arising from a timeout or a user deciding to cancel a transaction, which can arise independent of a preceding message. In such cases, <code>ack</code> MAY still be used, but there is no strong recommendation.)</p>
+<p><code>ack</code> - OPTIONAL. It SHOULD be included if the problem in question was triggered directly by a preceding message. (Contrast problems arising from a timeout or a user deciding to cancel a transaction, which can arise independent of a preceding message. In such cases, <code>ack</code> MAY still be used, but there is no strong recommendation.)</p>
 </li>
 <li>
-<p><strong>code</strong> - REQUIRED. Deserves a rich explanation; see <a href="#problem-codes" >Problem Codes</a> below.</p>
+<p><code>code</code> - REQUIRED. Deserves a rich explanation; see <a href="#problem-codes" >Problem Codes</a> below.</p>
 </li>
 <li>
-<p><strong>comment</strong> - OPTIONAL but recommended. Contains human-friendly text describing the problem. If the field is present, the text MUST be statically associated with <code>code</code>, meaning that each time circumstances trigger a problem with the same <code>code</code>, the value of <code>comment</code> will be the same. This enables <a href="#i18n" >localization</a> and cached lookups, and it has some <a path-0="didcomm.org"path-1="book"path-2="v2"path-3="problems-and-cybersecurity"href="https://didcomm.org/book/v2/problems-and-cybersecurity" >cybersecurity benefits</a>. The value of <code>comment</code> supports simple interpolation with <code>args</code> (see next), where args are referenced as <code>{1}</code>, <code>{2}</code>, and so forth.</p>
+<p><code>comment</code> - OPTIONAL but recommended. Contains human-friendly text describing the problem. If the field is present, the text MUST be statically associated with <code>code</code>, meaning that each time circumstances trigger a problem with the same <code>code</code>, the value of <code>comment</code> will be the same. This enables <a href="#i18n" >localization</a> and cached lookups, and it has some <a path-0="didcomm.org"path-1="book"path-2="v2"path-3="problems-and-cybersecurity"href="https://didcomm.org/book/v2/problems-and-cybersecurity" >cybersecurity benefits</a>. The value of <code>comment</code> supports simple interpolation with <code>args</code> (see next), where args are referenced as <code>{1}</code>, <code>{2}</code>, and so forth.</p>
 </li>
 <li>
-<p><strong>args</strong> - OPTIONAL. Contains situation-specific values that are interpolated into the value of <code>comment</code>, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, <code>e.p.xfer.cant-use-endpoint</code> apparently expects two values in <code>args</code>: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (<code>?</code>) during interpolation; extra args MUST be appended to the main text as comma-separated values.</p>
+<p><code>args</code> - OPTIONAL. Contains situation-specific values that are interpolated into the value of <code>comment</code>, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, <code>e.p.xfer.cant-use-endpoint</code> apparently expects two values in <code>args</code>: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (<code>?</code>) during interpolation; extra args MUST be appended to the main text as comma-separated values.</p>
 </li>
 <li>
-<p><strong>escalate_to</strong> - OPTIONAL. Provides a URI where additional help on the issue can be received.</p>
+<p><code>escalate_to</code> - OPTIONAL. Provides a URI where additional help on the issue can be received.</p>
 </li>
 </ul>
 <h4 id="problem-codes"><a class="toc-anchor" href="#problem-codes" >§</a> Problem Codes</h4>
@@ -809,7 +809,7 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 </tbody>
 </table>
 <h4 id="replying-to-warnings"><a class="toc-anchor" href="#replying-to-warnings" >§</a> Replying to Warnings</h4>
-<p>When Alice sends a <code>w.*</code> problem report to Bob, and Bob decides that the warning is actually an error, he SHOULD reply to Alice to let her know about the consequences of his evaluation. Bob’s reply is another <code>problem-report</code> message. It looks very similar to Alice’s original, except:</p>
+<p>When Alice sends a <code>w.*</code> problem report to Bob, and Bob decides that the warning is actually an error, he SHOULD reply to Alice to let her know about the consequences of his evaluation. Bob’s reply is another <a href="#problem-reports" >problem report</a>. It looks very similar to Alice’s original message, except:</p>
 <ul>
 <li>The <code>code</code> in Bob’s message now begins with <code>e.</code>. The remainder of the code MAY (often will be) identical, but this is not required; if Bob knows more details than Alice did, he SHOULD provide them. The <em>scope</em> in Bob’s code MUST be at least as broad as the scope in Alice’s original message. (For example, Bob MUST NOT use scope <code>m</code> to say the protocol continues with only a bad message ignored, if Alice’s original warning said she considered the scope to be <code>p</code>.)</li>
 <li>The <code>args</code> property may or may not match.</li>
@@ -903,10 +903,10 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <p>A few higher-level protocols are especially fundamental, in that they bootstrap communication and discovery. Those protocols and their underlying principles are described below.</p>
 <h3 id="protocol-identifier-uri"><a class="toc-anchor" href="#protocol-identifier-uri" >§</a> Protocol Identifier URI</h3>
 <p>Each protocol constructed atop DIDComm Messaging is uniquely identified and versioned by a <strong>Protocol Identifier URI</strong> (<strong>PIURI</strong>).</p>
-<p>The PIURI MUST be structured as follows:</p>
-<pre><code>[doc-uri][delim][protocol-name]/[semver]
+<p>The PIURI MUST be composed of a sequence of tokens as follows:</p>
+<pre><code>doc-uri delim protocol-name/semver
 </code></pre>
-<p>With ABNF:</p>
+<p>As ABNF:</p>
 <pre class="language-ABNF"><code class="language-ABNF">protocol-identifier-uri = doc-uri delim protocol-name &quot;/&quot; semver
 delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &quot;:&quot; / &quot;;&quot; / &quot;=&quot;
 </code></pre>
@@ -923,10 +923,10 @@ https://github.com/myorg/myproject/tree/master/docs/lets_do_lunch/1.0
 <h3 id="message-type-uri"><a class="toc-anchor" href="#message-type-uri" >§</a> Message Type URI</h3>
 <p>A <strong>Message Type URI</strong> (MTURI) identifies plaintext message types unambiguously. Since the names of message types are only unique within the context of the protocol they embody, an MTURI begins with a prefix that is a PIURI, and then adds a message name token as a suffix.</p>
 <p>Standardizing MTURI format is important because MTURIs are parsed by agents and used to map messages to handlers. Code will look at this string and say, “Do I have something that can handle this message type inside protocol <em>X</em> version <em>Y</em>?” When that analysis happens, it must do more than compare the string for exact equality. It may need to check for semver compatibility, and it has to compare the protocol name and message type name ignoring case and punctuation.</p>
-<p>The MTURI MUST be composed as follows:</p>
-<pre><code>[protocol-identifier-uri] / [message-type-name]
+<p>The MTURI MUST be composed of a sequence of tokens as follows:</p>
+<pre><code>protocol-identifier-uri/message-type-name
 </code></pre>
-<p>With ABNF:</p>
+<p>As ABNF:</p>
 <pre class="language-ABNF"><code class="language-ABNF">message-type-uri  = protocol-identifier-uri &quot;/&quot; message-type-name
 protocol-identifier-uri = doc-uri delim protocol-name &quot;/&quot; semver
 delim                   = &quot;?&quot; / &quot;/&quot; / &quot;&amp;&quot; / &quot;:&quot; / &quot;;&quot; / &quot;=&quot;
@@ -962,7 +962,7 @@ https://github.com/myorg/myproject/tree/master/docs/lets_do_lunch/1.0/proposal
 <pre><code>https://didcomm.org/routing/2.0
 </code></pre>
 <h4 id="roles"><a class="toc-anchor" href="#roles" >§</a> Roles</h4>
-<p>There are 3 roles in the protocol: <code>sender</code>, <code>mediator</code>, and <code>recipient</code>. The sender emits messages of type <code>forward</code> to the <code>mediator</code>. The mediator unpacks (decrypts) the payload of an encrypted <code>forward</code> message and passes on the result (a blob that probably contains a differently encrypted payload) to the <code>recipient</code>.</p>
+<p>There are 3 roles in the protocol: sender, mediator, and recipient. The sender emits messages of type <code>forward</code> to the mediator. The mediator unpacks (decrypts) the payload of an encrypted <code>forward</code> message and passes on the result (a blob that probably contains a differently encrypted payload) to the recipient.</p>
 <p><img src="../collateral/routing-roles.png" alt="ordinary sequence"></p>
 <blockquote>
 <p>Note: the protocol is one-way; the return route for communication might not exist at all, or if it did, it could invert the roles of sender and receiver and use the same mediator, or it could use one or more different mediators, or it could use no mediator at all. This is a separate concern partly specified by the service endpoints in the DID docs of the sender and receiver, and partly explored in other protocols.</p>
@@ -972,7 +972,7 @@ https://github.com/myorg/myproject/tree/master/docs/lets_do_lunch/1.0/proposal
 </blockquote>
 <p>In this protocol, the sender and the receiver never interact directly; they only interact via the mediator.</p>
 <p>The sender can add the standard <code>expires_time</code> to a <code>forward</code> message. An additional header, <code>delay_milli</code> is also possible; this allows the sender to request that a mediator wait a specified number of milliseconds before delivering. Negative values mean that the mediator should randomize delay by picking a number of milliseconds between 0 and the absolute value of the number, with a uniform distribution.</p>
-<p>The mediator is NOT required to support or implement any of these semantics; only the core forwarding behavior is indispensable. If a mediator sees a header that requests behavior it doesn’t support, it MAY return a <a href="#problem-reports" ><code>problem-report</code></a> to the sender identifying the unsupported feature, but it is not required to do so.</p>
+<p>The mediator is NOT required to support or implement any of these semantics; only the core forwarding behavior is indispensable. If a mediator sees a header that requests behavior it doesn’t support, it MAY return a <a href="#problem-reports" >problem-report</a> to the sender identifying the unsupported feature, but it is not required to do so.</p>
 <blockquote>
 <p>Note: The <a href="#acks" ><code>please_ack</code> header</a> SHOULD NOT be included on <a href="#routing" ><code>forward</code> messages</a>, and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, and undermine the privacy of recipients.</p>
 </blockquote>
@@ -996,10 +996,10 @@ https://github.com/myorg/myproject/tree/master/docs/lets_do_lunch/1.0/proposal
 <span class="token punctuation">}</span>
 </code></pre>
 <ul>
-<li><strong>next</strong> - REQUIRED. The identifier of the party to send the attached message to.</li>
-<li><strong>attachments</strong> - REQUIRED. The DIDComm message(s) to send to the party indicated in the <code>next</code> body attribute. This content should be encrypted for the next recipient.</li>
+<li><code>next</code> - REQUIRED. The identifier of the party to send the attached message to.</li>
+<li><code>attachments</code> - REQUIRED. The DIDComm message(s) to send to the party indicated in the <code>next</code> body attribute. This content should be encrypted for the next recipient.</li>
 </ul>
-<p>When the internal message expires, it’s a good idea to also include an expiration for forward message requests. Include the <code>expires_time</code> header with the appropriate value.</p>
+<p>When the internal message expires, it’s a good idea to also include an expiration for forward requests. Include the <code>expires_time</code> header with the appropriate value.</p>
 <p>The value of the <code>next</code> field is typically a DID. However, it may also be a key, for the last hop of a route. The <code>routingKeys</code> array in the <code>serviceEndpoint</code> portion of a DID doc allow a party to list keys that should receive inbound communication, with encryption multiplexed so any of the keys can decrypt. This supports a use case where Alice wants to process messages on any of several devices that she owns.</p>
 <p>The attachment(s) in the <code>attachments</code> field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.</p>
 <h4 id="rewrapping"><a class="toc-anchor" href="#rewrapping" >§</a> Rewrapping</h4>
@@ -1024,13 +1024,13 @@ https://github.com/myorg/myproject/tree/master/docs/lets_do_lunch/1.0/proposal
 </ol>
 <p>The party that receives it will have the ability to decrypt, producing a <code>forward</code> message with an encrypted attachment that is then forwarded to the next hop in <code>routingKeys</code>. This unwrapping and forwarding is repeated until the message reaches its final destination.</p>
 <h4 id="mediator-process"><a class="toc-anchor" href="#mediator-process" >§</a> Mediator Process</h4>
-<p><em>Prior to using a Mediator, it is the recipient’s responsibility to coordinate with the mediator. Part of this coordination informs them of the <code>next</code> address(es) expected, the endpoint, and any Routing Keys to be used when forwarding messages. That coordination is out of the scope of this spec.</em></p>
+<p><em>Prior to using a Mediator, it is the recipient’s responsibility to coordinate with the mediator. Part of this coordination informs them of the <code>next</code> address(es) expected, the endpoint, and any routing keys to be used when forwarding messages. That coordination is out of the scope of this spec.</em></p>
 <ol>
-<li>Receives Forward Message.</li>
-<li>Retrieves Service Endpoint pre-configured by recipient (<code>next</code> attribute).</li>
-<li>Transmit <code>payload</code> message to Service Endpoint in the manner specified in the [transports] section.</li>
+<li>Receive ‘forward’ message.</li>
+<li>Retrieve service endpoint pre-configured by recipient (<code>next</code> attribute).</li>
+<li>Transmit <code>payload</code> message to service endpoint in the manner specified in the [transports] section.</li>
 </ol>
-<p>The recipient (<code>next</code> attribute of Forward Message) may have pre-configured additional routing keys with the mediator that were not present in the DID Document and therefore unknown to the original sender. If this is the case, the mediator should wrap the attached <code>payload</code> message into an additional Forward message once per routing key. This step is performed between (2) and (3).</p>
+<p>The recipient (<code>next</code> attribute of ‘forward’ message) may have pre-configured additional routing keys with the mediator that were not present in the DID Document and therefore unknown to the original sender. If this is the case, the mediator should wrap the attached <code>payload</code> message into an additional Forward message once per routing key. This step is performed between (2) and (3).</p>
 <h4 id="did-document-keys"><a class="toc-anchor" href="#did-document-keys" >§</a> DID Document Keys</h4>
 <p>Ideally, all keys declared in the <code>keyAgreement</code> section of a given recipient’s DID document are used as target keys when encrypting a message. To encourage this, DIDComm encrypts the main message content only once, using an ephemeral content encryption key, and then encrypts the relatively tiny ephemeral key once per recipient key. This “multiplexed ecnryption” is efficient, and it allows a recipient to change devices over the course of a conversation without prior arrangement.</p>
 <p>However, practical considerations can frustrate this ideal. If a recipient’s DID document declares keys of different types, a sender has to prepare more than one encryption envelope — and if not all of a recipient’s key types are supported by the sender, the goal is simply unachievable.</p>
@@ -1054,15 +1054,15 @@ https://github.com/myorg/myproject/tree/master/docs/lets_do_lunch/1.0/proposal
     <span class="token punctuation">}</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p><strong>id</strong>: must be unique, as required in <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3="#service-endpoints"href="https://www.w3.org/TR/did-core/#service-endpoints" >DID Core</a>. No special meaning should be inferred from the <code>id</code> chosen.</p>
-<p><strong>type</strong>: MUST be <code>DIDCommMessaging</code>.</p>
-<p><strong>serviceEndpoint</strong>: MUST contain an ordered list of objects. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner’s preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.</p>
+<p><code>id</code> - REQUIRED. Must be unique, as required in <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3="#service-endpoints"href="https://www.w3.org/TR/did-core/#service-endpoints" >DID Core</a>. No special meaning should be inferred from the <code>id</code> chosen.</p>
+<p><code>type</code> - REQUIRED. MUST be <code>DIDCommMessaging</code>.</p>
+<p><code>serviceEndpoint</code> - REQUIRED. MUST contain an ordered list of objects. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner’s preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.</p>
 <p>Each object has the following properties:</p>
-<p><strong>uri</strong>: MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.</p>
-<p><strong>accept</strong>: An optional array of media types in the order of preference for sending a message to the endpoint.
+<p><code>uri</code> - REQUIRED. MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.</p>
+<p><code>accept</code> - OPTIONAL. An array of media types in the order of preference for sending a message to the endpoint.
 If <code>accept</code> is not specified, the sender uses its preferred choice for sending a message to the endpoint.
 Please see <a href="#message-types" >Message Types</a> for details about media types.</p>
-<p><strong>routingKeys</strong>: An optional ordered array of strings referencing keys to be used when preparing the message for transmission as specified in <a href="#sender-process-to-enable-forwarding" >Sender Process to Enable Forwarding</a>, above.</p>
+<p><code>routingKeys</code> - OPTIONAL. An ordered array of strings referencing keys to be used when preparing the message for transmission as specified in <a href="#sender-process-to-enable-forwarding" >Sender Process to Enable Forwarding</a>, above.</p>
 <h4 id="failover"><a class="toc-anchor" href="#failover" >§</a> Failover</h4>
 <p>If the transmission of a message fails, the sender SHOULD try another endpoint or try delivery at a later time.</p>
 <h4 id="using-a-did-as-an-endpoint"><a class="toc-anchor" href="#using-a-did-as-an-endpoint" >§</a> Using a DID as an endpoint</h4>
@@ -1077,7 +1077,7 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
     <span class="token punctuation">}</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>The message is encrypted to the recipient, then wrapped in a forward message encrypted to the keyAgreement keys within the <code>did:example:somemediator</code> DID Document, and transmitted to the URIs present in the <code>did:example:somemediator</code> DID Document with type <code>DIDCommMessaging</code>.</p>
+<p>The message is encrypted to the recipient, then wrapped in a ‘forward’ message encrypted to the keyAgreement keys within the <code>did:example:somemediator</code> DID Document, and transmitted to the URIs present in the <code>did:example:somemediator</code> DID Document with type <code>DIDCommMessaging</code>.</p>
 <p>Example 2: Mediator + Routing Keys</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
@@ -1088,7 +1088,7 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
     <span class="token punctuation">}</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>The message is encrypted to the recipient, then wrapped in a <code>forward</code> message encrypted to <code>did:example:anothermediator#somekey</code>. That forward message is wrapped in a forward message encrypted to keyAgreement keys within the <code>did:example:somemediator</code> DID Document, and transmitted to the URIs present in the <code>did:example:somemediator</code> DID Document with type <code>DIDCommMessaging</code>.</p>
+<p>The message is encrypted to the recipient, then wrapped in a <code>forward</code> message encrypted to <code>did:example:anothermediator#somekey</code>. That message is wrapped in a ‘forward’ message encrypted to ‘keyAgreement’ keys within the <code>did:example:somemediator</code> DID Document, and transmitted to the URIs present in the <code>did:example:somemediator</code> DID Document with type <code>DIDCommMessaging</code>.</p>
 <h3 id="out-of-band-messages"><a class="toc-anchor" href="#out-of-band-messages" >§</a> Out Of Band Messages</h3>
 <h4 id="url-qr-codes"><a class="toc-anchor" href="#url-qr-codes" >§</a> URL &amp; QR Codes</h4>
 <p>When passing a DIDComm message between two parties, it is often useful to present a message in the form of a URL or encoded into the form of a QR code for scanning with a smartphone or other camera. The format for a QR code is simply the encoded URL form of a message.</p>
@@ -1126,19 +1126,15 @@ Please see <a href="#message-types" >Message Types</a> for details about media t
 </code></pre>
 <p>The items in the message are:</p>
 <ul>
-<li><code>type</code> - the DIDComm message type</li>
-<li><code>id</code> - the unique ID of the message. The ID should be used as the <strong>parent</strong> thread ID (<code>pthid</code>) for the response message, rather than the more common thread ID (<code>thid</code>) of the response message. This enables multiple uses of a single out-of-band message.</li>
-<li><code>from</code> - the DID representing the sender to be used by recipients for future interactions.</li>
-<li><code>goal_code</code> - [optional] a self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.</li>
-<li><code>goal</code> - [optional] a self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.</li>
-<li><code>accept</code> - [optional] an array of media (aka mime) types in the order of preference of the sender that the receiver can use in responding to the message.
+<li><code>type</code> - REQUIRED. The header conveying the DIDComm <a href="#message-type-uri" >MTURI</a>.</li>
+<li><code>id</code> - REQUIRED. This value MUST be used as the <strong>parent</strong> thread ID (<code>pthid</code>) for the response message that follows. This may feel counter-intuitive — why not it in the <code>thid</code> of the response instead? The answer is that putting it in <code>pthid</code> enables multiple, independent interactions (threads) to be triggered from a single out-of-band invitation.</li>
+<li><code>from</code> - REQUIRED for OOB usage. The DID representing the sender to be used by recipients for future interactions.</li>
+<li><code>goal_code</code> - OPTIONAL. A self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.</li>
+<li><code>goal</code> - OPTIONAL. A self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.</li>
+<li><code>accept</code> - OPTIONAL. An array of media types in the order of preference of the sender that the receiver can use in responding to the message.
 If <code>accept</code> is not specified, the receiver uses its preferred choice to respond to the message.
 Please see <a href="#message-types" >Message Types</a> for details about media types.</li>
-<li><code>attachments</code> - an array of attachments that will contain the invitation messages in order of preference that the receiver can use in responding to the message. Each message in the array is a rough equivalent of the others, and all are in pursuit of the stated <code>goal</code> and <code>goal_code</code>. Only one of the messages should be chosen and acted upon.
-<ul>
-<li>While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.</li>
-</ul>
-</li>
+<li><code>attachments</code> - REQUIRED for OOB usage. An array of attachments that will contain the invitation messages in order of preference that the receiver can use in responding to the message. Each message in the array is a rough equivalent of the others, and all are in pursuit of the stated <code>goal</code> and <code>goal_code</code>. Only one of the messages should be chosen and acted upon. (While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.)</li>
 </ul>
 <p>When encoding a message in a URL or QR code, the <em>sender</em> does not know which protocols are supported by the <em>recipient</em> of the message. Encoding multiple alternative messages is a form of optimistic protocol negotiation that allows multiple supported protocols without coordination</p>
 <h4 id="standard-message-encoding"><a class="toc-anchor" href="#standard-message-encoding" >§</a> Standard Message Encoding</h4>
@@ -1208,22 +1204,13 @@ Faber College
 Knowledge is Good
 </code></pre>
 <p>Example URL encoded as a QR Code:</p>
-<p><img src=".//collateral/out_of_band_exampleqr.png" alt="Example QR Code"></p>
+<p><img src="./collateral/out_of_band_exampleqr.png" alt="Example QR Code"></p>
 <h4 id="short-url-message-retrieval"><a class="toc-anchor" href="#short-url-message-retrieval" >§</a> Short URL Message Retrieval</h4>
 <p>It seems inevitable that the length of some DIDComm messages will be too long to produce a useable QR code. Techniques to avoid unusable QR codes have been presented above, including using attachment links for requests, minimizing the routing of the response and eliminating unnecessary whitespace in the JSON. However, at some point a <em>sender</em> may need generate a very long URL. In that case, a short URL message retrieval redirection should be implemented by the sender as follows:</p>
 <ul>
 <li>The sender should generate and track a GUID for the out-of-band message URL.</li>
-<li>The shortened version should be:
-<ul>
-<li><code>https://example.com/path?_oobid=5f0e3ffb-3f92-4648-9868-0d6f8889e6f3</code></li>
-<li>Note the replacement of the query parameter <code>_oob</code> with <code>_oobid</code> when using shortened URL.</li>
-</ul>
-</li>
-<li>On receipt of this form of message, the agent must do an HTTP GET to retrieve the associated encoded  message.
-<ul>
-<li>A sender may want to wait to generate the full invitation until the redirection event of the shortened URL to the full length form dynamic, so a single QR code can be used for distinct messages.</li>
-</ul>
-</li>
+<li>The shortened version should be: <code>https://example.com/path?_oobid=5f0e3ffb-3f92-4648-9868-0d6f8889e6f3</code>. Note the replacement of the query parameter <code>_oob</code> with <code>_oobid</code> when using shortened URL.</li>
+<li>On receipt of this form of message, the agent must do an HTTP GET to retrieve the associated encoded message. A sender may want to wait to generate the full invitation until the redirection event of the shortened URL to the full length form dynamic, so a single QR code can be used for distinct messages.</li>
 </ul>
 <p>A usable QR code will always be able to be generated from the shortened form of the URL.</p>
 <p>Note: Due to the privacy implications, a standard URL shortening service SHOULD NOT be used.</p>
@@ -1254,7 +1241,7 @@ Once protocol is ended then receiver can optionally choose to redirect by extrac
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>Problem report with web redirect header from <a href="#problem-reports" >problem report example</a> will look like:</p>
+<p>A problem report with a web redirect header from the <a href="#problem-reports" >problem report example</a> will look like:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/report-problem/2.0/problem-report"</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"7c9de639-c51c-4d60-ab95-103fa613c805"</span><span class="token punctuation">,</span>
@@ -1432,7 +1419,7 @@ gains by virtue of the properties of the DIDComm messages. A ping and response v
 <p>On the other hand, if Alice is unable to send French text, her message might contain <code>&quot;lang&quot;: &quot;en&quot;</code> and <code>&quot;comment&quot;: &quot;That's checkmate, buddy.&quot;</code> Even though this comment is not in the language Bob prefers, at least Bob knows what language it <em>is</em> in.</p>
 <h3 id="asking-for-a-different-lang"><a class="toc-anchor" href="#asking-for-a-different-lang" >§</a> Asking for a different <code>lang</code></h3>
 <p>What if Alice doesn’t support any of the languages in Bob’s <code>accept-lang</code> header — or if Bob never used such a header in the first place?</p>
-<p>Bob MAY tell Alice that the language she used is problematic by sending her a <code>problem-report</code> message where the <code>code</code> field is <code>w.msg.bad-lang</code>. (In some protocols where language-specific fields may be vital rather than incidental, a problem like this might be an error instead of a warning; in such cases, the code MUST be <code>e.msg.bad-lang</code> instead.) Bob may include an <code>accept-lang</code> header on this <code>problem-report</code> message, teaching Alice what it will take to fix the problem.</p>
+<p>Bob MAY tell Alice that the language she used is problematic by sending her a <a href="#problem-reports" >problem report</a> where the <code>code</code> field is <code>w.msg.bad-lang</code>. (In some protocols where language-specific fields may be vital rather than incidental, a problem like this might be an error instead of a warning; in such cases, the code MUST be <code>e.msg.bad-lang</code> instead.) Bob may include an <code>accept-lang</code> header on this <code>problem-report</code> message, teaching Alice what it will take to fix the problem.</p>
 <h3 id="advanced-i18n-patterns"><a class="toc-anchor" href="#advanced-i18n-patterns" >§</a> Advanced i18n patterns</h3>
 <p>When protocols have i18n needs that are more advanced than this, a DIDComm extension such as <a path-0="github.com"path-1="decentralized-identity"path-2="didcomm-messaging"path-3="blob"path-4="master"path-5="extensions"path-6="l10n"path-7="main.md"href="https://github.com/decentralized-identity/didcomm-messaging/blob/master/extensions/l10n/main.md" >the l10n extension</a> is recommended.</p>
 <h2 id="future-proofing"><a class="toc-anchor" href="#future-proofing" >§</a> Future-Proofing</h2>

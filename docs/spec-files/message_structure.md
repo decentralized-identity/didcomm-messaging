@@ -8,7 +8,7 @@ This specification discusses messages in three different formats. The casual phr
 
 Circumstances sometimes require communication about the format of DIDComm messages. The canonical way to do this is with IANA media types, based on the conventions of [RFC6838](https://tools.ietf.org/html/rfc6838).
 
-All three DIDComm message formats &mdash; plaintext, signed, and encrypted &mdash; can be correctly understood as more generic [JWMs](https://tools.ietf.org/html/draft-looker-jwm-01) or even as arbitrary JOSE content. Since code that expects JOSE conventions but not DIDComm may matter in some implementations, this spec recommends the JOSE convention of [using `typ` to make JOSE structure formats self-describing](https://tools.ietf.org/html/rfc7515#section-4.1.9). This is particularly helpful in the outermost envelope of any DIDComm message, before unwrapping begins. (As RFC 7515 notes, `typ` "will typically not be used by applications when the kind of object is already known.")
+All three DIDComm message formats &mdash; plaintext, signed, and encrypted &mdash; can be correctly understood as more generic [JWMs (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) or even as arbitrary JOSE content. Since code that expects JOSE conventions but not DIDComm may matter in some implementations, this spec recommends the JOSE convention of [using `typ` to make JOSE structure formats self-describing](https://tools.ietf.org/html/rfc7515#section-4.1.9). This is particularly helpful in the outermost envelope of any DIDComm message, before unwrapping begins. (As RFC 7515 notes, `typ` "will typically not be used by applications when the kind of object is already known.")
 
 The relevant media types are:
 
@@ -39,7 +39,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ### DIDComm Signed Messages
 
-A **DIDComm signed message** is a signed [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) envelope that associates a non-repudiable signature with the plaintext message inside it.
+A **DIDComm signed message** is a signed [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) envelope that associates a non-repudiable signature with the plaintext message inside it.
 
 Signed messages are not necessary to provide message integrity (tamper evidence), or to prove the sender to the recipient. Both of these guarantees automatically occur with the authenticated encryption in DIDComm encrypted messages. Signed messages are only necessary when the origin of plaintext has to be provable to third parties, or when the sender can't be proven to the recipient by authenticated encryption because the recipient is not known in advance (e.g., in a broadcast scenario). Adding a signature when one is not needed [can degrade rather than enhance security because it relinquishes the sender's ability to speak off the record](https://github.com/hyperledger/aries-rfcs/blob/master/concepts/0049-repudiation/README.md#summary). We therefore expect signed messages to be used in a few cases, but not as a matter of course.
 
@@ -57,7 +57,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ### DIDComm Encrypted Messages
 
-A **DIDComm encrypted message** is an encrypted [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01). It hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.
+A **DIDComm encrypted message** is an encrypted [JWM](https://tools.ietf.org/html/draft-looker-jwm-01). It hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.
 
 The [media type](https://tools.ietf.org/html/rfc6838) of a non-nested DIDComm encrypted message MUST be `application/didcomm-encrypted+json`.
 
@@ -71,7 +71,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 ## Plaintext Message Structure
 
-As mentioned above, **DIDComm plaintext messages** are based on [JWM (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01). JWMs follow the same general pattern as other JOSE containers, but are optimized for larger and more arbitrary structure than simple tokens.
+As mentioned above, **DIDComm plaintext messages** are based on [JWM](https://tools.ietf.org/html/draft-looker-jwm-01). JWMs follow the same general pattern as other JOSE containers, but are optimized for larger and more arbitrary structure than simple tokens.
 
 A plaintext message has an outermost attribute, `type`, that identifies the *application-level* message category to which it belongs. This value of `type` is a [specialized URI](#message-type-uri); it allows messages to be mapped to specific handler code. Other outermost attributes include a message's `id` and its media type (`typ` attribute, for generic JWM handling, as described above). In addition, plaintext messages may have other other attributes that have meaning across many message types. Such attributes at the top level of a message are called *[headers](#message-headers)*.
 
@@ -106,11 +106,11 @@ If headers need to be sent and there is no message to attach them to, an [empty 
 
 Headers in DIDComm Messaging are intended to be extensible in much the same way that headers in HTTP or SMTP are extensible. A few headers are predefined:
 
-- **id** - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender, across all messages they send. See [Threading &gt; Message IDs](#message-ids) for constraints on this value.
+- `id` - REQUIRED. Message ID. The `id` attribute value MUST be unique to the sender, across all messages they send. See [Threading &gt; Message IDs](#message-ids) for constraints on this value.
 
-- **type** - REQUIRED. A URI that associates the `body` of a plaintext message with a published and versioned schema. Useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [message type URI](#message-type-uri), that when resolved gives human readable information about the message category.
+- `type` - REQUIRED. A URI that associates the `body` of a plaintext message with a published and versioned schema. Useful for message handling in application-level protocols. The `type` attribute value MUST be a valid [message type URI](#message-type-uri), that when resolved gives human readable information about the message category.
 
-- **to** - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.
+- `to` - OPTIONAL. Identifier(s) for recipients. MUST be an array of strings where each element is a valid [DID](https://www.w3.org/TR/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) that identifies a member of the message's intended audience. These values are useful for recipients to know which of their keys can be used for decryption. It is not possible for one recipient to verify that the message was sent to a different recipient.
 
     When Alice sends the same plaintext message to Bob and Carol, it is by inspecting this header that the recipients learn the message was sent to both of them. If the header is omitted, each recipient SHOULD assume they are the only recipient (much like an email sent only to `BCC:` addresses).
 
@@ -120,19 +120,19 @@ Headers in DIDComm Messaging are intended to be extensible in much the same way 
 
     The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the [`forward` message](#routing) contains a `next` attribute in its body that specifies the target for the next routing operation.
 
-- **from** - OPTIONAL when the message is to be encrypted via anoncrypt; REQUIRED when the message is encrypted via authcrypt. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the [message authentication](#Message-Authentication) section for additional details.
+- `from` - OPTIONAL when the message is to be encrypted via anoncrypt; REQUIRED when the message is encrypted via authcrypt. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the [message authentication](#Message-Authentication) section for additional details.
 
-- **thid** - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the `id` property of the message MUST be treated as the value of the `thid`. See [Threads](#threads) for details.
+- `thid` - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the `id` property of the message MUST be treated as the value of the `thid`. See [Threads](#threads) for details.
 
-- **pthid** - OPTIONAL. Parent thread identifier. If the message is a child of a thread the `pthid` will uniquely identify which thread is the parent. See [Parent Threads](#parent-threads) for details.
+- `pthid` - OPTIONAL. Parent thread identifier. If the message is a child of a thread the `pthid` will uniquely identify which thread is the parent. See [Parent Threads](#parent-threads) for details.
 
-- **created_time** - OPTIONAL but recommended. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. This allows the recipient to guess about transport latency and clock divergence. The difference between when a message is created and when it is sent is assumed to be negligible; this lets timeout logic start from this value.
+- `created_time` - OPTIONAL but recommended. Message Created Time. This attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. This allows the recipient to guess about transport latency and clock divergence. The difference between when a message is created and when it is sent is assumed to be negligible; this lets timeout logic start from this value.
 
-- **expires_time** - OPTIONAL. Message Expires Time. The `expires_time` attribute is used for the sender to express when they will consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. By default, the meaning of "expired" is that the sender will abort the protocol if it doesn't get a response by this time. However, protocols can nuance this in their formal spec. For example, an online auction protocol might specify that timed out bids must be ignored instead of triggering a cancellation of the whole auction. When omitted from any given message, the message is considered to have no expiration by the sender.
+- `expires_time` - OPTIONAL. Message Expires Time. This attribute is used for the sender to express when they will consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. By default, the meaning of "expired" is that the sender will abort the protocol if it doesn't get a response by this time. However, protocols can nuance this in their formal spec. For example, an online auction protocol might specify that timed out bids must be ignored instead of triggering a cancellation of the whole auction. When omitted from any given message, the message is considered to have no expiration by the sender.
 
-- **body** - REQUIRED. The `body` attribute contains all the data and structure defined uniquely for the schema associated with the `type` attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to [RFC 7159](https://datatracker.ietf.org/doc/html/rfc7159).
+- `body` - REQUIRED. The `body` attribute contains all the data and structure defined uniquely for the schema associated with the `type` attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to [RFC 7159](https://datatracker.ietf.org/doc/html/rfc7159).
 
-- **attachments** - OPTIONAL. See [Attachments](#attachments) for detail. 
+- `attachments` - OPTIONAL. See [Attachments](#attachments) for detail. 
 
 With respect to headers, DIDComm Messaging follows the extensibility pattern established by the JW* family of standards. A modest inventory of predefined "header" fields is specified, as shown above. Additional fields with unreserved names can be added at the discretion of producers and consumers of messages; any software that doesn't understand such fields SHOULD ignore them and MUST NOT fail because of their inclusion in a message.
 
@@ -154,19 +154,19 @@ Attachments are contained within a list in the `attachments` header.
 
 Each attachment is described with an instance of a JSON object that has the following structure.
 
-- `id`: [optional but recommended] Identifies attached content within the scope of a given message, so it can be referenced. For example, in a message documenting items for sale on an auction website, there might be a field named `front_view` that contains the value `#attachment1`; this would reference an attachment to the message with `id` equal to `attachment1`. If omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because the `id` of an attachment is used to compose URIs, this value should be brief and MUST consist entirely of [unreserved URI characters](https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3) – meaning that it is not necessary to [percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the value to incorporate it in a URI.
-- `description`: [optional] A human-readable description of the content.
-- `filename`: A optional hint about the name that might be used if this attachment is persisted as a file. It is not required, and need not be unique. If this field is present and `media_type` is not, the extension on the filename may be used to infer a MIME type.
-- `media_type`: [optional] Describes the media type of the attached content.
-- `format`: [optional] Further describes the format of the attachment if the `media_type` is not sufficient.
-- `lastmod_time`: [optional] A hint about when the content in this attachment was last modified.
-- `data`: A JSON object that gives access to the actual content of the attachment. This MUST contain at least one of the following subfields and enough of them to allow access to the data:
-    * `jws`: [optional] A [JWS](https://tools.ietf.org/html/rfc7515) in [detached content mode](https://tools.ietf.org/html/rfc7515#appendix-F), where the `payload` field of the JWS maps to `base64` or to something fetchable via `links`. This allows attachments to be signed. The signature need not come from the author of the message.
-    * `hash`: [optional] The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the `links` data attribute.
-    * `links`: [optional] A list of zero or more locations at which the content may be fetched. This allows content to be attached by reference instead of by value.
-    * `base64`: [optional] [Base64url](https://tools.ietf.org/html/rfc4648#section-5)-encoded data, when representing arbitrary content inline instead of via `links`.
-    * `json`: [optional] Directly embedded JSON data, when representing content inline instead of via `links`, and when the content is natively conveyable as JSON.
-- `byte_count`: [optional] mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
+- `id` - OPTIONAL but recommended. Identifies attached content within the scope of a given message, so it can be referenced. For example, in a message documenting items for sale on an auction website, there might be a field named `front_view` that contains the value `#attachment1`; this would reference an attachment to the message with `id` equal to `attachment1`. If omitted, then there is no way to refer to the attachment later in the thread, in error messages, and so forth. Because the `id` of an attachment is used to compose URIs, this value should be brief and MUST consist entirely of [unreserved URI characters](https://datatracker.ietf.org/doc/html/rfc3986/#section-2.3) – meaning that it is not necessary to [percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the value to incorporate it in a URI.
+- `description` - OPTIONAL. A human-readable description of the content.
+- `filename` - OPTIONAL. A hint about the name that might be used if this attachment is persisted as a file. It need not be unique. If this field is present and `media_type` is not, the extension on the filename may be used to infer a MIME type.
+- `media_type` - OPTIONAL. Describes the media type of the attached content.
+- `format` - OPTIONAL. Further describes the format of the attachment if the `media_type` is not sufficient.
+- `lastmod_time` - OPTIONAL. A hint about when the content in this attachment was last modified.
+- `data`: A JSON object that gives access to the actual content of the attachment. This MUST contain at least one of the following subfields, and enough of them to allow access to the data:
+    * `jws` - OPTIONAL. A [JWS](https://tools.ietf.org/html/rfc7515) in [detached content mode](https://tools.ietf.org/html/rfc7515#appendix-F), where the `payload` field of the JWS maps to `base64` or to something fetchable via `links`. This allows attachments to be signed. The signature need not come from the author of the message.
+    * `hash` - OPTIONAL. The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the `links` data attribute.
+    * `links` - OPTIONAL. A list of zero or more locations at which the content may be fetched. This allows content to be attached by reference instead of by value.
+    * `base64` - OPTIONAL. [Base64url](https://tools.ietf.org/html/rfc4648#section-5)-encoded data, when representing arbitrary content inline instead of via `links`.
+    * `json` - OPTIONAL. Directly embedded JSON data, when representing content inline instead of via `links`, and when the content is natively conveyable as JSON.
+- `byte_count` - OPTIONAL. mostly relevant when content is included by reference instead of by value. Lets the receiver guess how expensive it will be, in time, bandwidth, and storage, to fully fetch the attachment.
 
 #### Attachment Example
 

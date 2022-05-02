@@ -18,7 +18,7 @@ DIDComm Messaging provides several tools that let one party acknowledge messages
 
 [Threading](#threading) has some implicit built-in ACK semantics. In a two-party protocol that consists of message types mapping unambiguously to progressive steps, each message that moves forward is an implicit ACK of the message that preceded it. 
 
-When [DIDComm `problem-report`s](#problem-reports) constitute reactions to a preceding message (as opposed to when they signal problems in external circumstances), they also function as an ACK.
+When [DIDComm problem reports](#problem-reports) constitute reactions to a preceding message (as opposed to when they signal problems in external circumstances), they also function as an ACK.
 
 However, more explicit and more powerful ACKs are sometimes needed. They can prove that parties have a shared view of state at a particular time, test the functioning of a transport, help debug surprising silence, fine-tune timeouts, and speed up remedial action.
 
@@ -80,17 +80,17 @@ Other entities are notified of problems by sending a simple message called a **p
 }
 ```
 
-- **pthid** - REQUIRED. The value is the `thid` of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)
+- `pthid` - REQUIRED. The value is the `thid` of the thread in which the problem occurred. (Thus, the problem report begins a new child thread, of which the triggering context is the parent. The parent context can react immediately to the problem, or can suspend progress while troubleshooting occurs.)
 
-- **ack** - OPTIONAL. It SHOULD be included if the problem in question was triggered directly by a preceding message. (Contrast problems arising from a timeout or a user deciding to cancel a transaction, which can arise independent of a preceding message. In such cases, `ack` MAY still be used, but there is no strong recommendation.) 
+- `ack` - OPTIONAL. It SHOULD be included if the problem in question was triggered directly by a preceding message. (Contrast problems arising from a timeout or a user deciding to cancel a transaction, which can arise independent of a preceding message. In such cases, `ack` MAY still be used, but there is no strong recommendation.) 
 
-- **code** - REQUIRED. Deserves a rich explanation; see [Problem Codes](#problem-codes) below.
+- `code` - REQUIRED. Deserves a rich explanation; see [Problem Codes](#problem-codes) below.
 
-- **comment** - OPTIONAL but recommended. Contains human-friendly text describing the problem. If the field is present, the text MUST be statically associated with `code`, meaning that each time circumstances trigger a problem with the same `code`, the value of `comment` will be the same. This enables [localization](#i18n) and cached lookups, and it has some [cybersecurity benefits](https://didcomm.org/book/v2/problems-and-cybersecurity). The value of `comment` supports simple interpolation with `args` (see next), where args are referenced as `{1}`, `{2}`, and so forth. 
+- `comment` - OPTIONAL but recommended. Contains human-friendly text describing the problem. If the field is present, the text MUST be statically associated with `code`, meaning that each time circumstances trigger a problem with the same `code`, the value of `comment` will be the same. This enables [localization](#i18n) and cached lookups, and it has some [cybersecurity benefits](https://didcomm.org/book/v2/problems-and-cybersecurity). The value of `comment` supports simple interpolation with `args` (see next), where args are referenced as `{1}`, `{2}`, and so forth. 
 
-- **args** - OPTIONAL. Contains situation-specific values that are interpolated into the value of `comment`, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, `e.p.xfer.cant-use-endpoint` apparently expects two values in `args`: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (`?`) during interpolation; extra args MUST be appended to the main text as comma-separated values. 
+- `args` - OPTIONAL. Contains situation-specific values that are interpolated into the value of `comment`, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, `e.p.xfer.cant-use-endpoint` apparently expects two values in `args`: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (`?`) during interpolation; extra args MUST be appended to the main text as comma-separated values. 
 
-- **escalate_to** - OPTIONAL. Provides a URI where additional help on the issue can be received.
+- `escalate_to` - OPTIONAL. Provides a URI where additional help on the issue can be received.
 
 #### Problem Codes
 
@@ -144,7 +144,7 @@ Token | Value of `comment` string | Notes
 
 #### Replying to Warnings
 
-When Alice sends a `w.*` problem report to Bob, and Bob decides that the warning is actually an error, he SHOULD reply to Alice to let her know about the consequences of his evaluation. Bob's reply is another `problem-report` message. It looks very similar to Alice's original, except:
+When Alice sends a `w.*` problem report to Bob, and Bob decides that the warning is actually an error, he SHOULD reply to Alice to let her know about the consequences of his evaluation. Bob's reply is another [problem report](#problem-reports). It looks very similar to Alice's original message, except:
 
 * The `code` in Bob's message now begins with `e.`. The remainder of the code MAY (often will be) identical, but this is not required; if Bob knows more details than Alice did, he SHOULD provide them. The *scope* in Bob's code MUST be at least as broad as the scope in Alice's original message. (For example, Bob MUST NOT use scope `m` to say the protocol continues with only a bad message ignored, if Alice's original warning said she considered the scope to be `p`.)
 * The `args` property may or may not match.  
