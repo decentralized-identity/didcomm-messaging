@@ -37,7 +37,7 @@ The out-of-band protocol consists in a single message that is sent by the *sende
   },
   "attachments": [
     {
-        "@id": "request-0",
+        "id": "request-0",
         "mime_type": "application/json",
         "data": {
             "json": "<json of protocol message>"
@@ -102,7 +102,7 @@ Invitation:
   },
   "attachments": [
       {
-          "@id": "request-0",
+          "id": "request-0",
           "media_type": "application/json",
           "data": {
               "json": "<json of protocol message>"
@@ -115,7 +115,7 @@ Invitation:
 Whitespace removed:
 
 ```json
-{"type":"https://didcomm.org/out-of-band/2.0/invitation","id":"69212a3a-d068-4f9d-a2dd-4741bca89af3","from":"did:example:alice","body":{"goal_code":"","goal":""},"attachments":[{"@id":"request-0","media_type":"application/json","data":{"json":"<json of protocol message>"}}]}
+{"type":"https://didcomm.org/out-of-band/2.0/invitation","id":"69212a3a-d068-4f9d-a2dd-4741bca89af3","from":"did:example:alice","body":{"goal_code":"","goal":""},"attachments":[{"id":"request-0","media_type":"application/json","data":{"json":"<json of protocol message>"}}]}
 ```
 
 Base 64 URL Encoded:
