@@ -139,7 +139,9 @@ To meet this requirement, the above headers are defined as follows:
 * `apv`: this represents the recipients' `kid` list. The list must be alphanumerically sorted, `kid` values will then be concatenated with a `.` and the final result MUST be base64 URL (no padding) encoding of the SHA256 hash of concatenated list.
 * `alg`: this is the key wrapping algorithm, ie: `ECDH-1PU+A256KW`.
 
-A final note about `skid` header: since the 1PU draft [does not require](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.2.1) this header, authcrypt implementations MUST be able to resolve the sender kid from the `APU` header if `skid` is not set.
+Even though `apu`/`apv` are not mandatory JWE recipients headers, they are required in this specification to authenticate the sender via the ECDH-1PU key wrapping algorithm.
+
+A final note about `skid` header: since the 1PU draft [does not require](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.2.1) this header, authcrypt implementations MUST be able to resolve the sender kid from the `apu` header if `skid` is not set.
 
 #### Examples
 
