@@ -6,7 +6,8 @@ DIDComm Messages are encrypted with the keys of a single DID. A message being se
 
 DIDComm supports two types of message encryption: Authenticated Sender Encryption ("authcrypt") and Anonymous Sender Encryption ("anoncrypt"). Both forms are encrypted to the recipient DID. Only authcrypt provides direct assurances of who the sender is. Each encrypted message MUST use either authcrypt or anoncrypt.
 
-The encrypted form of a JWM is a JWE. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed here.
+The encrypted form of a JWM is a JWE. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed in tables later in the spec.
+
 
 #### Sender Authenticated Encryption
 
@@ -31,6 +32,8 @@ For the keys involved in key agreement, the first three elliptic curves in this 
 
 For content encryption of the message, DIDComm inherits the implementation definitions from [JSON Web Algorithms](https://datatracker.ietf.org/doc/html/rfc7518#section-5.1) for AES 256-bit keys.
 In addition, DIDComm defines optional implementation usage of the draft [XC20P](https://tools.ietf.org/id/draft-amringer-jose-chacha-02.html) algorithm.
+
+To prevent invalid curve and weak point attacks, implementations that decrypt messages from a NIST curve MUST verify that the received public key (contained in the JWE protected header) is on the curve in question. This check may already be done by some JOSE libraries, but developers should not assume this is the case. See [this explanation](http://blog.intothesymmetry.com/2017/03/critical-vulnerability-in-json-web.html) of the risk, and [this practical guide](https://neilmadden.blog/2017/05/17/so-how-do-you-validate-nist-ecdh-public-keys/) for how to perform the verification correctly. 
 
 | Algorithm(JWA) | Description                | Authcrypt/Anoncrypt            | Requirements                   |
 | -------------- | -------------------------- |------------------------------- |------------------------------- |
