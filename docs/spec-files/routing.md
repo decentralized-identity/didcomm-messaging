@@ -4,7 +4,7 @@ The routing protocol defines how a sender and a recipient cooperate, using a par
 
 #### Name and Version
 
-The name of this protocol is "Routing Protocol", and its [version](#semver-rules) is "2.0". It is uniquely identified by the [PIURI](#protocol-identifier-iuri):
+The name of this protocol is "Routing Protocol", and its [version](#semver-rules) is "2.0". It is uniquely identified by the [PIURI](#protocol-identifier-uri):
 
     https://didcomm.org/routing/2.0
 
@@ -24,7 +24,7 @@ The sender can add the standard `expires_time` to a `forward` message. An additi
 
 The mediator is NOT required to support or implement any of these semantics; only the core forwarding behavior is indispensable. If a mediator sees a header that requests behavior it doesn't support, it MAY return a [problem-report](#problem-reports) to the sender identifying the unsupported feature, but it is not required to do so.
 
->Note: The [`please_ack` header](#acks) SHOULD NOT be included on [`forward` messages](#routing), and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, and undermine the privacy of recipients.
+>Note: The [`please_ack` header](#acks) SHOULD NOT be included on [`forward` messages](#messages), and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, and undermine the privacy of recipients.
 
 #### States
 
@@ -109,7 +109,7 @@ In addition, if a sender is routing the same message to more than one recipient 
 
 This leads to a rule of thumb rather than a strong normative requirement: a sender SHOULD encrypt for as many of a recipient's keys as is practical.
 
-The details of key representation are described in the [Public Keys section of the DID Core Spec](https://www.w3.org/TR/did-core/#public-keys).
+The details of key representation are described in the [Verification Methods section of the DID Core Spec](https://www.w3.org/TR/did-core/#verification-methods).
 
 Keys used in a signed JWM are declared in the DID Document's `authentication` section.
 
@@ -145,8 +145,9 @@ Each object has the following properties:
 `uri` - REQUIRED. MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
 `accept` - OPTIONAL. An array of media types in the order of preference for sending a message to the endpoint.
+These identify a *profile* of DIDComm Messaging that the endpoint supports.
 If `accept` is not specified, the sender uses its preferred choice for sending a message to the endpoint.
-Please see [Message Types](#message-types) for details about media types.
+Please see [Negotiating Compatibility](#negotiating-compatibility) for details.
 
 `routingKeys` - OPTIONAL. An ordered array of strings referencing keys to be used when preparing the message for transmission as specified in [Sender Process to Enable Forwarding](#sender-process-to-enable-forwarding), above. 
 
@@ -160,7 +161,7 @@ In addition to the sorts of URIs familiar to all web developers, it is possible 
 
 A DID representing a mediator SHOULD NOT use alternative endpoints in its own DID Document to avoid recursive endpoint resolution. Using only the URIs described in [Transports](#transports) will prevent such recursion.
 
-Example 1: Mediator
+Endpoint Example 1: Mediator
 
 ```json
 {
@@ -173,7 +174,7 @@ Example 1: Mediator
 ```
 The message is encrypted to the recipient, then wrapped in a 'forward' message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
 
-Example 2: Mediator + Routing Keys
+Endpoint Example 2: Mediator + Routing Keys
 ```json
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
