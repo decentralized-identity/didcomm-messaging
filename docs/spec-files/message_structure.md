@@ -151,6 +151,14 @@ Headers can be simple (mapping a header name to an integer or a string) or struc
 * However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP `Accept` header. ([HTTP Structured Headers](https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15) provide similar functionality but are unnecessary here, since plaintext messages already have an easily parseable syntax.)
 * Headers that are only meaningful together SHOULD be grouped into a JSON object.
 
+### Message Layer Addressing Consistency
+
+When messages are combined into layers as shown above in the Media Types table, various attributes must be checked for consistency by the message recipient.
+
+- The `from` attribute in the plaintext message must match the `skid` attribute in the encryption layer.
+- The `to` attribute in the plaintext message must contain the `kid` attribute of an encrypted message.
+- The `from` attribute in the plaintext message must match the signer's `kid` in a signed message.
+
 ### Attachments
 
 It is common for DIDComm messages to supplement formalized structure with arbitrary data &mdash; images, documents, or types of media not yet invented. Such content is "attached" to DIDComm messages in much the same way that attachments work in email.
