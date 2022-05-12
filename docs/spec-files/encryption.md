@@ -146,6 +146,21 @@ Even though `apu`/`apv` are not mandatory JWE recipients headers, they are requi
 
 A final note about `skid` header: since the 1PU draft [does not require](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.2.1) this header, authcrypt implementations MUST be able to resolve the sender kid from the `apu` header if `skid` is not set.
 
+#### ECDH-ES key wrapping and common protected headers
+
+When using anoncrypt, any of the valid content encryption algorithms may be used. To meet this requirement, JWE messages MUST use common `epk`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` headers JWE section.
+
+As per this requirement, the JWE building must first encrypt the payload, then use the resulting `tag` as part of the key derivation process when wrapping the `cek`.
+
+To meet this requirement, the above headers are defined as follows:
+
+* `epk`: generated once for all recipient keys. It MUST be of the same type and curve as all recipient keys since kdf with the sender key must be on the same curve.
+  - Example: `"epk": {"kty": "EC","crv": "P-256","x": "BVDo69QfyXAdl6fbK6-QBYIsxv0CsNMtuDDVpMKgDYs","y": "G6bdoO2xblPHrKsAhef1dumrc0sChwyg7yTtTcfygHA"}`
+* `apv`: this represents the recipients' `kid` list. The list must be alphanumerically sorted, `kid` values will then be concatenated with a `.` and the final result MUST be base64 URL (no padding) encoding of the SHA256 hash of concatenated list. 
+* `alg`: this is the key wrapping algorithm, ie: `ECDH-ES+A256KW`.
+
+Note: `apu`will not be present when using ECDH-ES.
+
 #### Examples
 
 While the details of encrypting a JWM into a JWE are included in the [JWM spec](https://tools.ietf.org/html/draft-looker-jwm-01), a few examples are included here for clarity. See section [Appendix C.3](#c3-didcomm-encrypted-messages).
