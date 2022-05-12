@@ -30,7 +30,7 @@ The `kid` MUST be a DID URI that refers to a key specified as an authorization k
 
 The JWS payload (not shown above) is the Base64url encoded JWM.
 
-When transmitted in a normal JWM fashion, the JSON Serialization MUST be used.
+When transmitted in a normal JWM fashion, the JSON Serialization MUST be used. Either the General or Flattened form of a JWS is valid. Message recipients MUST be able to process both forms. Message senders using signed messages MAY use either form. Flatted form is sufficient, as only the message sender's signature is valid, and a single signature may be fully represented in flattened form.
 
 #### Verification
 
