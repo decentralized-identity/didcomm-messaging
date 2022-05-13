@@ -155,9 +155,11 @@ Headers can be simple (mapping a header name to an integer or a string) or struc
 
 When messages are combined into layers as shown above in the Media Types table, various attributes must be checked for consistency by the message recipient.
 
-- The `from` attribute in the plaintext message must match the `skid` attribute in the encryption layer.
-- The `to` attribute in the plaintext message must contain the `kid` attribute of an encrypted message.
-- The `from` attribute in the plaintext message must match the signer's `kid` in a signed message.
+- The `from` attribute in the plaintext message MUST match the `skid` attribute in the encryption layer.
+- The `to` attribute in the plaintext message MUST contain the `kid` attribute of an encrypted message.
+- The `from` attribute in the plaintext message MUST match the signer's `kid` in a signed message.
+
+When one of these checks fails, the result MUST be an error so clients know that the trust choices in the message packaging are inconsistent.
 
 ### Attachments
 
