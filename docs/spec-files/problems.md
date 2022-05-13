@@ -6,7 +6,7 @@ To the extent that it is practical, DIDComm must surface problems, and their sup
 
 DIDComm offers several tools to deal with these issues. Individually they are easy to use; collectively they offer attractive robustness and clarity.
 
-### Low-level tools
+### Low-Level Tools
 
 #### Timeouts
 
@@ -42,7 +42,7 @@ This allows agents to collaborate to recover from a response that was emitted bu
 
 The presence of the `please_ack` header does not create an obligation on the part of the recipient. However, cooperative parties who wish to honor such a request SHOULD include an `ack` header on a subsequent message, where the value of the header is an array that contains the `id` of one or more messages being acknowledged. Values in this array MUST appear in the order *received* by whoever is acknowledging, from oldest to most recent.
 
->Note: The `please_ack` header SHOULD NOT be included on [`forward` messages](#routing), and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, which are defined to send only destward. It would also undermine the privacy of recipients.
+>Note: The `please_ack` header SHOULD NOT be included on `forward` messages, and MUST NOT be honored by mediators. It is only for use between ultimate senders and receivers; otherwise, it would add a burden of sourceward communication to mediators, which are defined to send only destward. It would also undermine the privacy of recipients.
 
 > Note: Implementations MUST take reasonable steps to avoid an infinite circle of ACKs. Some good rules of thumb are: never honor more than one ACK request for a given message; never send a pure ACK that requests an ACK; never honor a pure ACK request that arrives in response to your own ACK request.
 
@@ -56,9 +56,9 @@ Any DIDComm message that continues a previously begun application-level protocol
 
 In addition, messages MAY use the [Advanced Sequencing](https://github.com/decentralized-identity/didcomm-messaging/blob/master/extensions/advanced_sequencing/main.md) extension to detect gaps in delivery or messages arriving out of order.
 
-### Problem reports
+### Problem Reports
 
-DIDComm features a standard mechanism for reporting problems to other entities. These could be parties in the active protocol, or logging products, or internal health monitors, or human tech support staff. Reporting problems remotely is not always possible (e.g., when a sender lacks a route to the other party, or when a recipient's crypto is incompatible with a sender's). Using this mechanism is therefore not a general *requirement* of DIDComm, but it *is* a best practice because it improves robustness and human experience. (But be aware of some [cybersecurity considerations](https://didcomm.org/book/v2/problems-and-cybersecurity).)
+DIDComm features a standard mechanism for reporting problems to other entities. These could be parties in the active protocol, or logging products, or internal health monitors, or human tech support staff. Reporting problems remotely is not always possible (e.g., when a sender lacks a route to the other party, or when a recipient's crypto is incompatible with a sender's). Using this mechanism is therefore not a general *requirement* of DIDComm, but it *is* a best practice because it improves robustness and human experience. (But be aware of some [cybersecurity considerations](https://didcomm.org/book/v2/problems.md#cybersecurity-considerations-for-problem-reports).)
 
 Other entities are notified of problems by sending a simple message called a **problem report** that looks like this:
 
@@ -86,7 +86,7 @@ Other entities are notified of problems by sending a simple message called a **p
 
 - `code` - REQUIRED. Deserves a rich explanation; see [Problem Codes](#problem-codes) below.
 
-- `comment` - OPTIONAL but recommended. Contains human-friendly text describing the problem. If the field is present, the text MUST be statically associated with `code`, meaning that each time circumstances trigger a problem with the same `code`, the value of `comment` will be the same. This enables [localization](#i18n) and cached lookups, and it has some [cybersecurity benefits](https://didcomm.org/book/v2/problems-and-cybersecurity). The value of `comment` supports simple interpolation with `args` (see next), where args are referenced as `{1}`, `{2}`, and so forth. 
+- `comment` - OPTIONAL but recommended. Contains human-friendly text describing the problem. If the field is present, the text MUST be statically associated with `code`, meaning that each time circumstances trigger a problem with the same `code`, the value of `comment` will be the same. This enables [localization](#internationalization-i18n) and cached lookups, and it has some [cybersecurity benefits](problems.md#cybersecurity-considerations-for-problem-reports). The value of `comment` supports simple interpolation with `args` (see next), where args are referenced as `{1}`, `{2}`, and so forth. 
 
 - `args` - OPTIONAL. Contains situation-specific values that are interpolated into the value of `comment`, providing extra detail for human readers. Each unique problem code has a definition for the args it takes. In this example, `e.p.xfer.cant-use-endpoint` apparently expects two values in `args`: the first is a URL and the second is a DID. Missing or null args MUST be replaced with a question mark character (`?`) during interpolation; extra args MUST be appended to the main text as comma-separated values. 
 
@@ -175,7 +175,7 @@ The value of `pthid` is always the message ID that triggered the trace. The valu
 
 For the sake of consistency, this message uses some structural conventions that match a DIDComm plaintext message. However, it need not be understood as a message in a DIDComm protocol. It can be parsed by any consumer of generic JSON, it can be transmitted using any channel that suits the sender and receiver, and it is not associated with any interaction state. 
 
->Note: This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as technologies like [OpenTracing](https://opentracing.io/). It also *spans* trust domains (paralleling a message's journey from Alice to a web service hosting Bob's endpoint, to Bob himself) &mdash; and thus differs in scope from in-house logging and monitoring technolgies like Splunk and Logstash/Kibana. Although DIDComm tracing could be integrated with these other technologies, doing so in a methodical way is probably an antipattern; it may indicate a misunderstanding about its purpose as a tool for ad hoc debugging or troubleshooting between unrelated parties.
+>Note: This mechanism is not intended to profile timing or performance, and thus does not cover the same problem space as technologies like [OpenTelemetry](https://opentelemetry.io/). It also *spans* trust domains (paralleling a message's journey from Alice to a web service hosting Bob's endpoint, to Bob himself) &mdash; and thus differs in scope from in-house logging and monitoring technolgies like Splunk and Logstash/Kibana. Although DIDComm tracing could be integrated with these other technologies, doing so in a methodical way is probably an antipattern; it may indicate a misunderstanding about its purpose as a tool for ad hoc debugging or troubleshooting between unrelated parties.
 
 For example, in a message for Bob that is double-wrapped (once for his external mediator and once for his cloud agent), three plaintext messages might contain `trace` headers:
 

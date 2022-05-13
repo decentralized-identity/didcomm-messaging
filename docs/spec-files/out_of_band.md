@@ -54,9 +54,10 @@ The items in the message are:
 - `from` - REQUIRED for OOB usage. The DID representing the sender to be used by recipients for future interactions.
 - `goal_code` - OPTIONAL. A self-attested code the receiver may want to display to the user or use in automatically deciding what to do with the out-of-band message.
 - `goal` - OPTIONAL. A self-attested string that the receiver may want to display to the user about the context-specific goal of the out-of-band message.
-- `accept` - OPTIONAL. An array of media types in the order of preference of the sender that the receiver can use in responding to the message.
- If `accept` is not specified, the receiver uses its preferred choice to respond to the message.
-  Please see [Message Types](#message-types) for details about media types.
+- `accept` - OPTIONAL. An array of media types in the order of preference for sending a message to the endpoint.
+  These identify a *profile* of DIDComm Messaging that the endpoint supports.
+  If `accept` is not specified, the sender uses its preferred choice for sending a message to the endpoint.
+  Please see [Negotiating Compatibility](#negotiating-compatibility) for details.
 - `attachments` - REQUIRED for OOB usage. An array of attachments that will contain the invitation messages in order of preference that the receiver can use in responding to the message. Each message in the array is a rough equivalent of the others, and all are in pursuit of the stated `goal` and `goal_code`. Only one of the messages should be chosen and acted upon. (While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.)
 
 When encoding a message in a URL or QR code, the _sender_ does not know which protocols are supported by the _recipient_ of the message. Encoding multiple alternative messages is a form of optimistic protocol negotiation that allows multiple supported protocols without coordination

@@ -29,6 +29,7 @@
         "routing.md",
         "out_of_band.md",
         "feature_discovery.md",
+        "empty.md",
         "trustping.md",
         "i18n.md",
         "future_proofing.md",
