@@ -89,6 +89,7 @@ The following example shows common elements of a DIDComm plaintext message.
   "to": ["did:example:bob"],
   "created_time": 1516269022,
   "expires_time": 1516385931,
+  "total_length": 65536
   "body": {
     "message_type_specific_attribute": "and its value",
     "another_attribute": "and its value"
@@ -129,6 +130,8 @@ Headers in DIDComm Messaging are intended to be extensible in much the same way 
 - **created_time** - OPTIONAL but recommended. Message Created Time. The `created_time` attribute is used for the sender to express when they created the message, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. This allows the recipient to guess about transport latency and clock divergence. The difference between when a message is created and when it is sent is assumed to be negligible; this lets timeout logic start from this value.
 
 - **expires_time** - OPTIONAL. Message Expires Time. The `expires_time` attribute is used for the sender to express when they will consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. By default, the meaning of "expired" is that the sender will abort the protocol if it doesn't get a response by this time. However, protocols can nuance this in their formal spec. For example, an online auction protocol might specify that timed out bids must be ignored instead of triggering a cancellation of the whole auction. When omitted from any given message, the message is considered to have no expiration by the sender.
+
+- **total_length** - REQUIRED. The `total_length` attribute is used to specify the total length of the DIDComm header plus the size of the message payload. The default maximum length of a DIDComm message is defined as 100 kilobytes. Received messages that exceed the pre-defined maximum, will be discarded. Optionally, a response message may be returned in order to specify that the oversized message was rejected due to exceeding the maximum message length.  In cases where DIDComm actors choose to accept message lengths larger (or smaller) than the default maximum, a dynamically-configurable custom size may be selected and made queriable using the [Discover Features Protocol](#discover-features-protocol-10). If a message sender wishes to send larger messages, they will (prior to transmission) query the recipient via the Discover Features Protocol for their custom maximum size value.  If the recipient allows a larger (or requires a smaller) allowable size, then the message sender will use that size when sending messages to the receiver.  Since this value is dynamically configured, it may be reset at any time.
 
 - **body** - REQUIRED. The `body` attribute contains all the data and structure defined uniquely for the schema associated with the `type` attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to [RFC 7159](https://datatracker.ietf.org/doc/html/rfc7159).
 
