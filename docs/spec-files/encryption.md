@@ -6,7 +6,7 @@ DIDComm Messages are encrypted with the keys of a single DID. A message being se
 
 DIDComm supports two types of message encryption: Authenticated Sender Encryption ("authcrypt") and Anonymous Sender Encryption ("anoncrypt"). Both forms are encrypted to the recipient DID. Only authcrypt provides direct assurances of who the sender is. Each encrypted message MUST use either authcrypt or anoncrypt.
 
-The encrypted form of a JWM is a JWE. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed in tables later in the spec.
+The encrypted form of a JWM is a JWE in General JSON Format. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed in tables later in the spec.
 
 
 #### Sender Authenticated Encryption
@@ -129,7 +129,7 @@ If two communicating parties establish single-purpose DIDs (e.g., peer DIDs) for
 A layer of anonymous encryption (employing ECDH-ES) may be applied around an authenticated encryption envelope (employing ECDH-1PU), obscuring the sender's identity for all but the recipient of the inner envelope. In the case of a message forwarded via mediators, anonymous encryption is automatic.
 
 #### ECDH-1PU key wrapping and common protected headers
-When using authcrypt, the 1PU draft [mandates](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1) the use of the AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common `epk`, `apu`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` headers JWE section.
+When using authcrypt, the 1PU draft [mandates](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1) the use of the AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common `epk`, `apu`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` JWE section.
 
 As per this requirement, the JWE building must first encrypt the payload, then use the resulting `tag` as part of the key derivation process when wrapping the `cek`.
 
@@ -148,7 +148,7 @@ A final note about `skid` header: since the 1PU draft [does not require](https:/
 
 #### ECDH-ES key wrapping and common protected headers
 
-When using anoncrypt, any of the valid content encryption algorithms may be used. To meet this requirement, JWE messages MUST use common `epk`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` headers JWE section.
+When using anoncrypt, any of the valid content encryption algorithms may be used. To meet this requirement, JWE messages MUST use common `epk`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` JWE section.
 
 As per this requirement, the JWE building must first encrypt the payload, then use the resulting `tag` as part of the key derivation process when wrapping the `cek`.
 
