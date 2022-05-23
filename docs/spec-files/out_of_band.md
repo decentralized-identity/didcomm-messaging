@@ -58,7 +58,7 @@ The items in the message are:
   These identify a *profile* of DIDComm Messaging that the endpoint supports.
   If `accept` is not specified, the sender uses its preferred choice for sending a message to the endpoint.
   Please see [Negotiating Compatibility](#negotiating-compatibility) for details.
-- `attachments` - REQUIRED for OOB usage. An array of attachments that will contain the invitation messages in order of preference that the receiver can use in responding to the message. Each message in the array is a rough equivalent of the others, and all are in pursuit of the stated `goal` and `goal_code`. Only one of the messages should be chosen and acted upon. (While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.)
+- `attachments` - OPTIONAL. An array of attachments that will contain the invitation messages in order of preference that the receiver can use in responding to the message. Each message in the array is a rough equivalent of the others, and all are in pursuit of the stated `goal` and `goal_code`. Only one of the messages should be chosen and acted upon. (While the JSON form of the attachment is used in the example above, the sender could choose to use the base64 form.)
 
 When encoding a message in a URL or QR code, the _sender_ does not know which protocols are supported by the _recipient_ of the message. Encoding multiple alternative messages is a form of optimistic protocol negotiation that allows multiple supported protocols without coordination
 
