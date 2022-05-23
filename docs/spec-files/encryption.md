@@ -6,7 +6,7 @@ DIDComm Messages are encrypted with the keys of a single DID. A message being se
 
 DIDComm supports two types of message encryption: Authenticated Sender Encryption ("authcrypt") and Anonymous Sender Encryption ("anoncrypt"). Both forms are encrypted to the recipient DID. Only authcrypt provides direct assurances of who the sender is. Each encrypted message MUST use either authcrypt or anoncrypt.
 
-The encrypted form of a JWM is a JWE. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed in tables later in the spec.
+The encrypted form of a JWM is a JWE in General JSON Format. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed in tables later in the spec.
 
 
 #### Sender Authenticated Encryption
@@ -129,7 +129,7 @@ If two communicating parties establish single-purpose DIDs (e.g., peer DIDs) for
 A layer of anonymous encryption (employing ECDH-ES) may be applied around an authenticated encryption envelope (employing ECDH-1PU), obscuring the sender's identity for all but the recipient of the inner envelope. In the case of a message forwarded via mediators, anonymous encryption is automatic.
 
 #### ECDH-1PU key wrapping and common protected headers
-When using authcrypt, the 1PU draft [mandates](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1) the use of the AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common `epk`, `apu`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` headers JWE section.
+When using authcrypt, the 1PU draft [mandates](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1) the use of the AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common `epk`, `apu`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` JWE section.
 
 As per this requirement, the JWE building must first encrypt the payload, then use the resulting `tag` as part of the key derivation process when wrapping the `cek`.
 
@@ -145,6 +145,21 @@ To meet this requirement, the above headers are defined as follows:
 Even though `apu`/`apv` are not mandatory JWE recipients headers, they are required in this specification to authenticate the sender via the ECDH-1PU key wrapping algorithm.
 
 A final note about `skid` header: since the 1PU draft [does not require](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.2.1) this header, authcrypt implementations MUST be able to resolve the sender kid from the `apu` header if `skid` is not set.
+
+#### ECDH-ES key wrapping and common protected headers
+
+When using anoncrypt, any of the valid content encryption algorithms may be used. To meet this requirement, JWE messages MUST use common `epk`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` JWE section.
+
+As per this requirement, the JWE building must first encrypt the payload, then use the resulting `tag` as part of the key derivation process when wrapping the `cek`.
+
+To meet this requirement, the above headers are defined as follows:
+
+* `epk`: generated once for all recipient keys. It MUST be of the same type and curve as all recipient keys since kdf with the sender key must be on the same curve.
+  - Example: `"epk": {"kty": "EC","crv": "P-256","x": "BVDo69QfyXAdl6fbK6-QBYIsxv0CsNMtuDDVpMKgDYs","y": "G6bdoO2xblPHrKsAhef1dumrc0sChwyg7yTtTcfygHA"}`
+* `apv`: this represents the recipients' `kid` list. The list must be alphanumerically sorted, `kid` values will then be concatenated with a `.` and the final result MUST be base64 URL (no padding) encoding of the SHA256 hash of concatenated list. 
+* `alg`: this is the key wrapping algorithm, ie: `ECDH-ES+A256KW`.
+
+Note: `apu`will not be present when using ECDH-ES.
 
 #### Examples
 
