@@ -34,13 +34,13 @@ creates a `ping` message like this:
 }
 ```
 
-**response_requested**: default value is `true`. If false, the `sender` is not requesting a `ping_response` from the `receiver`. If `true`, the `sender` is requesting a response.
+**response_requested**: default value is `true`. If false, the `sender` is not requesting a `ping-response` from the `receiver`. If `true`, the `sender` is requesting a response.
 
-##### ping_response
+##### ping-response
 
 When the message arrives at the receiver, assuming that `response_requested`
 is not `false`, the receiver should reply as quickly as possible with a
-`ping_response` message that looks like this:
+`ping-response` message that looks like this:
 
 ```JSON
 {
