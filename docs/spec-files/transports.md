@@ -18,12 +18,12 @@ Each transport MUST define:
 
 ### Agent Constraint Disclosure
 
-As mentioned above, DIDComm Messaging is designed to be transport-independent.  Given the wide varity of transports that can be conceived, some agents may have additional capabilities that they would like to disclose regarding how they communicate.  These generic and customizable capabilities may vary over time, be unique to special categories of agents, and may be expressed using using the [Discover Features Protocol](discover-features-protocol-10). The following includes a subset of the many different agent transport capabilities that can be expressed:
+As mentioned above, DIDComm Messaging is designed to be transport-independent.  Given the wide varity of transports that can be conceived, some agents may have additional constraints that they would like to disclose regarding how they communicate.  These generic and customizable constraints may vary over time or be unique to special categories of agents and may be expressed using using the [Discover Features Protocol](discover-features-protocol-10). The following includes a subset of the many different agent constraints that can be expressed:
 
 #### max\_receive\_bytes
-The _optional_ `max_receive_bytes` capability is used to specify the total length of the DIDComm header plus the size of the message payload that an agent is willing to receive. While the core DIDComm protocol itself does not impose a specific maximum size for DIDComm messages, a particular agent may have specific requirements that necessitate only receiving messages up to a specific length.  For example, IoT devices that may not have the bandwidth or buffering capabilites to accept large messages may choose to only accept _small_ messages.  The definition of _large_ vs _small_ is subjective and may be defined according to the needs of the implementing agent.
+The _optional_ `max_receive_bytes` constraint is used to specify the total length of the DIDComm header plus the size of the message payload that an agent is willing to receive. While the core DIDComm protocol itself does not impose a specific maximum size for DIDComm messages, a particular agent may have specific requirements that necessitate only receiving messages up to a specific length.  For example, IoT devices that may not have the bandwidth or buffering capabilites to accept large messages may choose to only accept _small_ messages.  The definition of _large_ vs _small_ is subjective and may be defined according to the needs of each implementing agent.
 
-When a `max_receive_bytes` capability is specified, any received message that exceeds the pre-defined maximum will be discarded. _Optionally_, a response message may be returned in order to inform the sender why their message was rejected (due to size limitations) and also to inform them of the maximum message length.  
+When a `max_receive_bytes` capability is specified, any received message that exceeds the agent's stated maximum will be discarded. It is highly recommended that a response message be returned in order to inform the sender why their message was rejected (e.g., exceeding the max size limitation).  The error message to be returned should conform to the DIDComm [Problem Codes](#problem-codes) formatting and should be named as `me.res.storage.message_too_big`.  Using the [Problem Codes](#problem-codes) naming convention will facilitate using the standard DIDComm troubleshooting techniques, such as [Route Tracing](#route-tracing).
 
 Prior to transmission, a sending agent may query a receiving agent for a maximum message length limitation using the [Discover Features Protocol](#discover-features-protocol-10). Using the Discover Features Protocol, a `max_receive_bytes` query message may look like this:
 
@@ -33,13 +33,13 @@ Prior to transmission, a sending agent may query a receiving agent for a maximum
     "id": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
     "body": {
         "queries": [
-            { "feature-type": "constraint", "match": "total_length" }
+            { "feature-type": "constraint", "match": "max_receive_bytes" }
         ]
     }
 }
 ```
 
-In response to a `total_length` request, a Discover Features _disclose_ message may look like this:
+In response to a `max_receive_bytes` request, a Discover Features _disclose_ message may look like this:
 
 ```json
 {
@@ -49,6 +49,7 @@ In response to a `total_length` request, a Discover Features _disclose_ message 
         "disclosures": [
             {
                 "feature-type": "constraint",
+                "id": "max_receive_bytes",
                 "max_receive_bytes": "65536"
             }
         ]
