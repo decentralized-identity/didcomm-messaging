@@ -15,6 +15,48 @@ Each transport MUST define:
 - how [IANA media types](#iana-media-types) of the content are provided, e.g., through `Content-Type` header, etc.
 - where additional context definition is hosted, e.g., in case the `serviceEndpoint`  object has extra properties specific to the transport.
 
+
+### Agent Constraint Disclosure
+
+As mentioned above, DIDComm Messaging is designed to be transport-independent.  Given the wide varity of transports that can be conceived, some agents may have additional constraints that they would like to disclose regarding how they communicate.  These generic and customizable constraints may vary over time or be unique to special categories of agents and may be expressed using using the [Discover Features Protocol](discover-features-protocol-10). The following includes a subset of the many different agent constraints that can be expressed:
+
+#### max\_receive\_bytes
+The _optional_ `max_receive_bytes` constraint is used to specify the total length of the DIDComm header plus the size of the message payload that an agent is willing to receive. While the core DIDComm protocol itself does not impose a specific maximum size for DIDComm messages, a particular agent may have specific requirements that necessitate only receiving messages up to a specific length.  For example, IoT devices that may not have the bandwidth or buffering capabilites to accept large messages may choose to only accept _small_ messages.  The definition of _large_ vs _small_ is subjective and may be defined according to the needs of each implementing agent.
+
+When a `max_receive_bytes` constraint is specified, any received message that exceeds the agent's stated maximum may be discarded. It is recommended that the agent imposing the constraint send a problem report citing the constraint as the cause of a reception error.  The associated [Problem Code](#problem-codes) is `me.res.storage.message_too_big`.  However, sending a response in the opposite direction on a DIDComm channel may not always be possible, given simplex transports and complex delivery routes.  Therefore, it is also appropriate to emit an error at the transport level, such as HTTP 413 `Request Too Large`.  Agents that receive problem reports or transport-level errors, or that experience a lack of response, may test whether this constraint is the cause using standard DIDComm troubleshooting techniques, such as [Route Tracing](#route-tracing).
+
+Prior to transmission, a sending agent may query a receiving agent for a maximum message length limitation using the [Discover Features Protocol](#discover-features-protocol-10). Using the Discover Features Protocol, a `max_receive_bytes` query message may look like this:
+
+```json
+{
+    "type": "https://didcomm.org/discover-features/2.0/queries",
+    "id": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
+    "body": {
+        "queries": [
+            { "feature-type": "constraint", "match": "max_receive_bytes" }
+        ]
+    }
+}
+```
+
+In response to a `max_receive_bytes` request, a Discover Features _disclose_ message may look like this:
+
+```json
+{
+    "type": "https://didcomm.org/discover-features/1.0/disclose",
+    "thid": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
+    "body":{
+        "disclosures": [
+            {
+                "feature-type": "constraint",
+                "id": "max_receive_bytes",
+                "max_receive_bytes": "65536"
+            }
+        ]
+    }
+}
+```
+
 ### Reference
 #### HTTPS
 
