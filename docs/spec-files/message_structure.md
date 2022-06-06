@@ -123,9 +123,9 @@ Headers in DIDComm Messaging are intended to be extensible in much the same way 
 
     Upon reception of a message have a defined `to` header, the recipient SHOULD verify that their own identifier appears in the list. Implementations MUST NOT fail to accept a message when this is not the case, but SHOULD give a warning to their user as it could indicate malicious intent from the sender.
 
-    The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the [`forward` message](#routing) contains a `next` attribute in its body that specifies the target for the next routing operation.
+    The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the [`forward` message](#messages) contains a `next` attribute in its body that specifies the target for the next routing operation.
 
-- `from` - OPTIONAL when the message is to be encrypted via anoncrypt; REQUIRED when the message is encrypted via authcrypt. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose. See the [message authentication](#Message-Authentication) section for additional details.
+- `from` - OPTIONAL when the message is to be encrypted via anoncrypt; REQUIRED when the message is encrypted via authcrypt. Sender identifier. The `from` attribute MUST be a string that is a valid [DID](https://w3c.github.io/did-core/) or [DID URL](https://w3c.github.io/did-core/#did-url-syntax) (without the [fragment component](https://w3c.github.io/did-core/#fragment)) which identifies the sender of the message. When a message is encrypted, the sender key MUST be authorized for encryption by this DID. Authorization of the encryption key for this DID MUST be verified by message recipient with the proper proof purposes. When the sender wishes to be anonymous using authcrypt, it is recommended to use a new DID created for the purpose to avoid correlation with any other behavior or identity. Peer DIDs are lightweight and require no ledger writes, and therefore a good method to use for this purpose.
 
 - `thid` - OPTIONAL. Thread identifier. Uniquely identifies the thread that the message belongs to. If not included, the `id` property of the message MUST be treated as the value of the `thid`. See [Threads](#threads) for details.
 
@@ -150,6 +150,16 @@ Headers can be simple (mapping a header name to an integer or a string) or struc
 * Headers SHOULD NOT use more structure than necessary; simple headers are preferred.
 * However, a header value SHOULD NOT require interpretation over and above ordinary JSON parsing. Prefer JSON structure to specialized string DSLs like the one that encodes media type preferences in an HTTP `Accept` header. ([HTTP Structured Headers](https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-15) provide similar functionality but are unnecessary here, since plaintext messages already have an easily parseable syntax.)
 * Headers that are only meaningful together SHOULD be grouped into a JSON object.
+
+### Message Layer Addressing Consistency
+
+When messages are combined into layers as shown above in the Media Types table, various attributes must be checked for consistency by the message recipient.
+
+- The `from` attribute in the plaintext message MUST match the `skid` attribute in the encryption layer.
+- The `to` attribute in the plaintext message MUST contain the `kid` attribute of an encrypted message.
+- The `from` attribute in the plaintext message MUST match the signer's `kid` in a signed message.
+
+When one of these checks fails, the result MUST be an error so clients know that the trust choices in the message packaging are inconsistent.
 
 ### Attachments
 
