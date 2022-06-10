@@ -121,7 +121,7 @@ Headers in DIDComm Messaging are intended to be extensible in much the same way 
 
     For signed messages, there are specific requirements around properly defining the `to` header outlined in the **DIDComm Signed Message** definition above. This prevents certain kind of [forwarding attacks](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html), where a message that was not meant for a given recipient is forwarded along with its signature to a recipient which then might blindly trust it because of the signature.
 
-    Upon reception of a message have a defined `to` header, the recipient SHOULD verify that their own identifier appears in the list. Implementations MUST NOT fail to accept a message when this is not the case, but SHOULD give a warning to their user as it could indicate malicious intent from the sender.
+    Upon reception of a message with a defined `to` header, the recipient SHOULD verify that their own identifier appears in the list. Implementations MUST NOT fail to accept a message when this is not the case, but SHOULD give a warning to their user as it could indicate malicious intent from the sender.
 
     The `to` header cannot be used for routing, since it is encrypted at every intermediate point in a route. Instead, the [`forward` message](#messages) contains a `next` attribute in its body that specifies the target for the next routing operation.
 
