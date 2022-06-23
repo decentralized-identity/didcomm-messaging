@@ -22,9 +22,9 @@ The email address that appears in this URI could be the direct email address of 
 
 Email is not a 1-to-1 medium oriented toward request-response; it facilitates multiparty conversations that are forwarded and replied to in unpredictable ways. It's common for parties to use different clients and to spend little energy in prior coordination.
 
-This has implications for DIDComm over email. We cannot predict whether the sender or recipients of a given message will be agents compliant with this extension, or humans manually handling attachments with a traditional email client. Therefore, this extension constrains the behavior of compliant senders, but it requires that compliant recipients to be very tolerant of variety.
+This has implications for DIDComm over email. We cannot predict whether the sender or recipients of a given message will be agents compliant with this extension, or humans manually handling attachments with a traditional email client. Therefore, this extension constrains the behavior of compliant senders, but it requires that compliant recipients be very tolerant of variety.
 
-We follow a pattern that's already well established with email: the body of a message[<a id="ref3" href="#note3">3</a>] is oriented toward human readers, and the attachments are handled by applications. This is what we already do with attached photos, documents, and data; DIDComm is no different.
+We follow a pattern that's already well established with email: the body of a message[<a id="ref3" href="#note3">3</a>] is oriented toward human readers, and the attachments are handled by applications. This is what we already do with attached photos, documents, and data. DIDComm agents are applications, so this extension's focus on attachments is no different.
 
 #### Reading
 
@@ -46,9 +46,9 @@ See also the section about [problem reports](#problem-reports).
 
 #### Multiple DIDComm messages
 
-A single email may contain many attachments. In any given email, more than one of these attachments could carry DIDComm content. Processing multiple attachments therefore raises some ordering questions.
+Where practical, it is often desirable to have a one-to-one relationship between emails and attached DIDComm messages: each email carries one DIDComm attachment. This makes the relationship between delivery of one and delivery of the other as simple as possible, which has benefits for timing and troubleshooting. However, a single email may contain many attachments, and thus, in any given email, more than one of these attachments could carry DIDComm content. Compliant agents MUST handle this possibility. Some ordering assumptions are therefore important.
 
-When a compliant implementation adds multiple DIDComm attachments, the attachments MUST be written to the MIME content stream in the same order that they are intended to be processed. However, since DIDComm attachments might be added in arbitrary order by humans using traditional email clients, compliant implementations that read messages SHOULD also examine timing and sequencing metadata in the plaintext DIDComm headers and attempt to process attachments in logical send order. When such processing is impractical or the metadata does not adequately clarify, compliant implementations MUST fall back to processing the attachments using their order in the MIME content stream. 
+When a compliant implementation adds multiple DIDComm attachments, the attachments MUST be written to the MIME content stream in the same order that they are intended to be processed. However, since DIDComm attachments might be added in arbitrary order by humans using traditional email clients, compliant implementations that read messages, and that do not see a `Keywords: didcomm` email header (see below) SHOULD also examine timing and sequencing metadata in the plaintext DIDComm headers and attempt to process attachments in logical send order. When such processing is impractical or the metadata does not adequately clarify, compliant implementations MUST fall back to processing the attachments using their order in the MIME content stream. 
 
 #### Email headers
 
@@ -61,6 +61,7 @@ Email header | Use with DIDComm
 `Subject`| Each time that compliant agents begin a new DIDComm thread, they SHOULD use the name of the DIDComm application protocol to set this header; subsequent messages should begin with "Re: " and the original subject name. For example, if an email carries the first message in a DIDComm protocol named `issue-credential`, then the email's `Subject` line might be: "issue-credential ABC" (where ABC is some subset of the DIDComm `thid` value, to keep email threads separate), and subsequent messages in the same DIDComm thread might be "Re: issue-credential ABC".
 [`Message-ID`](https://www.rfc-editor.org/rfc/rfc2822#section-3.6.2) | If practical, a compliant implementation SHOULD set this value using the same value that is used in the `id` header of the plaintext of the first attached DIDComm message. Since the email header requires a two-part identifier separated by `@`, the convention is for the first part to come from DIDComm's `id`, and the second part to come from DIDComm's `thid` header.
 [`In-Reply-To`](https://www.rfc-editor.org/rfc/rfc2822#section-3.6.2) | If practical and applicable, SHOULD follow the same conventions as `Message-ID` -- but reference the preceding message in the DIDComm thread.
+[`Keywords`](https://www.rfc-editor.org/rfc/rfc2822#section-3.6.5) | Compliant agents that send messages SHOULD add "didcomm" to this comma-separated list. This enables an optimization, in that compliant agents that see this SHOULD assume that multiple DIDComm attachments appear in correct order; they can eliminate the burden of analyzing the internals of the plaintext to confirm this.
 
 #### Problem Reports
 
