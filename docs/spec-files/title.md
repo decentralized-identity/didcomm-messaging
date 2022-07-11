@@ -1,7 +1,7 @@
 DIDComm Messaging
 ==================
 
-**Specification Status:** Working Group Approved
+**Specification Status:** DIF Ratified Specification
 
 **Latest published version:**
   [identity.foundation/didcomm-messaging/spec](https://identity.foundation/didcomm-messaging/spec)
