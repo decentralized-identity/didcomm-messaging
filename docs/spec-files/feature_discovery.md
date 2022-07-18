@@ -59,7 +59,7 @@ A `discover-features/disclose` message looks like this:
 
 ```json
 {
-    "type": "https://didcomm.org/discover-features/1.0/disclose",
+    "type": "https://didcomm.org/discover-features/2.0/disclose",
     "thid": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
     "body":{
         "disclosures": [
@@ -87,7 +87,7 @@ Disclosures do not have to contain exhaustive detail. For example, the following
 
 ```json
 {
-  "type": "https://didcomm.org/discover-features/1.0/disclose",
+  "type": "https://didcomm.org/discover-features/2.0/disclose",
   "thid": "yWd8wfYzhmuXX3hmLNaV5bVbAjbWaU",
     "body": {
         "disclosures": [
