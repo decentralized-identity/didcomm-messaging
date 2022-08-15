@@ -167,7 +167,7 @@ To troubleshoot routing issues, DIDComm offers a header, `trace`. Any party that
   "type": "https://didcomm.org/trace/2.0/trace_report",
   "pthid": "98fd8d72-80f6-4419-abc2-c65ea39d0f38.1",
   "handler": "did:example:1234abcd#3",
-  "traced_type": "https://didcomm.org/route/2.0/forward",
+  "traced_type": "https://didcomm.org/routing/2.0/forward",
 }
 ```
 
