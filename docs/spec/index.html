@@ -869,10 +869,10 @@ In addition, DIDComm defines optional implementation usage of the draft <a path-
 <h3 id="route-tracing"><a class="toc-anchor" href="#route-tracing" >§</a> Route Tracing</h3>
 <p>To troubleshoot routing issues, DIDComm offers a header, <code>trace</code>. Any party that processes a DIDComm plaintext message containing this header MAY do an HTTP POST of a <strong>route trace report</strong> to the URI in the header’s value. A trace report is a message that looks like this:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/trace/1.0/trace_report"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/trace/2.0/trace_report"</span><span class="token punctuation">,</span>
   <span class="token property">"pthid"</span><span class="token operator">:</span> <span class="token string">"98fd8d72-80f6-4419-abc2-c65ea39d0f38.1"</span><span class="token punctuation">,</span>
   <span class="token property">"handler"</span><span class="token operator">:</span> <span class="token string">"did:example:1234abcd#3"</span><span class="token punctuation">,</span>
-  <span class="token property">"traced_type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/route/1.0/forward"</span><span class="token punctuation">,</span>
+  <span class="token property">"traced_type"</span><span class="token operator">:</span> <span class="token string">"https://didcomm.org/routing/2.0/forward"</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <p>The value of <code>pthid</code> is always the message ID that triggered the trace. The value of <code>handler</code> is an arbitrary string that identifies the agent, service, or piece of software responding to the trace.</p>
