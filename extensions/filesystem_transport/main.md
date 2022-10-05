@@ -8,9 +8,9 @@ Specifies how to use a filesystem (or a filesystem-like container such as S3 or 
 
 Because DIDComm messages are self-contained data packages, they can be saved as files. If the intended recipient of messages sees the same filesystem and is aware of the conventions in this extension, they can process the files as received messages. The file system thus becomes a DIDComm transport.
 
-Since filesystems can be carried on USB thumb drives, a filesystem transport enables a "sneakernet" that is full-featured despite being offline and highly asynchronous. It also enables a 1-to-many (e.g., broadcast) paradigm, since the same filesystem could be monitored by many recipients, and since most filesystems support permission models that could constrain the audience if desired. Plus, filesystems have the virtue of being simple, well-understood, and supported as a first-class feature by nearly any programming stack.
+Since filesystems can be carried on USB thumb drives, a filesystem transport enables a "sneakernet" that is full-featured despite being offline and highly asynchronous. Filesystem-based DIDComm can also be used for duplex and fan-out (e.g., broadcast, group chat) communication patterns, since the same filesystem can be used by many parties.
 
-One additional feature of filesystems is that they may allow two-way communication; a recipient who reads messages from a folder can often write responses back to the same location. 
+Filesystems are not the ideal transport for ultra-low-latency communication. However, their massive bandwidth and storage capacity, their mature and well integrated security models, their simplicity, their familiarity to developers, and their status as a first-class component with no special dependencies in all programming stacks makes them an interesting option for moving and storing DIDComm messages.
 
 ### Conventions
 
