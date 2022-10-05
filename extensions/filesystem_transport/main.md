@@ -2,13 +2,13 @@
 
 ### Summary 
 
-Specifies how to use a filesystem (or a filesystem-like container such as S3 or DropBox) as a [DIDComm transport](https://identity.foundation/didcomm-messaging/spec/#transport-requirements).
+Specifies how to use a filesystem (or any filesystem-like container such as S3, DropBox, or a git repo) as a [DIDComm transport](https://identity.foundation/didcomm-messaging/spec/#transport-requirements).
 
 ### Overview
 
-Because DIDComm messages are self-contained data packages, they can be saved as files. If the intended recipient of messages sees the same filesystem and is aware of the conventions in this extension, they can process the files as received messages. The file system thus becomes a DIDComm transport.
+Because DIDComm messages are self-contained data packages, they can be saved as files. If the intended recipient of messages sees the same filesystem and is aware of the conventions in this extension, they can process the files as received messages. The filesystem thus becomes a DIDComm transport.
 
-Since filesystems can be carried on USB thumb drives, a filesystem transport enables a "sneakernet" that is full-featured despite being offline and highly asynchronous. Filesystem-based DIDComm can also be used for duplex and fan-out (e.g., broadcast, group chat) communication patterns, since the same filesystem can be used by many parties.
+Since files can be moved over AirDrop, attached to a chat, carried on USB thumb drives, or distributed via CDN, a file-oriented transport enables a flexible, manual "sneakernet" that is full-featured even when its offline and highly asynchronous. File-based DIDComm can also be used for duplex and fan-out (e.g., broadcast, group chat) communication patterns, since the same filesystem is often usable by many parties.
 
 Filesystems are not the ideal transport for ultra-low-latency communication. However, their massive bandwidth and storage capacity, their mature and well integrated security models, their simplicity, their familiarity to developers, and their status as a first-class component with no special dependencies in all programming stacks makes them an interesting option for moving and storing DIDComm messages.
 
