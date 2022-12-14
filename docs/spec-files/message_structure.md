@@ -78,7 +78,7 @@ When persisted as a file or attached as a payload in other contexts, the file ex
 
 As mentioned above, **DIDComm plaintext messages** are based on [JWM](https://tools.ietf.org/html/draft-looker-jwm-01). JWMs follow the same general pattern as other JOSE containers, but are optimized for larger and more arbitrary structure than simple tokens.
 
-A plaintext message has an outermost attribute, `type`, that identifies the *application-level* message category to which it belongs. This value of `type` is a [specialized URI](#message-type-uri); it allows messages to be mapped to specific handler code. Other outermost attributes include a message's `id` and its media type (`typ` attribute, for generic JWM handling, as described above). In addition, plaintext messages may have other other attributes that have meaning across many message types. Such attributes at the top level of a message are called *[headers](#message-headers)*.
+A plaintext message has an outermost attribute, `type`, that identifies the *application-level* message category to which it belongs. This value of `type` is a [specialized URI](#message-type-uri); it allows messages to be mapped to specific handler code. Other outermost attributes include a message's `id` and its media type (`typ` attribute, for generic JWM handling, as described above). In addition, plaintext messages may have other attributes that have meaning across many message types. Such attributes at the top level of a message are called *[headers](#message-headers)*.
 
 A plaintext message also includes attributes and data specific to its message type. These are contained within its `body` attribute.
 
