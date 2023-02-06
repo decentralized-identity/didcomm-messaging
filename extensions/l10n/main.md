@@ -23,7 +23,7 @@ A sender MAY add the `l10n` header to any message to provide powerful, flexible 
   "lang": "en",
   "l10n": {
     "inline": [
-      ["fr", "comment", "C'est échec et mat, mon pote."]
+      ["fr", "comment", "C'est échec et mat, mon pote."],
       ["es", "comment", "Eso es jaque mate, amigo"]
     ]
   },
