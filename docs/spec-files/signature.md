@@ -40,7 +40,7 @@ When verifying the signature, an additional check must be performed (ideally, be
 
 * Non-Repudiation: DIDComm Encrypted messages are repudiable. If non-repudiation is required for a particular protocol message, the message MUST be signed before encryption. 
 
-* Tamper Resistance: Messages that are shared without encrypting (e.g., [Out of Band Invitations](#invitation) may be signed to provide tamper resistance.
+* Tamper Resistance: Messages that are shared without encrypting (e.g., [Out of Band Invitations](#invitation)) may be signed to provide tamper resistance.
 
 * DID Anchoring: Some types of cryptographic keys support signing but not encrypting. Signed DIDComm messages allow the use of DIDs that are controlled with such keys.
 
