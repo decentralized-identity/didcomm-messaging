@@ -157,7 +157,7 @@ This section defines the sender DIDDoc.
       {
          "id":"did:example:alice#key-1",
          "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-1",
+         "controller":"did:example:alice",
          "publicKeyJwk":{
             "kty":"OKP",
             "crv":"Ed25519",
@@ -167,7 +167,7 @@ This section defines the sender DIDDoc.
       {
          "id":"did:example:alice#key-2",
          "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-2",
+         "controller":"did:example:alice",
          "publicKeyJwk":{
             "kty":"EC",
             "crv":"P-256",
@@ -178,7 +178,7 @@ This section defines the sender DIDDoc.
       {
          "id":"did:example:alice#key-3",
          "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-3",
+         "controller":"did:example:alice",
          "publicKeyJwk":{
             "kty":"EC",
             "crv":"secp256k1",
@@ -191,7 +191,7 @@ This section defines the sender DIDDoc.
       {
          "id":"did:example:alice#key-x25519-1",
          "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-x25519-1",
+         "controller":"did:example:alice",
          "publicKeyJwk":{
             "kty":"OKP",
             "crv":"X25519",
@@ -201,7 +201,7 @@ This section defines the sender DIDDoc.
       {
          "id":"did:example:alice#key-p256-1",
          "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-p256-1",
+         "controller":"did:example:alice",
          "publicKeyJwk":{
             "kty":"EC",
             "crv":"P-256",
@@ -212,7 +212,7 @@ This section defines the sender DIDDoc.
       {
          "id":"did:example:alice#key-p521-1",
          "type":"JsonWebKey2020",
-         "controller":"did:example:alice#key-p521-1",
+         "controller":"did:example:alice",
          "publicKeyJwk":{
             "kty":"EC",
             "crv":"P-521",
@@ -238,7 +238,7 @@ This section defines the recipient DIDDoc.
       {
          "id":"did:example:bob#key-x25519-1",
          "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-x25519-1",
+         "controller":"did:example:bob",
          "publicKeyJwk":{
             "kty":"OKP",
             "crv":"X25519",
@@ -248,7 +248,7 @@ This section defines the recipient DIDDoc.
       {
          "id":"did:example:bob#key-x25519-2",
          "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-x25519-2",
+         "controller":"did:example:bob",
          "publicKeyJwk":{
             "kty":"OKP",
             "crv":"X25519",
@@ -258,7 +258,7 @@ This section defines the recipient DIDDoc.
       {
          "id":"did:example:bob#key-x25519-3",
          "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-x25519-3",
+         "controller":"did:example:bob",
          "publicKeyJwk":{
             "kty":"OKP",
             "crv":"X25519",
@@ -268,7 +268,7 @@ This section defines the recipient DIDDoc.
       {
          "id":"did:example:bob#key-p256-1",
          "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p256-1",
+         "controller":"did:example:bob",
          "publicKeyJwk":{
             "kty":"EC",
             "crv":"P-256",
@@ -279,7 +279,7 @@ This section defines the recipient DIDDoc.
       {
          "id":"did:example:bob#key-p256-2",
          "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p256-2",
+         "controller":"did:example:bob",
          "publicKeyJwk":{
             "kty":"EC",
             "crv":"P-256",
@@ -290,7 +290,7 @@ This section defines the recipient DIDDoc.
       {
          "id":"did:example:bob#key-p384-1",
          "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p384-1",
+         "controller":"did:example:bob",
          "publicKeyJwk":{
             "kty":"EC",
             "crv":"P-384",
@@ -301,7 +301,7 @@ This section defines the recipient DIDDoc.
       {
          "id":"did:example:bob#key-p384-2",
          "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p384-2",
+         "controller":"did:example:bob",
          "publicKeyJwk":{
             "kty":"EC",
             "crv":"P-384",
@@ -312,7 +312,7 @@ This section defines the recipient DIDDoc.
       {
          "id":"did:example:bob#key-p521-1",
          "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p521-1",
+         "controller":"did:example:bob",
          "publicKeyJwk":{
             "kty":"EC",
             "crv":"P-521",
@@ -323,7 +323,7 @@ This section defines the recipient DIDDoc.
       {
          "id":"did:example:bob#key-p521-2",
          "type":"JsonWebKey2020",
-         "controller":"did:example:bob#key-p521-2",
+         "controller":"did:example:bob",
          "publicKeyJwk":{
             "kty":"EC",
             "crv":"P-521",
