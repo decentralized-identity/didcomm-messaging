@@ -33,12 +33,12 @@ The out-of-band protocol consists in a single message that is sent by the *sende
     "accept": [
       "didcomm/v2",
       "didcomm/aip2;env=rfc587"
-    ],
+    ]
   },
   "attachments": [
     {
         "id": "request-0",
-        "mime_type": "application/json",
+        "media_type": "application/json",
         "data": {
             "json": "<json of protocol message>"
         }
