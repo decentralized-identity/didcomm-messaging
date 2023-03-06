@@ -13,6 +13,6 @@ DIDComm Messaging v2.x Editor's Draft
 **Participate:**
 ~ [GitHub repo](https://github.com/decentralized-identity/didcomm-messaging)
 ~ [File a bug](https://github.com/decentralized-identity/didcomm-messaging/issues)
-~ [Commit history](https://github.com/decentralized-identity/didcomm-messaging/commits/master)
+~ [Commit history](https://github.com/decentralized-identity/didcomm-messaging/commits/main)
 
 ------------------------------------
