@@ -1114,8 +1114,22 @@ https://github.com/myorg/myproject/tree/master/docs/lets_do_lunch/1.0/proposal
 <p>The details of key representation are described in the <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3="#verification-methods"href="https://www.w3.org/TR/did-core/#verification-methods" >Verification Methods section of the DID Core Spec</a>.</p>
 <p>Keys used in a signed JWM are declared in the DID Document’s <code>authentication</code> section.</p>
 <h4 id="service-endpoint"><a class="toc-anchor" href="#service-endpoint" >§</a> Service Endpoint</h4>
-<p>Parties who wish to communicate via DIDComm Messaging MAY tell other parties how to reach them by declaring a <code>serviceEndpoint</code> block in their DID document. (It is also possible to convey this information in other ways, but they are out of scope for this spec.)</p>
-<p>The relevant entry in the DID document matches this format:</p>
+<p>Parties who wish to communicate via DIDComm Messaging MAY tell other parties how to reach them by declaring a <code>serviceEndpoint</code> block in their DID document. The serviceEndpoint may be specified as a single serviceEndpoint or an array of serviceEndpoint objects.  This enables DIDComm routing and provides multiple serviceEndpoints when needed.</p>
+<p>The relevant entry in the DID document matches one of the following formats:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDCommMessaging"</span><span class="token punctuation">,</span>
+    <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"uri"</span><span class="token operator">:</span> <span class="token string">"https://example.com/path"</span><span class="token punctuation">,</span>
+        <span class="token property">"accept"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"didcomm/v2"</span><span class="token punctuation">,</span>
+            <span class="token string">"didcomm/aip2;env=rfc587"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"routingKeys"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:somemediator#somekey"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>or</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDCommMessaging"</span><span class="token punctuation">,</span>
@@ -1131,8 +1145,8 @@ https://github.com/myorg/myproject/tree/master/docs/lets_do_lunch/1.0/proposal
 </code></pre>
 <p><code>id</code> - REQUIRED. Must be unique, as required in <a path-0="www.w3.org"path-1="TR"path-2="did-core"path-3="#service-endpoints"href="https://www.w3.org/TR/did-core/#service-endpoints" >DID Core</a>. No special meaning should be inferred from the <code>id</code> chosen.</p>
 <p><code>type</code> - REQUIRED. MUST be <code>DIDCommMessaging</code>.</p>
-<p><code>serviceEndpoint</code> - REQUIRED. MUST contain an ordered list of objects. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner’s preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.</p>
-<p>Each object has the following properties:</p>
+<p><code>serviceEndpoint</code> - REQUIRED. As described above, a serviceEndpoint MUST contain an object or an array of objects. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner’s preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.</p>
+<p>Each serviceEndpoint object has the following properties:</p>
 <p><code>uri</code> - REQUIRED. MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.</p>
 <p><code>accept</code> - OPTIONAL. An array of media types in the order of preference for sending a message to the endpoint.
 These identify a <em>profile</em> of DIDComm Messaging that the endpoint supports.
@@ -1148,9 +1162,9 @@ Please see <a href="#negotiating-compatibility" >Negotiating Compatibility</a> f
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDCommMessaging"</span><span class="token punctuation">,</span>
-    <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
         <span class="token property">"uri"</span><span class="token operator">:</span> <span class="token string">"did:example:somemediator"</span>
-    <span class="token punctuation">}</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <p>The message is encrypted to the recipient, then wrapped in a ‘forward’ message encrypted to the keyAgreement keys within the <code>did:example:somemediator</code> DID Document, and transmitted to the URIs present in the <code>did:example:somemediator</code> DID Document with type <code>DIDCommMessaging</code>.</p>
@@ -1158,10 +1172,10 @@ Please see <a href="#negotiating-compatibility" >Negotiating Compatibility</a> f
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123456789abcdefghi#didcomm-1"</span><span class="token punctuation">,</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"DIDCommMessaging"</span><span class="token punctuation">,</span>
-    <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
         <span class="token property">"uri"</span><span class="token operator">:</span> <span class="token string">"did:example:somemediator"</span><span class="token punctuation">,</span>
         <span class="token property">"routingKeys"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"did:example:anothermediator#somekey"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <p>The message is encrypted to the recipient, then wrapped in a <code>forward</code> message encrypted to <code>did:example:anothermediator#somekey</code>. That message is wrapped in a ‘forward’ message encrypted to ‘keyAgreement’ keys within the <code>did:example:somemediator</code> DID Document, and transmitted to the URIs present in the <code>did:example:somemediator</code> DID Document with type <code>DIDCommMessaging</code>.</p>

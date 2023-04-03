@@ -115,9 +115,25 @@ Keys used in a signed JWM are declared in the DID Document's `authentication` se
 
 #### Service Endpoint
 
-Parties who wish to communicate via DIDComm Messaging MAY tell other parties how to reach them by declaring a `serviceEndpoint` block in their DID document. (It is also possible to convey this information in other ways, but they are out of scope for this spec.)
+Parties who wish to communicate via DIDComm Messaging MAY tell other parties how to reach them by declaring a `serviceEndpoint` block in their DID document. The serviceEndpoint may be specified as a single serviceEndpoint or an array of serviceEndpoint objects.  This enables DIDComm routing and provides multiple serviceEndpoints when needed.    
 
-The relevant entry in the DID document matches this format:
+The relevant entry in the DID document matches one of the following formats:
+
+```json
+{
+    "id": "did:example:123456789abcdefghi#didcomm-1",
+    "type": "DIDCommMessaging",
+    "serviceEndpoint": {
+        "uri": "https://example.com/path",
+        "accept": [
+            "didcomm/v2",
+            "didcomm/aip2;env=rfc587"
+        ],
+        "routingKeys": ["did:example:somemediator#somekey"]
+    }
+}
+```
+or
 
 ```json
 {
@@ -134,13 +150,14 @@ The relevant entry in the DID document matches this format:
 }
 ```
 
+
 `id` - REQUIRED. Must be unique, as required in [DID Core](https://www.w3.org/TR/did-core/#service-endpoints). No special meaning should be inferred from the `id` chosen.
 
 `type` - REQUIRED. MUST be `DIDCommMessaging`. 
 
-`serviceEndpoint` - REQUIRED. MUST contain an ordered list of objects. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
+`serviceEndpoint` - REQUIRED. As described above, a serviceEndpoint MUST contain an object or an array of objects. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
 
-Each object has the following properties:
+Each serviceEndpoint object has the following properties:
 
 `uri` - REQUIRED. MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
@@ -167,9 +184,9 @@ Endpoint Example 1: Mediator
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
-    "serviceEndpoint": [{
+    "serviceEndpoint": {
         "uri": "did:example:somemediator"
-    }]
+    }
 }
 ```
 The message is encrypted to the recipient, then wrapped in a 'forward' message encrypted to the keyAgreement keys within the `did:example:somemediator` DID Document, and transmitted to the URIs present in the `did:example:somemediator` DID Document with type `DIDCommMessaging`.
@@ -179,10 +196,10 @@ Endpoint Example 2: Mediator + Routing Keys
 {
     "id": "did:example:123456789abcdefghi#didcomm-1",
     "type": "DIDCommMessaging",
-    "serviceEndpoint": [{
+    "serviceEndpoint": {
         "uri": "did:example:somemediator",
         "routingKeys": ["did:example:anothermediator#somekey"]
-    }]
+    }
 }
 ```
 
