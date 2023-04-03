@@ -155,9 +155,9 @@ or
 
 `type` - REQUIRED. MUST be `DIDCommMessaging`. 
 
-`serviceEndpoint` - REQUIRED. As described above, a serviceEndpoint MUST contain a string, a map, or a set composed of one or more strings and/or maps. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
+`serviceEndpoint` - REQUIRED. As described above, a serviceEndpoint MUST contain an object or an array of objects. Each represents a DIDComm Service Endpoint URI and its associated details. The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference. A message should be delivered to only one of the endpoints specified.
 
-If a map is used, each object has the following properties:
+Each serviceEndpoint object has the following properties:
 
 `uri` - REQUIRED. MUST contain a URI for a transport specified in the [transports] section of this spec, or a URI from Alternative Endpoints. It MAY be desirable to constraint endpoints from the [transports] section so that they are used only for the reception of DIDComm messages. This can be particularly helpful in cases where auto-detecting message types is inefficient or undesirable.
 
