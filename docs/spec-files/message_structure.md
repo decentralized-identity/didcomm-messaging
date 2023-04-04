@@ -135,7 +135,9 @@ Headers in DIDComm Messaging are intended to be extensible in much the same way 
 
 - `expires_time` - OPTIONAL. Message Expires Time. This attribute is used for the sender to express when they will consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. By default, the meaning of "expired" is that the sender will abort the protocol if it doesn't get a response by this time. However, protocols can nuance this in their formal spec. For example, an online auction protocol might specify that timed out bids must be ignored instead of triggering a cancellation of the whole auction. When omitted from any given message, the message is considered to have no expiration by the sender.
 
-- `body` - REQUIRED. The `body` attribute contains all the data and structure defined uniquely for the schema associated with the `type` attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to [RFC 7159](https://datatracker.ietf.org/doc/html/rfc7159).
+- `body` - OPTIONAL. The body attribute contains all the data and structure that are uniquely defined for the schema associated with the type attribute. If present, it MUST be a JSON object that conforms to [RFC 7159](https://datatracker.ietf.org/doc/html/rfc7159).
+
+  _(Note:To be fully compatible with DIDComm v2.0. It's recommended to always have this attribute when sending a message but allowed the attribute to not exist when receiving.)_
 
 - `attachments` - OPTIONAL. See [Attachments](#attachments) for detail. 
 
