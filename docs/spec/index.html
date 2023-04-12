@@ -241,7 +241,8 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p><code>expires_time</code> - OPTIONAL. Message Expires Time. This attribute is used for the sender to express when they will consider the message to be expired, expressed in UTC Epoch Seconds (seconds since 1970-01-01T00:00:00Z) as an integer. By default, the meaning of “expired” is that the sender will abort the protocol if it doesn’t get a response by this time. However, protocols can nuance this in their formal spec. For example, an online auction protocol might specify that timed out bids must be ignored instead of triggering a cancellation of the whole auction. When omitted from any given message, the message is considered to have no expiration by the sender.</p>
 </li>
 <li>
-<p><code>body</code> - REQUIRED. The <code>body</code> attribute contains all the data and structure defined uniquely for the schema associated with the <code>type</code> attribute. This attribute MUST be present, even if empty. It MUST be a JSON object conforming to <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc7159"href="https://datatracker.ietf.org/doc/html/rfc7159" >RFC 7159</a>.</p>
+<p><code>body</code> - OPTIONAL. The body attribute contains all the data and structure that are uniquely defined for the schema associated with the type attribute. If present, it MUST be a JSON object that conforms to <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc7159"href="https://datatracker.ietf.org/doc/html/rfc7159" >RFC 7159</a>.</p>
+<p><em>(Note:To be fully compatible with DIDComm v2.0. It’s recommended to always have this attribute when sending a message but allowed the attribute to not exist when receiving.)</em></p>
 </li>
 <li>
 <p><code>attachments</code> - OPTIONAL. See <a href="#attachments" >Attachments</a> for detail.</p>
