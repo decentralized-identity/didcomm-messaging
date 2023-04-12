@@ -1,4 +1,4 @@
-[![DIDComm logo](didcomm-logo.png)](didcomm-logo.svg)
+[![DIDComm logo](docs/collateral/didcomm-logo.png)](docs/collateral/didcomm-logo.svg)
 
 # DIDComm Messaging
 
