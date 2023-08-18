@@ -25,6 +25,8 @@ Here are links to some implementations of the DIDComm v2 spec that you may find 
   - https://github.com/hyperledger/aries-cloudagent-python/pull/1331
 - Java
   - https://github.com/sicpa-dlab/didcomm-jvm
+- Scala
+  - https://github.com/FabioPinheiro/scala-did (for JVM and JS platforms)
 
 ### Artifacts
 
