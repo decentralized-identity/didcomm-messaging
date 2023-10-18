@@ -11,7 +11,7 @@ This repo is where we develops specs and reference code to explain DIDComm Messa
 Here are links to some implementations of the DIDComm v2 spec that you may find useful. This WG is not endorsing these implementations in any special way -- simply listing ones we know about. They might be at different levels of maturity/conformance. If you want to add something to this list, please raise a PR against the repo to let us know.
 
 - Typescript
-  - https://github.com/uport-project/veramo
+  - https://github.com/decentralized-identity/veramo
   - https://github.com/aviarytech/didcomm
   - https://github.com/sicpa-dlab/didcomm-ts
 - Go
