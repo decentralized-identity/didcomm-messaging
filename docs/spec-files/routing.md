@@ -101,7 +101,7 @@ The recipient (`next` attribute of 'forward' message) may have pre-configured ad
 
 #### DID Document Keys
 
-Ideally, all keys declared in the `keyAgreement` section of a given recipient's DID document are used as target keys when encrypting a message. To encourage this, DIDComm encrypts the main message content only once, using an ephemeral content encryption key, and then encrypts the relatively tiny ephemeral key once per recipient key. This "multiplexed ecnryption" is efficient, and it allows a recipient to change devices over the course of a conversation without prior arrangement.
+Ideally, all keys declared in the `keyAgreement` section of a given recipient's DID document are used as target keys when encrypting a message. To encourage this, DIDComm encrypts the main message content only once, using an ephemeral content encryption key, and then encrypts the relatively tiny ephemeral key once per recipient key. This "multiplexed encryption" is efficient, and it allows a recipient to change devices over the course of a conversation without prior arrangement.
 
 However, practical considerations can frustrate this ideal. If a recipient's DID document declares keys of different types, a sender has to prepare more than one encryption envelope &mdash; and if not all of a recipient's key types are supported by the sender, the goal is simply unachievable.
 
