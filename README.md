@@ -27,6 +27,8 @@ Here are links to some implementations of the DIDComm v2 spec that you may find 
   - https://github.com/sicpa-dlab/didcomm-jvm
 - Scala
   - https://github.com/FabioPinheiro/scala-did (for JVM and JS platforms)
+- Swift
+  - https://github.com/beatt83/didcomm-swift
 
 ### Artifacts
 
