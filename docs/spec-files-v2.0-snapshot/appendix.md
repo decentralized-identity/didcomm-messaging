@@ -67,28 +67,28 @@ This section defines the recipient private keys in JWK format.
 ```json
 [
   {
-    "kid ":"did:example:bob#key-x25519-1",
+    "kid" :"did:example:bob#key-x25519-1",
     "kty":"OKP",
     "d":"b9NnuOCB0hm7YGNvaE9DMhwH_wjZA1-gWD6dA0JWdL0",
     "crv":"X25519",
     "x":"GDTrI66K0pFfO54tlCSvfjjNapIs44dzpneBgyx0S3E"
   },
   {
-    "kid ":"did:example:bob#key-x25519-2",
+    "kid" :"did:example:bob#key-x25519-2",
     "kty":"OKP",
     "d":"p-vteoF1gopny1HXywt76xz_uC83UUmrgszsI-ThBKk",
     "crv":"X25519",
     "x":"UT9S3F5ep16KSNBBShU2wh3qSfqYjlasZimn0mB8_VM"
   },
   {
-    "kid ":"did:example:bob#key-x25519-3",
+    "kid" :"did:example:bob#key-x25519-3",
     "kty":"OKP",
     "d":"f9WJeuQXEItkGM8shN4dqFr5fLQLBasHnWZ-8dPaSo0",
     "crv":"X25519",
     "x":"82k2BTUiywKv49fKLZa-WwDi8RBf0tB0M8bvSAUQ3yY"
   },
   {
-    "kid ":"did:example:bob#key-p256-1",
+    "kid" :"did:example:bob#key-p256-1",
     "kty":"EC",
     "d":"PgwHnlXxt8pwR6OCTUwwWx-P51BiLkFZyqHzquKddXQ",
     "crv":"P-256",
@@ -96,7 +96,7 @@ This section defines the recipient private keys in JWK format.
     "y":"6XFB9PYo7dyC5ViJSO9uXNYkxTJWn0d_mqJ__ZYhcNY"
   },
   {
-    "kid ":"did:example:bob#key-p256-2",
+    "kid" :"did:example:bob#key-p256-2",
     "kty":"EC",
     "d":"agKz7HS8mIwqO40Q2dwm_Zi70IdYFtonN5sZecQoxYU",
     "crv":"P-256",
@@ -104,7 +104,7 @@ This section defines the recipient private keys in JWK format.
     "y":"ov0buZJ8GHzV128jmCw1CaFbajZoFFmiJDbMrceCXIw"
   },
   {
-    "kid ":"did:example:bob#key-p384-1",
+    "kid" :"did:example:bob#key-p384-1",
     "kty":"EC",
     "d":"ajqcWbYA0UDBKfAhkSkeiVjMMt8l-5rcknvEv9t_Os6M8s-HisdywvNCX4CGd_xY",
     "crv":"P-384",
@@ -112,7 +112,7 @@ This section defines the recipient private keys in JWK format.
     "y":"X_3HJBcKFQEG35PZbEOBn8u9_z8V1F9V1Kv-Vh0aSzmH-y9aOuDJUE3D4Hvmi5l7"
   },
   {
-    "kid ":"did:example:bob#key-p384-2",
+    "kid" :"did:example:bob#key-p384-2",
     "kty":"EC",
     "d":"OiwhRotK188BtbQy0XBO8PljSKYI6CCD-nE_ZUzK7o81tk3imDOuQ-jrSWaIkI-T",
     "crv":"P-384",
@@ -120,7 +120,7 @@ This section defines the recipient private keys in JWK format.
     "y":"W9LLaBjlWYcXUxOf6ECSfcXKaC3-K9z4hCoP0PS87Q_4ExMgIwxVCXUEB6nf0GDd"
   },
   {
-    "kid ":"did:example:bob#key-p521-1",
+    "kid" :"did:example:bob#key-p521-1",
     "kty":"EC",
     "d":"AV5ocjvy7PkPgNrSuvCxtG70NMj6iTabvvjSLbsdd8OdI9HlXYlFR7RdBbgLUTruvaIRhjEAE9gNTH6rWUIdfuj6",
     "crv":"P-521",
@@ -128,7 +128,7 @@ This section defines the recipient private keys in JWK format.
     "y":"ATZVigRQ7UdGsQ9j-omyff6JIeeUv3CBWYsZ0l6x3C_SYqhqVV7dEG-TafCCNiIxs8qeUiXQ8cHWVclqkH4Lo1qH"
   },
   {
-    "kid ":"did:example:bob#key-p521-2",
+    "kid" :"did:example:bob#key-p521-2",
     "kty":"EC",
     "d":"ABixMEZHsyT7SRw-lY5HxdNOofTZLlwBHwPEJ3spEMC2sWN1RZQylZuvoyOBGJnPxg4-H_iVhNWf_OtgYODrYhCk",
     "crv":"P-521",
