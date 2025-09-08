@@ -8,19 +8,19 @@ This specification discusses messages in three different formats. The casual phr
 
 Circumstances sometimes require communication about the format of DIDComm messages. The canonical way to do this is with IANA media types, based on the conventions of [RFC6838](https://tools.ietf.org/html/rfc6838).
 
-All three DIDComm message formats &mdash; plaintext, signed, and encrypted &mdash; can be correctly understood as more generic [JWMs (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) or even as arbitrary JOSE content. Since code that expects JOSE conventions but not DIDComm may matter in some implementations, this spec recommends the JOSE convention of [using `typ` to make JOSE structure formats self-describing](https://tools.ietf.org/html/rfc7515#section-4.1.9). This is particularly helpful in the outermost envelope of any DIDComm message, before unwrapping begins. (As RFC 7515 notes, `typ` "will typically not be used by applications when the kind of object is already known.")
+All three DIDComm message formats &mdash; plaintext, signed, and encrypted &mdash; can be correctly understood as more generic [JWMs (JSON Web Messages)](https://tools.ietf.org/html/draft-looker-jwm-01) or the equivilent CBOR encoding. Since code that expects JOSE/COSE conventions but not DIDComm may matter in some implementations, this spec recommends the convention of [using `typ` to make structure formats self-describing](https://tools.ietf.org/html/rfc7515#section-4.1.9). This is particularly helpful in the outermost envelope of any DIDComm message, before unwrapping begins. (As RFC 7515 notes, `typ` "will typically not be used by applications when the kind of object is already known.")
 
 When a sender prepares a message for [routing](#routing-protocol-20), it wraps the message once for each hop that has cryptographic consequences in the path. Each wrapping operation applies one or more layers of envelope, and potentially transforms the associated media type of the output. The relevant possibilities are: 
 
-| Envelopes | IANA type (`typ` header) | Notes
-|-----------------|-------|----|
-| plaintext (no envelope) | `application/didcomm-plain+json`| Used as the building block of [higher-level protocols](#protocols), but rarely transmitted directly, since it lacks security guarantees.
-| signed(plaintext) | `application/didcomm-signed+json` | Adds non-repudiation to a plaintext message; whoever receives a message wrapped in this way can prove its origin to any external party.
-| anoncrypt(plaintext) | `application/didcomm-encrypted+json` | Guarantees confidentiality and integrity without revealing the identity of the sender.
-| authcrypt(plaintext)  | `application/didcomm-encrypted+json` | Guarantees confidentiality and integrity. Also proves the identity of the sender -- but in a way that only the recipient can verify. This is the default wrapping choice, and SHOULD be used unless a different goal is clearly identified. By design, this combination and all other combinations that use encryption in their outermost layer share an identical IANA media type, because only the recipient should care about the difference.
-| anoncrypt(sign(plaintext)) | `application/didcomm-encrypted+json`| Guarantees confidentiality, integrity, and non-repudiation -- but prevents an observer of the outer envelope from accessing the signature. Relative to authcrypt(plaintext), this increases guarantees to the recipient, since non-repudiation is stronger than simple authentication. However, it also forces the sender to talk "on the record" and is thus not assumed to be desirable by default. 
-| authcrypt(sign(plaintext)) | `application/didcomm-encrypted+json` | Adds no useful guarantees over the previous choice, and is slightly more expensive, so this wrapping combination SHOULD NOT be emitted by conforming implementations. However, implementations MAY accept it. If they choose to do so, they MUST emit an error if the signer of the plaintext is different from the sender identified by the authcrypt layer.
-| anoncrypt(authcrypt(plaintext)) | `application/didcomm-encrypted+json` | A specialized combination that hides the `skid` header in the authcrypt envelope, so the hop immediately sourceward of a mediator cannot discover an identifier for the sender. See [Protecting the Sender Identity](#protecting-the-sender-identity). 
+| Envelopes | IANA type (`typ` header) for JSON | IANA type (`typ` header) for CBOR | Notes
+|-----------------|-------|-------|---|
+| plaintext (no envelope) | `application/didcomm-plain+json`| `application/didcomm-plain+cbor` | Used as the building block of [higher-level protocols](#protocols), but rarely transmitted directly, since it lacks security guarantees.
+| signed(plaintext) | `application/didcomm-signed+json` | `application/didcomm-signed+cbor` | Adds non-repudiation to a plaintext message; whoever receives a message wrapped in this way can prove its origin to any external party.
+| anoncrypt(plaintext) | `application/didcomm-encrypted+json` | `application/didcomm-encrypted+cbor` | Guarantees confidentiality and integrity without revealing the identity of the sender.
+| authcrypt(plaintext)  | `application/didcomm-encrypted+json` | `application/didcomm-encrypted+cbor` | Guarantees confidentiality and integrity. Also proves the identity of the sender -- but in a way that only the recipient can verify. This is the default wrapping choice, and SHOULD be used unless a different goal is clearly identified. By design, this combination and all other combinations that use encryption in their outermost layer share an identical IANA media type, because only the recipient should care about the difference.
+| anoncrypt(sign(plaintext)) | `application/didcomm-encrypted+json`| `application/didcomm-encrypted+cbor` | Guarantees confidentiality, integrity, and non-repudiation -- but prevents an observer of the outer envelope from accessing the signature. Relative to authcrypt(plaintext), this increases guarantees to the recipient, since non-repudiation is stronger than simple authentication. However, it also forces the sender to talk "on the record" and is thus not assumed to be desirable by default. 
+| authcrypt(sign(plaintext)) | `application/didcomm-encrypted+json` | `application/didcomm-encrypted+cbor` | Adds no useful guarantees over the previous choice, and is slightly more expensive, so this wrapping combination SHOULD NOT be emitted by conforming implementations. However, implementations MAY accept it. If they choose to do so, they MUST emit an error if the signer of the plaintext is different from the sender identified by the authcrypt layer.
+| anoncrypt(authcrypt(plaintext)) | `application/didcomm-encrypted+json` | `application/didcomm-encrypted+cbor` | A specialized combination that hides the `skid` header in the authcrypt envelope, so the hop immediately sourceward of a mediator cannot discover an identifier for the sender. See [Protecting the Sender Identity](#protecting-the-sender-identity). 
 
 In the aggregate, complex combinations of envelopes may occur across a route. However, in the set of envelopes that targets a single hop, envelope combinations other than the ones above MUST NOT be used. In particular, it makes no sense to use anoncrypt(authcrypt(sign(plaintext))); use anoncrypt(sign(plaintext)) instead.
 
@@ -34,11 +34,11 @@ When higher-level protocols are built atop DIDComm Messaging, applications remov
 
 In isolation, plaintext messages lack confidentiality and integrity guarantees, and are repudiable. They are therefore not normally transported across security boundaries. However, this may be a helpful format to inspect in debuggers, since it exposes underlying semantics, and it is the format used in this specification to give examples of headers and other internals. Depending on ambient security, plaintext may or may not be an appropriate format for DIDComm Messaging data at rest.
 
-The media type for a generic DIDComm plaintext message MUST be reported as `application/didcomm-plain+json` by conformant implementations.
+The media type for a generic DIDComm plaintext message MUST be reported as `application/didcomm-plain+json` for JSON encoding or `application/didcomm-plain+cbor` for CBOR encoding by conformant implementations.
 
 The media type of the envelope MAY be set in the [`typ` property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the plaintext; it SHOULD be set if the message is intended for use without a signature or encryption.
 
-When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm plaintext messages SHOULD be `dcpm`, giving a globbing pattern of `*.dcpm`; this SHOULD be read as "Star Dot D C P M" or as "D C P M" files. We imagine people will reference this media type by saying, "I am looking at a DIDComm Plaintext Message file", or "This database record is in DIDComm Plaintext format", or "Does my editor have a DIDComm Plaintext Message plugin?" A possible icon for this file format depicts green JSON text in a message bubble ([svg](../collateral/dcpm.svg) | [256x256](../collateral/dcpm-256.png) | [128x128](../collateral/dcpm-128.png) | [64x64](../collateral/dcpm-64.png)):
+When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm plaintext messages SHOULD be `dcpm` for JSON-encoded messages or `dcpm-cbor` for CBOR-encoded messages, giving a globbing pattern of `*.dcpm` or `*.dcpm-cbor`; these SHOULD be read as "Star Dot D C P M" or "Star Dot D C P M dash C B O R" files. We imagine people will reference these media types by saying, "I am looking at a DIDComm Plaintext Message file", or "This database record is in DIDComm Plaintext format", or "Does my editor have a DIDComm Plaintext Message plugin?" A possible icon for the JSON format depicts green JSON text in a message bubble ([svg](../collateral/dcpm.svg) | [256x256](../collateral/dcpm-256.png) | [128x128](../collateral/dcpm-128.png) | [64x64](../collateral/dcpm-64.png)):
 
 ![DIDComm Plaintext Message Icon](../collateral/dcpm-128.png)
 
@@ -50,39 +50,37 @@ Signed messages are not necessary to provide message integrity (tamper evidence)
 
 When a message is *both* signed and encrypted, this spec echoes the [JOSE recommendation about how to combine](https://datatracker.ietf.org/doc/html/rfc7519#section-11.2): sign the plaintext first, and then encrypt. (The opposite order would imply that the signer committed to opaque data. This would be less safe, and would undermine non-repudiation.)
 
-The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm signed message MUST be `application/didcomm-signed+json`.
+The [media type](https://tools.ietf.org/html/rfc6838) of a DIDComm signed message MUST be `application/didcomm-signed+json` for JSON encoding or `application/didcomm-signed+cbor` for CBOR encoding.
 
-The media type of the envelope SHOULD be set in the [`typ` property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the JWS.
+The media type of the envelope SHOULD be set in the [`typ` property](https://tools.ietf.org/html/rfc7515#section-4.1.9) of the JWS for JSON encoding, or in the equivalent header parameter for COSE Sign1 or COSE Sign for CBOR encoding.
 
-In order to avoid [surreptitious forwarding or malicious usage](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html) of a signed message, a signed message SHOULD contain a properly defined `to` header. In the case where a message is *both* signed and encrypted, the inner (signed) JWM being signed MUST contain a `to` header.
+In order to avoid [surreptitious forwarding or malicious usage](https://theworld.com/~dtd/sign_encrypt/sign_encrypt7.html) of a signed message, a signed message SHOULD contain a properly defined `to` header. In the case where a message is *both* signed and encrypted, the inner (signed) message being signed MUST contain a `to` header.
 
-When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm signed messages SHOULD be `dcsm`, giving a globbing pattern of `*.dcsm`; this SHOULD be be read as "Star Dot D C S M" or as "D C S M" files. A possible icon for this media type depicts a signed envelope ([svg](../collateral/dcsm.svg) | [256x256](../collateral/dcsm-256.png) | [128x128](../collateral/dcsm-128.png) | [64x64](../collateral/dcsm-64.png)):
+When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm signed messages SHOULD be `dcsm` for JSON-encoded messages or `dcsm-cbor` for CBOR-encoded messages, giving a globbing pattern of `*.dcsm` or `*.dcsm-cbor`; these SHOULD be read as "Star Dot D C S M" or "Star Dot D C S M dash C B O R" files. A possible icon for the JSON format depicts a signed envelope ([svg](../collateral/dcsm.svg) | [256x256](../collateral/dcsm-256.png) | [128x128](../collateral/dcsm-128.png) | [64x64](../collateral/dcsm-64.png)):
 
 ![DIDComm Signed Message Icon](../collateral/dcsm-128.png)
 
 ### DIDComm Encrypted Messages
 
-A **DIDComm encrypted message** is an encrypted [JWM](https://tools.ietf.org/html/draft-looker-jwm-01). It hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.
+A **DIDComm encrypted message** is an encrypted message. When using JSON encoding, it is an encrypted [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) using JWE. When using CBOR encoding, it uses COSE Encrypt or COSE Encrypt0. It hides its content from all but authorized recipients, discloses and proves the sender to exactly and only those recipients, and provides integrity guarantees. It is important in privacy-preserving routing. It is what normally moves over network transports in DIDComm Messaging applications, and is the safest format for storing DIDComm Messaging data at rest.
 
-The [media type](https://tools.ietf.org/html/rfc6838) of a non-nested DIDComm encrypted message MUST be `application/didcomm-encrypted+json`.
+The [media type](https://tools.ietf.org/html/rfc6838) of a non-nested DIDComm encrypted message MUST be `application/didcomm-encrypted+json` for JSON encoding or `application/didcomm-encrypted+cbor` for CBOR encoding.
 
-> Note: If future versions of this spec allow binary encodings, variations like `application/didcomm-encrypted+cbor` (see [CBOR RFC 7049, section 7.5](https://tools.ietf.org/html/rfc7049#section-7.5)), `application/didcomm-encrypted+msgpack`, or `application/didcomm-encrypted+protobuf` may become reasonable. In the future, specifications that encompass communications patterns other than messaging &mdash; DIDComm Multicast or DIDComm Streaming, for example &mdash; might use a suffix: `application/didcomm-encrypted-multicast` or similar.
+The media type of the envelope SHOULD be set in the [`typ` property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE for JSON encoding, or in the equivalent header parameter for COSE Encrypt or COSE Encrypt0 for CBOR encoding.
 
-The media type of the envelope SHOULD be set in the [`typ` property](https://tools.ietf.org/html/rfc7516#section-4.1.11) of the JWE.
-
-When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm encrypted messages SHOULD be `dcem`, giving a globbing pattern of `*.dcem`; this SHOULD be read as "Star Dot D C E M" or as "D C E M" files. A possible icon for this file format depicts an envelope with binary overlay, protected by a lock ([svg](../collateral/dcem.svg) | [256x256](../collateral/dcem-256.png) | [128x128](../collateral/dcem-128.png) | [64x64](../collateral/dcem-64.png)):
+When persisted as a file or attached as a payload in other contexts, the file extension for DIDComm encrypted messages SHOULD be `dcem` for JSON-encoded messages or `dcem-cbor` for CBOR-encoded messages, giving a globbing pattern of `*.dcem` or `*.dcem-cbor`; these SHOULD be read as "Star Dot D C E M" or "Star Dot D C E M dash C B O R" files. A possible icon for the JSON format depicts an envelope with binary overlay, protected by a lock ([svg](../collateral/dcem.svg) | [256x256](../collateral/dcem-256.png) | [128x128](../collateral/dcem-128.png) | [64x64](../collateral/dcem-64.png)):
 
 ![DIDComm Encrypted Message Icon](../collateral/dcem-128.png)
 
 ## Plaintext Message Structure
 
-As mentioned above, **DIDComm plaintext messages** are based on [JWM](https://tools.ietf.org/html/draft-looker-jwm-01). JWMs follow the same general pattern as other JOSE containers, but are optimized for larger and more arbitrary structure than simple tokens.
+As mentioned above, **DIDComm plaintext messages** are based on [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) when using JSON encoding, or on a CBOR mapping of the same structure when using CBOR encoding. JWMs follow the same general pattern as other JOSE containers, but are optimized for larger and more arbitrary structure than simple tokens.
 
-A plaintext message has an outermost attribute, `type`, that identifies the *application-level* message category to which it belongs. This value of `type` is a [specialized URI](#message-type-uri); it allows messages to be mapped to specific handler code. Other outermost attributes include a message's `id` and its media type (`typ` attribute, for generic JWM handling, as described above). In addition, plaintext messages may have other attributes that have meaning across many message types. Such attributes at the top level of a message are called *[headers](#message-headers)*.
+A plaintext message has an outermost attribute, `type`, that identifies the *application-level* message category to which it belongs. This value of `type` is a [specialized URI](#message-type-uri); it allows messages to be mapped to specific handler code. Other outermost attributes include a message's `id` and its media type (`typ` attribute, for generic message handling, as described above). In addition, plaintext messages may have other attributes that have meaning across many message types. Such attributes at the top level of a message are called *[headers](#message-headers)*.
 
 A plaintext message also includes attributes and data specific to its message type. These are contained within its `body` attribute.
 
-Prior to being sent, plaintext is usually encrypted into a JWE according to the [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) specification.
+Prior to being sent, plaintext is usually encrypted into a JWE according to the [JWM](https://tools.ietf.org/html/draft-looker-jwm-01) specification when using JSON encoding, or into a COSE Encrypt or COSE Encrypt0 structure when using CBOR encoding.
 
 The following example shows common elements of a DIDComm plaintext message.
 
@@ -100,6 +98,17 @@ The following example shows common elements of a DIDComm plaintext message.
   }
 }
 ```
+
+The equivalent CBOR encoding would represent the same data structure but in the more compact CBOR binary format. The CBOR map would use the same keys and value types as the JSON structure.
+
+## Encoding Detection
+As messages may be both JSON or CBOR encoded. The encoding of the message can be determined by inspection of the first byte as follows:
+
+JSON messages MUST begin with a first byte of `0x7B` ASCII `{`.
+
+CBOR messages MUST begin with a first byte value between `0x80` and `0xFF`.
+
+Other first byte values are not valid at this time.
 
 ### Message Headers
 
@@ -178,7 +187,7 @@ Each attachment is described with an instance of a JSON object that has the foll
 - `format` - OPTIONAL. Further describes the format of the attachment if the `media_type` is not sufficient.
 - `lastmod_time` - OPTIONAL. A hint about when the content in this attachment was last modified.
 - `data`: A JSON object that gives access to the actual content of the attachment. This MUST contain at least one of the following subfields, and enough of them to allow access to the data:
-    * `jws` - OPTIONAL. A [JWS](https://tools.ietf.org/html/rfc7515) in [detached content mode](https://tools.ietf.org/html/rfc7515#appendix-F), where the `payload` field of the JWS maps to `base64` or to something fetchable via `links`. This allows attachments to be signed. The signature need not come from the author of the message.
+    * `jws` - OPTIONAL. A [JWS](https://tools.ietf.org/html/rfc7515) in [detached content mode](https://tools.ietf.org/html/rfc7515#appendix-F) for JSON encoding, or a COSE Sign1 or COSE Sign structure in detached content mode for CBOR encoding, where the payload field maps to `base64` or to something fetchable via `links`. This allows attachments to be signed. The signature need not come from the author of the message.
     * `hash` - OPTIONAL. The hash of the content encoded in multi-hash format. Used as an integrity check for the attachment, and MUST be used if the data is referenced via the `links` data attribute.
     * `links` - OPTIONAL. A list of zero or more locations at which the content may be fetched. This allows content to be attached by reference instead of by value.
     * `base64` - OPTIONAL. [Base64url](https://tools.ietf.org/html/rfc4648#section-5)-encoded data, when representing arbitrary content inline instead of via `links`.
@@ -222,7 +231,7 @@ Each attachment is described with an instance of a JSON object that has the foll
     {
       "id": "x",
       "description": "example encrypted DIDComm message as attachment",
-      "media_type": "application/didcomm-encrypted+json",
+      "media_type": "application/didcomm-encrypted+json", // or "application/didcomm-encrypted+cbor" for CBOR encoding
       "data": {
         "json": {
           //jwe json structure

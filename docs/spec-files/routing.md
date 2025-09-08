@@ -127,6 +127,7 @@ The relevant entry in the DID document matches one of the following formats:
         "uri": "https://example.com/path",
         "accept": [
             "didcomm/v2",
+            "didcomm/v2+cbor",
             "didcomm/aip2;env=rfc587"
         ],
         "routingKeys": ["did:example:somemediator#somekey"]

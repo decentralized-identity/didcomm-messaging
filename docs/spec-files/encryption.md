@@ -6,16 +6,25 @@ DIDComm Messages are encrypted with the keys of a single DID. A message being se
 
 DIDComm supports two types of message encryption: Authenticated Sender Encryption ("authcrypt") and Anonymous Sender Encryption ("anoncrypt"). Both forms are encrypted to the recipient DID. Only authcrypt provides direct assurances of who the sender is. Each encrypted message MUST use either authcrypt or anoncrypt.
 
-The encrypted form of a JWM is a JWE in General JSON Format. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures. For the purposes of interoperability, DIDComm messaging does not support all JWAs; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed in tables later in the spec.
+When using JSON encoding, the encrypted form of a JWM is a JWE in General JSON Format. The JOSE family defines [JSON Web Algorithms](https://tools.ietf.org/html/rfc7518) (JWAs) which standardize certain cryptographic operations that are related to preparing JOSE structures.
+
+When using CBOR encoding, the encrypted form uses COSE (CBOR Object Signing and Encryption) as defined in [RFC 8152](https://tools.ietf.org/html/rfc8152). COSE_Encrypt or COSE_Encrypt0 structures are used for encryption operations.
+
+For the purposes of interoperability, DIDComm messaging does not support all JWAs or COSE algorithms; rather, it takes a subset of the supported algorithms that are applicable for the following cases around secure messaging. These supported algorithms are listed in tables later in the spec.
 
 
 #### Sender Authenticated Encryption
 
-For an encrypted DIDComm message, the JWA of [ECDH-1PU](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04) MUST be used within the structure of a JWE.
+For an encrypted DIDComm message using JSON encoding, the JWA of [ECDH-1PU](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04) MUST be used within the structure of a JWE.
+
+For an encrypted DIDComm message using CBOR encoding, the equivalent COSE algorithm ECDH-1PU (as defined in [draft-madden-cose-ecdh-1pu](https://datatracker.ietf.org/doc/draft-madden-cose-ecdh-1pu/)) MUST be used within the structure of a COSE_Encrypt or COSE_Encrypt0.
 
 #### Anonymous Encryption
 
-When a sender would like to encrypt a message for a recipient DID or multiple recipient DIDs but not be authenticated by the recipients, the JWA of `ECDH-ES` defined by [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6) SHOULD be used within the structure of a JWE.
+When a sender would like to encrypt a message for a recipient DID or multiple recipient DIDs but not be authenticated by the recipients, the following SHOULD be used:
+
+- For JSON encoding: the JWA of `ECDH-ES` defined by [RFC 7518](https://tools.ietf.org/html/rfc7518#section-4.6) within the structure of a JWE.
+- For CBOR encoding: the COSE algorithm ECDH-ES defined by [RFC 8152](https://tools.ietf.org/html/rfc8152) within the structure of a COSE_Encrypt or COSE_Encrypt0.
 
 Anonymous encryption removes authentication of the sender, which is a significant benefit of DIDComm Messaging; it may make sense, but should only be done thoughtfully, when the context of the use case justifies it. Pairing anonymous encryption with a method of message authentication other than authcrypt as defined in this specification is not generally recommended, as it may have unintended side effects. In particular, a signed message that is anonymously encrypted accomplishes authentication, but loses the repudiability of authcrypt. Further discussion of message authentication can be found in the [DIDComm Guidebook](https://didcomm.org/book/v2).
 
@@ -30,20 +39,23 @@ For the keys involved in key agreement, the first three elliptic curves in this 
 | P-256  | NIST defined P-256 elliptic curve - deprecated in favor of P-384 |
 | P-521  | NIST defined P-521 elliptic curve. Optional. |
 
-For content encryption of the message, DIDComm inherits the implementation definitions from [JSON Web Algorithms](https://datatracker.ietf.org/doc/html/rfc7518#section-5.1) for AES 256-bit keys.
-In addition, DIDComm defines optional implementation usage of the draft [XC20P](https://tools.ietf.org/id/draft-amringer-jose-chacha-02.html) algorithm.
+For content encryption of the message when using JSON encoding, DIDComm inherits the implementation definitions from [JSON Web Algorithms](https://datatracker.ietf.org/doc/html/rfc7518#section-5.1) for AES 256-bit keys. In addition, DIDComm defines optional implementation usage of the draft [XC20P](https://tools.ietf.org/id/draft-amringer-jose-chacha-02.html) algorithm.
+
+For content encryption of the message when using CBOR encoding, DIDComm uses the equivalent algorithms defined in [COSE Algorithms](https://www.iana.org/assignments/cose/cose.xhtml#algorithms).
 
 To prevent invalid curve and weak point attacks, implementations that decrypt messages from a NIST curve MUST verify that the received public key (contained in the JWE protected header) is on the curve in question. This check may already be done by some JOSE libraries, but developers should not assume this is the case. See [this explanation](http://blog.intothesymmetry.com/2017/03/critical-vulnerability-in-json-web.html) of the risk, and [this practical guide](https://neilmadden.blog/2017/05/17/so-how-do-you-validate-nist-ecdh-public-keys/) for how to perform the verification correctly. 
 
-| Algorithm(JWA) | Description                | Authcrypt/Anoncrypt            | Requirements                   |
+| Algorithm(JWA/COSE) | Description                | Authcrypt/Anoncrypt            | Requirements                   |
 | -------------- | -------------------------- |------------------------------- |------------------------------- |
-| A256CBC-HS512  | AES256-CBC + HMAC-SHA512 with a 512 bit key | Authcrypt/Anoncrypt | Required |
-| A256GCM        | AES256-GCM with a 256 bit key | Anoncrypt | Recommended |
-| XC20P          | XChaCha20Poly1305 with a 256 bit key | Anoncrypt | Optional |
+| A256CBC-HS512 (JWA) / HMAC-SHA-512+AES-256-CBC (COSE) | AES256-CBC + HMAC-SHA512 with a 512 bit key | Authcrypt/Anoncrypt | Required |
+| A256GCM (JWA) / A256GCM (COSE) | AES256-GCM with a 256 bit key | Anoncrypt | Recommended |
+| XC20P (JWA) / XC20P (COSE) | XChaCha20Poly1305 with a 256 bit key | Anoncrypt | Optional |
 
 Implementations MUST choose nonces securely.
 
 #### Key Wrapping Algorithms
+
+##### JSON Encoding (JWA)
 
 | KW Algorithm    | Curve (epk crv) | key type (epk kty) | Description                                                  |
 | --------------- | --------------- | ------------------ | ------------------------------------------------------------ |
@@ -55,6 +67,19 @@ Implementations MUST choose nonces securely.
 | ECDH-1PU+A256KW | P-384           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in [ECDH-1PU](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 | ECDH-1PU+A256KW | P-521           | EC                 | ECDH-1PU key wrapping using key with NIST defined P-521 elliptic curve to create a 512 bits key as defined in [ECDH-1PU](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
 | ECDH-1PU+A256KW | X25519          | OKP                | ECDH-1PU X25519 ([RFC7748 section 5](https://tools.ietf.org/html/rfc7748#section-5)) to create a 256 bits key as defined in [ECDH-1PU](https://tools.ietf.org/html/draft-madden-jose-ecdh-1pu-04#section-2) |
+
+##### CBOR Encoding (COSE)
+
+| KW Algorithm    | Curve (epk crv) | key type (epk kty) | Description                                                  |
+| --------------- | --------------- | ------------------ | ------------------------------------------------------------ |
+| ECDH-ES+A256KW  | P-256           | EC2                | ECDH-ES key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in [RFC 8152](https://tools.ietf.org/html/rfc8152)                                                                                  |
+| ECDH-ES+A256KW  | P-384           | EC2                | ECDH-ES key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in [RFC 8152](https://tools.ietf.org/html/rfc8152)                                                                                  |
+| ECDH-ES+A256KW  | P-521           | EC2                | ECDH-ES key wrapping using key with NIST defined P-521 elliptic curve to create a 512 bits key as defined in [RFC 8152](https://tools.ietf.org/html/rfc8152)                                                                                  |
+| ECDH-ES+A256KW  | X25519          | OKP                | ECDH-ES with X25519 ([RFC 7748 section 5](https://tools.ietf.org/html/rfc7748#section-5)) to create a 256 bits key. The underlying curve is actually `Curve25519`, however when used in the context of Diffie-Hellman the identifier of `X25519` is used |
+| ECDH-1PU+A256KW | P-256           | EC2                | ECDH-1PU key wrapping using key with NIST defined P-256 elliptic curve to create a 256 bits key as defined in [draft-madden-cose-ecdh-1pu](https://datatracker.ietf.org/doc/draft-madden-cose-ecdh-1pu/) |
+| ECDH-1PU+A256KW | P-384           | EC2                | ECDH-1PU key wrapping using key with NIST defined P-384 elliptic curve to create a 256 bits key as defined in [draft-madden-cose-ecdh-1pu](https://datatracker.ietf.org/doc/draft-madden-cose-ecdh-1pu/) |
+| ECDH-1PU+A256KW | P-521           | EC2                | ECDH-1PU key wrapping using key with NIST defined P-521 elliptic curve to create a 512 bits key as defined in [draft-madden-cose-ecdh-1pu](https://datatracker.ietf.org/doc/draft-madden-cose-ecdh-1pu/) |
+| ECDH-1PU+A256KW | X25519          | OKP                | ECDH-1PU X25519 ([RFC7748 section 5](https://tools.ietf.org/html/rfc7748#section-5)) to create a 256 bits key as defined in [draft-madden-cose-ecdh-1pu](https://datatracker.ietf.org/doc/draft-madden-cose-ecdh-1pu/) |
 
 #### Perfect Forward Secrecy
 
@@ -129,7 +154,10 @@ If two communicating parties establish single-purpose DIDs (e.g., peer DIDs) for
 A layer of anonymous encryption (employing ECDH-ES) may be applied around an authenticated encryption envelope (employing ECDH-1PU), obscuring the sender's identity for all but the recipient of the inner envelope. In the case of a message forwarded via mediators, anonymous encryption is automatic.
 
 #### ECDH-1PU key wrapping and common protected headers
-When using authcrypt, the 1PU draft [mandates](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1) the use of the AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common `epk`, `apu`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` JWE section.
+
+##### JSON Encoding (JWE)
+
+When using authcrypt with JSON encoding, the 1PU draft [mandates](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1) the use of the AES_CBC_HMAC_SHA family of content encryption algorithms. To meet this requirement, JWE messages MUST use common `epk`, `apu`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` JWE section.
 
 As per this requirement, the JWE building must first encrypt the payload, then use the resulting `tag` as part of the key derivation process when wrapping the `cek`.
 
@@ -146,9 +174,22 @@ Even though `apu`/`apv` are not mandatory JWE recipients headers, they are requi
 
 A final note about `skid` header: since the 1PU draft [does not require](https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.2.1) this header, authcrypt implementations MUST be able to resolve the sender kid from the `apu` header if `skid` is not set.
 
+##### CBOR Encoding (COSE)
+
+When using authcrypt with CBOR encoding, the equivalent COSE headers MUST be used:
+
+* `ephemeral key`: equivalent to JWE's `epk`, generated once for all recipient keys. It MUST be of the same type and curve as all recipient keys.
+* `party u identity`: equivalent to JWE's `apu`, this is the producer (sender) identifier.
+* `party v identity`: equivalent to JWE's `apv`, this represents the recipients' identifiers.
+* `algorithm`: equivalent to JWE's `alg`, this is the key wrapping algorithm.
+
+The same requirements for content encryption algorithms and key derivation process apply to COSE as they do for JWE.
+
 #### ECDH-ES key wrapping and common protected headers
 
-When using anoncrypt, any of the valid content encryption algorithms may be used. To meet this requirement, JWE messages MUST use common `epk`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` JWE section.
+##### JSON Encoding (JWE)
+
+When using anoncrypt with JSON encoding, any of the valid content encryption algorithms may be used. To meet this requirement, JWE messages MUST use common `epk`, `apv` and `alg` headers for all recipient keys. They MUST be set in the `protected` JWE section.
 
 As per this requirement, the JWE building must first encrypt the payload, then use the resulting `tag` as part of the key derivation process when wrapping the `cek`.
 
@@ -159,8 +200,31 @@ To meet this requirement, the above headers are defined as follows:
 * `apv`: this represents the recipients' `kid` list. The list must be alphanumerically sorted, `kid` values will then be concatenated with a `.` and the final result MUST be base64 URL (no padding) encoding of the SHA256 hash of concatenated list. 
 * `alg`: this is the key wrapping algorithm, ie: `ECDH-ES+A256KW`.
 
-Note: `apu`will not be present when using ECDH-ES.
+Note: `apu` will not be present when using ECDH-ES.
+
+##### CBOR Encoding (COSE)
+
+When using anoncrypt with CBOR encoding, the equivalent COSE headers MUST be used:
+
+* `ephemeral key`: equivalent to JWE's `epk`, generated once for all recipient keys.
+* `party v identity`: equivalent to JWE's `apv`, this represents the recipients' identifiers.
+* `algorithm`: equivalent to JWE's `alg`, this is the key wrapping algorithm.
+
+Note: `party u identity` will not be present when using ECDH-ES.
 
 #### Examples
 
 While the details of encrypting a JWM into a JWE are included in the [JWM spec](https://tools.ietf.org/html/draft-looker-jwm-01), a few examples are included here for clarity. See section [Appendix C.3](#c3-didcomm-encrypted-messages).
+
+For CBOR encoding, the equivalent COSE structures would be used. The CBOR encoding would represent the same data structures but in the more compact CBOR binary format.
+
+##### CBOR Encoding Considerations
+
+When implementing CBOR encoding for DIDComm messages, the following considerations should be taken into account:
+
+1. COSE structures use a more compact representation than JWE, which can significantly reduce message size.
+2. COSE uses integer labels for header parameters instead of string keys, further reducing size.
+3. When converting between JSON and CBOR representations, care must be taken to ensure all security properties are preserved.
+4. Implementations should provide clear error messages when encountering encoding issues to aid in debugging.
+
+TODO: Add specific examples of CBOR-encoded DIDComm messages in the appendix.
