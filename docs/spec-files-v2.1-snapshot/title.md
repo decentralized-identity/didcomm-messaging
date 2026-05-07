@@ -1,10 +1,13 @@
-DIDComm Messaging v2.1 Editor's Draft
+DIDComm Messaging v2.1
 ==================
 
-**Specification Status:** Working Group Approved
+**Specification Status:** DIF-Ratified
 
 **Latest Stable version:**
   [identity.foundation/didcomm-messaging/spec/v2.1](https://identity.foundation/didcomm-messaging/spec/v2.1)
+
+**Prior DIF-Ratified Version:**
+  [identity.foundation/didcomm-messaging/spec/v2.1](https://identity.foundation/didcomm-messaging/spec/v2.0)
 
 **Editors:** Sam Curren (Indicio), Tobias Looker (Mattr), Oliver Terbu (ConsenSys)
 

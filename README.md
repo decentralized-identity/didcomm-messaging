@@ -44,7 +44,7 @@ The specs we're working on are broken into sections. Each section is a separate 
 
     PROPOSED → REFINING → STABLE
 
-Adding new content with the PROPOSED status is very easy and fast: just submit a PR that passes a smell test of reasonableness for one or more maintainers.
+Adding new content with the PROPOSED status is very easy and fast: just submit a PR that passes a smell test of reasonableness for one or more maintainers. Follow the [Spec-up instruction](https://identity.foundation/spec-up/#getting-started) if you would like to build a local preview of your PR.
 
 The REFINING status is applied after WG discussion, when there is rough consensus on the amount and type of content in a section. Github issues are used for discussion.
 
@@ -52,7 +52,7 @@ The WG moves sections to STABLE status once they have code/tests, implementation
 
 ### People
 
-Contributors to the repo come from [DIF's DIDComm Working Group](https://medium.com/decentralized-identity/dif-starts-didcomm-working-group-9c114d9308dc). [Here](https://drive.google.com/file/d/1bZBkVrC8Fh5N16oBi2zAoqPxCTghUhpB/view) is our charter, and [here](https://docs.google.com/document/d/1a-KpG734mq-xizcNE0JAu5_1_EslXL07QGr2HYLEZFE/edit) are some more details about how we work.
+Contributors to the repo come from [DIF's DIDComm Working Group](https://medium.com/decentralized-identity/dif-starts-didcomm-working-group-9c114d9308dc), and must [join DIF](https://identity.foundation/join/) to contribute. [Here](https://drive.google.com/file/d/1bZBkVrC8Fh5N16oBi2zAoqPxCTghUhpB/view) is our charter, and [here](https://docs.google.com/document/d/1a-KpG734mq-xizcNE0JAu5_1_EslXL07QGr2HYLEZFE/edit) are some more details about how we work.
 
 ### WG information
 
