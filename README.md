@@ -14,6 +14,7 @@ Here are links to some implementations of the DIDComm v2 spec that you may find 
   - https://github.com/decentralized-identity/veramo
   - https://github.com/aviarytech/didcomm
   - https://github.com/sicpa-dlab/didcomm-ts
+  - https://github.com/writerslogic/didcomm-ts (independent TypeScript JOSE implementation; interop-tested against didcomm-rust, didcomm-python and a live mediator)
 - Go
   - https://github.com/hyperledger/aries-framework-go/tree/main/pkg/didcomm/packer
 - Rust
